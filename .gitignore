@@ -1,0 +1,13 @@
+*.user
+*.suo
+obj/
+bin/
+releases/
+*.zip
+__pycache__/
+/Assets/
+/evidence/
+/SPEC.md
+/ANOMALIES.md
+/tools/
+/Directory.Build.local.props

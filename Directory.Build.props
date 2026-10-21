@@ -1,0 +1,22 @@
+<Project>
+ <Import Project="Directory.Build.local.props" Condition="Exists('Directory.Build.local.props')" />
+ <PropertyGroup>
+  <ScratchRoot Condition="'$(MODERNIZATION_SCRATCH)'!=''">$(MODERNIZATION_SCRATCH)</ScratchRoot>
+  <BaseIntermediateOutputPath>$(ScratchRoot)/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+  <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  <OutputPath>$(ScratchRoot)/bin/$(MSBuildProjectName)/</OutputPath>
+  <GameManaged>$(ScratchRoot)/game/MinutesTillDawn_Data/Managed</GameManaged>
+  <BepCore>$(ScratchRoot)/game/BepInEx/core</BepCore>
+  <TargetFramework>netstandard2.0</TargetFramework><LangVersion>latest</LangVersion>
+ </PropertyGroup>
+ <ItemGroup>
+  <Reference Include="$(GameManaged)/UnityEngine.ParticleSystemModule.dll"/>
+  <Reference Include="$(GameManaged)/Assembly-CSharp.dll"/><Reference Include="$(GameManaged)/com.flanne.extensions.dll"/>
+  <Reference Include="$(GameManaged)/UnityEngine.dll"/><Reference Include="$(GameManaged)/UnityEngine.CoreModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.Physics2DModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.UI.dll"/><Reference Include="$(GameManaged)/UnityEngine.AnimationModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.AudioModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.ImageConversionModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.InputLegacyModule.dll"/><Reference Include="$(GameManaged)/Unity.TextMeshPro.dll"/><Reference Include="$(GameManaged)/Unity.InputSystem.dll"/><Reference Include="$(GameManaged)/UnityEngine.JSONSerializeModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.UIModule.dll"/>
+  <Reference Include="$(BepCore)/BepInEx.dll"/><Reference Include="$(BepCore)/0Harmony.dll"/>
+ </ItemGroup>
+ <Target Name="RequirePreparedPlayer" BeforeTargets="PrepareForBuild">
+  <Error Condition="'$(ScratchRoot)'==''" Text="Set MODERNIZATION_SCRATCH to an owned prepared development player directory." />
+  <Error Condition="!Exists('$(GameManaged)/Assembly-CSharp.dll')" Text="The prepared owned Windows player is missing Assembly-CSharp.dll." />
+ </Target>
+</Project>

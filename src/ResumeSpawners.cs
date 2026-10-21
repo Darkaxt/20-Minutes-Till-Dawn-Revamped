@@ -1,0 +1,179 @@
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
+using UnityEngine;
+using flanne;
+using flanne.Core;
+using flanne.Pickups;
+using Object=UnityEngine.Object;
+namespace TwentyMinutes.Modernization;
+static partial class RunResume
+{
+ static readonly string[] HordeFields={"spawnRateMulitplier","healthMultiplier","eliteHealthMultiplier","enemyDamage","eliteDamage","speedMultiplier","eliteSpeedMultiplier"};
+ static readonly string[] BossFields={"healthMultiplier","enemyDamage","cooldownRate"};
+ internal class SpawnIdentity{public bool boss;public int index;public string tag;}
+ internal static SpawnIdentity SpawnContext;
+ static readonly Dictionary<BossSpawn,int> BossIndices=new Dictionary<BossSpawn,int>();
+ static readonly Dictionary<SpawnSession,int> WaveIndices=new Dictionary<SpawnSession,int>();
+ internal static void ReleaseSpawnIdentities(){BossIndices.Clear();WaveIndices.Clear();SpawnContext=null;}
+ static List<SpawnSession> Waves(MapData map,int cycle)=>map.endless&&cycle>0?map.endlessSpawnSessions:map.spawnSessions;
+ static List<BossSpawn> Bosses(MapData map,int cycle)=>map.endless&&cycle>0?map.endlessBossSpawn:map.bossSpawns;
+ static float[] Values(object owner,string[] fields)=>fields.Select(f=>Convert.ToSingle(AccessTools.Field(owner.GetType(),f).GetValue(owner))).ToArray();
+ static void RestoreValues(object owner,string[] fields,float[] values)
+ {if(values==null||values.Length!=fields.Length)throw new InvalidOperationException("Unsupported saved spawner state");for(int i=0;i<fields.Length;i++){var f=AccessTools.Field(owner.GetType(),fields[i]);f.SetValue(owner,Convert.ChangeType(values[i],f.FieldType));}}
+ static void CaptureSpawners(Snapshot saved)
+ {saved.hordeModifiers=Values(Object.FindObjectOfType<HordeSpawner>(),HordeFields);saved.bossModifiers=Values(Object.FindObjectOfType<BossSpawner>(),BossFields);}
+ public static void InitializeMap(MapInitializer initializer)
+ {
+  var saved=Pending;var map=SelectedMap.MapData;
+  if(ChallengeMode.Active){initializer.gameObject.AddComponent<ChallengeRun>().Initialize(initializer);return;}
+  var horde=(HordeSpawner)AccessTools.Field(typeof(MapInitializer),"hordeSpawner").GetValue(initializer);
+  var boss=(BossSpawner)AccessTools.Field(typeof(MapInitializer),"bossSpawner").GetValue(initializer);
+  GameTimer.SharedInstance.timeLimit=map.timeLimit;GameTimer.SharedInstance.endless=map.endless;
+  RestoreValues(horde,HordeFields,saved.hordeModifiers);RestoreValues(boss,BossFields,saved.bossModifiers);
+  RunRecorder.Instance.EndlessCycle=saved.endlessCycle;float relative=saved.roundElapsed;
+  var original=Waves(map,saved.endlessCycle);var adjusted=new List<SpawnSession>();WaveIndices.Clear();
+  for(int i=0;i<original.Count;i++)
+  {
+   var wave=original[i];if(wave.isElite&&saved.killedElites.Contains(i))continue;
+   float end=wave.startTime+wave.duration;
+   if(relative>=end&&!wave.isElite)continue;
+   var copy=new SpawnSession{monsterPrefab=wave.monsterPrefab,HP=wave.HP,maximum=wave.maximum,numPerSpawn=wave.numPerSpawn,
+    spawnCooldown=wave.spawnCooldown,isElite=wave.isElite,startTime=Mathf.Max(0,wave.startTime-relative),duration=relative>=end?wave.duration:end-Mathf.Max(relative,wave.startTime)};
+   adjusted.Add(copy);WaveIndices.Add(copy,i);
+  }
+  horde.LoadSpawners(adjusted);BossIndices.Clear();var scheduled=new List<BossSpawn>();var originalBosses=Bosses(map,saved.endlessCycle);
+  for(int i=0;i<originalBosses.Count;i++)
+  {
+   if(saved.killedBosses.Contains(i))continue;var b=originalBosses[i];
+   var copy=new BossSpawn{bossPrefab=b.bossPrefab,maxHP=b.maxHP,spawnPosition=b.spawnPosition,timeToSpawn=Mathf.Max(0,b.timeToSpawn-relative),dontSpawnArena=b.dontSpawnArena,killAllOnSpawn=b.killAllOnSpawn};
+   BossIndices.Add(copy,i);scheduled.Add(copy);
+  }
+  boss.LoadSpawners(scheduled);PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);Object.Instantiate(map.mapPrefab);
+  if(map.endless)
+  {
+   float duration=saved.endlessCycle==0?map.timeLimit:map.endlessLoopTime;
+   initializer.StartCoroutine(ResumeEndlessLoop(map,horde,boss,Mathf.Max(0,duration-relative),saved.endlessCycle+1));
+  }
+ }
+ static IEnumerator ResumeEndlessLoop(MapData map,HordeSpawner horde,BossSpawner boss,float remaining,int cycle)
+ {
+  yield return new WaitForSeconds(remaining);
+  while(true)
+  {
+   horde.healthMultiplier=1+Mathf.Pow(cycle,3);horde.eliteHealthMultiplier=1+Mathf.Pow(cycle,2);horde.speedMultiplier+=.2f;
+   boss.healthMultiplier+=3;boss.cooldownRate+=.25f;
+   horde.LoadSpawners(map.endlessSpawnSessions);boss.LoadSpawners(map.endlessBossSpawn);cycle++;
+   yield return new WaitForSeconds(map.endlessLoopTime);
+  }
+ }
+ static void RestoreSpawners(Snapshot saved)
+ {
+  var r=RunRecorder.Instance;r.RoundStart=saved.roundStart;r.RoundClock=Time.time-saved.roundElapsed;r.EndlessCycle=saved.endlessCycle;r.KilledBosses.UnionWith(saved.killedBosses);r.KilledElites.UnionWith(saved.killedElites);
+  RestoreValues(Object.FindObjectOfType<HordeSpawner>(),HordeFields,saved.hordeModifiers);RestoreValues(Object.FindObjectOfType<BossSpawner>(),BossFields,saved.bossModifiers);
+  var challenge=ChallengeRun.Instance;if(challenge==null)return;
+  challenge.RoundStart=saved.roundStart;challenge.EnemyKills=saved.challengeEnemies;challenge.BossKills=saved.challengeBosses;
+  challenge.KilledElites.UnionWith(saved.killedElites);challenge.SpawnedElites.UnionWith(saved.killedElites);
+  challenge.KilledBosses.UnionWith(saved.killedBosses);challenge.SpawnedBosses.UnionWith(saved.killedBosses);
+  var waves=SelectedMap.MapData.spawnSessions;
+  for(int i=0;i<waves.Count;i++)
+  {
+   var wave=waves[i];if(!wave.isElite||saved.killedElites.Contains(i)||saved.seconds-saved.roundStart<wave.startTime+wave.duration)continue;
+   SpawnContext=new SpawnIdentity{boss=false,index=i,tag=wave.monsterPrefab.name};ChallengeRun.Spawning=challenge;ChallengeRun.WaveIndex=i;
+   try{AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(challenge.Horde,new object[]{wave.monsterPrefab.name,wave.HP,true});challenge.SpawnedElites.Add(i);}finally{SpawnContext=null;ChallengeRun.Spawning=null;ChallengeRun.WaveIndex=-1;}
+  }
+ }
+ static void CaptureDrops(Snapshot saved)
+ {
+  saved.chests=Object.FindObjectsOfType<ChestPickup>().Count(c=>AccessTools.Field(typeof(ChestPickup),"_xpFountainCoroutine").GetValue(c)==null);
+  saved.devilDeals=Object.FindObjectsOfType<DevilDealPickup>().Length;
+ }
+ static void RestoreDrops(Snapshot saved)
+ {
+  foreach(var pair in new[]{Tuple.Create(typeof(ChestPickup),saved.chests),Tuple.Create(typeof(DevilDealPickup),saved.devilDeals)})
+  {
+   if(pair.Item2==0)continue;
+   var prefab=Resources.FindObjectsOfTypeAll(pair.Item1).Cast<Component>().First(c=>!c.gameObject.scene.IsValid()).gameObject;
+   var pool=ObjectPooler.SharedInstance;pool.AddObject(prefab.name,prefab,1);
+   for(int i=0;i<pair.Item2;i++)
+   {var drop=pool.GetPooledObject(prefab.name);float angle=2*Mathf.PI*i/Math.Max(1,pair.Item2);drop.transform.position=PlayerController.Instance.transform.position+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*3;drop.SetActive(true);}
+  }
+ }
+ internal static SpawnIdentity BossIdentity(object routine)
+ {
+  var b=(BossSpawn)AccessTools.Field(routine.GetType(),"spawner").GetValue(routine);if(b==null)return null;
+  int index=ChallengeRun.Spawning!=null&&ChallengeRun.BossIndex>=0?ChallengeRun.BossIndex:
+   BossIndices.TryGetValue(b,out int stored)?stored:Bosses(SelectedMap.MapData,RunRecorder.Instance.EndlessCycle).IndexOf(b);
+  return index<0?null:new SpawnIdentity{boss=true,index=index,tag=b.bossPrefab.name};
+ }
+ internal static void SpawnFromSession(HordeSpawner owner,string tag,int hp,bool elite,int activeIndex)
+ {
+  var previous=SpawnContext;
+  if(elite&&RunRecorder.Instance!=null)
+  {
+   var session=((List<SpawnSession>)AccessTools.Field(typeof(HordeSpawner),"activeSpawners").GetValue(owner))[activeIndex];
+   int index=WaveIndices.TryGetValue(session,out int stored)?stored:Waves(SelectedMap.MapData,RunRecorder.Instance.EndlessCycle).IndexOf(session);
+   if(index<0)throw new InvalidOperationException("Native elite session has no source identity");
+   SpawnContext=new SpawnIdentity{boss=false,index=index,tag=tag};
+  }
+  try{AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(owner,new object[]{tag,hp,elite});}finally{SpawnContext=previous;}
+ }
+}
+[HarmonyPatch(typeof(HordeSpawner),nameof(HordeSpawner.LoadSpawners))]
+class ResumeRoundBoundary
+{
+ static void Prefix(List<SpawnSession> spawnSessions)
+ {
+  var r=RunRecorder.Instance;var map=SelectedMap.MapData;if(r==null||map==null||RunResume.Restoring)return;
+  if(ReferenceEquals(spawnSessions,map.spawnSessions)){r.RoundStart=0;r.RoundClock=Time.time;r.EndlessCycle=0;}
+  else if(map.endless&&ReferenceEquals(spawnSessions,map.endlessSpawnSessions)){r.RoundStart=GameTimer.SharedInstance.timer;r.RoundClock=Time.time;r.EndlessCycle++;r.KilledBosses.Clear();r.KilledElites.Clear();r.Encounters.Clear();}
+ }
+}
+[HarmonyPatch]
+class ResumeBossIdentity
+{
+ static System.Reflection.MethodBase TargetMethod()=>AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(BossSpawner),"WaitToSpawnCR"));
+ static void Prefix(object __instance,out RunResume.SpawnIdentity __state){__state=RunResume.SpawnContext;if(RunRecorder.Instance!=null)RunResume.SpawnContext=RunResume.BossIdentity(__instance);}
+ static Exception Finalizer(Exception __exception,RunResume.SpawnIdentity __state){RunResume.SpawnContext=__state;return __exception;}
+}
+[HarmonyPatch(typeof(HordeSpawner),"Spawn")]
+class ResumeEliteIdentity
+{
+ static void Prefix(string objectPoolTag,int HP,bool isElite,out RunResume.SpawnIdentity __state)
+ {
+  __state=RunResume.SpawnContext;var r=RunRecorder.Instance;var map=SelectedMap.MapData;if(!isElite||r==null||map==null||__state!=null)return;
+  var waves=map.endless&&r.EndlessCycle>0?map.endlessSpawnSessions:map.spawnSessions;
+  var matching=waves.Select((w,i)=>new{w,i}).Where(x=>x.w.isElite&&x.w.monsterPrefab.name==objectPoolTag&&x.w.HP==HP).ToArray();int index=matching.Length==1?matching[0].i:-1;
+  if(index>=0)RunResume.SpawnContext=new RunResume.SpawnIdentity{boss=false,index=index,tag=objectPoolTag};
+ }
+ static Exception Finalizer(Exception __exception,RunResume.SpawnIdentity __state){RunResume.SpawnContext=__state;return __exception;}
+}
+[HarmonyPatch(typeof(HordeSpawner),"Update")]
+class ResumeExactEliteSession
+{
+ static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,MethodBase __originalMethod)
+ {
+  var locals=__originalMethod.GetMethodBody().LocalVariables;
+  if(locals.Count!=3||locals.Any(l=>l.LocalType!=typeof(int)))throw new InvalidOperationException("Unsupported native horde iteration layout");
+  var spawn=AccessTools.Method(typeof(HordeSpawner),"Spawn");int bound=0;
+  foreach(var instruction in instructions)
+  {
+   if(!instruction.Calls(spawn)){yield return instruction;continue;}
+   // Keep the original instruction object, including its branch/region metadata,
+   // at this boundary. The existing spawn arguments remain on the stack.
+   instruction.opcode=OpCodes.Ldloc_0;instruction.operand=null;yield return instruction;
+   yield return new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(RunResume),nameof(RunResume.SpawnFromSession)));bound++;
+  }
+  if(bound!=1)throw new InvalidOperationException("Unsupported native horde spawn call layout");
+ }
+}
+[HarmonyPatch(typeof(ObjectPooler),nameof(ObjectPooler.GetPooledObject))]
+class ResumeEncounterBinding
+{
+ static void Postfix(string tag,GameObject __result)
+ {var c=RunResume.SpawnContext;var r=RunRecorder.Instance;if(c==null||r==null||c.tag!=tag||__result==null)return;var h=__result.GetComponent<Health>();if(h!=null)r.Encounters[h]=Tuple.Create(c.boss,c.index);}
+}
