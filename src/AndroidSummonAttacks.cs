@@ -22,7 +22,8 @@ class AndroidAttackCooldown
  static bool Prefix(AttackingSummon __instance,float ___attackCooldown,ref float __result)
  {
   if(!(__instance is StabbingSummon)&&!(__instance is ShootingSummon))return true;
-  __result=Mathf.Clamp(__instance.summonAtkSpdMod.ModifyInverse(___attackCooldown)/__instance.attackSpeedMod.Modify(1),.2f,float.MaxValue);return false;
+  var bestFriends=__instance.GetComponent<AndroidBestFriends>();float effect=bestFriends!=null?bestFriends.Factor:__instance.attackSpeedMod.Modify(1);
+  __result=Mathf.Clamp(__instance.summonAtkSpdMod.ModifyInverse(___attackCooldown)/effect,.2f,float.MaxValue);return false;
  }
 }
 [HarmonyPatch(typeof(AttackingSummon),"Update")]
