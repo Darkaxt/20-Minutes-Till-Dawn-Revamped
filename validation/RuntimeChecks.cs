@@ -97,6 +97,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="powerups-android-burn"){yield return CheckAndroidBurn();yield break;}
         if(testMode=="powerups-android-health"){yield return CheckAndroidHealth();yield break;}
         if(testMode=="powerups-android-base"){yield return CheckAndroidBase();yield break;}
+        if(testMode.StartsWith("resume-heart-perks-")){yield return CheckAndroidHealthPerks(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();

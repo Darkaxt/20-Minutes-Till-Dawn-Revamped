@@ -19,7 +19,7 @@ public static partial class ResumeRuntime
  static readonly Dictionary<string,PerkEffect> NativeEffects=new Dictionary<string,PerkEffect>();
  static readonly Dictionary<PeriodicTrigger,IEnumerator> PeriodicRoutines=new Dictionary<PeriodicTrigger,IEnumerator>();
  static readonly Dictionary<PeriodicTrigger,float> PeriodicDeadlines=new Dictionary<PeriodicTrigger,float>(),PeriodicInitialDelay=new Dictionary<PeriodicTrigger,float>();
- static readonly Dictionary<Type,string> TriggerCounters=new Dictionary<Type,string>{{typeof(OnKillTrigger),"_killCounter"},{typeof(OnShootTrigger),"_shotCounter"},{typeof(OnThunderTrigger),"_thunderCounter"}};
+ static readonly Dictionary<Type,string> TriggerCounters=new Dictionary<Type,string>{{typeof(OnKillTrigger),"_killCounter"},{typeof(OnShootTrigger),"_shotCounter"},{typeof(OnThunderTrigger),"_thunderCounter"},{typeof(AndroidSummonKillTrigger),"Count"}};
  internal static EffectScope BeginEffectScope(string key)
  {
   var previous=CurrentEffectScope;Applications.TryGetValue(key,out int count);Applications[key]=count+1;

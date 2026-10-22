@@ -8,8 +8,8 @@ using flanne.PerkSystem.Actions;
 using flanne.Player.Buffs;
 namespace TwentyMinutes.Modernization;
 
-// Keep native buff ownership and modifier order. These two perks document
-// maximum health; other uses of AddHPToDamageMod deliberately retain current HP.
+// Holy Spear uses maximum health in Android. Tome of Might has a different
+// Android recipe, supplied by AndroidHealthPerkRecipes.
 [HarmonyPatch]
 class HolySpearMaximumHealth
 {
@@ -18,7 +18,7 @@ class HolySpearMaximumHealth
  static void Prefix(Powerup __instance)
  {
   string key=Key(__instance).key;
-  if(key!="holy_spear_name"&&key!="tome_of_might_name")return;
+  if(key!="holy_spear_name")return;
   foreach(string field in new[]{"effects","stackedEffects"})
    foreach(var effect in (PerkEffect[])AccessTools.Field(typeof(Powerup),field).GetValue(__instance))
    {

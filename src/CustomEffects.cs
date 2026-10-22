@@ -12,7 +12,7 @@ namespace TwentyMinutes.Modernization;
 static class CustomPerkStats
 {
  static readonly FieldInfo Changes=AccessTools.Field(typeof(Powerup),"statChanges");
- internal static StatChange[] Values(Powerup power)=>(StatChange[])Changes.GetValue(power);
+ internal static StatChange[] Values(Powerup power){AndroidStatRecipes.Configure(power);return (StatChange[])Changes.GetValue(power);}
  static StatChange Scaled(StatChange value,float scale)
  {if(value.isFlatMod)value.flatValue=Mathf.RoundToInt(value.flatValue*scale);else value.value=Mathf.Max(-.99f,value.value*scale);return value;}
  static void Prefix(Powerup __instance,out StatChange[] __state)
