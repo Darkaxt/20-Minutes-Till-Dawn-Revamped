@@ -34,6 +34,8 @@ public static partial class ResumeRuntime
  }
  static readonly Dictionary<Type,string[]> Fields=new Dictionary<Type,string[]>
  {
+  {typeof(AndroidSpearBonuses),new[]{"HpBonus","SoulBonus"}},
+  {typeof(StabbingSummon),new[]{"_timer"}},
   {typeof(AndroidReflex),new[]{"LastMove","Granted"}},
   {typeof(AndroidGlare),new[]{"Timer"}},
   {typeof(ThunderDuringHolyShield),new[]{"_timer"}},
@@ -70,7 +72,8 @@ public static partial class ResumeRuntime
   // Notify through the native mutation boundary after all three values agree.
   stat.AddFlatBonus(0);
  }
- static MonoBehaviour[] Providers(PlayerController player,Type type)=>player.GetComponentsInChildren<MonoBehaviour>(true).Where(c=>c!=null&&c.GetType()==type).ToArray();
+ static AttackingSummon[] OwnedAttackingSummons(PlayerController player)=>player.GetComponentsInChildren<ShootingSummon>(true).Cast<AttackingSummon>().Concat(player.GetComponent<AndroidSpearBonuses>()?.Spears.Where(s=>s!=null)??Enumerable.Empty<StabbingSummon>()).ToArray();
+ static MonoBehaviour[] Providers(PlayerController player,Type type)=>type==typeof(StabbingSummon)?OwnedAttackingSummons(player).OfType<StabbingSummon>().Cast<MonoBehaviour>().ToArray():player.GetComponentsInChildren<MonoBehaviour>(true).Where(c=>c!=null&&c.GetType()==type).ToArray();
  public static State Capture(PlayerController player)
  {
   var state=new State();
@@ -86,8 +89,8 @@ public static partial class ResumeRuntime
     state.providers.Add(entry);
    }
   }
-  foreach(var group in player.GetComponentsInChildren<ShootingSummon>(true).GroupBy(s=>s.SummonTypeID))
-  {int ordinal=0;foreach(var summon in group)state.summons.Add(new SummonState{id=group.Key,ordinal=ordinal++,damage=summon.baseDamage,speed=Capture(summon.attackSpeedMod)});}
+  foreach(var group in OwnedAttackingSummons(player).GroupBy(s=>s.SummonTypeID))
+  {int ordinal=0;foreach(var summon in group)state.summons.Add(new SummonState{id=group.Key,ordinal=ordinal++,damage=(int)AccessTools.Field(summon.GetType(),"baseDamage").GetValue(summon),speed=Capture(summon.attackSpeedMod)});}
   var eggs=player.GetComponentsInChildren<SummonEgg>(true);
   for(int i=0;i<eggs.Length;i++)
   {
@@ -125,9 +128,9 @@ public static partial class ResumeRuntime
   }
   foreach(var saved in state.summons)
   {
-   var summons=player.GetComponentsInChildren<ShootingSummon>(true).Where(s=>s.SummonTypeID==saved.id).ToArray();
+   var summons=OwnedAttackingSummons(player).Where(s=>s.SummonTypeID==saved.id).ToArray();
    if(saved.ordinal>=summons.Length)throw new InvalidOperationException("Native summon was not reconstructed: "+saved.id);
-   var summon=summons[saved.ordinal];summon.baseDamage=saved.damage;Restore(summon.attackSpeedMod,saved.speed);
+   var summon=summons[saved.ordinal];Plugin.SetField(summon,"baseDamage",saved.damage);Restore(summon.attackSpeedMod,saved.speed);
   }
   var eggs=player.GetComponentsInChildren<SummonEgg>(true);
   foreach(var saved in state.eggs)

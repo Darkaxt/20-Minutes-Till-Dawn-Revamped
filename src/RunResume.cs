@@ -135,7 +135,7 @@ public static partial class RunResume
   if(saved.custom!=null)foreach(var value in saved.custom.values)
   {
    if(value.key.StartsWith("perk:")&&!saved.acquired.Any(a=>!a.evolution&&value.key=="perk:"+a.key+":scale"))throw new InvalidOperationException("The Custom checkpoint edits an uncollected upgrade.");
-   if(value.key.StartsWith("summon:")&&!Resources.FindObjectsOfTypeAll<ShootingSummon>().Any(s=>value.key=="summon:"+s.SummonTypeID+":damage"||value.key=="summon:"+s.SummonTypeID+":speed"))throw new InvalidOperationException("The Custom checkpoint edits an unavailable summon type.");
+   if(value.key.StartsWith("summon:")&&!Resources.FindObjectsOfTypeAll<AttackingSummon>().Where(s=>s is ShootingSummon||s is StabbingSummon).Any(s=>value.key=="summon:"+s.SummonTypeID+":damage"||value.key=="summon:"+s.SummonTypeID+":speed"))throw new InvalidOperationException("The Custom checkpoint edits an unavailable summon type.");
   }
   foreach(var bootstrap in r.Blessings)
   {

@@ -93,7 +93,7 @@ public class CustomMenu:MonoBehaviour
   }
   if(tab==4)
   {
-   var summons=Object.FindObjectsOfType<ShootingSummon>().GroupBy(s=>s.SummonTypeID).OrderBy(g=>g.Key).ToArray();
+   var summons=Object.FindObjectsOfType<AttackingSummon>().Where(s=>s is ShootingSummon||s is StabbingSummon).GroupBy(s=>s.SummonTypeID).OrderBy(g=>g.Key).ToArray();
    foreach(var group in summons){string name=Resources.FindObjectsOfTypeAll<Powerup>().FirstOrDefault(power=>power.name==group.Key)?.nameString??DisplayName(group.Key);Add(name+" damage multiplier","summon:"+group.Key+":damage",1,.1f,0,100);Add(name+" attack speed","summon:"+group.Key+":speed",1,.1f,0,100);}
    if(summons.Length==0)Command("Collect a summon upgrade, then reopen this screen.",()=>{});
   }
