@@ -36,6 +36,7 @@ public static partial class ResumeRuntime
  {
   {typeof(AndroidSpearBonuses),new[]{"HpBonus","SoulBonus"}},
   {typeof(StabbingSummon),new[]{"_timer"}},
+  {typeof(ShootingSummon),new[]{"_timer"}},
   {typeof(AndroidReflex),new[]{"LastMove","Granted"}},
   {typeof(AndroidGlare),new[]{"Timer"}},
   {typeof(ThunderDuringHolyShield),new[]{"_timer"}},

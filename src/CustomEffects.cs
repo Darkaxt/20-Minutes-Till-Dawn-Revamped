@@ -71,6 +71,6 @@ class CustomBossValues
 [HarmonyPatch(typeof(ChallengeMode),nameof(ChallengeMode.SpawnMultiplier))]
 class CustomChallengeSpawns{static void Postfix(ref float __result){if(CustomMode.Active)__result*=CustomMode.Get("spawn:spawnRateMulitplier");}}
 [HarmonyPatch(typeof(ShootingSummon),"GetProjectileRecipe")]
-class CustomSummonDamage{static void Postfix(ShootingSummon __instance,ref ProjectileRecipe __result){if(CustomMode.Active)__result.damage=Mathf.FloorToInt(__result.damage*CustomMode.Get("summon:"+__instance.SummonTypeID+":damage"));}}
+class CustomSummonDamage{static void Postfix(ShootingSummon __instance,ref ProjectileRecipe __result){if(CustomMode.Active)__result.damage*=CustomMode.Get("summon:"+__instance.SummonTypeID+":damage");}}
 [HarmonyPatch(typeof(AttackingSummon),"get_finalAttackCooldown")]
 class CustomSummonSpeed{static void Postfix(AttackingSummon __instance,ref float __result){if(CustomMode.Active)__result=Mathf.Max(.1f,__result/Mathf.Max(.01f,CustomMode.Get("summon:"+__instance.SummonTypeID+":speed")));}}

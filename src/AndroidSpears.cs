@@ -69,30 +69,8 @@ class AndroidSpearAttack
  static bool Prefix(StabbingSummon __instance,float ___range,ref IEnumerator ____stabbingCoroutine,ref bool __result)
  {
   __result=false;if(____stabbingCoroutine!=null)return false;
-  var center=PlayerController.Instance.transform.position;float radius=Mathf.Abs(___range);
-  var targets=ObjectPooler.SharedInstance.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(actor=>actor!=null&&actor.activeInHierarchy&&actor.layer==(int)TagLayerUtil.Enemy&&Mathf.Abs(actor.transform.position.x-center.x)<radius&&Mathf.Abs(actor.transform.position.y-center.y)<radius).Distinct().ToArray();
-  if(targets.Length==0)return false;
-  Vector2 origin=__instance.transform.position,direction=(Vector2)targets[UnityEngine.Random.Range(0,targets.Length)].transform.position-origin;
+  float radius=Mathf.Abs(___range);var target=AndroidSummonTargets.Random(radius,radius);if(target==null)return false;
+  Vector2 origin=__instance.transform.position,direction=(Vector2)target.transform.position-origin;
   var destination=origin+direction.normalized*radius;____stabbingCoroutine=(IEnumerator)Stab.Invoke(__instance,new object[]{destination});__instance.StartCoroutine(____stabbingCoroutine);__result=true;return false;
- }
-}
-[HarmonyPatch(typeof(AttackingSummon),"get_finalAttackCooldown")]
-class AndroidSpearCooldown
-{
- static bool Prefix(AttackingSummon __instance,float ___attackCooldown,ref float __result)
- {
-  if(!(__instance is StabbingSummon))return true;
-  __result=Mathf.Clamp(__instance.summonAtkSpdMod.ModifyInverse(___attackCooldown)/__instance.attackSpeedMod.Modify(1),.2f,float.MaxValue);return false;
- }
-}
-[HarmonyPatch(typeof(AttackingSummon),"Update")]
-class AndroidSpearInterval
-{
- static readonly MethodInfo Cooldown=AccessTools.PropertyGetter(typeof(AttackingSummon),"finalAttackCooldown"),Attack=AccessTools.Method(typeof(StabbingSummon),"Attack");
- static bool Prefix(AttackingSummon __instance,ref float ____timer,Animator ___animator,SoundEffectSO ___attackSoundFX)
- {
-  if(!(__instance is StabbingSummon))return true;
-  ____timer+=Time.deltaTime;float interval=(float)Cooldown.Invoke(__instance,null);if(____timer<interval)return false;
-  ____timer-=interval;if((bool)Attack.Invoke(__instance,null)){___animator?.SetTrigger("Attack");___attackSoundFX?.Play();}return false;
  }
 }
