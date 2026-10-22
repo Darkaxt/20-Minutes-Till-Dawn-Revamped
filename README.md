@@ -12,7 +12,7 @@ Implemented and verified in an isolated copied Windows player:
 - Challenge mode, semantic run continuation and native Custom controls with owned-mode defaults.
 - Transparent native icon stats/skills HUD, optional compatible recolours, and pixel-art “MAINTAINED BY DARKAXT” logo credit. The Emberpath promotion is removed in 1.0.1.
 
-**Delivery:** 1.0.0 is the latest published release and its payload passed a DroidDeck 0.5.0 menu/bootstrap smoke test. The unpublished 1.0.1 update is installed locally on Windows and DroidDeck; its pixel-art credit/ad removal passed windowless Windows rendering at 720p and 1080p, including the final package. The updated phone installation passes file/preservation checks, but its new artwork has not yet been visually verified on the phone. Publication and further deployment are on hold while the integration disparity ledger is reviewed. [Delivery history and limits](docs/DROIDDECK.md).
+**Delivery:** 1.0.0 is the latest published release and its payload passed a DroidDeck 0.5.0 menu/bootstrap smoke test. The unpublished 1.0.1 update is installed locally on Windows and DroidDeck; its pixel-art credit/ad removal passed windowless Windows rendering at 720p and 1080p, including the final package. The updated phone installation passes file/preservation checks, but its new artwork has not yet been visually verified on the phone. Publication and further deployment are on hold until the remaining Android gameplay integration and its verification are complete. [Delivery history and limits](docs/DROIDDECK.md).
 
 Custom runs use obtained content and award credits while disabling unlocks, achievements and leaderboard submission. Switching mode defaults during play explicitly starts a new Custom run; restoring the current mode defaults removes its overrides.
 
@@ -28,9 +28,9 @@ See [gameplay migration decisions](docs/MIGRATION.md) and the [anomaly/balance l
 
 ## Android integration and disparity ledger
 
-**Not all Android updates have been ported.** This comparison uses the supplied Android **8.6 (1093)** package and Windows Steam **12679152**; it does not establish parity with later Android releases. “Reviewed”, “retained” and “implemented” have different meanings. The earlier completed stages describe the selected implementation scope, not complete Android parity.
+**Not all Android updates have been ported.** This comparison uses the supplied Android **8.6 (1093)** package and Windows Steam **12679152**; it does not establish parity with later Android releases. “Reviewed”, “retained” and “implemented” have different meanings. The earlier completed stages describe a partial implementation, not completion of the requested Android gameplay migration.
 
-Status meanings: **Integrated** = implemented and verified at the stated boundary; **Windows retained** = the Android difference is known but not imported; **Open** = investigation or verification remains; **Excluded** = outside the requested gameplay scope. Retaining Windows behavior is not a claim that the two versions are equivalent. Rows group related changes and must not be counted as individual patches.
+Status meanings: **Integrated** = implemented and verified at the stated boundary; **Required — not yet ported** = a known Android gameplay difference that must be integrated; **Open** = investigation or verification remains; **Excluded** = monetization, unreachable placeholders or a specific user override. Existing Windows behavior is recorded as current state, not an approved target. Retaining Windows behavior is not a claim that the two versions are equivalent. Rows group related changes and must not be counted as individual patches.
 
 ### Integrated gameplay additions and fixes
 
@@ -51,11 +51,11 @@ Status meanings: **Integrated** = implemented and verified at the stated boundar
 
 ### Known Android gameplay differences still not ported
 
-The table lists **42 grouped, known retained disparities**, not 42 individual missing patches. These remain **Windows retained**. Some are potential improvements, some are tradeoffs or apparent Android regressions. None should be silently described as completed migration work. Full detail and source boundaries are in the [anomaly ledger](docs/ANOMALIES.md).
+The table lists **42 grouped, known retained disparities**, not 42 individual missing patches. **Required — not yet ported:** gameplay differences are migration requirements, including balance, cooldown, stacking and mode rules. They were incorrectly treated as optional by the implementer; no further balance approval is required. Source anomalies still need evidence of actual reachable behavior, not a blanket preference for Windows. None is completed migration work. Full detail and source boundaries are in the [anomaly ledger](docs/ANOMALIES.md).
 
 | Area / feature | Current mod behavior versus Android | Ledger |
 |---|---|---|
-| Culling | Windows +15% summon attack speed; Android +30%. Candidate change remains unapplied. | A02 |
+| Culling | Windows +15% summon attack speed; Android +30%. Required parity change remains unapplied. | A02 |
 | Mini Clip | Windows -5 max ammo; Android -4. Reload-trigger implications still need focused evaluation. | A03 |
 | Tomes / Giant | Windows penalties, HP tradeoffs and size modifier retained; Android changes several tome penalties and Giant's size increase. | A04/A05 |
 | Existing gun/evolution/character base tuning | Grenade Launcher remains 60 damage rather than Android 45; Flash Mag retains its Windows five-shot trigger rather than 20. Abby HP and Hina/Shana movement/skill tuning remain native. | A48 |
@@ -126,7 +126,7 @@ There is **no validated exact total of remaining unique gameplay changes**. The 
 
 **Excluded:** mobile commerce, ads/reward systems, GamePass/account services, promotional rentals/coupons and unused placeholder content. These exclusions are not missing gameplay integrations. Third-party mod binaries/artwork are not bundled.
 
-The optional small balance proposal starts with Culling, then Mini Clip, after focused gameplay checks. It remains unapplied; no new balance change is made by this documentation update.
+Culling, Mini Clip, Tomes and the remaining reachable Android gameplay changes are required migration work. They do not await a separate balance decision. The prior exclusion was an implementer error; current Windows values in this ledger describe unfinished work.
 
 ## Development
 

@@ -19,7 +19,7 @@ The Windows game keeps its native combat, input, UI, stats, progression records 
 
 ## Deliberately retained or excluded
 
-Existing Windows numeric map/Endless tuning and unapproved combat balance proposals remain unchanged. Differences such as Culling/Mini Clip/Tomes, shield cooldown arithmetic and overlapping temporary buffs are decisions to consider, not automatically imported fixes. [The anomaly ledger](ANOMALIES.md) records the evidence and limits.
+Scope correction, 2026-10-22: Android gameplay changes, including Culling/Mini Clip/Tomes, shield cooldown arithmetic, temporary-buff stacking/refresh and map/Endless tuning, are required migration work. Their current Windows behavior remains only because integration is unfinished. The implementer incorrectly excluded these changes without user approval. [The anomaly ledger](ANOMALIES.md) records the evidence and limits.
 
 Monetization, mobile stores/account rewards, ad/GamePass resurrection/starting boons, promotional rune/hero rentals, coupons and placeholder characters are excluded. Native auto-targeting remains; no new autofire implementation is included. Third-party reference mods were not copied into the implementation.
 

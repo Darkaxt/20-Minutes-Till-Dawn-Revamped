@@ -1,3 +1,7 @@
+# Scope correction — 2026-10-22
+
+The user requires Android gameplay changes except monetization. Earlier entries describing balance/mechanics as optional or directing Windows behavior to be retained record an unauthorized implementer restriction; those dispositions are superseded. Their source observations remain evidence. All reachable gameplay differences require migration and verification, including numeric tuning, cooldowns, stacking/refresh and map/Endless rules. Apparent Android source anomalies require reachability/behavior investigation; they are not grounds for silently preferring Windows. Explicit user progression/HUD/Custom requirements and preservation/rollback contracts remain. This ledger is not a claim of completed parity.
+
 # Evidence and coverage note
 
 This ledger retains stable anomaly IDs A01-A71 and bounded source addresses/dispositions. References to evidence/ and ledger/ identify private reproducible research records, not bundled game assets or publicly accessible downloads. Native run numbers identify isolated copied-player fixtures with explicit seeded preconditions. They do not claim full unassisted balance playtests. Source-shape differences alone do not establish method equivalence. Unapproved balance candidates remain proposals.
