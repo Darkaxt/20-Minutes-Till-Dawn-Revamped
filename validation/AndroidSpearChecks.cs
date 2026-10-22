@@ -50,6 +50,7 @@ public partial class RuntimeChecks
    Require(CustomMode.Get("summon:Spear:damage")==2&&CustomMode.Get("summon:Spear:speed")==1.5f,"Continue restores the real native Spear Custom controls");
    float[] clocks={.12f,.22f,.32f,.42f};for(int i=0;i<spears.Length;i++)Require(Mathf.Abs((float)WindField(spears[i],"_timer")-clocks[i])<.1f,"continued owned spear retains its independent source interval, ordinal "+i);
    Require(Mathf.Abs(Bonus(spears[2].attackSpeedMod)-.25f)<.001f,"the source spear's per-instance attack effect survives reconstruction");
+   Require((int)WindField(spears[0],"baseDamage")==37&&(int)WindField(spears[2],"baseDamage")==20&&Mathf.Abs(Bonus(spears[0].attackSpeedMod)-.25f)<.001f,"Continue retains the edited older spear independently of the later pristine spear");
    ControlSpears(spears,spears[2]);
   }
   else
@@ -90,7 +91,11 @@ public partial class RuntimeChecks
   player.stats[StatType.SummonDamage].AddMultiplierBonus(.5f);yield return SpearHit(target,hits,155,"health contributions are added after the summon stat multiplier");player.playerHealth.hp=1;yield return SpearHit(target,hits,155,"injury does not alter the maximum-heart contribution");
   yield return AndroidPick(game,"DeathRounds",game.playerXP.level);yield return SpearHit(target,hits,170,"actual Death Rounds flat summon damage is transformed before health additions");
   yield return NativeTomePick(game,false,"TomeOfMight");Require(player.playerHealth.maxHP==5,"actual Might increases maximum health by one");yield return SpearHit(target,hits,188,"Might's signed minus-two stage follows the source health additions");
+  Plugin.SetField(spears[0],"baseDamage",37);spears[0].attackSpeedMod.AddMultiplierBonus(.25f);Log("fixture-precondition","Existing first spear base37/per-instance speed0.25 explicitly seeded to test later original-prefab creation; no ordinary upgrade is claimed to grant these values");
+  Require(spears[0].GetComponentInParent<Orbital>().GetComponentsInChildren<MonoBehaviour>(true).All(c=>c.GetType().Name!="PrefabReference"),"native spear hierarchy has no matching PrefabReference that would select the existing-actor clone path");
+  yield return SpearHit(target,hits,213,"the older spear retains its own edited base damage before another acquisition");
   yield return AndroidPick(game,"MagicSpear",game.playerXP.level);spears=player.GetComponentsInChildren<StabbingSummon>(true);while(spears.Length<4||spears.Any(s=>WindField(s,"stats")==null)){spears=player.GetComponentsInChildren<StabbingSummon>(true);yield return null;}
+  Require((int)WindField(spears[0],"baseDamage")==37&&Mathf.Abs(Bonus(spears[0].attackSpeedMod)-.25f)<.001f&&spears.Skip(2).All(s=>(int)WindField(s,"baseDamage")==20&&Mathf.Abs(Bonus(s.attackSpeedMod))<.001f),"later native spear pickup uses pristine actor fields while preserving the older spear edits");
   ControlSpears(spears,spears[2]);yield return SpearHit(target,hits,188,"a later-created spear inherits the source coefficients without double-counting old buffs");
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();Click(game.pauseMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="CustomSettings"));Click(CustomButton("CustomTab4"));
   Require(CustomMenu.Instance.GetComponentsInChildren<TMPro.TMP_Text>().Any(t=>t.text=="Spear damage multiplier"),"actual native Custom Summons panel exposes the collected spear");CustomValue(0,"2");CustomValue(1,"1.5");yield return Capture("android-spear-native-custom-controls.png");Click(CustomButton("CustomBack"));Click(game.pauseResumeButton);
