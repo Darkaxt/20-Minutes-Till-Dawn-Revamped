@@ -102,6 +102,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-rune-consumers-")){yield return CheckAndroidRuneConsumers(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-hit-effects-")){yield return CheckAndroidHitEffects(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-lightning-")){yield return CheckAndroidLightning(testMode.EndsWith("continue"));yield break;}
+        if(testMode.StartsWith("resume-wind-")){yield return CheckAndroidWind(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
@@ -211,6 +212,14 @@ public partial class RuntimeChecks:MonoBehaviour
             title.Save();yield return Capture("legacy-achievements.png");SetPhase("PASS");Log("complete","Legacy ownership, scenario availability and notification suppression");Application.Quit(0);yield break;
         }
         bool characterTest=testMode=="gale"||testMode=="bulwark";
+        if(characterTest)
+        {
+            // The S2 fixture predates achievement-gated ownership. Seed only
+            // its required content in the isolated profile; use native locks.
+            Progression.State.earned.Add("weapon:ModernizationChargeCannon_None");
+            Progression.State.earned.Add("character:"+(testMode=="gale"?"Revamped_Haruka":"Revamped_Dimond_Portrait"));
+            Progression.Refresh();Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();
+        }
         bool repeatTest=testMode.StartsWith("repeat-");
         if(testMode=="characters-relaunch")
         {

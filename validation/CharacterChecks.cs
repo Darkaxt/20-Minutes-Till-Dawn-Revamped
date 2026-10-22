@@ -101,6 +101,14 @@ public partial class RuntimeChecks
    yield return SkillInput(skill);Require(Mathf.Abs(abilityCollider.radius-8)<.001f && PortedCharacterSkill.Timer(skill)>2,"native recast uses newly computed radius and cooldown immediately");
    while(target.HP==before)yield return null;Require((before-target.HP)%6==0,"real expanded-range contact receives six damage with native 50 percent bullet bonus");
    yield return Capture("tempest-upgraded.png");while(skill.EffectRemaining>0)yield return null;
+   yield return AndroidPick(game,"AeroMastery",game.playerXP.level);
+   Require(player.GetComponent<AndroidWind>().Damage>60,"native Gale character can acquire the reconstructed wind tree with its independent movement-scaled damage");
+   // At this range a fresh speed-three Gale cannot reach the target during
+   // the slash. This measures the character's separate Bullet Damage path.
+   target.transform.position=player.transform.position+Vector3.right*7.5f;before=target.HP;PortedCharacterSkill.Timer(skill)=0;
+   yield return SkillInput(skill);while(target.HP==before)yield return null;
+   Require((before-target.HP)%6==0,"Aero Mastery's flat Gale damage does not leak into the character slash's six-damage Bullet-stat ticks");
+   while(skill.EffectRemaining>0)yield return null;
   }
   else
   {

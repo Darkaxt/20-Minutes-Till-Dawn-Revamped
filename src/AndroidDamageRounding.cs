@@ -14,6 +14,21 @@ namespace TwentyMinutes.Modernization;
 class AndroidDamageRounding
 {
  [ThreadStatic]internal static bool PositiveDamageStage;
+ internal static void ChangeHealth(Health health,int change,DamageType type)
+ {
+  // Windows' native damage API uses a positive argument. Source zero/positive
+  // changes still need the signed pipeline, including heal/event ordering.
+  if(change<0){health.TakeDamage(type,-change);return;}
+  int value=SignedModifiers(change,"Health.Tweak"+type+"Damage",health);
+  value=SignedModifiers(value,Health.TweakDamageEvent,health);
+  int previous=health.HP;Plugin.SetField(health,"<HP>k__BackingField",Mathf.Clamp(previous+value,0,health.maxHP));
+  health.onHealthChange.Invoke(health.HP);
+  if(value<0)health.onHurt.Invoke(value);else if(value>0)health.onHeal.Invoke(value);
+  if(previous==0)return;
+  if(!health.isDead)health.PostNotification(AndroidSurvivingHurt.Event,type);
+  else
+  {health.onDeath.Invoke();health.PostNotification("Health."+type+"DamageKill",null);health.PostNotification(Health.DeathEvent,null);}
+ }
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Health),nameof(Health.TakeDamage)),AccessTools.Method(typeof(Health),nameof(Health.HPChange))};
  static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,MethodBase __originalMethod)
  {
