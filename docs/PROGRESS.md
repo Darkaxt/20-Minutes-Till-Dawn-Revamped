@@ -1,3 +1,9 @@
+# Current 1.0.1 update
+
+P1 compatibility/preservation is COMPLETE. P2 pixel artwork and integrated PC/phone delivery is ACTIVE. The user corrected the footer implementation: the actual logo must say MAINTAINED BY DARKAXT while preserving Flanne's credit, and the full Emberpath promotion/link must be removed. The README now exposes retained Android differences, incomplete method coverage and unapproved balance proposals. The actual maintained-credit artwork, original pixels/190-vertex source geometry, hidden promotion/link and Options/title navigation pass native windowless rendering at 720p and 1080p. Integrated HUD/gameplay and installer ownership/recovery checks pass. No refactoring is needed. Final exact-package verification, 1.0.1 publication/download, PC/phone update and scratch cleanup remain; this update is not yet delivered.
+
+The six stages below document the historical verified 1.0.0 delivery.
+
 # Implementation and delivery status
 
 Stage updates are committed and synchronized after verification. One final release follows completion of the whole plan. This initial source snapshot records the accumulated S1–S4 implementation; it does not invent separate historical stage commits.

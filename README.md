@@ -2,7 +2,7 @@
 
 A community Windows mod for 20 Minutes Till Dawn by Flanne, maintained by Darkaxt. Selected, source-verified Android gameplay additions and fixes are integrated with native Windows gameplay, achievement-based unlocks, revised runes, run continuation and Custom game menus.
 
-Source and packaging for **Revamped 1.0.0**. Use the versioned [release package](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases) and [installation instructions](INSTALL.md); see [delivery status and verification limits](docs/PROGRESS.md). This repository contains original mod and validation code, excluding the game, extracted artwork, saves, private research and third-party mod binaries. It is an independent mod repository; the proprietary game has no public upstream source to fork.
+Source and packaging for **Revamped 1.0.1**. Use the versioned [release package](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases) and [installation instructions](INSTALL.md); see [delivery status and verification limits](docs/PROGRESS.md). This repository contains original mod and validation code, excluding the game, extracted artwork, saves, private research and third-party mod binaries. It is an independent mod repository; the proprietary game has no public upstream source to fork.
 
 Implemented and verified in an isolated copied Windows player:
 
@@ -10,10 +10,13 @@ Implemented and verified in an isolated copied Windows player:
 - Bounded existing-feature fixes, finite repeat choices and thematic miniboss/boss unlocks.
 - Rune prices increasing 20% per rank, column prerequisites and simultaneous row selections.
 - Challenge mode, semantic run continuation and native Custom controls with owned-mode defaults.
+- Transparent native icon stats/skills HUD, optional compatible recolours, and pixel-art “MAINTAINED BY DARKAXT” logo credit. The Emberpath promotion is removed in 1.0.1.
+
+1.0.0 was released and installed on Windows; its exact payload also booted under DroidDeck 0.5.0 with a game-specific Proton loader override. [DroidDeck deployment](docs/DROIDDECK.md) records current verification and limits. The 1.0.1 artwork correction and updated delivery verification are in progress until the release is published.
 
 Custom runs use obtained content and award credits while disabling unlocks, achievements and leaderboard submission. Switching mode defaults during play explicitly starts a new Custom run; restoring the current mode defaults removes its overrides.
 
-Gameplay and integrated HUD/title acceptance are complete. The versioned installer prepares owned-input assets locally and checks its installed files. Final publication/download verification is tracked in the delivery ledger; stage commits are not releases.
+Revamped is a selective migration, not complete Android parity. The versioned installer prepares owned-input assets locally and verifies the supported game and owned installation files. The delivery ledger distinguishes verified releases from an update still in progress.
 
 ## Controls and behavior
 
@@ -22,6 +25,23 @@ F2 or Options toggles the transparent stats HUD. Numbers show effective values f
 Pause → Save & return suspends a supported run without cashing out its score. Continue reconstructs that build on the next launch. New run explicitly discards the checkpoint. Custom mode and its pause settings use native menus; Load mode defaults can restore the current mode or explicitly start another owned mode as a new Custom run.
 
 See [gameplay migration decisions](docs/MIGRATION.md) and the [anomaly/balance ledger](docs/ANOMALIES.md) for scope and retained differences.
+
+## Remaining parity and balance work
+
+The [anomaly ledger](docs/ANOMALIES.md) records confirmed differences and fixes. A remaining difference is not automatically a defect or a balanced improvement.
+
+| Area | Current disposition |
+|---|---|
+| Android source coverage | All 442 structural API records have bounded dispositions, but 140 retained native APIs have uninspected bodies. Complete Android method parity is unproven. |
+| Culling / Mini Clip | Windows summon attack speed +15% versus Android +30%; max-ammo adjustment -5 versus -4. Recorded candidates; not applied. |
+| Fire / passive mechanics | Windows burn application lifetimes and cap remain. Android shared refresh/stack behavior, Reflex growth/cap, heart pickup delivery, Dragon Bond and Gun Glyph composition differ and need separate decisions/tests. |
+| Other balance differences | Tomes, Giant, Grenade Launcher, Abby, Flash Mag and other recorded tuning remain native. Elemental Barrage's shared fire-rate/reload tooltip mismatch is recorded, not silently changed. |
+| Maps and Endless | Windows wave/boss/XP/scaling rules remain. Android map tuning and the larger Endless rewrite are not ported. Challenge is separately integrated. |
+| Practical balance | Freeze dominance, summon versus weapon builds and Temple versus Forest have not received controlled full-run benchmarks. Seeded tests verify integration, not overall balance. |
+| Save continuation | Reconstructs the supported build and known runtime owners; it does not freeze ordinary enemies, projectiles or RNG. |
+| Reference mod parity | Custom uses the documented/recovered fields and native effects; unseen third-party binary parity is not claimed. Native auto-targeting remains; no new autofire is included. |
+
+The small optional balance proposal starts with Culling, then Mini Clip, after focused gameplay verification. It remains unapplied pending the requested later balance decision. Mobile commerce, advertisements/reward systems and account services are excluded.
 
 ## Development
 

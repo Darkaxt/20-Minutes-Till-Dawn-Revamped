@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.0.0")]
+[BepInPlugin(Id,"20MTD Modernization","1.0.1")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -49,8 +49,10 @@ public class Plugin:BaseUnityPlugin
         Logger.LogInfo("Native gameplay modernization loaded");
         gameObject.AddComponent<StatsOverlay>();
         gameObject.AddComponent<ColorfulStyle>();
+        gameObject.AddComponent<TitleArtwork>();
         gameObject.AddComponent<UnlockNotifications>();
     }
+    public void LoggerForArtwork(string message)=>Logger.LogInfo(message);
     public static void SetField(object target,string field,object value)=>AccessTools.Field(target.GetType(),field).SetValue(target,value);
     static Sprite LoadSprite(string file,float ppu)
     {

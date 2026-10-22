@@ -61,9 +61,9 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckIntegratedHud(flanne.TitleScreen.TitleScreenController title)
  {
-  var credit=title.GetComponent<TitleCredit>();while(credit==null||credit.Label==null||!credit.Label.gameObject.activeInHierarchy){credit=title.GetComponent<TitleCredit>();yield return null;}
+  while(TitleArtwork.Instance==null||TitleArtwork.Instance.Logos.Count==0)yield return null;
   while(title.mainMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
-  Require(credit.Label.text==TitleCredit.Credit&&credit.Label.raycastTarget==false,"native title preserves authorship and maintenance credit without input interception");yield return Capture("revamped-title.png");
+  VerifyTitleArtwork();yield return Capture("revamped-title.png");
   title.ChangeState<flanne.TitleScreen.OptionsMenuState>();while(!Active(title.optionsMenu))yield return null;
   var overlay=StatsOverlay.Instance;while(overlay.SettingButton==null||!overlay.SettingButton.gameObject.activeInHierarchy||!overlay.SettingButton.IsInteractable())yield return null;
   if(!StatsOverlay.Enabled)Click(overlay.SettingButton);Click(overlay.SettingButton);Require(!StatsOverlay.Enabled,"native Options disables icon HUD");Click(overlay.SettingButton);Require(StatsOverlay.Enabled,"native Options enables icon HUD");

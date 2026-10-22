@@ -1,4 +1,4 @@
-# Install 1.0.0
+# Install 1.0.1
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 
@@ -14,6 +14,10 @@ python installer/install.py verify --game "D:/Steam/steamapps/common/20MinuteTil
 Start the game normally through Steam. The installer checks all 142 original game files, creates an exact owned-file manifest, and rejects conflicting existing loader/mod files before changing them. Compatible existing loader files are reused and remain owned by their previous installation. Original game files, saves and settings are preserved. No test/validation assembly is included.
 
 F2/Options toggles the icon HUD; Page Up/Page Down scroll skills. Original artwork is the default; Options can enable the compatible Sprites Reborn treatment and its palette extension. Pause → Save & return suspends a supported run. Custom runs award credits only and use obtained content. See [controls and limits](docs/CUSTOM.md) and [migration decisions](docs/MIGRATION.md).
+
+## Upgrade from 1.0.0
+
+Close the game. Use the old extracted release installer to uninstall its unchanged owned files, then run the new release installation command above. Keep your existing profile and mod configuration. The installer deliberately rejects overwriting a different installed release; it does not silently replace shared or modified loader files.
 
 ## Uninstall / rollback
 

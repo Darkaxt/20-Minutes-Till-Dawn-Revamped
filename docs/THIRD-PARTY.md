@@ -8,4 +8,4 @@ BepInEx v5.4.23.5 (MIT, Bepis) and Il2CppDumper v6.7.46 (MIT, Perfare) are downl
 
 The isolated preparation runtime installs the exact versions in `installer/requirements.txt` from PyPI, including UnityPy, TypeTreeGeneratorAPI and Pillow with their dependencies. Their distributed license metadata remains in that local runtime; these libraries are not bundled in the mod ZIP. Tools are used only for local extraction, not as replacements for the game's engine.
 
-Nexus mods 8/17/20/101/105/109 and the user's Isaac HUD example informed requirements. Restricted third-party menu/code/assets were not copied. Native auto-targeting remains; no new autofire mod is included. The title maintenance credit and all native UI integration are original repository code.
+Nexus mods 8/17/20/101/105/109 and the user's Isaac HUD example informed requirements. Restricted third-party menu/code/assets were not copied. Native auto-targeting remains; no new autofire mod is included. The title maintenance pixel glyphs, owned-logo composition and all native UI integration are original repository code; no title image from mod109 is distributed.

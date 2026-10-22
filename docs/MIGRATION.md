@@ -15,7 +15,7 @@ The Windows game keeps its native combat, input, UI, stats, progression records 
 | Continue | Atomic semantic checkpoint with exact build, finite pools, known runtime providers, native clocks/cycle, defeated encounters and uncollected reward drops. Pending starting Blessing resumes once at its remaining native delay. |
 | Custom | Native controls over owned loadouts/maps, weapon/global/XP/enemy/summon settings, eligible finite upgrades, acquired stat contributions and scenario objects. Native result credits remain; unlocks/achievements/leaderboards are disabled. |
 | Mode defaults | Actual owned MapData supplies schedules/timers/rune flags/repeat limits. Live same-mode reset clears overrides; another mode requires an explicit new Custom run. |
-| HUD/title | Transparent native icon/value attributes left, collected skill icons/counts/tiers right, no background/border. F2/Options and keyboard paging remain. Native-font authorship/maintenance credit appears on the title. |
+| HUD/title | Transparent native icon/value attributes left, collected skill icons/counts/tiers right, no background/border. F2/Options and keyboard paging remain. The actual owned logo artwork preserves Flanne's credit and adds MAINTAINED BY DARKAXT as pixel lettering; the former footer is removed. The native Emberpath promotional panel, wishlist and click target are disabled. |
 
 ## Deliberately retained or excluded
 
