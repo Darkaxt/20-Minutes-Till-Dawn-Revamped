@@ -54,7 +54,7 @@ public partial class RuntimeChecks
   target.gameObject.SetActive(false);target.gameObject.SetActive(true);target.isInvincible.Flip();target.TakeDamage(DamageType.Summon,20);
   Require(!BurnSystem.SharedInstance.IsBurning(target.gameObject),"invulnerable native Health damage does not trigger Android summon-hit effects");target.isInvincible.UnFlip();
   target.TakeDamage(DamageType.Summon,1000000);Require(!BurnSystem.SharedInstance.IsBurning(target.gameObject),"lethal native summon damage has no Android surviving-hurt proc");
-  target=DurableEnemy(template,p.transform.position+Vector3.right*35,true);target.gameObject.tag="Champion";target.gameObject.SetActive(true);target.TakeDamage(DamageType.Summon,20);
+  target=DurableEnemy(template,p.transform.position+Vector3.right*35,true);target.gameObject.SetActive(true);target.gameObject.tag="EnemyChampion";Require(target.CompareTag("EnemyChampion"),"fixture uses the actual declared Windows Champion tag");target.TakeDamage(DamageType.Summon,20);
   Require(BurnSystem.SharedInstance.IsBurning(target.gameObject),"a Champion-tagged non-boss remains eligible for Android Hellspawns");
   var source=SelectedMap.MapData.bossSpawns[0];var spawner=Object.FindObjectOfType<BossSpawner>();
   spawner.LoadSpawners(new List<BossSpawn>{new BossSpawn{bossPrefab=source.bossPrefab,timeToSpawn=0,maxHP=10000,spawnPosition=new Vector2(15,0),dontSpawnArena=true,killAllOnSpawn=false}});
