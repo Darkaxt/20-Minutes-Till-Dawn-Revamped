@@ -26,3 +26,7 @@ Monetization, mobile stores/account rewards, ad/GamePass resurrection/starting b
 Continue is not a frozen simulation: ordinary live enemies, projectiles and RNG state are not serialized. Build/runtime state is reconstructed through native owners; defeated encounter and reward-drop records prevent duplication. Unknown or unsupported checkpoints remain preserved and are rejected rather than partially applied.
 
 The audit records structural and bounded method/consumer evidence. It does not assert every unknown Android engine method is equivalent or that every platform difference improves balance. Full-length balance playtests are distinct from the seeded native integration checks used here.
+
+## Android parity work after scope correction
+
+Current unpublished source integrates the Android numeric recipes for Culling, Mini Clip, Giant and five Tomes (Power, Elasticity, Rage, Summoning and Stillness), plus Stalwart flat cooldown/minimum and recovery-advance arithmetic, Fresh Clip/Anger Point/Abby Whirlwind refreshing effects. Native menu acquisition, effective changes, expiry, scene restart and real firing pass. Fresh-process Continue reconstructs exactly one owner per acquired refreshing helper, preserves their remaining time and shield recovery, expires each bonus once and permits subsequent reactivation. The replay waits for actual native shield stat initialization before applying dependent acquisitions. These bounded results do not close the remaining combat, map/Endless or coverage gaps in the README.

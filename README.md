@@ -49,55 +49,54 @@ Status meanings: **Integrated** = implemented and verified at the stated boundar
 | Challenge mode | Integrated the recovered 36-session/10-boss schedule, five quota tiers, progression gate and native results. | Seeded encounter/quota verification; full-length balance benchmarking remains open. |
 | Save and Continue | Integrated semantic build/runtime checkpoints, finite pools, clocks/cycles, defeated encounters/reward drops and supported native state. | Ordinary live enemies, projectiles and RNG are not frozen snapshots. Pending Blessing resumes once at its saved delay. A71. |
 
-### Known Android gameplay differences still not ported
+### Android gameplay disparity ledger
 
-The table lists **42 grouped, known retained disparities**, not 42 individual missing patches. **Required — not yet ported:** gameplay differences are migration requirements, including balance, cooldown, stacking and mode rules. They were incorrectly treated as optional by the implementer; no further balance approval is required. Source anomalies still need evidence of actual reachable behavior, not a blanket preference for Windows. None is completed migration work. Full detail and source boundaries are in the [anomaly ledger](docs/ANOMALIES.md).
+The table tracks **42 grouped gameplay disparities**, not 42 individual patches. Gameplay differences are required migration work, including balance, cooldown, stacking and mode rules. They were incorrectly treated as optional by the implementer; no further balance approval is required. Status applies only to the stated boundary. Source anomalies still need actual reachability/behavior evidence. Full detail and source boundaries are in the [anomaly ledger](docs/ANOMALIES.md).
 
-| Area / feature | Current mod behavior versus Android | Ledger |
-|---|---|---|
-| Culling | Windows +15% summon attack speed; Android +30%. Required parity change remains unapplied. | A02 |
-| Mini Clip | Windows -5 max ammo; Android -4. Reload-trigger implications still need focused evaluation. | A03 |
-| Tomes / Giant | Windows penalties, HP tradeoffs and size modifier retained; Android changes several tome penalties and Giant's size increase. | A04/A05 |
-| Existing gun/evolution/character base tuning | Grenade Launcher remains 60 damage rather than Android 45; Flash Mag retains its Windows five-shot trigger rather than 20. Abby HP and Hina/Shana movement/skill tuning remain native. | A48 |
-| Burn backend | Windows independently expires additive burn applications. Android accumulates/refreshes a shared burn and uses a different cap. The puddle coverage fix does not port this algorithm. | A12 |
-| Health limits | Windows red/soul-health capacity cap and rounding retained; inspected Android health assignment paths differ. | A16 |
-| Shield recovery | Windows cooldown-rate arithmetic retained; Android uses flat reductions and a minimum cooldown. Sword and Shield's completion boundary also differs. | A17/A42 |
-| Aero/Electro Mastery and Glare | Modifier placement, flat/percentage bonuses and Glare consumers differ. Windows composition retained; matching descriptions do not prove equal damage. | A18/A26 |
-| Thunderspawns / Pulsing Summons / Soul Link | Proc probability and/or area geometry differ. Windows values retained. | A19 |
-| Bloodsuckers / Soul Drain / Soul Conversion | Windows spawns collectible hearts; Android directly grants health/shield in the inspected paths. | A20 |
-| Soul Knight / Justice | Damage-growth interpretation and per-perk HP-growth caps differ. Windows behavior retained. | A22/A24 |
-| Energized | Windows deterministic cadence retained instead of Android's random trigger. | A23 |
-| Fresh Clip / Anger Point | Windows strength and independent overlapping temporary buffs retained; Android changes strength and/or refresh behavior. | A25 |
-| Reflex / Vision | Movement-to-dodge growth/cap and vision-transform limits differ. Windows consumers retained. | A27/A31 |
-| Best Friends / Magic Lens | Attack-speed and damage composition, plus Lens size clamping, differ. Windows behavior retained. | A28/A29 |
-| Death Rounds / Hellspawns | Flat-damage placement/event scope and Android's added boss restriction are not imported. | A30/A32 |
-| Kill Clip / Siege / Regeneration | Kill qualification, ammo conservation versus gain, and first-heart timing differ. Windows behavior retained. | A33/A34/A35 |
-| Dragon / Scythe / Trained Dragon / Soul Powered | Base recipes, rotation, additive versus multiplicative growth and damage-modifier ordering differ. Windows behavior retained. | A37/A38 |
-| Frostbite / Shatter / Assassin / Ghost Wizard repeats | Windows first-pick and repeat recipes retained. Android helper duplication changes repeat strength and/or event scope. | A39 |
-| Aero Magic / Eye of the Storm | Windows spread and player-centered area retained; Android changes spread and moves the area to the Gale object. | A40 |
-| Electro Mage / Magic Spear | Native cursor targeting and spear radial eligibility retained instead of the inspected Android target queries. | A41/A47 |
-| Shatter frozen-target guard | Windows requires a frozen target. The inspected Android death handler lacks this guard; that apparent regression is not imported. | A43 |
-| Splinter | Windows inherited projectile size and per-action activation limit retained; Android uses different size/counter ownership. | A44 |
-| Holy Arts | Windows repeated-pick strength and delayed damage cadence retained; Android attaches full-strength producers differently. | A45 |
-| Dragon Bond | Windows bullet-damage addition retained; Android issues separate summon-classified damage with different rounding/composition. | A46 |
-| Enhanced Shadow / Necromancer | Android's additional global summon bonuses and changed clone cooldown recipe are not imported. | A50 |
-| Abby Whirlwind | Windows independent overlapping reload buffs retained instead of Android refresh-only behavior. | A51 |
-| Hastur / Katana and existing summon exclusives | Windows pool/modifier ownership and existing summon recipes retained rather than Android's keyed stat providers/helper architecture. | A52; [migration](docs/MIGRATION.md) |
-| Tome of Electro | Windows area lightning retained; Android selects one random target. | A53 |
-| Hina Hidden Blade | Windows triple-damage recipe and protection ownership retained; Android changes both damage and invulnerability. | A54 |
-| Body and Soul | Windows already has a timed soul-heart pickup. Android's direct grants, extra capacity and finite counter are not imported. | A55 |
-| Elemental Barrage | Both inspected versions add Fire Rate twice despite the Fire Rate/Reload Rate tooltip. The shared mismatch remains unfixed. | A58 |
-| Dedication | Windows live summon-count callback retained; the inspected Android callback appears empty. | A59 |
-| Healing / Ethereal / Close Combat / Wind Shield | Native kill qualification, collision filters and projectile lifecycle retained. Android callback/layer boundaries differ. | A60/A63 |
-| Cadence / Tenacity | Shared tooltip/behavior mismatches remain; Android is not evidence of a correction. | A61 |
-| Gun Glyph | Windows secondary-bullet flat-damage composition and reduced knockback retained. | A62 |
-| Dodge | Windows modifier notification and hit-counter guarantee retained; Android's inspected random-roll path differs. | A64 |
-| Forest / Temple | Android wave populations, HP, boss HP and some timings are not imported. Temple-versus-Forest balance is not benchmarked. | A66 |
-| Endless | Android's mixed pools, extra waves, 60-second scaling, boss frequency/affixes and XP curve are not ported. Windows mode remains native. | A67 |
-| Pumpkin Patch EyeBat reference | Valid Windows reference retained; Android's final-wave spelling is a possible source anomaly, not a proven runtime failure. | A68 |
-| Quickplay opening wave | Windows elite flag retained instead of Android's non-elite flag. | A69 |
-| Native Endless opening timer | Brief negative display at startup remains a known Windows issue. Continue preserves independent wave/cycle timing; it does not fix this display lifecycle. | A70 |
-
+| Area / feature | Status | Current behavior / target | Ledger |
+|---|---|---|---|
+| Culling | Integrated numeric recipe | Android +30% summon attack speed now applies through native acquisition; native scene restart and original gun behavior verified. | A02 |
+| Mini Clip | Integrated numeric recipe | Android -4 max ammo, +50% damage and +75% reload bonus now apply through native acquisition; native restart verified. | A03 |
+| Tomes / Giant | Integrated numeric recipes | Android Giant +50% size/+2 HP; Elasticity -5% damage/-1 HP; Power -5% fire rate; Summoning -10% reload; Rage -10% damage/-20% knockback; Stillness MoveSpeed penalty now apply through native menus. Other Tome mechanics remain listed separately. | A04/A05 |
+| Existing gun/evolution/character base tuning | Required — not yet ported | Grenade Launcher remains 60 damage rather than Android 45; Flash Mag retains its Windows five-shot trigger rather than 20. Abby HP and Hina/Shana movement/skill tuning remain native. | A48 |
+| Burn backend | Required — not yet ported | Windows independently expires additive burn applications. Android accumulates/refreshes a shared burn and uses a different cap. The puddle coverage fix does not port this algorithm. | A12 |
+| Health limits | Required — not yet ported | Windows red/soul-health capacity cap and rounding retained; inspected Android health assignment paths differ. | A16 |
+| Shield recovery | Integrated arithmetic; broader shield parity still open | Stalwart now subtracts 60 seconds per pick with a 10-second minimum; recovery advancement uses Android's one-second overshoot boundary. Native protection/recovery, restart and fresh-process Continue pass. Other shield/repeat/owner differences still require reconciliation. | A17/A42 |
+| Aero/Electro Mastery and Glare | Required — not yet ported | Modifier placement, flat/percentage bonuses and Glare consumers differ. Windows composition retained; matching descriptions do not prove equal damage. | A18/A26 |
+| Thunderspawns / Pulsing Summons / Soul Link | Required — not yet ported | Proc probability and/or area geometry differ. Windows values retained. | A19 |
+| Bloodsuckers / Soul Drain / Soul Conversion | Required — not yet ported | Windows spawns collectible hearts; Android directly grants health/shield in the inspected paths. | A20 |
+| Soul Knight / Justice | Required — not yet ported | Damage-growth interpretation and per-perk HP-growth caps differ. Windows behavior retained. | A22/A24 |
+| Energized | Required — not yet ported | Windows deterministic cadence retained instead of Android's random trigger. | A23 |
+| Fresh Clip / Anger Point | Integrated refresh behavior | Fresh Clip now grants +30% damage for one second; Anger Point grants +70% damage/fire rate for 30 seconds. Each acquired helper refreshes its active duration instead of accumulating independent overlapping trigger buffs. Native acquisition, expiry, reactivation and fresh-process Continue pass. | A25 |
+| Reflex / Vision | Required — not yet ported | Movement-to-dodge growth/cap and vision-transform limits differ. Windows consumers retained. | A27/A31 |
+| Best Friends / Magic Lens | Required — not yet ported | Attack-speed and damage composition, plus Lens size clamping, differ. Windows behavior retained. | A28/A29 |
+| Death Rounds / Hellspawns | Required — not yet ported | Flat-damage placement/event scope and Android's added boss restriction are not imported. | A30/A32 |
+| Kill Clip / Siege / Regeneration | Required — not yet ported | Kill qualification, ammo conservation versus gain, and first-heart timing differ. Windows behavior retained. | A33/A34/A35 |
+| Dragon / Scythe / Trained Dragon / Soul Powered | Required — not yet ported | Base recipes, rotation, additive versus multiplicative growth and damage-modifier ordering differ. Windows behavior retained. | A37/A38 |
+| Frostbite / Shatter / Assassin / Ghost Wizard repeats | Required — not yet ported | Windows first-pick and repeat recipes retained. Android helper duplication changes repeat strength and/or event scope. | A39 |
+| Aero Magic / Eye of the Storm | Required — not yet ported | Windows spread and player-centered area retained; Android changes spread and moves the area to the Gale object. | A40 |
+| Electro Mage / Magic Spear | Required — not yet ported | Native cursor targeting and spear radial eligibility retained instead of the inspected Android target queries. | A41/A47 |
+| Shatter frozen-target guard | Required — not yet ported | Windows requires a frozen target. The inspected Android death handler lacks this guard; that apparent regression is not imported. | A43 |
+| Splinter | Required — not yet ported | Windows inherited projectile size and per-action activation limit retained; Android uses different size/counter ownership. | A44 |
+| Holy Arts | Required — not yet ported | Windows repeated-pick strength and delayed damage cadence retained; Android attaches full-strength producers differently. | A45 |
+| Dragon Bond | Required — not yet ported | Windows bullet-damage addition retained; Android issues separate summon-classified damage with different rounding/composition. | A46 |
+| Enhanced Shadow / Necromancer | Required — not yet ported | Android's additional global summon bonuses and changed clone cooldown recipe are not imported. | A50 |
+| Abby Whirlwind | Integrated refresh behavior | Native exclusive acquisition now creates the refreshing two-second +35% movement/fire-rate helper. Repeated reloads refresh its duration; expiry, scene cleanup and fresh-process Continue pass. | A51 |
+| Hastur / Katana and existing summon exclusives | Required — not yet ported | Windows pool/modifier ownership and existing summon recipes retained rather than Android's keyed stat providers/helper architecture. | A52; [migration](docs/MIGRATION.md) |
+| Tome of Electro | Required — not yet ported | Windows area lightning retained; Android selects one random target. | A53 |
+| Hina Hidden Blade | Required — not yet ported | Windows triple-damage recipe and protection ownership retained; Android changes both damage and invulnerability. | A54 |
+| Body and Soul | Required — not yet ported | Windows already has a timed soul-heart pickup. Android's direct grants, extra capacity and finite counter are not imported. | A55 |
+| Elemental Barrage | Required — not yet ported | Both inspected versions add Fire Rate twice despite the Fire Rate/Reload Rate tooltip. The shared mismatch remains unfixed. | A58 |
+| Dedication | Required — not yet ported | Windows live summon-count callback retained; the inspected Android callback appears empty. | A59 |
+| Healing / Ethereal / Close Combat / Wind Shield | Required — not yet ported | Native kill qualification, collision filters and projectile lifecycle retained. Android callback/layer boundaries differ. | A60/A63 |
+| Cadence / Tenacity | Required — not yet ported | Shared tooltip/behavior mismatches remain; Android is not evidence of a correction. | A61 |
+| Gun Glyph | Required — not yet ported | Windows secondary-bullet flat-damage composition and reduced knockback retained. | A62 |
+| Dodge | Required — not yet ported | Windows modifier notification and hit-counter guarantee retained; Android's inspected random-roll path differs. | A64 |
+| Forest / Temple | Required — not yet ported | Android wave populations, HP, boss HP and some timings are not imported. Temple-versus-Forest balance is not benchmarked. | A66 |
+| Endless | Required — not yet ported | Android's mixed pools, extra waves, 60-second scaling, boss frequency/affixes and XP curve are not ported. Windows mode remains native. | A67 |
+| Pumpkin Patch EyeBat reference | Required — not yet ported | Valid Windows reference retained; Android's final-wave spelling is a possible source anomaly, not a proven runtime failure. | A68 |
+| Quickplay opening wave | Required — not yet ported | Windows elite flag retained instead of Android's non-elite flag. | A69 |
+| Native Endless opening timer | Required — not yet ported | Brief negative display at startup remains a known Windows issue. Continue preserves independent wave/cycle timing; it does not fix this display lifecycle. | A70 |
 Existing Scarlett/Raven/Yuki/Luna/Shana and other exclusive effects also retain Windows burn/curse/freeze/aim/repeat consumers where the application recipe matches. Matching recipes are bounded evidence, not proof that every downstream Android algorithm was imported. See [migration decisions](docs/MIGRATION.md) and A06/A12/A38/A39/A50/A52.
 
 ### Audit and verification gaps
@@ -126,7 +125,7 @@ There is **no validated exact total of remaining unique gameplay changes**. The 
 
 **Excluded:** mobile commerce, ads/reward systems, GamePass/account services, promotional rentals/coupons and unused placeholder content. These exclusions are not missing gameplay integrations. Third-party mod binaries/artwork are not bundled.
 
-Culling, Mini Clip, Tomes and the remaining reachable Android gameplay changes are required migration work. They do not await a separate balance decision. The prior exclusion was an implementer error; current Windows values in this ledger describe unfinished work.
+Culling, Mini Clip, Giant and five Tome numeric recipes pass native menu/stat/restart checks. Stalwart cooldown arithmetic and Fresh Clip/Anger Point/Abby Whirlwind refresh behavior also pass native checks, including fresh-process Continue for the timed effects/shield. The remaining reachable Android gameplay changes are required work and do not await a separate balance decision. No gameplay-completion release or deployment has occurred.
 
 ## Development
 

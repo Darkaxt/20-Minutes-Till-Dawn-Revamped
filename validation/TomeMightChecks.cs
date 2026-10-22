@@ -14,10 +14,10 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
- IEnumerator NativeTomePick(GameController game,bool actualBossDrop)
+ IEnumerator NativeTomePick(GameController game,bool actualBossDrop,string tome="TomeOfMight")
  {
   var pool=(List<PowerupPoolItem>)AccessTools.Field(typeof(PowerupGenerator),"devilPool").GetValue(game.powerupGenerator);
-  var desired=pool.Single(p=>p.powerup.name=="TomeOfMight");
+  var desired=pool.Single(p=>p.powerup.name==tome);
   var choices=pool.Where(p=>p!=desired).Take(2).Concat(new[]{desired}).ToList();
   AccessTools.Field(typeof(PowerupGenerator),"devilPool").SetValue(game.powerupGenerator,choices);
   if(actualBossDrop)

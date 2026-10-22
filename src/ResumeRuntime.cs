@@ -49,6 +49,7 @@ public static partial class ResumeRuntime
   ,{typeof(BuffOnXP),new[]{"_timer"}}
   ,{typeof(BuffWhenStanding),new[]{"_ticks","_timer"}}
   ,{typeof(FireRateBuffOnGainAmmo),new[]{"_timer"}}
+  ,{typeof(TemporaryRefreshingBuff),new[]{"_timer"}}
   ,{typeof(ElementalBarrageRune),new[]{"inflictCounter","disableInflictGain"}}
  };
  static readonly Dictionary<SummonEgg,float> EggStarts=new Dictionary<SummonEgg,float>();

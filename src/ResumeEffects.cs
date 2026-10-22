@@ -30,7 +30,7 @@ public static partial class ResumeRuntime
  static readonly Dictionary<Type,string[]> FlowMethods=new Dictionary<Type,string[]>
  {
   {typeof(MomentumRune),new[]{"StartBuffCR"}},{typeof(BuffOnXP),new[]{"StartBuffCR"}},
-  {typeof(FireRateBuffOnGainAmmo),new[]{"BuffCR"}},{typeof(FireRateOnHurt),new[]{"StatBoostCR"}},
+  {typeof(FireRateBuffOnGainAmmo),new[]{"BuffCR"}},{typeof(TemporaryRefreshingBuff),new[]{"BuffCR"}},{typeof(FireRateOnHurt),new[]{"StatBoostCR"}},
   {typeof(ElementalBarrageRune),new[]{"StartBonusCR","WaitForCooldownCR"}},{typeof(LastStandRune),new[]{"InvulnCR"}}
  };
  static object Field(object owner,string name)=>AccessTools.Field(owner.GetType(),name).GetValue(owner);
@@ -68,6 +68,7 @@ public static partial class ResumeRuntime
     var c=components[i];string method=null;float remaining=0;
     if(c is MomentumRune||c is BuffOnXP){remaining=Number(c,"_timer");if(remaining>0)method="StartBuffCR";}
     else if(c is FireRateBuffOnGainAmmo){if(Field(c,"_buffCoroutine")!=null){method="BuffCR";remaining=Number(c,"duration")-Number(c,"_timer");}}
+    else if(c is TemporaryRefreshingBuff){if(Field(c,"buffCoroutine")!=null){method="BuffCR";remaining=Number(c,"duration")-Number(c,"_timer");}}
     else
     {
      bool active=c is FireRateOnHurt?Field(c,"statBoostCoroutine")!=null:c is ElementalBarrageRune?(bool)Field(c,"disableInflictGain"):(bool)Field(c,"active");
@@ -124,21 +125,23 @@ public static partial class ResumeRuntime
    {
     var c=components[i];c.StopAllCoroutines();var saved=state.timed.SingleOrDefault(s=>s.type==pair.Key.FullName&&s.ordinal==i);
     if(c is FireRateBuffOnGainAmmo)Plugin.SetField(c,"_buffCoroutine",null);
+    if(c is TemporaryRefreshingBuff)Plugin.SetField(c,"buffCoroutine",null);
     if(c is FireRateOnHurt)Plugin.SetField(c,"statBoostCoroutine",null);
     if(saved==null)continue;
     string duration=c is LastStandRune?"invulnDurationPerLevel":c is ElementalBarrageRune?(saved.method=="StartBonusCR"?"secondsPerLevel":"cooldown"):"duration";
-    float original=Number(c,duration);float factor=(c is LastStandRune||(c is ElementalBarrageRune&&saved.method=="StartBonusCR"))?Number(c,"level"):1;
-    float timer=(c is MomentumRune||c is BuffOnXP||c is FireRateBuffOnGainAmmo)?Number(c,"_timer"):0;
-    Plugin.SetField(c,duration,c is FireRateBuffOnGainAmmo?original:saved.remaining/factor);
+    object originalValue=Field(c,duration);float original=Convert.ToSingle(originalValue);float factor=(c is LastStandRune||(c is ElementalBarrageRune&&saved.method=="StartBonusCR"))?Number(c,"level"):1;
+    float timer=(c is MomentumRune||c is BuffOnXP||c is FireRateBuffOnGainAmmo||c is TemporaryRefreshingBuff)?Number(c,"_timer"):0;
+    Plugin.SetField(c,duration,c is FireRateBuffOnGainAmmo||c is TemporaryRefreshingBuff?originalValue:(object)(saved.remaining/factor));
     try
     {
      var routine=(IEnumerator)AccessTools.Method(pair.Key,saved.method).Invoke(c,null);
      if(c is FireRateBuffOnGainAmmo)Plugin.SetField(c,"_buffCoroutine",routine);
+     if(c is TemporaryRefreshingBuff)Plugin.SetField(c,"buffCoroutine",routine);
      if(c is FireRateOnHurt)Plugin.SetField(c,"statBoostCoroutine",routine);
      c.StartCoroutine(routine);
-     if(c is MomentumRune||c is BuffOnXP||c is FireRateBuffOnGainAmmo)Plugin.SetField(c,"_timer",timer);
+     if(c is MomentumRune||c is BuffOnXP||c is FireRateBuffOnGainAmmo||c is TemporaryRefreshingBuff)Plugin.SetField(c,"_timer",timer);
     }
-    finally{Plugin.SetField(c,duration,original);}
+    finally{Plugin.SetField(c,duration,originalValue);}
    }
   }
   foreach(var standing in player.GetComponentsInChildren<BuffWhenStanding>(true))Plugin.SetField(standing,"_lastFramePos",player.transform.position);

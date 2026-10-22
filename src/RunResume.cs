@@ -152,6 +152,10 @@ public static partial class RunResume
   {
    if(!acquisition.evolution&&bootstrapAcquisitions.TryGetValue(acquisition.key,out int count)&&count>0){bootstrapAcquisitions[acquisition.key]=count-1;continue;}
    if(acquisition.evolution)p.playerPerks.Equip(evolutions[acquisition.key]);else p.playerPerks.Equip(powers[acquisition.key]);
+   // A later acquisition can consume a shield's StatMod immediately. Wait for
+   // its actual native Start initialization, rather than replaying that
+   // dependent acquisition against an uninitialized newly attached component.
+   while(p.GetComponentsInChildren<PreventDamage>().Any(shield=>shield.cooldownRate==null))yield return null;
   }}finally{r.Rebuilding=false;}
   // Second boundary initializes the newly reconstructed effect components.
   yield return null;
