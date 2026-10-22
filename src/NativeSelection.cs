@@ -29,6 +29,7 @@ public static class NativeSelection
  }
  public static void Append(TitleScreenController title)
  {
+  AndroidBaseValues.Configure(title);
   var items=GunItems(title.gunMenu);var entries=GunEntries(title.gunMenu);
   if(items.Any(x=>Plugin.TryMode(x.data,out var mode)&&mode==Evolution.None))return;
   var revolver=items.Single(x=>x.data.name=="RevolverData");Plugin.PrepareGun(revolver.data);

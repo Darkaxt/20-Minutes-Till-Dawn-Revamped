@@ -149,7 +149,7 @@ class RecoveredExclusiveRepeatPolicy
 class CharacterWalkSpeed
 {
  static void Postfix(flanne.Player.ShootingState __instance)
- {var p=(PlayerController)AccessTools.Field(typeof(PlayerState),"owner").GetValue(__instance);if(Characters.TryContract(p.loadedCharacter,out var c))p.moveSpeedMultiplier=Mathf.Min(1,p.stats[StatType.WalkSpeed].Modify(c.shootMoveSpeedMultiplier));}
+ {var p=(PlayerController)AccessTools.Field(typeof(PlayerState),"owner").GetValue(__instance);float factor=Characters.TryContract(p.loadedCharacter,out var c)?c.shootMoveSpeedMultiplier:p.loadedCharacter.name=="Shana"?.45f:.35f;p.moveSpeedMultiplier=Mathf.Min(1,p.stats[StatType.WalkSpeed].Modify(factor));}
 }
 // Native animator still owns state, facing and tint. Its sprite track is bound
 // to recovered frames after animation evaluation, at the source clip times.

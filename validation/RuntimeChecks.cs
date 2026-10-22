@@ -96,6 +96,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="powerups-android-refresh"){yield return CheckAndroidRefresh();yield break;}
         if(testMode=="powerups-android-burn"){yield return CheckAndroidBurn();yield break;}
         if(testMode=="powerups-android-health"){yield return CheckAndroidHealth();yield break;}
+        if(testMode=="powerups-android-base"){yield return CheckAndroidBase();yield break;}
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
@@ -417,6 +418,7 @@ public partial class RuntimeChecks:MonoBehaviour
         while(!fired||(!player.ammo.infiniteAmmo.value&&player.ammo.amount==player.gun.maxAmmo))yield return null;
         player.gun.OnShoot.RemoveListener(onShot);
         if(Characters.TryContract(player.loadedCharacter,out var contract))Require(Mathf.Abs(player.moveSpeedMultiplier-Mathf.Min(1,player.stats[StatType.WalkSpeed].Modify(contract.shootMoveSpeedMultiplier)))<.001f,"recovered character shooting movement multiplier composes with native Walk Speed");
+        else if(player.loadedCharacter.name=="Shana")Require(Mathf.Abs(player.moveSpeedMultiplier-Mathf.Min(1,player.stats[StatType.WalkSpeed].Modify(.45f)))<.001f,"Android Shana shooting movement composes with native Walk Speed");
         InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});
         Require(fired&&(player.ammo.infiniteAmmo.value||player.ammo.amount<player.gun.maxAmmo),"original Revolver fires with native ammunition rules");
         yield return Capture(capture);
