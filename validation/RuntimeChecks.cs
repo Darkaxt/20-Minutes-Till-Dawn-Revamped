@@ -91,6 +91,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
         if(testMode.StartsWith("integrated-hud")){yield return CheckIntegratedHud(title);yield break;}
         if(testMode=="custom-native"){yield return CheckCustom();yield break;}
         if(testMode=="custom-fresh"){yield return CheckFreshCustom();yield break;}

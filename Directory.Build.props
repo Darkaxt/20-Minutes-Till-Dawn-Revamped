@@ -2,12 +2,16 @@
  <Import Project="Directory.Build.local.props" Condition="Exists('Directory.Build.local.props')" />
  <PropertyGroup>
   <ScratchRoot Condition="'$(MODERNIZATION_SCRATCH)'!=''">$(MODERNIZATION_SCRATCH)</ScratchRoot>
+  <ScratchRoot Condition="'$(ScratchRoot)'!=''">$([System.IO.Path]::GetFullPath('$(ScratchRoot)'))</ScratchRoot>
   <BaseIntermediateOutputPath>$(ScratchRoot)/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
   <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
   <OutputPath>$(ScratchRoot)/bin/$(MSBuildProjectName)/</OutputPath>
   <GameManaged>$(ScratchRoot)/game/MinutesTillDawn_Data/Managed</GameManaged>
   <BepCore>$(ScratchRoot)/game/BepInEx/core</BepCore>
   <TargetFramework>netstandard2.0</TargetFramework><LangVersion>latest</LangVersion>
+ </PropertyGroup>
+ <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PathMap>$(MSBuildThisFileDirectory)=/_/src/,$(ScratchRoot)=/_/build</PathMap>
  </PropertyGroup>
  <ItemGroup>
   <Reference Include="$(GameManaged)/UnityEngine.ParticleSystemModule.dll"/>

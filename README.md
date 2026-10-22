@@ -2,7 +2,7 @@
 
 A community Windows mod for 20 Minutes Till Dawn by Flanne, maintained by Darkaxt. Selected, source-verified Android gameplay additions and fixes are integrated with native Windows gameplay, achievement-based unlocks, revised runes, run continuation and Custom game menus.
 
-**Development source; the final release has not been published.** See [stage status and verification limits](docs/PROGRESS.md). This repository contains original mod and validation code, excluding the game, extracted artwork, saves, private research and third-party mod binaries. It is an independent mod repository; the proprietary game has no public upstream source to fork.
+Source and packaging for **Revamped 1.0.0**. Use the versioned [release package](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases) and [installation instructions](INSTALL.md); see [delivery status and verification limits](docs/PROGRESS.md). This repository contains original mod and validation code, excluding the game, extracted artwork, saves, private research and third-party mod binaries. It is an independent mod repository; the proprietary game has no public upstream source to fork.
 
 Implemented and verified in an isolated copied Windows player:
 
@@ -13,7 +13,7 @@ Implemented and verified in an isolated copied Windows player:
 
 Custom runs use obtained content and award credits while disabling unlocks, achievements and leaderboard submission. Switching mode defaults during play explicitly starts a new Custom run; restoring the current mode defaults removes its overrides.
 
-Gameplay and integrated HUD/title acceptance are complete. The usable installer/package and final delivery verification remain in progress. One normal release follows completion; stage commits are not releases.
+Gameplay and integrated HUD/title acceptance are complete. The versioned installer prepares owned-input assets locally and checks its installed files. Final publication/download verification is tracked in the delivery ledger; stage commits are not releases.
 
 ## Controls and behavior
 
@@ -25,9 +25,9 @@ See [gameplay migration decisions](docs/MIGRATION.md) and the [anomaly/balance l
 
 ## Development
 
-The tested Windows baseline is Steam build 12679152, Unity 2019.4.40f1 Mono x64. The gameplay reference is Android 8.6 (1093). You must own the required game inputs. Automated asset preparation and installation belong to the final delivery stage and are not yet provided here.
+The tested Windows baseline is Steam build 12679152, Unity 2019.4.40f1 Mono x64. The gameplay reference is Android 8.6 (1093). You must own the required game inputs. Automated asset preparation and installation are included in the versioned package.
 
-For an already prepared development player, set MODERNIZATION_SCRATCH to its root. It must contain game/MinutesTillDawn_Data/Managed and game/BepInEx/core. Build validation/Validation.csproj with a .NET SDK supporting netstandard2.0; outputs stay under that scratch root. Optional local build paths belong in ignored Directory.Build.local.props.
+For an already prepared development player, set MODERNIZATION_SCRATCH to its root. It must contain game/MinutesTillDawn_Data/Managed and game/BepInEx/core. Build validation/Validation.csproj with a .NET SDK supporting netstandard2.0; outputs stay under that scratch root. Optional local build paths belong in ignored Directory.Build.local.props. [Installation and asset preparation](INSTALL.md) use the owned inputs; the release builder packages owned code and extraction recipes without game assets.
 
 The validation assembly is separate from production and must never be installed in a normal player. It uses an isolated profile, synthetic in-process input and offscreen rendering. Seeded encounter clocks and build preconditions establish event/integration correctness, not unassisted full-run balance.
 

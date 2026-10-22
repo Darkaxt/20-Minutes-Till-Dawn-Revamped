@@ -1,0 +1,18 @@
+{
+  "BepInEx/BepInEx": {
+    "tag": "v5.4.23.5",
+    "asset": "BepInEx_win_x64_5.4.23.5.zip",
+    "url": "https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.5/BepInEx_win_x64_5.4.23.5.zip",
+    "sha256": "82f9878551030f54657792c0740d9d51a09500eeae1fba21106b0c441e6732c4"
+  },
+  "Perfare/Il2CppDumper": {
+    "tag": "v6.7.46",
+    "asset": "Il2CppDumper-net6-v6.7.46.zip",
+    "url": "https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.46/Il2CppDumper-net6-v6.7.46.zip",
+    "sha256": "db9bbbc538e33abfb057c7757ae5d6c1f16a05fdc0d13af8a5a67ea31faaba0c"
+  },
+  "SpritesReborn": {
+    "url": "https://codeload.github.com/YuriyDaramos/20MTD_Sprites-Reborn/zip/77d1a9a7316c1333ce7cd61e276da5ef5a277398",
+    "sha256": "0d1db851bd8dcccabd1bab83eb48a029559678d49e229fb1e8341d84d935ff68"
+  }
+}

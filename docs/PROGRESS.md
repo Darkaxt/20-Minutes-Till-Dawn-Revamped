@@ -1,6 +1,6 @@
 # Implementation and delivery status
 
-Stage updates are committed and synchronized after verification. One final release follows completion of the whole plan. This initial source snapshot records the accumulated S1â€“S4 implementation; it does not invent separate historical stage commits.
+Stage updates are committed and synchronized after verification. One final release follows completion of the whole plan. This initial source snapshot records the accumulated S1–S4 implementation; it does not invent separate historical stage commits.
 
 | Stage | Status | Acceptance and remaining work |
 |---|---|---|
@@ -9,7 +9,7 @@ Stage updates are committed and synchronized after verification. One final relea
 | S3: existing gameplay and progression | COMPLETE | Bounded source-linked fixes, finite repeat choices, encounter unlocks, preserved legacy ownership and revised rune economy/selections verified. |
 | S4: new flows and continuation | COMPLETE | Recovered Challenge schedule/quotas/tier gates, opaque native menus, semantic run continuation, Custom controls/defaults and credits-only isolation verified. |
 | S5: integrated acceptance | COMPLETE | Transparent native icon HUD/title at both sizes; fresh/legacy/complete progression, Custom results/defaults/navigation/Continue and reversible art/settings verified. |
-| S6: final delivery | NOT STARTED | Owned-input asset preparation, supported-build installer/rollback, final package and public release, independent download/delivery verification and expendable scratch cleanup. |
+| S6: final delivery | ACTIVE | Owned-input asset preparation, supported-build installer/rollback, final package and public release, independent download/delivery verification and expendable scratch cleanup. |
 
 No S1-S5 blocker or required deferral remains. Final packaging and delivery remain S6; the product has not yet been released.
 
@@ -33,3 +33,7 @@ Continuation reconstructs the supported build/runtime contract, not every live e
 ## Integrated acceptance
 
 The HUD/title passed real offscreen native rendering at 1280x720 and 1920x1080, including actual stat modifiers, skill tiers/counts, clipping/paging, Options/F2, shooting and scene cleanup. The full 30-gate graph, fresh-process exact persistence and legacy migration pass. Early-profile Custom respects obtained content/runes/prerequisites. Actual Custom Challenge victory retains credits with unchanged tier/ownership; the native disabled-achievement caller is verified. Custom defaults and keyboard/controller continuation pass at 1080p. Exact original GPU pixels for all 203 recolored loaded sheets restore over two toggle cycles; settings survive relaunch. Source audits remain bounded; see the migration and anomaly ledgers. Seeded clocks/builds/quotas are not unassisted balance playtests.
+
+## Final delivery gate in progress
+
+Owned-input preparation passes in a clean pinned runtime: 511 PNGs match reviewed RGBA pixels, consumed character/fallback fields match at native float32 precision, and both compressed payloads plus the 203-sheet manifest match exactly. The Release package installs/verifies 538 runtime files. Native weapon/evolutions, both forms/exclusives and Custom save/fresh-process Continue pass using installer-generated assets without developer-asset copying. Rollback removes all 538 owned files while preserving all 142 original files and every unowned file/settings. Installer conflict, pending-recovery, shared-loader, modified-file and stock-file ownership guards pass. Release paths are mapped to public placeholders; canonical managed code/static data remain unchanged, and packaging/validation builds produce identical bytes. Publication, independent download/local delivery and cleanup remain required before S6 closes.

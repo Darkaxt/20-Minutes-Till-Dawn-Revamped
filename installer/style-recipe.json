@@ -1,0 +1,3536 @@
+{
+  "upstream": [
+    {
+      "name": "ElderBrain",
+      "source": "Bosses\\ElderBrain.png",
+      "file": "sharedassets0.assets",
+      "id": 185,
+      "width": 48,
+      "height": 48,
+      "original_raw_sha256": "4fc7840d919265a5bd29bbe3791ea47938c441b092001469a6cfabfbab557fad"
+    },
+    {
+      "name": "ElderBrain_Em",
+      "source": "Bosses\\ElderBrain_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 78,
+      "width": 48,
+      "height": 48,
+      "original_raw_sha256": "708a5bcaa6d12d9958813cf6151a42a247ab4b992e51b26b9f68174d0fbf9622"
+    },
+    {
+      "name": "T_HasturBoss",
+      "source": "Bosses\\T_HasturBoss.png",
+      "file": "sharedassets0.assets",
+      "id": 130,
+      "width": 672,
+      "height": 224,
+      "original_raw_sha256": "8d0d7238b32137ed85886d0f0a2b666579989e4f23a9ed788ea85726c237d006"
+    },
+    {
+      "name": "T_Reaper",
+      "source": "Bosses\\T_Reaper.png",
+      "file": "sharedassets0.assets",
+      "id": 144,
+      "width": 1024,
+      "height": 128,
+      "original_raw_sha256": "85608a55a3d3d6709e83d86f9b9df23e8da06d50a0ab51c0de8a9e6f126fd8e8"
+    },
+    {
+      "name": "T_Rhogog",
+      "source": "Bosses\\T_Rhogog.png",
+      "file": "sharedassets0.assets",
+      "id": 138,
+      "width": 112,
+      "height": 112,
+      "original_raw_sha256": "732f5acf150303e94126b734a3da09332a0d22b32293748b6720a1d2392febbd"
+    },
+    {
+      "name": "T_Rhogog_Projectile",
+      "source": "Bosses\\T_Rhogog_Projectile.png",
+      "file": "sharedassets0.assets",
+      "id": 61,
+      "width": 12,
+      "height": 12,
+      "original_raw_sha256": "e777a7e3889a8b89b6e4b80ce358c5f58a8c91b50c57d1da7cc352f1f5b0303b"
+    },
+    {
+      "name": "T_Rhogog_Projectile_Indicator",
+      "source": "Bosses\\T_Rhogog_Projectile_Indicator.png",
+      "file": "sharedassets0.assets",
+      "id": 52,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "e8470685370128e57f0303ec7f8a51fdbc8ad85558d7af00f7d79f9160d72b26"
+    },
+    {
+      "name": "T_Rhogog_Shadow",
+      "source": "Bosses\\T_Rhogog_Shadow.png",
+      "file": "sharedassets0.assets",
+      "id": 145,
+      "width": 42,
+      "height": 17,
+      "original_raw_sha256": "3ef098587e1099878436d47ca8e5ce287195ed57c21dc479317f25f6959a0694"
+    },
+    {
+      "name": "T_Shoggoth",
+      "source": "Bosses\\T_Shoggoth.png",
+      "file": "sharedassets0.assets",
+      "id": 112,
+      "width": 288,
+      "height": 192,
+      "original_raw_sha256": "27dde461760fbbe2f40b62fa31e0bc21ab3195792108410a296c153d3b309a38"
+    },
+    {
+      "name": "T_ShubNiggurath",
+      "source": "Bosses\\T_ShubNiggurath.png",
+      "file": "sharedassets0.assets",
+      "id": 149,
+      "width": 480,
+      "height": 288,
+      "original_raw_sha256": "e21b20044518abe057153b1ffdb2de29824e8cf01c3bb61f9074d794d9d9eb9d"
+    },
+    {
+      "name": "T_SpawnerMonster",
+      "source": "Bosses\\T_SpawnerMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 48,
+      "width": 192,
+      "height": 64,
+      "original_raw_sha256": "3e8e12c38f06d210e6b757384b0dfb8352240de13392047a6166bdd932a3ff5f"
+    },
+    {
+      "name": "T_Yog",
+      "source": "Bosses\\T_Yog.png",
+      "file": "sharedassets0.assets",
+      "id": 96,
+      "width": 256,
+      "height": 64,
+      "original_raw_sha256": "ddeec579326be422902d62ba4d81183a59718c3c83f6b0710cc169e26eb57ca0"
+    },
+    {
+      "name": "WingedMonster",
+      "source": "Bosses\\WingedMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 223,
+      "width": 480,
+      "height": 96,
+      "original_raw_sha256": "f59c51dc74b2a1888b4dad92073b211225bbe8217966ab9166469353be993c23"
+    },
+    {
+      "name": "WingedMonster_Em",
+      "source": "Bosses\\WingedMonster_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 110,
+      "width": 96,
+      "height": 96,
+      "original_raw_sha256": "959c0a13b2a0b19a561a033326a3846cdc6f1ad2c80727a06b8ba01a674201c0"
+    },
+    {
+      "name": "T_Abby_Portrait",
+      "source": "CharacterPortraits\\T_Abby_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 193,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "3eef1afa4e0c31d46a7431e7f44eac3a9970b6e90b3dfaa68e8abcbe38ce5b31"
+    },
+    {
+      "name": "T_Dasher_Portrait",
+      "source": "CharacterPortraits\\T_Dasher_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 212,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "863ea4651e6454725f23c38a584595c097cd3ccfe363f34f334ff26d462e21f3"
+    },
+    {
+      "name": "T_Diamond_Portrait",
+      "source": "CharacterPortraits\\T_Diamond_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 71,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "511ee66a872a79b307ed5b4865dd2de291eaa9b493fb796e64832b6dfb278a52"
+    },
+    {
+      "name": "T_Hastur_Portrait",
+      "source": "CharacterPortraits\\T_Hastur_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 89,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "43672d71807ef1fb0527e16b746bf576e5589d2b3c26edb5cdad2041df25fcb6"
+    },
+    {
+      "name": "T_Hina_Portrait",
+      "source": "CharacterPortraits\\T_Hina_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 141,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "ef6ad25c2bece8358922426ffd9683b89d2b8f3e8c1f4a028af0993732cc2bb5"
+    },
+    {
+      "name": "T_Lilith_Portrait",
+      "source": "CharacterPortraits\\T_Lilith_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 95,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "e57e4c0cc6edd39c7ef4287e9ad39bcb0ceb9bef3ea2f7ad2ad718c77d0b70d9"
+    },
+    {
+      "name": "T_Luna_Portrait",
+      "source": "CharacterPortraits\\T_Luna_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 117,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "8b3ec2551d7af6b96090f0c6ca8359a1743568f30babe36be44124433602c41d"
+    },
+    {
+      "name": "T_Raven_Portrait",
+      "source": "CharacterPortraits\\T_Raven_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 201,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "7d5cf85fb93fbdd2aec416b12e09c75f264d3bbca763d6ab52fa2367efe5825b"
+    },
+    {
+      "name": "T_Scarlett_Portrait",
+      "source": "CharacterPortraits\\T_Scarlett_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 103,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "ddece564b99a07a2e3b160b7ba4e088c9eebc7947f5af21cec68a13877ba8a1e"
+    },
+    {
+      "name": "T_Shana_Portrait",
+      "source": "CharacterPortraits\\T_Shana_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 133,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "16add9b38cbcffb743cdab86a10466b5b2cf1b185016f4596147b35ab0567fd5"
+    },
+    {
+      "name": "T_Spark_Portrait",
+      "source": "CharacterPortraits\\T_Spark_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 140,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "2ebd818ec41b3d759da4871fc74c93e3847eb1dc495ba3ac2a72ea261e645bf0"
+    },
+    {
+      "name": "T_Yuki_Portrait",
+      "source": "CharacterPortraits\\T_Yuki_Portrait.png",
+      "file": "sharedassets0.assets",
+      "id": 94,
+      "width": 270,
+      "height": 313,
+      "original_raw_sha256": "560846d4fd55a94c9fcd256c75ad45d50fcddb49a0d4064853cab1467a93e6cd"
+    },
+    {
+      "name": "T_Abby",
+      "source": "Characters\\T_Abby.png",
+      "file": "sharedassets0.assets",
+      "id": 75,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "52637c2936a691e924a2c0232c76e42e8732fb824dfe4739783e56e4177e48c4"
+    },
+    {
+      "name": "T_Dasher",
+      "source": "Characters\\T_Dasher.png",
+      "file": "sharedassets0.assets",
+      "id": 83,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "91b556107c82651c36bdf0ef0ef5ec325d8364b7dc7649804b7f0dfdc961547f"
+    },
+    {
+      "name": "T_Diamond",
+      "source": "Characters\\T_Diamond.png",
+      "file": "sharedassets0.assets",
+      "id": 148,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "f97fd96f712b3a3a6c2a56b9d3b7cf7ae24411faa0cc4c50b5e6aeedff6d45e5"
+    },
+    {
+      "name": "T_Hastur",
+      "source": "Characters\\T_Hastur.png",
+      "file": "sharedassets0.assets",
+      "id": 205,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "665a3a34586f13bbb93e131e019580b5c938a7d7477f472d28514e97fce969d9"
+    },
+    {
+      "name": "T_Hina",
+      "source": "Characters\\T_Hina.png",
+      "file": "sharedassets0.assets",
+      "id": 184,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "ff8e24336d74a194da5ef0ab0d62f455592aee3205e87a7247e18a49df1a51b6"
+    },
+    {
+      "name": "T_Lilith",
+      "source": "Characters\\T_Lilith.png",
+      "file": "sharedassets0.assets",
+      "id": 210,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "b3bc81a9c595162c6524f6885d44ed1af2f54bf8663d27f408270be2532860ad"
+    },
+    {
+      "name": "T_Luna",
+      "source": "Characters\\T_Luna.png",
+      "file": "sharedassets0.assets",
+      "id": 209,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "082782ecaf991a039e8d230ba3d978db8c57942d3834cfd8d77b1342c97d2b85"
+    },
+    {
+      "name": "T_Raven_Idle",
+      "source": "Characters\\T_Raven_Idle.png",
+      "file": "sharedassets0.assets",
+      "id": 100,
+      "width": 288,
+      "height": 48,
+      "original_raw_sha256": "c300b6b9c426a0769229d1475e5a7981b1ccc9624822f6b0daa08b0771a1a657"
+    },
+    {
+      "name": "T_Raven_Run",
+      "source": "Characters\\T_Raven_Run.png",
+      "file": "sharedassets0.assets",
+      "id": 196,
+      "width": 192,
+      "height": 48,
+      "original_raw_sha256": "5a28c6e0a7771ce3767a4ae8b3cf8c8df4c0861f5410b0c7f84cb2d35d31658a"
+    },
+    {
+      "name": "T_Scarlett",
+      "source": "Characters\\T_Scarlett.png",
+      "file": "sharedassets0.assets",
+      "id": 115,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "8a10e95c8b32502d3623da36f167c616cadbe917c645baf97b7539aa2a7659db"
+    },
+    {
+      "name": "T_Shana",
+      "source": "Characters\\T_Shana.png",
+      "file": "sharedassets0.assets",
+      "id": 177,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "62c7e8c064daa055a3c9ba08f2461f4a60706c180b46da5f10aebc5d841e4a38"
+    },
+    {
+      "name": "T_Spark",
+      "source": "Characters\\T_Spark.png",
+      "file": "sharedassets0.assets",
+      "id": 88,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "16052b7551f0f1c2071daea9da23a04a83f190f464ccec8890b457baa9fb8cb0"
+    },
+    {
+      "name": "T_Yuki",
+      "source": "Characters\\T_Yuki.png",
+      "file": "sharedassets0.assets",
+      "id": 155,
+      "width": 320,
+      "height": 320,
+      "original_raw_sha256": "83757759d8a394979ca6cc9b3548615d70bd6984bf766ae04ccc6b6539e916b5"
+    },
+    {
+      "name": "BigBoomer",
+      "source": "Enemy\\BigBoomer.png",
+      "file": "sharedassets0.assets",
+      "id": 180,
+      "width": 256,
+      "height": 64,
+      "original_raw_sha256": "f15faac8b3098a83a04fe9bf5f091e87c3fa5ccfece7bc673c07ced630270cf3"
+    },
+    {
+      "name": "BigBoomer_Em",
+      "source": "Enemy\\BigBoomer_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 202,
+      "width": 64,
+      "height": 64,
+      "original_raw_sha256": "592a9259f80c5b26466ada4a26a44b4d73b2056ae5f4891129290adeba839057"
+    },
+    {
+      "name": "Boomer",
+      "source": "Enemy\\Boomer.png",
+      "file": "sharedassets0.assets",
+      "id": 65,
+      "width": 96,
+      "height": 32,
+      "original_raw_sha256": "6da6ccfe5c70b5edfa13a8d855f6ec464087a6392c60df2eefe90979c07e95ac"
+    },
+    {
+      "name": "Boomer_Em",
+      "source": "Enemy\\Boomer_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 79,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "871a422956178b5c8318c5c425c5c42d84b6ae665e18007b29fd647eee5a814d"
+    },
+    {
+      "name": "BrainMonster",
+      "source": "Enemy\\BrainMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 40,
+      "width": 256,
+      "height": 64,
+      "original_raw_sha256": "6d2df7ae4a61f26f400979e4b0f0537b3e7e2faa8634f3a47383b31e1e58eb7b"
+    },
+    {
+      "name": "BrainMonster_Em",
+      "source": "Enemy\\BrainMonster_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 122,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "a8fdf2d6709a703e6008bed314a20fad83761f51a4d7ec0b7552607762e08eb3"
+    },
+    {
+      "name": "EyeMonster",
+      "source": "Enemy\\EyeMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 142,
+      "width": 120,
+      "height": 40,
+      "original_raw_sha256": "0fec7804cc47b13cf97833f69e2542dc6ca08960973e60877b39c9a43688fddc"
+    },
+    {
+      "name": "EyeMonster_Em",
+      "source": "Enemy\\EyeMonster_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 105,
+      "width": 34,
+      "height": 34,
+      "original_raw_sha256": "0a1879118ad065dde978e57b401871af48d7adc1a660c1087fc843b354f94939"
+    },
+    {
+      "name": "EyeMonsterProjecitle",
+      "source": "Enemy\\EyeMonsterProjecitle.png",
+      "file": "sharedassets1.assets",
+      "id": 19,
+      "width": 14,
+      "height": 14,
+      "original_raw_sha256": "6165a016adb9bafbd3dab37c95778b3add86c2dc3dc3478f73f446aba2d2903e"
+    },
+    {
+      "name": "T_Cultist",
+      "source": "Enemy\\T_Cultist.png",
+      "file": "sharedassets0.assets",
+      "id": 179,
+      "width": 192,
+      "height": 48,
+      "original_raw_sha256": "db38faf5e8872314688e54c15d25e88358ad27a7a4fd414097710d7ae69d07c3"
+    },
+    {
+      "name": "T_Cultist_EM",
+      "source": "Enemy\\T_Cultist_EM.png",
+      "file": "sharedassets0.assets",
+      "id": 53,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "1ea1603fcacd3239d7d87a96773c2b7365df271f68594bede005c4b2eca7e5cb"
+    },
+    {
+      "name": "T_EyeBat",
+      "source": "Enemy\\T_EyeBat.png",
+      "file": "sharedassets0.assets",
+      "id": 162,
+      "width": 384,
+      "height": 96,
+      "original_raw_sha256": "842ae6076e67185fb48a2527820ef16bf491111c457a18b44560b44e1e0f90d2"
+    },
+    {
+      "name": "T_EyeBat_EM",
+      "source": "Enemy\\T_EyeBat_EM.png",
+      "file": "sharedassets0.assets",
+      "id": 150,
+      "width": 96,
+      "height": 96,
+      "original_raw_sha256": "cfbfa516f84b91453273a7f481d2eea77a14746ce3091654df5c03cbba159fe1"
+    },
+    {
+      "name": "T_GhostMonster",
+      "source": "Enemy\\T_GhostMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 57,
+      "width": 448,
+      "height": 64,
+      "original_raw_sha256": "7da307998cb49ef8ef4424ee2d6ec9ccbe3570e43cf1db3ca608f05dac354f99"
+    },
+    {
+      "name": "T_Lamprey",
+      "source": "Enemy\\T_Lamprey.png",
+      "file": "sharedassets0.assets",
+      "id": 67,
+      "width": 320,
+      "height": 64,
+      "original_raw_sha256": "6701af9e002370738aabd3ef944f253fa967b31281640bc0cdddf0e7bf496e81"
+    },
+    {
+      "name": "T_LampreyEM",
+      "source": "Enemy\\T_LampreyEM.png",
+      "file": "sharedassets0.assets",
+      "id": 97,
+      "width": 48,
+      "height": 48,
+      "original_raw_sha256": "95754cf3bed0fede1bafc158d88c960978507126e8bdcf6a079143614c7d2012"
+    },
+    {
+      "name": "T_PumpkinMonster",
+      "source": "Enemy\\T_PumpkinMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 30,
+      "width": 384,
+      "height": 64,
+      "original_raw_sha256": "60b1a09fff4e392634376dfbaa6cf3914c15a6185f695a1032602a7e53553a8f"
+    },
+    {
+      "name": "T_SpawnedBug",
+      "source": "Enemy\\T_SpawnedBug.png",
+      "file": "sharedassets0.assets",
+      "id": 154,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "1ec9208e93b819fcdaebfdc85590b7d42f83b7ff2825ec862b917d753b539252"
+    },
+    {
+      "name": "T_SpawnedBug_Em",
+      "source": "Enemy\\T_SpawnedBug_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 129,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "8d952c6ccff1718c81fd3b354aa1d0ed185e6887fdcf0e021ca3742785304b11"
+    },
+    {
+      "name": "T_SquidMonster",
+      "source": "Enemy\\T_SquidMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 181,
+      "width": 192,
+      "height": 48,
+      "original_raw_sha256": "cad15d66e19651ad6c56e7cd06436619d98addd78934c12dcd0a494fb0706ff6"
+    },
+    {
+      "name": "T_SquidMonster_Em",
+      "source": "Enemy\\T_SquidMonster_Em.png",
+      "file": "sharedassets0.assets",
+      "id": 72,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "e2fc3cdbb1fe2dfcd8a658a30e4e59ef93f266daea236e043e91e2cdc85f3a21"
+    },
+    {
+      "name": "T_TentacleAttackIndicator",
+      "source": "Enemy\\T_TentacleAttackIndicator.png",
+      "file": "sharedassets0.assets",
+      "id": 168,
+      "width": 96,
+      "height": 336,
+      "original_raw_sha256": "7371d167a36ba7a6214b130aff4f29340e0bb4a02df07690dd77d1bab06db1e7"
+    },
+    {
+      "name": "T_TentacleEnemy",
+      "source": "Enemy\\T_TentacleEnemy.png",
+      "file": "sharedassets0.assets",
+      "id": 101,
+      "width": 256,
+      "height": 192,
+      "original_raw_sha256": "5becc9f2db9b268b5ed27603189723c5e58843d3937ef579fa36547120248f45"
+    },
+    {
+      "name": "T_TentacleSummon",
+      "source": "Enemy\\T_TentacleSummon.png",
+      "file": "sharedassets0.assets",
+      "id": 47,
+      "width": 256,
+      "height": 192,
+      "original_raw_sha256": "70144bc465904d410a47366535d61b4abca1cc56ddd17b2b6ec36eb46d2ff9f9"
+    },
+    {
+      "name": "T_TreeMonster",
+      "source": "Enemy\\T_TreeMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 170,
+      "width": 288,
+      "height": 96,
+      "original_raw_sha256": "7e13eee21f1dec4c664859fa2668aca07606c7ca9d0cb8c7e747853ead94c3a7"
+    },
+    {
+      "name": "T_TreeMonsterWalking",
+      "source": "Enemy\\T_TreeMonsterWalking.png",
+      "file": "sharedassets0.assets",
+      "id": 136,
+      "width": 96,
+      "height": 96,
+      "original_raw_sha256": "e7d402b39eebdd462735fbb76652163a9aa56e0ed4582d374cd001c142e64718"
+    },
+    {
+      "name": "T_WitchMonster",
+      "source": "Enemy\\T_WitchMonster.png",
+      "file": "sharedassets0.assets",
+      "id": 43,
+      "width": 576,
+      "height": 96,
+      "original_raw_sha256": "56f8cdddb574a6f0dffd77133c03b4d620791afad1c84ba05dee65f94a64ed2f"
+    },
+    {
+      "name": "T_ElectricWall1",
+      "source": "FX\\ElectricWall\\T_ElectricWall1.png",
+      "file": "sharedassets0.assets",
+      "id": 45,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "6ce08dc9f4610cb75bbf5b31ac2c465c97a49b87662c8e5ed079c6f7de60849f"
+    },
+    {
+      "name": "T_ElectricWall2",
+      "source": "FX\\ElectricWall\\T_ElectricWall2.png",
+      "file": "sharedassets0.assets",
+      "id": 34,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "f6292fae45b219e397815b4b3213d61281ba16e134ad8d90413f90a79618c5b6"
+    },
+    {
+      "name": "T_ElectricWall3",
+      "source": "FX\\ElectricWall\\T_ElectricWall3.png",
+      "file": "sharedassets0.assets",
+      "id": 46,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "7538cb9739914eccc761aa12e9618bb9531c946a9deb66763662ebd7650c6aa8"
+    },
+    {
+      "name": "T_ElectricWall4",
+      "source": "FX\\ElectricWall\\T_ElectricWall4.png",
+      "file": "sharedassets0.assets",
+      "id": 183,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "53565396eb4bd31929a44940e36adc202c3cf9a640083011320276d68705393e"
+    },
+    {
+      "name": "T_ElectricWall5",
+      "source": "FX\\ElectricWall\\T_ElectricWall5.png",
+      "file": "sharedassets0.assets",
+      "id": 90,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "1f7fd3552bc638799c84191559af1c20460bba7760c33942fe7351fe8b884b66"
+    },
+    {
+      "name": "T_ElectricWall6",
+      "source": "FX\\ElectricWall\\T_ElectricWall6.png",
+      "file": "sharedassets0.assets",
+      "id": 92,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "7b076c590f56fc3aa6c9d00557ac6b7fb5b1b6b313785efacc22e0df328c6e04"
+    },
+    {
+      "name": "ExplosionFX",
+      "source": "FX\\ExplosionFX.png",
+      "file": "sharedassets0.assets",
+      "id": 81,
+      "width": 576,
+      "height": 96,
+      "original_raw_sha256": "a48573204d64761f216ce9ad2b879fb6a1f61ef96bf5a444fee9974564c7b9f2"
+    },
+    {
+      "name": "T_CurseFX",
+      "source": "FX\\T_CurseFX.png",
+      "file": "sharedassets1.assets",
+      "id": 28,
+      "width": 96,
+      "height": 32,
+      "original_raw_sha256": "0f7543408c718a91a67ef61f3fd05e5ba925e0be22296b5dbab8d4d0b4f9eba2"
+    },
+    {
+      "name": "T_DeathFX",
+      "source": "FX\\T_DeathFX.png",
+      "file": "sharedassets1.assets",
+      "id": 27,
+      "width": 160,
+      "height": 40,
+      "original_raw_sha256": "656ed44d5ef82a0e412e0e8329443acfe464a35b980090ecc6c16b6ba338335d"
+    },
+    {
+      "name": "T_FireballExplosion",
+      "source": "FX\\T_FireballExplosion.png",
+      "file": "sharedassets0.assets",
+      "id": 38,
+      "width": 768,
+      "height": 128,
+      "original_raw_sha256": "1fd3c79b5148fe6935d93cec32243677f861b63cd5b54922c44fce2dec024830"
+    },
+    {
+      "name": "T_FireExplosionSmall",
+      "source": "FX\\T_FireExplosionSmall.png",
+      "file": "sharedassets1.assets",
+      "id": 15,
+      "width": 288,
+      "height": 48,
+      "original_raw_sha256": "e8d659529637d278cd9a091575f2092b9bc250f596ced6f851a86566b07527b7"
+    },
+    {
+      "name": "T_FreezeFXLarge",
+      "source": "FX\\T_FreezeFXLarge.png",
+      "file": "sharedassets1.assets",
+      "id": 9,
+      "width": 320,
+      "height": 64,
+      "original_raw_sha256": "a2f31876bf9df546749b1b0b1eb5b56d7402fe2954b2fafb846610fd50f6bdd4"
+    },
+    {
+      "name": "T_FreezeFXSmall",
+      "source": "FX\\T_FreezeFXSmall.png",
+      "file": "sharedassets1.assets",
+      "id": 5,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "991a8b3e2e0ee827c4a2504b54c20f586d7ed93374e6ad31e887b4b8fbbe5125"
+    },
+    {
+      "name": "T_HolyShield",
+      "source": "FX\\T_HolyShield.png",
+      "file": "sharedassets0.assets",
+      "id": 113,
+      "width": 336,
+      "height": 48,
+      "original_raw_sha256": "b5f1a14c126fd90400727a0503092fd7b575d4b3bee4df8043cf1098242b8384"
+    },
+    {
+      "name": "T_HolyShieldBreak",
+      "source": "FX\\T_HolyShieldBreak.png",
+      "file": "sharedassets0.assets",
+      "id": 86,
+      "width": 156,
+      "height": 52,
+      "original_raw_sha256": "0b780a78c4fa09de74151679e840459d8a5e6b8d2348c5588c2783e7858ab674"
+    },
+    {
+      "name": "T_HolyShieldRegen",
+      "source": "FX\\T_HolyShieldRegen.png",
+      "file": "sharedassets0.assets",
+      "id": 99,
+      "width": 240,
+      "height": 48,
+      "original_raw_sha256": "652830c86b302f32b9291f58fa9241567b827d71837868bef467a5a55df6d84f"
+    },
+    {
+      "name": "T_LevelUpFX",
+      "source": "FX\\T_LevelUpFX.png",
+      "file": "sharedassets1.assets",
+      "id": 10,
+      "width": 864,
+      "height": 304,
+      "original_raw_sha256": "ad469e929d235e4ae987dede77ab0abd8fa8fca104d80087aa64b649386c69bf"
+    },
+    {
+      "name": "T_LunaBlackHoleDamage",
+      "source": "FX\\T_LunaBlackHoleDamage.png",
+      "file": "sharedassets0.assets",
+      "id": 200,
+      "width": 192,
+      "height": 64,
+      "original_raw_sha256": "1a4fa1c622b9087b2644108d34398eea5f41886d9a33f9bbbe84930cc66a222f"
+    },
+    {
+      "name": "T_MaxCharge",
+      "source": "FX\\T_MaxCharge.png",
+      "file": "sharedassets0.assets",
+      "id": 151,
+      "width": 96,
+      "height": 24,
+      "original_raw_sha256": "97a8218c1e9b607a0b5d91a38fd8bcbe23f6e3bc44e369fc0d015c51797adda7"
+    },
+    {
+      "name": "T_ShadowCloneAttackFX",
+      "source": "FX\\T_ShadowCloneAttackFX.png",
+      "file": "sharedassets0.assets",
+      "id": 195,
+      "width": 288,
+      "height": 96,
+      "original_raw_sha256": "122753a29ff9172c7c2ca150b4b6a889544c8d720702874922116ab38ef3f805"
+    },
+    {
+      "name": "T_ShatterParticles",
+      "source": "FX\\T_ShatterParticles.png",
+      "file": "sharedassets1.assets",
+      "id": 30,
+      "width": 16,
+      "height": 64,
+      "original_raw_sha256": "53a04bd3b12c7f09a0027daff3b987ba6f3abd023f79836382aeeed67c0605e0"
+    },
+    {
+      "name": "T_ShockwaveFX",
+      "source": "FX\\T_ShockwaveFX.png",
+      "file": "sharedassets0.assets",
+      "id": 173,
+      "width": 512,
+      "height": 128,
+      "original_raw_sha256": "af18c97fa6806c67903f15b47c286585ffecb0f76e08988e65557a32c50764c1"
+    },
+    {
+      "name": "T_ShoggothLaser",
+      "source": "FX\\T_ShoggothLaser.png",
+      "file": "sharedassets0.assets",
+      "id": 146,
+      "width": 192,
+      "height": 304,
+      "original_raw_sha256": "85afeea25a416b0a203271c4ca2264b2266ad988c35cf3b13c2108542c7eb338"
+    },
+    {
+      "name": "T_ShoggothLaserWindup",
+      "source": "FX\\T_ShoggothLaserWindup.png",
+      "file": "sharedassets0.assets",
+      "id": 116,
+      "width": 32,
+      "height": 304,
+      "original_raw_sha256": "2f1e230fd83633e25cba21a372abb7189642f07692ca4738df1cba05a184aed0"
+    },
+    {
+      "name": "T_SmiteFX",
+      "source": "FX\\T_SmiteFX.png",
+      "file": "sharedassets0.assets",
+      "id": 161,
+      "width": 128,
+      "height": 96,
+      "original_raw_sha256": "1c5d2884464b666ba9b83f09c5998f10a5df48f7207f05bea0ea0b3b597bd069"
+    },
+    {
+      "name": "T_StaticParticles",
+      "source": "FX\\T_StaticParticles.png",
+      "file": "sharedassets0.assets",
+      "id": 215,
+      "width": 32,
+      "height": 8,
+      "original_raw_sha256": "8679da6ccea1488b2d35357606828e766b4ac55127e279b9772c980a3fc8fbc6"
+    },
+    {
+      "name": "T_SummonPulseFX",
+      "source": "FX\\T_SummonPulseFX.png",
+      "file": "sharedassets1.assets",
+      "id": 8,
+      "width": 192,
+      "height": 64,
+      "original_raw_sha256": "19b55e5fe0abf966ee5815fc00787d6353b123e463cd1c9e0d9684edcca5feab"
+    },
+    {
+      "name": "T_Thunder",
+      "source": "FX\\T_Thunder.png",
+      "file": "sharedassets1.assets",
+      "id": 29,
+      "width": 256,
+      "height": 450,
+      "original_raw_sha256": "34a4560cba472f8f5c9746da499fe23b761d1dbf0454a96c089319ed90fd669a"
+    },
+    {
+      "name": "T_WindShield",
+      "source": "FX\\T_WindShield.png",
+      "file": "sharedassets0.assets",
+      "id": 137,
+      "width": 64,
+      "height": 64,
+      "original_raw_sha256": "f307c8df699558001294b2b58dd016396b8dfcefea3cf94d9e103d9a3569e4d0"
+    },
+    {
+      "name": "T_20Logo",
+      "source": "GUI\\T_20Logo.png",
+      "file": "sharedassets0.assets",
+      "id": 124,
+      "width": 320,
+      "height": 176,
+      "original_raw_sha256": "cd551d9c7e111eebb464efb5707a8d53d62d414ebfe8ee42a565745da03f89c6"
+    },
+    {
+      "name": "T_AmmoIcon",
+      "source": "GUI\\T_AmmoIcon.png",
+      "file": "sharedassets1.assets",
+      "id": 21,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "29d4b5380e44d061173535be8f7c275638fba526697bd7d29a6f17b83aa08239"
+    },
+    {
+      "name": "T_Cursor",
+      "source": "GUI\\T_Cursor.png",
+      "file": "globalgamemanagers.assets",
+      "id": 3,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "354727ef009bf221b8ab82d81194e102364d0147cca75bee27cddd52e1f1c041"
+    },
+    {
+      "name": "T_CursorSprite",
+      "source": "GUI\\T_CursorSprite.png",
+      "file": "sharedassets1.assets",
+      "id": 20,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "354727ef009bf221b8ab82d81194e102364d0147cca75bee27cddd52e1f1c041"
+    },
+    {
+      "name": "T_EyeBlink",
+      "source": "GUI\\T_EyeBlink.png",
+      "file": "sharedassets0.assets",
+      "id": 167,
+      "width": 1008,
+      "height": 112,
+      "original_raw_sha256": "ddf30832251d30a00e3dc934cf228344f20314f794623fada1c287f61d32061c"
+    },
+    {
+      "name": "T_HeartAnimation",
+      "source": "GUI\\T_HeartAnimation.png",
+      "file": "sharedassets1.assets",
+      "id": 34,
+      "width": 128,
+      "height": 32,
+      "original_raw_sha256": "9fff80f4cad8ea0bd9ebcf0613c7b154490fb2fef58c6272c547a936c2a40e20"
+    },
+    {
+      "name": "T_LargeChestAnimation",
+      "source": "GUI\\T_LargeChestAnimation.png",
+      "file": "sharedassets1.assets",
+      "id": 25,
+      "width": 220,
+      "height": 160,
+      "original_raw_sha256": "014122a30b165b7b09f3d31da729e81180176a5b79bf082e8c53dbccad15923c"
+    },
+    {
+      "name": "T_SoulHeartAnimation",
+      "source": "GUI\\T_SoulHeartAnimation.png",
+      "file": "sharedassets1.assets",
+      "id": 16,
+      "width": 96,
+      "height": 32,
+      "original_raw_sha256": "d341271fc927fee6527a030b9b09c93265598246bbb5fddeff6dd74100230ef7"
+    },
+    {
+      "name": "T_SoulIcon",
+      "source": "GUI\\T_SoulIcon.png",
+      "file": "sharedassets0.assets",
+      "id": 197,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "adb026839a5655ae86855ba86910802ad844af842db7f7747160150e1ce06bd1"
+    },
+    {
+      "name": "T_UILock",
+      "source": "GUI\\T_UILock.png",
+      "file": "sharedassets0.assets",
+      "id": 106,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "a726fdcf9338a664e951c70b3f32fa4b7aa93a84a68a4324e17c60e38b14562c"
+    },
+    {
+      "name": "T_VictoryAchievedIcon",
+      "source": "GUI\\T_VictoryAchievedIcon.png",
+      "file": "sharedassets0.assets",
+      "id": 70,
+      "width": 9,
+      "height": 9,
+      "original_raw_sha256": "b6b63a725b7bb13020c6fd823ee8bcc4c96763359c79b147556fb54fc25487bc"
+    },
+    {
+      "name": "T_WorldArrow",
+      "source": "GUI\\T_WorldArrow.png",
+      "file": "sharedassets0.assets",
+      "id": 208,
+      "width": 18,
+      "height": 18,
+      "original_raw_sha256": "ef4a930e8fb55bc9b097344290fa9fd98a443a034f90a0ba02eaba4c39cbc769"
+    },
+    {
+      "name": "T_Powerups",
+      "source": "Icons\\T_Powerups.png",
+      "file": "sharedassets0.assets",
+      "id": 87,
+      "width": 512,
+      "height": 512,
+      "original_raw_sha256": "162112fefde3ca024fae2496afafe9fc4999a1b3cd91d1632a99f48dd7c82e0c"
+    },
+    {
+      "name": "T_RuneIcons",
+      "source": "Icons\\T_RuneIcons.png",
+      "file": "sharedassets0.assets",
+      "id": 186,
+      "width": 512,
+      "height": 512,
+      "original_raw_sha256": "dcd43eaf3d696188a7394e87d428f205f8da8a8b83b1fa19a5b4171e63c15d6d"
+    },
+    {
+      "name": "T_ForestPreview",
+      "source": "Levels\\T_ForestPreview.png",
+      "file": "sharedassets0.assets",
+      "id": 192,
+      "width": 100,
+      "height": 60,
+      "original_raw_sha256": "45f5511a7aa7da9c1229aad91967a85cc3a8584e142af540cfd4f26e5a1f989e"
+    },
+    {
+      "name": "T_PumpkinPatchPreview",
+      "source": "Levels\\T_PumpkinPatchPreview.png",
+      "file": "sharedassets0.assets",
+      "id": 63,
+      "width": 100,
+      "height": 60,
+      "original_raw_sha256": "680c1b934cb3209a8cec3dc12c67f781c4dbaa7160d25ecc9e1e9ed5bee8db1d"
+    },
+    {
+      "name": "T_TemplePreview",
+      "source": "Levels\\T_TemplePreview.png",
+      "file": "sharedassets0.assets",
+      "id": 76,
+      "width": 100,
+      "height": 60,
+      "original_raw_sha256": "0c4f8b5f94f92752f59de184466c6eb921ae9ba291a5da12605a9a7fddf19c45"
+    },
+    {
+      "name": "T_Crow",
+      "source": "Summons\\T_Crow.png",
+      "file": "sharedassets0.assets",
+      "id": 216,
+      "width": 160,
+      "height": 40,
+      "original_raw_sha256": "fbd80ff7709f0f61c28255ad37b00cef6129ecbade3eb390ec2886affe500851"
+    },
+    {
+      "name": "T_DeerFriend",
+      "source": "Summons\\T_DeerFriend.png",
+      "file": "sharedassets0.assets",
+      "id": 166,
+      "width": 192,
+      "height": 48,
+      "original_raw_sha256": "cde52a24b0191562154b8c35e356e70c93e0b2f0a0d5857e68522bce09598e8a"
+    },
+    {
+      "name": "T_DragonEgg",
+      "source": "Summons\\T_DragonEgg.png",
+      "file": "sharedassets1.assets",
+      "id": 22,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "e865f1381f2a6f0db6f7529b36c0784640fddcd0e7ecd82e2a55c9d98a75b24d"
+    },
+    {
+      "name": "T_DragonSS",
+      "source": "Summons\\T_DragonSS.png",
+      "file": "sharedassets1.assets",
+      "id": 11,
+      "width": 192,
+      "height": 64,
+      "original_raw_sha256": "d988e3fbf839cda22a3736e9fd742afdbaece1ac0d076a4814c46eb4f028e389"
+    },
+    {
+      "name": "T_ElectroBug_SS",
+      "source": "Summons\\T_ElectroBug_SS.png",
+      "file": "sharedassets1.assets",
+      "id": 18,
+      "width": 96,
+      "height": 32,
+      "original_raw_sha256": "31ad253a38d1482c1a722df536403a3d6ffd0139d4b2d36f5c0c733ec25ee1b5"
+    },
+    {
+      "name": "T_GhostPet_SS",
+      "source": "Summons\\T_GhostPet_SS.png",
+      "file": "sharedassets1.assets",
+      "id": 6,
+      "width": 96,
+      "height": 32,
+      "original_raw_sha256": "641f653b234c7773d82b1c01a8776472033dbdb28b0791c1a973a7f22ed70099"
+    },
+    {
+      "name": "T_GunGlyph",
+      "source": "Summons\\T_GunGlyph.png",
+      "file": "sharedassets0.assets",
+      "id": 104,
+      "width": 64,
+      "height": 32,
+      "original_raw_sha256": "177e946ac7301194190f09641c756b23222b567092306f6e2a68fe5de7fb060a"
+    },
+    {
+      "name": "T_MagicLens",
+      "source": "Summons\\T_MagicLens.png",
+      "file": "sharedassets1.assets",
+      "id": 12,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "beb9be9c947cc98a8e38e4448df4084bbbe371da6d979b995be8b30e345f8956"
+    },
+    {
+      "name": "T_Scythe",
+      "source": "Summons\\T_Scythe.png",
+      "file": "sharedassets1.assets",
+      "id": 35,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "34bf67728d271e96e7c372b126dbfdd53276a7169ae14c43d951c618edc600af"
+    },
+    {
+      "name": "T_SeismicWard",
+      "source": "Summons\\T_SeismicWard.png",
+      "file": "sharedassets0.assets",
+      "id": 199,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "9fa250f249dc95e119717a0eaa022f53dd13ac28c8f851384515457a07b1ad5f"
+    },
+    {
+      "name": "T_ShadowClone",
+      "source": "Summons\\T_ShadowClone.png",
+      "file": "sharedassets0.assets",
+      "id": 109,
+      "width": 320,
+      "height": 64,
+      "original_raw_sha256": "c23e2b20c29791baccc6a2c483bcd9ddcbcaca133dbd0ecf1da1af8e9c9699d0"
+    },
+    {
+      "name": "T_Spear",
+      "source": "Summons\\T_Spear.png",
+      "file": "sharedassets1.assets",
+      "id": 32,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "d475608ee612fbff343deea6c43308df7f25d30ab52bc0cc393a5bb4834a1ddb"
+    },
+    {
+      "name": "T_SpiritSkull",
+      "source": "Summons\\T_SpiritSkull.png",
+      "file": "sharedassets0.assets",
+      "id": 68,
+      "width": 10,
+      "height": 10,
+      "original_raw_sha256": "a46821c434c7fb07f2167363cd75f729245c705c71868099dfba3e59b3e67eaf"
+    },
+    {
+      "name": "T_Batgun_SS",
+      "source": "Weapons\\T_Batgun_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 111,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "f4a97001fc8a6ee1451de086547147846cf8797ac1f31bd91d539049f4758301"
+    },
+    {
+      "name": "T_Crossbow_SS",
+      "source": "Weapons\\T_Crossbow_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 206,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "c961b4f8c58c4676364017f9b00fc60faf2f3b8411410deb6914467d22264aaa"
+    },
+    {
+      "name": "T_DualSMGs_SS",
+      "source": "Weapons\\T_DualSMGs_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 35,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "706fbaf532376439e58ce09953344d2998f65e8bae96658251d2d6eeffee9d65"
+    },
+    {
+      "name": "T_FlameCannon_SS",
+      "source": "Weapons\\T_FlameCannon_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 203,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "2c9c8672d1cb90cc1c9748edd179244e6426355a1eda34e4611dd543e2a3019a"
+    },
+    {
+      "name": "T_GrenadeLauncher_SS",
+      "source": "Weapons\\T_GrenadeLauncher_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 131,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "a7c6ef8d32da8c86711cd02fdfecd569d42c925a5556d3bac820ea450c83a433"
+    },
+    {
+      "name": "T_MagicBow_SS",
+      "source": "Weapons\\T_MagicBow_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 128,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "124f8d7e76056b22c4381b4368f28e06cf0c8c546fd0f5ff9c5bc3e0a68736cf"
+    },
+    {
+      "name": "T_Revolver_SS",
+      "source": "Weapons\\T_Revolver_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 37,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "b391124b74b05d1747a8f2f3abd10af07af04d362df70c434ceb418c8990bee8"
+    },
+    {
+      "name": "T_SalvoKnifeProjectile",
+      "source": "Weapons\\T_SalvoKnifeProjectile.png",
+      "file": "sharedassets0.assets",
+      "id": 207,
+      "width": 200,
+      "height": 200,
+      "original_raw_sha256": "1f483720a664071671c4e51c917e20e4127bebf80875b78c0a4cad60f62f60f9"
+    },
+    {
+      "name": "T_SalvoKnives_SS",
+      "source": "Weapons\\T_SalvoKnives_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 93,
+      "width": 16,
+      "height": 16,
+      "original_raw_sha256": "cab893474d4eacd8c7fa09ec23fc16cafdae81c88eec5f14ba2716b57da585b7"
+    },
+    {
+      "name": "T_SalvoTargetIndicator",
+      "source": "Weapons\\T_SalvoTargetIndicator.png",
+      "file": "sharedassets0.assets",
+      "id": 74,
+      "width": 32,
+      "height": 32,
+      "original_raw_sha256": "389ad7689a64c21cac4aa11da5b46f4bafe614e905f4c6c916577b05db41f797"
+    },
+    {
+      "name": "T_Shotgun_SS",
+      "source": "Weapons\\T_Shotgun_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 127,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "12e945811c84fc606c8fbf9c1608dd1eae7412d9016bd30342b85062596217f7"
+    },
+    {
+      "name": "T_SporeExplosion",
+      "source": "Weapons\\T_SporeExplosion.png",
+      "file": "sharedassets0.assets",
+      "id": 108,
+      "width": 160,
+      "height": 32,
+      "original_raw_sha256": "e7195353bebffedd9eb4a6c4dbab11314422fb8ba1ce28a849a94ad14f5b09ce"
+    },
+    {
+      "name": "T_SporeFlower",
+      "source": "Weapons\\T_SporeFlower.png",
+      "file": "sharedassets0.assets",
+      "id": 158,
+      "width": 34,
+      "height": 34,
+      "original_raw_sha256": "a945a4a556ce5576cc5fd80969e4a71696a46edd74be87f554dfa91201f81f26"
+    },
+    {
+      "name": "T_Sword_Projectile",
+      "source": "Weapons\\T_Sword_Projectile.png",
+      "file": "sharedassets0.assets",
+      "id": 42,
+      "width": 300,
+      "height": 200,
+      "original_raw_sha256": "c068e982208b0f56addc0f6ce8df3a4444bfead34cc10d822e80acce85826bfe"
+    },
+    {
+      "name": "T_Sword_SS",
+      "source": "Weapons\\T_Sword_SS.png",
+      "file": "sharedassets0.assets",
+      "id": 32,
+      "width": 96,
+      "height": 64,
+      "original_raw_sha256": "3e22f44db949f2b8feec189a3f7df321570069abc2e1b66c501e4848077e5cd5"
+    }
+  ],
+  "manual": [
+    {
+      "name": "T_ArrowCaller_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_BatgunProjectile",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ],
+        "255,255,255": [
+          205,
+          169,
+          231
+        ]
+      },
+      "dimensions": [
+        48,
+        90
+      ]
+    },
+    {
+      "name": "T_BatgunVampProjectile",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ],
+        "255,255,255": [
+          238,
+          154,
+          172
+        ]
+      },
+      "dimensions": [
+        48,
+        90
+      ]
+    },
+    {
+      "name": "T_BatgunVamp_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_BlackHole",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_BlastShieldGun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        160,
+        32
+      ]
+    },
+    {
+      "name": "T_BombArrow_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_BombOnFloor",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "name": "T_BoneTile",
+      "original_format": 3,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        64,
+        64
+      ]
+    },
+    {
+      "name": "T_ChargeUp",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        24,
+        12
+      ]
+    },
+    {
+      "name": "T_Chest",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        32,
+        16
+      ]
+    },
+    {
+      "name": "T_CloseQuarters_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Cluster_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Combustion_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Death_Sword",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Death_Sword_Spin",
+      "original_format": 12,
+      "mapping": {
+        "132,139,126": [
+          111,
+          67,
+          114
+        ],
+        "132,138,123": [
+          109,
+          65,
+          111
+        ],
+        "244,215,192": [
+          246,
+          212,
+          233
+        ],
+        "247,215,189": [
+          249,
+          214,
+          234
+        ]
+      },
+      "dimensions": [
+        384,
+        384
+      ]
+    },
+    {
+      "name": "T_DevilDealPickup",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "name": "T_DualShotgun_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_FireParticles",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        48,
+        8
+      ]
+    },
+    {
+      "name": "T_FireWave",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        64,
+        64
+      ]
+    },
+    {
+      "name": "T_FireyPayload_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_FlashMag_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_FocusedBlast_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_ForestTiles",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        192,
+        192
+      ]
+    },
+    {
+      "name": "T_FrostMoth",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          35,
+          74,
+          100
+        ],
+        "61,85,85": [
+          53,
+          127,
+          154
+        ],
+        "88,112,95": [
+          101,
+          193,
+          214
+        ],
+        "253,81,97": [
+          101,
+          193,
+          214
+        ],
+        "245,214,193": [
+          212,
+          246,
+          246
+        ]
+      },
+      "dimensions": [
+        32,
+        16
+      ]
+    },
+    {
+      "name": "T_Gale",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        288,
+        96
+      ]
+    },
+    {
+      "name": "T_GunEvo_Animation",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        640,
+        128
+      ]
+    },
+    {
+      "name": "T_GunFX",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Gun_Reload",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        48,
+        16
+      ]
+    },
+    {
+      "name": "T_HailShot_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          35,
+          74,
+          100
+        ],
+        "61,85,85": [
+          53,
+          127,
+          154
+        ],
+        "88,112,95": [
+          101,
+          193,
+          214
+        ],
+        "253,81,97": [
+          101,
+          193,
+          214
+        ],
+        "245,214,193": [
+          212,
+          246,
+          246
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Headshot_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_HeartPickup",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          235,
+          65,
+          86
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "name": "T_HellFire_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_HitMarkerFX",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        96,
+        32
+      ]
+    },
+    {
+      "name": "T_Icicle",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          35,
+          74,
+          100
+        ],
+        "61,85,85": [
+          53,
+          127,
+          154
+        ],
+        "88,112,95": [
+          101,
+          193,
+          214
+        ],
+        "253,81,97": [
+          101,
+          193,
+          214
+        ],
+        "245,214,193": [
+          212,
+          246,
+          246
+        ]
+      },
+      "dimensions": [
+        18,
+        8
+      ]
+    },
+    {
+      "name": "T_JetStream_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Katana_Portrait",
+      "original_format": 4,
+      "mapping": {
+        "253,81,97": [
+          155,
+          95,
+          199
+        ],
+        "41,52,72": [
+          35,
+          45,
+          65
+        ],
+        "61,85,85": [
+          48,
+          92,
+          103
+        ],
+        "88,112,95": [
+          94,
+          152,
+          157
+        ]
+      },
+      "dimensions": [
+        270,
+        313
+      ]
+    },
+    {
+      "name": "T_Katana_SS",
+      "original_format": 4,
+      "mapping": {
+        "253,81,97": [
+          155,
+          95,
+          199
+        ],
+        "41,52,72": [
+          35,
+          45,
+          65
+        ],
+        "61,85,85": [
+          48,
+          92,
+          103
+        ],
+        "88,112,95": [
+          94,
+          152,
+          157
+        ]
+      },
+      "dimensions": [
+        320,
+        320
+      ]
+    },
+    {
+      "name": "T_Light_Sword",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_MagicSprayer_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_MagicSword",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_MeteorGun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Napalm_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Overheat_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          100,
+          43,
+          40
+        ],
+        "61,85,85": [
+          169,
+          68,
+          42
+        ],
+        "88,112,95": [
+          230,
+          116,
+          52
+        ],
+        "253,81,97": [
+          230,
+          116,
+          52
+        ],
+        "245,214,193": [
+          255,
+          225,
+          151
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_PowerSprayer_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_QuantumBolt_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Quickload_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          35,
+          74,
+          100
+        ],
+        "61,85,85": [
+          53,
+          127,
+          154
+        ],
+        "88,112,95": [
+          101,
+          193,
+          214
+        ],
+        "253,81,97": [
+          101,
+          193,
+          214
+        ],
+        "245,214,193": [
+          212,
+          246,
+          246
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_ShadowBatGun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_ShanaHalo",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          200,
+          148,
+          62
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_SoulHeartPickup",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          75,
+          55,
+          42
+        ],
+        "61,85,85": [
+          133,
+          91,
+          46
+        ],
+        "88,112,95": [
+          200,
+          148,
+          62
+        ],
+        "253,81,97": [
+          100,
+          164,
+          223
+        ],
+        "245,214,193": [
+          251,
+          226,
+          163
+        ]
+      },
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "name": "T_SporeGun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "name": "T_TempleTile",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        384,
+        192
+      ]
+    },
+    {
+      "name": "T_ThousandKnives",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          65,
+          45,
+          78
+        ],
+        "61,85,85": [
+          111,
+          67,
+          114
+        ],
+        "88,112,95": [
+          183,
+          101,
+          153
+        ],
+        "253,81,97": [
+          183,
+          101,
+          153
+        ],
+        "245,214,193": [
+          246,
+          212,
+          233
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_ThunderCaller_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_TileGrass",
+      "original_format": 3,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_TitleLeaves",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        246,
+        450
+      ]
+    },
+    {
+      "name": "T_TrickKnife",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Trickshot_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Vines",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          37,
+          62,
+          56
+        ],
+        "61,85,85": [
+          60,
+          99,
+          72
+        ],
+        "88,112,95": [
+          108,
+          146,
+          89
+        ],
+        "253,81,97": [
+          108,
+          146,
+          89
+        ],
+        "245,214,193": [
+          217,
+          222,
+          166
+        ],
+        "32,26,36": [
+          25,
+          31,
+          29
+        ],
+        "39,32,48": [
+          30,
+          40,
+          37
+        ]
+      },
+      "dimensions": [
+        256,
+        64
+      ]
+    },
+    {
+      "name": "T_Volley_Gun",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          72,
+          51,
+          101
+        ],
+        "61,85,85": [
+          118,
+          78,
+          158
+        ],
+        "88,112,95": [
+          178,
+          119,
+          205
+        ],
+        "253,81,97": [
+          178,
+          119,
+          205
+        ],
+        "245,214,193": [
+          242,
+          219,
+          247
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_WindKnife",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Wind_Sword",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "name": "T_Windbolt",
+      "original_format": 4,
+      "mapping": {
+        "41,52,72": [
+          49,
+          66,
+          107
+        ],
+        "61,85,85": [
+          74,
+          111,
+          166
+        ],
+        "88,112,95": [
+          111,
+          176,
+          224
+        ],
+        "253,81,97": [
+          111,
+          176,
+          224
+        ],
+        "245,214,193": [
+          224,
+          240,
+          255
+        ]
+      },
+      "dimensions": [
+        32,
+        32
+      ]
+    }
+  ]
+}
