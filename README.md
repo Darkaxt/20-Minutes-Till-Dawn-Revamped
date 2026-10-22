@@ -68,7 +68,7 @@ The table tracks **42 grouped gameplay disparities**, not 42 individual patches.
 | Soul Knight / Justice | Required — not yet ported | Damage-growth interpretation and per-perk HP-growth caps differ. Windows behavior retained. | A22/A24 |
 | Energized | Required — not yet ported | Windows deterministic cadence retained instead of Android's random trigger. | A23 |
 | Fresh Clip / Anger Point | Integrated refresh behavior | Fresh Clip now grants +30% damage for one second; Anger Point grants +70% damage/fire rate for 30 seconds. Each acquired helper refreshes its active duration instead of accumulating independent overlapping trigger buffs. Native acquisition, expiry, reactivation and fresh-process Continue pass. | A25 |
-| Reflex / Vision | Vision integrated; Reflex required | Vision transform now follows its stat beyond the old 2.5 cap. Movement-to-dodge growth/cap remains required; Glare radius/consumer remains a separate open row. | A27/A31 |
+| Reflex / Vision | Integrated stated consumers | Reflex follows subsequent movement growth/loss up to the Android ten-percent growth cap, with one provider across repeated picks. Vision follows its stat beyond 2.5. Native acquisition, capped/uncapped Continue and restart pass; Glare remains separate. | A27/A31 |
 | Best Friends / Magic Lens | Required — not yet ported | Attack-speed and damage composition, plus Lens size clamping, differ. Windows behavior retained. | A28/A29 |
 | Death Rounds / Hellspawns | Death Rounds integrated; Hellspawns required | Death Rounds now supplies +10 flat Bullet/Summon Damage before their stat multipliers; native acquisition, checkpoint and clean restart verified. Hellspawns' damage-event scope/boss restriction remains required. | A30/A32 |
 | Kill Clip / Siege / Regeneration | Required — not yet ported | Kill qualification, ammo conservation versus gain, and first-heart timing differ. Windows behavior retained. | A33/A34/A35 |
@@ -87,11 +87,11 @@ The table tracks **42 grouped gameplay disparities**, not 42 individual patches.
 | Hina Hidden Blade | Required — not yet ported | Windows triple-damage recipe and protection ownership retained; Android changes both damage and invulnerability. | A54 |
 | Body and Soul | Required — not yet ported | Windows already has a timed soul-heart pickup. Android's direct grants, extra capacity and finite counter are not imported. | A55 |
 | Elemental Barrage | Equivalent at reviewed activation/removal boundary | Both versions add Fire Rate twice despite the Fire Rate/Reload Rate tooltip. This shared anomaly is not a missing Android update. | A58 |
-| Dedication | Required — not yet ported | Windows live summon-count callback retained; the inspected Android callback appears empty. | A59 |
+| Dedication | Equivalent at reviewed rune boundary | Corrected source reading: Android OnSummonChanged tail-branches to CheckSummons, using the same active-summon count and rank-scaled activation/removal as Windows. The earlier empty-callback report was wrong. | A59 |
 | Healing / Ethereal / Close Combat / Wind Shield | Required — not yet ported | Native kill qualification, collision filters and projectile lifecycle retained. Android callback/layer boundaries differ. | A60/A63 |
 | Cadence / Tenacity | Equivalent at reviewed rune boundary | Matching shipped recipes/callbacks retain their shared tooltip mismatches; those are balance/text anomalies, not missing Android updates. | A61 |
 | Gun Glyph | Required — not yet ported | Windows secondary-bullet flat-damage composition and reduced knockback retained. | A62 |
-| Dodge | Required — not yet ported | Windows modifier notification and hit-counter guarantee retained; Android's inspected random-roll path differs. | A64 |
+| Dodge | Integrated random-roll consumer | Android stat/cap-based random roll replaces the Windows hit-counter guarantee. Seeded rolls, native collision dispatch, modified cap and restart verified. | A64 |
 | Forest / Temple | Required — not yet ported | Android wave populations, HP, boss HP and some timings are not imported. Temple-versus-Forest balance is not benchmarked. | A66 |
 | Endless | Required — not yet ported | Android's mixed pools, extra waves, 60-second scaling, boss frequency/affixes and XP curve are not ported. Windows mode remains native. | A67 |
 | Pumpkin Patch EyeBat reference | Required — not yet ported | Valid Windows reference retained; Android's final-wave spelling is a possible source anomaly, not a proven runtime failure. | A68 |

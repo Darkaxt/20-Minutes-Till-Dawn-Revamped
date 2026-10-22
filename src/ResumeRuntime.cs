@@ -33,6 +33,7 @@ public static partial class ResumeRuntime
  }
  static readonly Dictionary<Type,string[]> Fields=new Dictionary<Type,string[]>
  {
+  {typeof(AndroidReflex),new[]{"LastMove","Granted"}},
   {typeof(DropHPOnKillRune),new[]{"_counter"}},
   {typeof(BuffSummonDamageOverTime),new[]{"_timer"}},
   {typeof(BuffSummonAttackSpeedOverTime),new[]{"_timer"}},
