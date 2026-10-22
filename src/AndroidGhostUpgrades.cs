@@ -54,8 +54,9 @@ class AndroidGhostRecipes
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Powerup),nameof(Powerup.Apply)),AccessTools.Method(typeof(Powerup),nameof(Powerup.ApplyStack))};
  static void Prefix(Powerup __instance)
  {
-  string key=RunResume.Key(__instance);if(key!="best_friends_name"&&key!="vengeful_ghost_name")return;
-  var effect=new PerkEffect();Plugin.SetField(effect,"trigger",new InstantTrigger());Plugin.SetField(effect,"action",new AndroidGhostUpgrade{BestFriends=key=="best_friends_name"});
+  string key=RunResume.Key(__instance);if(key!="best_friends_name"&&key!="vengeful_ghost_name"&&key!="ghost_wizard_name")return;
+  flanne.PerkSystem.Action action=key=="ghost_wizard_name"?(flanne.PerkSystem.Action)new AndroidGhostWizardAction():new AndroidGhostUpgrade{BestFriends=key=="best_friends_name"};
+  var effect=new PerkEffect();Plugin.SetField(effect,"trigger",new InstantTrigger());Plugin.SetField(effect,"action",action);
   Plugin.SetField(__instance,"effects",new[]{effect});Plugin.SetField(__instance,"stackedEffects",new PerkEffect[0]);
  }
 }

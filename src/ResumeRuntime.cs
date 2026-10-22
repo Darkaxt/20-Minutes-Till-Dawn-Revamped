@@ -38,6 +38,7 @@ public static partial class ResumeRuntime
   {typeof(StabbingSummon),new[]{"_timer"}},
   {typeof(ShootingSummon),new[]{"_timer"}},
   {typeof(AndroidBestFriends),new[]{"Factor"}},
+  {typeof(AndroidShootingFlags),new[]{"BulletEffect","BurnDamage"}},
   {typeof(AndroidReflex),new[]{"LastMove","Granted"}},
   {typeof(AndroidGlare),new[]{"Timer"}},
   {typeof(ThunderDuringHolyShield),new[]{"_timer"}},

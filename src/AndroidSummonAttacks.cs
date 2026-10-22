@@ -55,7 +55,8 @@ class AndroidShootingRecipe
 {
  static bool Prefix(ShootingSummon __instance,GameObject ___projectilePrefab,ref ProjectileRecipe __result)
  {
-  __result=new ProjectileRecipe{objectPoolTag=___projectilePrefab.name,
+  var flags=__instance.GetComponent<AndroidShootingFlags>();
+  __result=new AndroidSummonRecipe{objectPoolTag=___projectilePrefab.name,BulletEffect=flags!=null&&flags.BulletEffect,BurnDamage=flags?.BurnDamage??0,
    damage=__instance.summonDamageMod.Modify(__instance.inheritPlayerDamage?PlayerController.Instance.gun.damage:__instance.baseDamage),
    projectileSpeed=__instance.projectileSpeed,size=1,knockback=__instance.knockback,bounce=__instance.bounce,piercing=__instance.pierce,owner=__instance.gameObject};
   return false;
