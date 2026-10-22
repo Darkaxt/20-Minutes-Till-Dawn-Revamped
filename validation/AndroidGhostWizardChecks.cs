@@ -16,9 +16,10 @@ public partial class RuntimeChecks
  static MonoBehaviour WizardFlags(ShootingSummon ghost)=>ghost.GetComponents<MonoBehaviour>().SingleOrDefault(c=>c.GetType().Name=="AndroidShootingFlags");
  void WizardImpact(object sender,object args){if(wizardTarget!=null&&(args as GameObject)==wizardTarget&&(sender as GameObject)==PlayerController.Instance.gameObject)wizardImpacts++;}
  void WizardBurn(object sender,object args){if(wizardTarget!=null&&(args as GameObject)==wizardTarget)wizardBurns.Add((float)WindField(wizardTarget.GetComponent<AndroidBurnStatus>(),"damage"));}
- IEnumerator WizardHit(ShootingSummon ghost,bool forceMage,float[] expectedBurns,int expectedImpacts)
+ IEnumerator WizardHit(ShootingSummon ghost,bool forceMage,float[] expectedBurns,int expectedImpacts,bool assassinProbe=false)
  {
   var pool=ObjectPooler.SharedInstance;var actor=pool.GetPooledObject("Validation_Wizard_Enemy");var health=DurableEnemy(actor,ghost.transform.position+Vector3.right*3,false);actor.SetActive(true);health.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;
+  if(assassinProbe){health.maxHP=100;Plugin.SetField(health,"<HP>k__BackingField",20+Mathf.FloorToInt(ShootingRecipe(ghost).damage));}
   wizardTarget=actor;wizardImpacts=0;wizardBurns.Clear();int hurt=0;health.onHurt.AddListener(d=>hurt++);
   var originalPrefab=(GameObject)WindField(ghost,"projectilePrefab");Plugin.SetField(ghost,"projectilePrefab",wizardPrototype);
   string tag=wizardPrototype.name;foreach(var shot in pool.pooledObjectsDictionary[tag])shot.SetActive(false);
@@ -27,6 +28,7 @@ public partial class RuntimeChecks
   finally{ForceGlareBurn=false;Plugin.SetField(ghost,"projectilePrefab",originalPrefab);}
   Log("wizard-contact","impact="+wizardImpacts+" burns="+string.Join(",",wizardBurns)+" projectile="+wizardProjectile.GetInstanceID());
   Require(wizardImpacts==expectedImpacts&&wizardBurns.SequenceEqual(expectedBurns),"actual shot has one correctly owned impact and exact ordered source burn/proc contributions");
+  if(assassinProbe){Log("plain-ghost-assassin","HP="+health.HP+" dead="+health.isDead);Require(!health.isDead&&health.HP==20,"plain Ghost bulletEffect=false excludes global Assassin at actual contact");}
   if(expectedBurns.Length>0)wizardMarkedShots.Add(wizardProjectile);
   actor.transform.position=PlayerController.Instance.transform.position+Vector3.right*50;wizardTarget=null;
  }
@@ -52,6 +54,13 @@ public partial class RuntimeChecks
   wizardPrototype=Object.Instantiate((GameObject)WindField(first,"projectilePrefab"));wizardPrototype.SetActive(false);wizardPrototype.name="Validation_Wizard_Projectile";wizardPrototype.transform.SetParent(pool.transform);pool.AddObject(wizardPrototype.name,wizardPrototype,2);
   Require(pool.pooledObjectsDictionary[wizardPrototype.name].Count==2,"fixture starts with two actual native pooled Ghost projectiles");
   Log("fixture-precondition","Two-member pool from the actual native Ghost projectile prefab exercises native rotating selection; wizard contacts warm both members before a plain shot");
+  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")=="resume-ghost-wizard-projectile")
+  {
+   // A85 diagnostic reproduction. Expected to fail until the common source
+   // projectile producer is migrated; this is not an acceptance-pass mode.
+   yield return AndroidPick(game,"Assassin",game.playerXP.level);yield return WizardHit(first,false,new float[0],0,true);
+   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Plain source Ghost projectile does not dispatch the global bullet-impact Assassin consumer");Application.Quit(0);yield break;
+  }
   if(!continuation)
   {
    yield return WizardHit(first,false,new float[0],0);yield return AndroidPick(game,"GhostWizard",game.playerXP.level);
