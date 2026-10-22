@@ -85,6 +85,7 @@ class SuspendToTitleState:GameState
 {
  public override void Enter()
  {
+  RunExitPreparation.Prepare();
   GameTimer.SharedInstance.Stop();pauseController.UnPause();
   // The original TransitionToTitleState deposits the run score. A suspended run
   // must not receive that reward, so use only the normal Unity scene boundary.
