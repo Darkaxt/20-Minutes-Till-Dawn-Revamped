@@ -31,15 +31,18 @@ public static partial class ResumeRuntime
  {
   {typeof(MomentumRune),new[]{"StartBuffCR"}},{typeof(BuffOnXP),new[]{"StartBuffCR"}},
   {typeof(FireRateBuffOnGainAmmo),new[]{"BuffCR"}},{typeof(TemporaryRefreshingBuff),new[]{"BuffCR"}},{typeof(FireRateOnHurt),new[]{"StatBoostCR"}},
-  {typeof(ElementalBarrageRune),new[]{"StartBonusCR","WaitForCooldownCR"}},{typeof(LastStandRune),new[]{"InvulnCR"}}
+  {typeof(ElementalBarrageRune),new[]{"StartBonusCR","WaitForCooldownCR"}},{typeof(LastStandRune),new[]{"InvulnCR"}},
+  {typeof(EtherealRune),new[]{"EtherealStateCR"}},{typeof(ProjectileShieldRune),new[]{"WaitForCooldownCR"}}
  };
  static object Field(object owner,string name)=>AccessTools.Field(owner.GetType(),name).GetValue(owner);
  static float Number(object owner,string name)=>Convert.ToSingle(Field(owner,name));
  internal static void NativeFlowStarted(MonoBehaviour owner,string method)
  {
   float duration=method=="StartBonusCR"?Number(owner,"secondsPerLevel")*Number(owner,"level"):
-   method=="WaitForCooldownCR"?Number(owner,"cooldown"):
+   method=="WaitForCooldownCR"&&owner is ElementalBarrageRune?Number(owner,"cooldown"):
    method=="InvulnCR"?Number(owner,"invulnDurationPerLevel")*Number(owner,"level"):
+   owner is EtherealRune?Number(owner,"durationPerLevel")*Number(owner,"level"):
+   owner is ProjectileShieldRune?Number(owner,"baseCD")-Number(owner,"cdrPerLevel")*Number(owner,"level"):
    method=="InvincibilityCooldownCR"?.5f:Number(owner,"duration");
   Deadlines[owner]=Tuple.Create(method,Time.time+duration);
   if(method=="InvulnCR")SpentOneUse.Add(owner);
@@ -71,7 +74,7 @@ public static partial class ResumeRuntime
     else if(c is TemporaryRefreshingBuff){if(Field(c,"buffCoroutine")!=null){method="BuffCR";remaining=Number(c,"duration")-Number(c,"_timer");}}
     else
     {
-     bool active=c is FireRateOnHurt?Field(c,"statBoostCoroutine")!=null:c is ElementalBarrageRune?(bool)Field(c,"disableInflictGain"):(bool)Field(c,"active");
+     bool active=c is FireRateOnHurt?Field(c,"statBoostCoroutine")!=null:c is ElementalBarrageRune?(bool)Field(c,"disableInflictGain"):c is EtherealRune?(bool)Field(c,"_isActive"):c is ProjectileShieldRune?!c.GetComponent<Collider2D>().enabled:(bool)Field(c,"active");
      if(active)
      {if(!Deadlines.TryGetValue(c,out var end))throw new InvalidOperationException("Native effect clock was not observed: "+c.GetType().Name);method=end.Item1;remaining=end.Item2-Time.time;}
     }
@@ -127,9 +130,19 @@ public static partial class ResumeRuntime
     if(c is FireRateBuffOnGainAmmo)Plugin.SetField(c,"_buffCoroutine",null);
     if(c is TemporaryRefreshingBuff)Plugin.SetField(c,"buffCoroutine",null);
     if(c is FireRateOnHurt)Plugin.SetField(c,"statBoostCoroutine",null);
+    if(c is ProjectileShieldRune)
+    {
+     c.GetComponent<Collider2D>().enabled=saved==null;((SpriteRenderer)Field(c,"sprite")).enabled=saved==null;
+     if(saved!=null)
+     {
+      float originalCD=Number(c,"baseCD");Plugin.SetField(c,"baseCD",saved.remaining+Number(c,"cdrPerLevel")*Number(c,"level"));
+      try{c.StartCoroutine((IEnumerator)AccessTools.Method(pair.Key,saved.method).Invoke(c,null));}finally{Plugin.SetField(c,"baseCD",originalCD);}
+     }
+     continue;
+    }
     if(saved==null)continue;
-    string duration=c is LastStandRune?"invulnDurationPerLevel":c is ElementalBarrageRune?(saved.method=="StartBonusCR"?"secondsPerLevel":"cooldown"):"duration";
-    object originalValue=Field(c,duration);float original=Convert.ToSingle(originalValue);float factor=(c is LastStandRune||(c is ElementalBarrageRune&&saved.method=="StartBonusCR"))?Number(c,"level"):1;
+    string duration=c is LastStandRune?"invulnDurationPerLevel":c is EtherealRune?"durationPerLevel":c is ElementalBarrageRune?(saved.method=="StartBonusCR"?"secondsPerLevel":"cooldown"):"duration";
+    object originalValue=Field(c,duration);float original=Convert.ToSingle(originalValue);float factor=(c is LastStandRune||c is EtherealRune||(c is ElementalBarrageRune&&saved.method=="StartBonusCR"))?Number(c,"level"):1;
     float timer=(c is MomentumRune||c is BuffOnXP||c is FireRateBuffOnGainAmmo||c is TemporaryRefreshingBuff)?Number(c,"_timer"):0;
     Plugin.SetField(c,duration,c is FireRateBuffOnGainAmmo||c is TemporaryRefreshingBuff?originalValue:(object)(saved.remaining/factor));
     try
@@ -178,7 +191,7 @@ class ResumeSingleShotIdentity{static void Postfix(SingleShotModStatAction __ins
 [HarmonyPatch]
 class ResumeEffectClock
 {
- static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(FireRateOnHurt),"StatBoostCR"),AccessTools.Method(typeof(ElementalBarrageRune),"StartBonusCR"),AccessTools.Method(typeof(ElementalBarrageRune),"WaitForCooldownCR"),AccessTools.Method(typeof(LastStandRune),"InvulnCR"),AccessTools.Method(typeof(PreventDamage),"InvincibilityCooldownCR")};
+ static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(FireRateOnHurt),"StatBoostCR"),AccessTools.Method(typeof(ElementalBarrageRune),"StartBonusCR"),AccessTools.Method(typeof(ElementalBarrageRune),"WaitForCooldownCR"),AccessTools.Method(typeof(LastStandRune),"InvulnCR"),AccessTools.Method(typeof(PreventDamage),"InvincibilityCooldownCR"),AccessTools.Method(typeof(EtherealRune),"EtherealStateCR"),AccessTools.Method(typeof(ProjectileShieldRune),"WaitForCooldownCR")};
  static void Postfix(MonoBehaviour __instance,MethodBase __originalMethod)=>ResumeRuntime.NativeFlowStarted(__instance,__originalMethod.Name);
 }
 [HarmonyPatch(typeof(SecondWindRune),"HealAnimationCR")]

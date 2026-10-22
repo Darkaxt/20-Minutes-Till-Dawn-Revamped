@@ -44,7 +44,7 @@ public sealed class AndroidMightDamage:IDamageModifier
 {
  // Android adds +2 to a signed negative HP change. Windows passes positive
  // damage to modifiers, so the equivalent operation subtracts two damage.
- public ValueModifier GetMod()=>new AddValueModifier(0,-2);
+ public ValueModifier GetMod()=>new AddValueModifier(0,AndroidDamageRounding.PositiveDamageStage?-2:2);
 }
 [HarmonyPatch]
 class AndroidHealthPerkRecipes

@@ -28,6 +28,10 @@ public partial class RuntimeChecks
    }
    p=PlayerController.Instance;Require(AndroidKillCounters().Length==2&&AndroidKillCounters().All(t=>t.Count==317),"fresh-process Continue restores both Android summon-kill counters exactly");
    Require(Mathf.Abs(Bonus(BurnSystem.SharedInstance.burnDamageMultiplier)-.7f)<.001f&&Mathf.Abs(Bonus(ThunderGenerator.SharedInstance.damageMod)-.7f)<.001f,"Continue reconstructs additive element modifiers once per tome");
+   var enemyPrefab=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+   var restoredTarget=DurableEnemy(enemyPrefab,p.transform.position+Vector3.right*35,true);restoredTarget.gameObject.SetActive(true);
+   int restoredHP=restoredTarget.HP;restoredTarget.TakeDamage(DamageType.Bullet,20);Require(restoredHP-restoredTarget.HP==18,"continued Might retains Android damage sign at TakeDamage");
+   restoredHP=restoredTarget.HP;restoredTarget.HPChange(-20);Require(restoredHP-restoredTarget.HP==18,"continued Might retains Android damage sign at direct HPChange");
    yield return Capture("android-health-perks-continue.png");yield return AchievementExit(game,false);
    yield return AchievementRun("Shana","RevolverData","20M_Forest");game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
    Require(AndroidKillCounters().Length==0&&p.stats[StatType.BulletDamage].FlatBonus==0&&Bonus(BurnSystem.SharedInstance.burnDamageMultiplier)==0,"native restart clears Android heart counters and damage owners");
@@ -57,6 +61,8 @@ public partial class RuntimeChecks
   Require(hp-target.HP==18,"Android Tome of Might signed plus-two HP modifier reduces incoming damage by two across damage categories");
   p.playerHealth.hp--;hp=target.HP;target.TakeDamage(DamageType.Bullet,20);
   Require(hp-target.HP==18,"Android Tome of Might fixed signed contribution does not scale with current or maximum hearts");
+  hp=target.HP;target.HPChange(-20);Require(hp-target.HP==18,"Android Might preserves its signed contribution for direct HP-change attacks as well as TakeDamage");
+  hp=target.HP;target.HPChange(1);Require(target.HP-hp==3,"Android Might also adds two to a positive enemy HP change in the shared source pipeline");
   float reduction=Reduction(p.stats[StatType.BulletDamage]);
   yield return NativeTomePick(game,false,"TomeOfElements");yield return NativeTomePick(game,false,"TomeOfElements");
   Require(Mathf.Abs(Reduction(p.stats[StatType.BulletDamage])-reduction*.25f)<.001f&&Mathf.Abs(Bonus(BurnSystem.SharedInstance.burnDamageMultiplier)-.7f)<.001f&&Mathf.Abs(Bonus(ThunderGenerator.SharedInstance.damageMod)-.7f)<.001f&&Mathf.Abs(Bonus(FreezeSystem.SharedInstance.durationMod)-.7f)<.001f,"Android Elements applies each bullet penalty and adds elemental modifiers rather than multiplying independent damage buffs");
