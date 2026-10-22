@@ -9,19 +9,21 @@ using flanne.PerkSystem.Triggers;
 namespace TwentyMinutes.Modernization;
 
 // Android PreventDamage.ReduceCD / ReduceApplyTime / realCooldownTime.
-// Adapt its remaining-deadline arithmetic to the native elapsed-time owner;
-// the existing coroutine, native damage/visual events and save provider remain.
+// Initialized shields use the source game-clock owner. Preserve native damage
+// and visual events, with explicit counted lifecycle/checkpoint reconstruction.
 static class AndroidShieldCooldown
 {
  static readonly AccessTools.FieldRef<PreventDamage,float> Timer=AccessTools.FieldRefAccess<PreventDamage,float>("_timer");
  public static void Advance(PreventDamage shield,float seconds)
  {
+  var source=shield.GetComponent<AndroidShieldLifecycle>();if(source!=null){source.Advance(seconds);return;}
   if(shield.isActive)return;
   float remaining=shield.finalCooldown-Timer(shield)-seconds;
   Timer(shield)=shield.finalCooldown-(remaining<0?1:remaining);
  }
  public static void Reduce(PreventDamage shield,float seconds)
  {
+  var source=shield.GetComponent<AndroidShieldLifecycle>();if(source!=null){source.Reduce(seconds);return;}
   float remaining=shield.finalCooldown-Timer(shield)-seconds;
   shield.cooldownTime-=seconds;
   if(!shield.isActive)Timer(shield)=shield.finalCooldown-(remaining<0?1:remaining);
@@ -48,7 +50,8 @@ class AndroidStalwartRecipe
 [HarmonyPatch(typeof(PreventDamage),nameof(PreventDamage.finalCooldown),MethodType.Getter)]
 class AndroidShieldMinimum
 {
- static void Postfix(ref float __result)=>__result=Mathf.Max(10,__result);
+ static void Postfix(PreventDamage __instance,ref float __result)
+ {var owner=__instance.GetComponent<AndroidShieldLifecycle>();__result=owner!=null?owner.Cooldown:Mathf.Max(10,__result);}
 }
 [HarmonyPatch(typeof(PreventDamage),nameof(PreventDamage.ReduceCDTimer))]
 class AndroidShieldRecoveryAdvance

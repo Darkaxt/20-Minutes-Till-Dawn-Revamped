@@ -30,11 +30,13 @@ public static partial class ResumeRuntime
   public List<string> liveOneUseRunes=new List<string>();public List<bool> singleShotActions=new List<bool>();
   public List<ShieldState> shields=new List<ShieldState>();
   public List<EffectState> effects=new List<EffectState>();
+  public int? protectionFlips;
  }
  static readonly Dictionary<Type,string[]> Fields=new Dictionary<Type,string[]>
  {
   {typeof(AndroidReflex),new[]{"LastMove","Granted"}},
   {typeof(AndroidGlare),new[]{"Timer"}},
+  {typeof(ThunderDuringHolyShield),new[]{"_timer"}},
   {typeof(AndroidBodySoul),new[]{"Grants","Remaining"}},
   {typeof(EtherealRune),new[]{"_counter"}},
   {typeof(DropHPOnKillRune),new[]{"_counter"}},

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,13 +34,17 @@ public partial class RuntimeChecks
    RunResume.Save();var restored=RunResume.Read();
    Require(restored.blessingPending==false&&restored.acquired.Count(a=>!a.evolution&&a.key=="holy_shield_name")==1&&Time.time-began>=expected.blessingRemaining-.02f,"the original starting rune completes once at its saved remaining native delay");
    Require(restored.pools.Single(p=>p.field=="powerupPool").entries.All(e=>e.key!="holy_shield_name"),"delayed starting rune consumes its native finite offer after restoration");
+   var shield=restored.runtime.shields.Single();Require(shield.source&&shield.active&&shield.contributes&&shield.count==1&&shield.applyAt==-1&&restored.runtime.protectionFlips==1&&PlayerController.Instance.playerHealth.isProtected,"the resumed native Blessing grants one initialized Android shield owner and saves its counted active protection contract");
   }
   yield return CheckCustomNavigation(game);
   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Fresh-process imported preset continuation and native exit verified");Application.Quit(0);
  }
  IEnumerator SaveEarlyCustom()
  {
-  RunResume.Invalidate();yield return OpenCustomConfiguration();Click(CustomButton("CustomStart"));
+  RunResume.Invalidate();yield return OpenCustomConfiguration();
+  var title=Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>();AllRunes(title).Single(r=>r.rune.data.name=="BlessingRuneData").level=1;title.Save();
+  var blessing=Object.Instantiate(Resources.FindObjectsOfTypeAll<flanne.RuneSystem.RuneData>().First(r=>r.name=="BlessingRuneData"));blessing.name="BlessingRuneData";blessing.level=1;Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>{blessing};
+  Log("fixture-precondition","Isolated native profile seeded with owned rank-one Blessing and a run-local selection to isolate pending startup; no claim of testing its purchase path");Click(CustomButton("CustomStart"));
   GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();RunResume.Save();var saved=RunResume.Read();
   Require(saved.blessingPending==true&&saved.blessingRemaining>0&&saved.acquired.All(a=>a.key!="holy_shield_name"),"actual immediate native pause saves the unfinished starting rune and its remaining delay");

@@ -20,7 +20,8 @@ public static partial class ResumeRuntime
  [Serializable]public class TimedEffect{public string type,method;public int ordinal;public float remaining;}
  [Serializable]public class SavedChange{public string type;public bool flat;public int flatValue;public float value;}
  [Serializable]public class TemporaryEffect{public float remaining;public List<SavedChange> changes=new List<SavedChange>();}
- [Serializable]public class ShieldState{public int ordinal;public bool active;public float timer,flashRemaining,cooldown;public ModState rate;}
+ [Serializable]public class ShieldState{public int ordinal;public bool active;public float timer,flashRemaining,cooldown;public ModState rate;
+  public bool source,contributes;public int count,lastCount;public float reduction,applyAt;}
  static readonly Dictionary<MonoBehaviour,Tuple<string,float>> Deadlines=new Dictionary<MonoBehaviour,Tuple<string,float>>();
  static readonly Dictionary<TemporaryStatBuff,float> TemporaryDeadlines=new Dictionary<TemporaryStatBuff,float>();
  static readonly HashSet<TemporaryStatBuff> InertReplayedBuffs=new HashSet<TemporaryStatBuff>();
@@ -93,13 +94,17 @@ public static partial class ResumeRuntime
   var shields=player.GetComponentsInChildren<PreventDamage>(true);
   for(int i=0;i<shields.Length;i++)
   {
+   var source=shields[i].GetComponent<AndroidShieldLifecycle>();if(source!=null){state.shields.Add(source.Capture(i));continue;}
    var s=shields[i];bool flash=s.isActive&&Field(s,"_waitCooldownCoroutine")!=null;
    float flashRemaining=flash&&Deadlines.TryGetValue(s,out var deadline)?Mathf.Max(0,deadline.Item2-Time.time):0;
    state.shields.Add(new ShieldState{ordinal=i,active=s.isActive&&!flash,timer=flash?0:Number(s,"_timer"),flashRemaining=flashRemaining,cooldown=s.cooldownTime,rate=Capture(s.cooldownRate)});
   }
+  var protection=player.playerHealth.GetComponent<AndroidProtection>();
+  if(protection!=null)state.protectionFlips=protection.Value.flips;
  }
  static void ValidateEffects(State state)
  {
+  if(state.shields.Any(s=>s.source&&(!state.protectionFlips.HasValue||float.IsNaN(s.reduction)||float.IsInfinity(s.reduction)||float.IsNaN(s.applyAt)||float.IsInfinity(s.applyAt))))throw new InvalidOperationException("Unsupported counted shield checkpoint");
   if(state.effects==null||state.effects.Select(s=>s.id).Distinct().Count()!=state.effects.Count)throw new InvalidOperationException("Unsupported native perk effect checkpoint");
   foreach(var flow in state.timed)
   {var type=FlowMethods.Keys.SingleOrDefault(t=>t.FullName==flow.type);if(type==null||flow.ordinal<0||!FlowMethods[type].Contains(flow.method)||float.IsNaN(flow.remaining)||float.IsInfinity(flow.remaining)||flow.remaining<0)throw new InvalidOperationException("Unsupported native effect checkpoint");}
@@ -167,9 +172,13 @@ public static partial class ResumeRuntime
   {
    if(saved.ordinal>=shields.Length)throw new InvalidOperationException("Native shield was not reconstructed");
    var shield=shields[saved.ordinal];shield.cooldownTime=saved.cooldown;Restore(shield.cooldownRate,saved.rate);
+   var source=shield.GetComponent<AndroidShieldLifecycle>();
+   if(source!=null)
+   {if(!saved.source||!state.protectionFlips.HasValue)throw new InvalidOperationException("This older checkpoint uses the previous Boolean shield contract; it has been preserved.");source.Restore(saved);continue;}
    if(!saved.active)
    {var routine=RestoreShield(shield,saved);Plugin.SetField(shield,"_waitCooldownCoroutine",routine);shield.StartCoroutine(routine);}
   }
+  if(state.protectionFlips.HasValue)AndroidProtection.Get(player.playerHealth).RestoreCount(state.protectionFlips.Value);
  }
  static IEnumerator RestoreShield(PreventDamage shield,ShieldState saved)
  {
