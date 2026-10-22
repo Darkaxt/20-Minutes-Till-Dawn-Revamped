@@ -142,7 +142,12 @@ public static partial class ResumeRuntime
    }
   }
   RestoreEffects(player,state);
-  for(int i=0;i<state.stats.Count;i++)Restore(player.stats[(StatType)i],state.stats[i]);
+  // RunResume already assigned the snapshot's actual health. Its explicit
+  // maximum can differ from the derived stat (for example Justice's20 cap).
+  // Restore native stat notifications without assigning/healing health again.
+  bool explicitMaximum=AndroidHealthStat.ExplicitMaximum;AndroidHealthStat.ExplicitMaximum=true;
+  try{for(int i=0;i<state.stats.Count;i++)Restore(player.stats[(StatType)i],state.stats[i]);}
+  finally{AndroidHealthStat.ExplicitMaximum=explicitMaximum;}
   Restore(player.GetComponentInChildren<flanne.Player.PlayerXP>().xpMultiplier,state.xpMultiplier);
   foreach(var buff in player.GetComponentsInChildren<DmgAndMSOnNotHurt>(true))
   {int ticks=(int)AccessTools.Field(typeof(DmgAndMSOnNotHurt),"_ticks").GetValue(buff),maximum=(int)AccessTools.Field(typeof(DmgAndMSOnNotHurt),"maxTicks").GetValue(buff);player.playerSprite.GetComponentInChildren<SpriteTrail>()?.SetEnabled(ticks>=maximum/2);}

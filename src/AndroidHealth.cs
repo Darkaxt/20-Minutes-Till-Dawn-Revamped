@@ -6,8 +6,9 @@ namespace TwentyMinutes.Modernization;
 [HarmonyPatch(typeof(StatModHealth),"OnStatChanged")]
 class AndroidHealthStat
 {
+ [System.ThreadStatic]internal static bool ExplicitMaximum;
  static bool Prefix(StatsHolder ___stats,PlayerHealth ___health)
- {___health.maxHP=Mathf.Max(1,Mathf.FloorToInt(___stats[StatType.MaxHP].Modify(___health.baseMaxHP)));return false;}
+ {if(!ExplicitMaximum)___health.maxHP=Mathf.Max(1,Mathf.FloorToInt(___stats[StatType.MaxHP].Modify(___health.baseMaxHP)));return false;}
 }
 [HarmonyPatch(typeof(PlayerHealth),nameof(PlayerHealth.maxHP),MethodType.Setter)]
 class AndroidMaximumHealth
