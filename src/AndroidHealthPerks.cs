@@ -59,6 +59,7 @@ class AndroidHealthPerkRecipes
    case "soul_drain_name":trigger=new AndroidSummonKillTrigger();action=new AndroidGrantHeart{Soul=true};break;
    case "soul_expand_name":trigger=new InstantTrigger();action=new AndroidGrantHeart{Soul=true,Capacity=2};break;
    case "tome_of_elements_name":trigger=new InstantTrigger();action=new AndroidElementStats();break;
+   case "electro_mastery_name":trigger=new InstantTrigger();action=new AndroidElectroMastery();break;
    case "tome_of_might_name":
     var buff=new DamageBuff();Plugin.SetField(buff,"modAllDamageType",true);Plugin.SetField(buff,"modifier",new AndroidMightDamage());
     action=new ApplyPlayerBuffAction();Plugin.SetField(action,"buff",buff);trigger=new InstantTrigger();break;

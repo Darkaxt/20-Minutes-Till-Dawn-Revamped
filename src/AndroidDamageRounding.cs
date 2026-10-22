@@ -27,7 +27,7 @@ class AndroidDamageRounding
   if(count!=(__originalMethod.Name==nameof(Health.TakeDamage)?2:1))throw new InvalidOperationException("Unsupported native health notification pipeline: "+__originalMethod.Name);
  }
  static int DamageModifiers(int value,string notification,object owner)=>Modifiers(value,notification,owner,true);
- static int SignedModifiers(int value,string notification,object owner)=>Modifiers(value,notification,owner,false);
+ internal static int SignedModifiers(int value,string notification,object owner)=>Modifiers(value,notification,owner,false);
  static int Modifiers(int value,string notification,object owner,bool positiveDamage)
  {
   var modifiers=new List<ValueModifier>();bool previous=PositiveDamageStage;PositiveDamageStage=positiveDamage;

@@ -101,6 +101,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-dodge-")){yield return CheckAndroidDodge(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-rune-consumers-")){yield return CheckAndroidRuneConsumers(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-hit-effects-")){yield return CheckAndroidHitEffects(testMode.EndsWith("continue"));yield break;}
+        if(testMode.StartsWith("resume-lightning-")){yield return CheckAndroidLightning(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
