@@ -125,7 +125,7 @@ There is **no validated exact total of remaining unique gameplay changes**. The 
 
 **Excluded:** mobile commerce, ads/reward systems, GamePass/account services, promotional rentals/coupons and unused placeholder content. These exclusions are not missing gameplay integrations. Third-party mod binaries/artwork are not bundled.
 
-Culling, Mini Clip, Giant and five Tome numeric recipes pass native menu/stat/restart checks. Stalwart cooldown arithmetic and Fresh Clip/Anger Point/Abby Whirlwind refresh behavior also pass native checks, including fresh-process Continue for the timed effects/shield. The remaining reachable Android gameplay changes are required work and do not await a separate balance decision. No gameplay-completion release or deployment has occurred.
+Culling, Mini Clip, Giant/Tomes, shared burn/area targeting, health/vision, base weapon/character tuning, direct heart grants and damage composition have passed their recorded native checks. Stalwart and refreshing effects, plus heart counters and elemental modifiers, also pass fresh-process Continue. The remaining reachable Android gameplay changes are required work and do not await a separate balance decision. No gameplay-completion release or deployment has occurred.
 
 ## Development
 

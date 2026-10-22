@@ -1,4 +1,4 @@
-# Gameplay migration decisions
+# Gameplay migration mapping
 
 The Windows game keeps its native combat, input, UI, stats, progression records and content. Android numeric enum IDs are mapped semantically. Unity 2022/IL2CPP libraries are not transplanted into the Unity 2019/Mono player.
 

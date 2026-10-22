@@ -34,9 +34,9 @@ All six stages are COMPLETE. No required blocker or tracked deferral remains. [R
 
 ## Source coverage and exclusions
 
-442 structural API differences have explicit bounded dispositions. 125 link to feature-specific reviews; 140 retain native APIs with uninspected bodies explicitly unproven. Remaining rows retain native-only/presentation APIs, exclude commerce/reward flows, or map the required new flows to native implementations. This is not whole-engine method equivalence.
+442 structural API differences have explicit bounded dispositions. 125 link to feature-specific reviews; 140 generic API entries require finer traceability; this bucket also contains already-ported types and is not a missing-feature count. Remaining rows retain native-only/presentation APIs, exclude commerce/reward flows, or map the required new flows to native implementations. This is not whole-engine method equivalence.
 
-Promotional character/rune rentals, coupons and ad/GamePass rewards are excluded. Source Rebirth has no free gameplay revival when neither ad nor GamePass is available. Native Second Wind remains. Android map/Endless numeric rewrites and other balance proposals are recorded for consideration and have not been silently applied.
+Promotional character/rune rentals, coupons and ad/GamePass rewards are excluded. Source Rebirth has no free gameplay revival when neither ad nor GamePass is available. Native Second Wind remains. Android map/Endless rewrites and all remaining gameplay differences are required parity work.
 
 Continuation reconstructs the supported build/runtime contract, not every live enemy/projectile or RNG state. Ordinary world actors are not frozen snapshots. Existing Windows Endless tuning remains native; its independent round deadline and cycle scaling survive continuation.
 
