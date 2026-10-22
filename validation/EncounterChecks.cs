@@ -24,6 +24,9 @@ public partial class RuntimeChecks
   spawner.LoadSpawners(new List<SpawnSession>{new SpawnSession{monsterPrefab=source.monsterPrefab,isElite=true,maximum=0,numPerSpawn=1,spawnCooldown=1000,startTime=0,duration=0,HP=10}});
   AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(spawner,new object[]{source.monsterPrefab.name,10,true});
   Health target;while((target=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>!h.isDead&&h.gameObject.name.Replace("(Clone)","").Trim()==source.monsterPrefab.name))==null)yield return null;
+  // Keep the fixture's actual native reward drop away from the player so it
+  // cannot open a ChestState between explicitly forced encounter deaths.
+  target.transform.position=PlayerController.Instance.transform.position+Vector3.right*15;
   yield return null;target.HPChange(-100000);yield return null;
   Require(target.isDead,"native elite spawn and Health death: "+source.monsterPrefab.name);
   target.gameObject.SetActive(false);
@@ -42,7 +45,8 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckEncounterAchievements(TitleScreenController title,string mode)
  {
-  Require(Progression.State.version==2&&Progression.Gates.Count==29,"version two encounter rules register all twenty-nine gates");
+  RunResume.Invalidate(); // This fixture tests new-run encounters, not Continue.
+  Require(Progression.State.version==2&&Progression.Gates.Count==30,"version two encounter rules register base gates plus Challenge");
   if(mode=="achievements-v2-migrate")
   {
    Require(Progression.State.earned.Count==28&&Progression.State.attempts.Count==0,"v1 ownership preserved without invented encounter attempts");
@@ -116,7 +120,7 @@ public partial class RuntimeChecks
   Health rhogog;while((rhogog=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>!h.isDead&&h.gameObject.name.Replace("(Clone)","").Trim()==secret.name))==null)yield return null;GameTimer.SharedInstance.Stop();
   yield return null;while(rhogog.isInvincible.value)yield return null;rhogog.HPChange(-1000000);GameTimer.SharedInstance.Stop();Earned("SporeGunData");
   yield return AchievementExit(g,false);while(Progression.State.pending.Count>0||UnlockNotifications.Instance.Showing!=null)yield return null;
-  Require(Progression.Gates.All(x=>Progression.Allowed(x.Data))&&Progression.State.earned.Count==29,"all twenty-nine encounter gates earned through native choices, spawns, defeats and clears");
+  Require(Progression.Gates.All(x=>Progression.Allowed(x.Data))&&Progression.State.earned.Count==30,"all base encounter gates and Challenge earned through native choices, spawns, defeats and clears");
   title=Object.FindObjectOfType<TitleScreenController>();title.Save();SetPhase("PASS");Log("complete","Revised encounter curve: native full trees, nonmerged run snapshots, attribute boundaries, scenario/Darkness/loadout and ordinal restrictions, queue persistence; explicit fixture preconditions, not full-length challenge play");Application.Quit(0);
  }
 }

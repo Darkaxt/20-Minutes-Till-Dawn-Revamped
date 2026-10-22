@@ -126,6 +126,8 @@ public partial class RuntimeChecks
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("cycle"))yield return VerifyEndlessCycle(original);
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("challenge"))Require(ChallengeRun.Instance.EnemyKills==original.challengeEnemies&&ChallengeRun.Instance.BossKills==original.challengeBosses&&ChallengeRun.Instance.KilledBosses.SetEquals(original.killedBosses)&&ChallengeRun.Instance.KilledElites.SetEquals(original.killedElites),"Challenge resumes its exact quotas and defeated encounter identities");
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("runes"))Require(Loadout.RuneSelection.Single(r=>r.name=="GrowthRuneData").level==2&&Object.FindObjectsOfType<flanne.UI.RuneUnlocker>().Length==0,"saved run-local rune rank is restored independently of title purchases");
+  yield return null;StatsOverlay.Instance.Refresh();
+  Require(StatsOverlay.Instance.Collected.Values.Any(e=>e.Name==Resources.FindObjectsOfTypeAll<Powerup>().First(x=>x.name=="BigShot").nameString)&&StatsOverlay.Instance.SkillIcons.All(i=>i.sprite!=null),"continued native acquisitions rebuild the transparent skill icon/count HUD");
   yield return Capture("resume-restored-native-run.png");
   yield return CheckRevolver(current,player,"resume-original-gun-input.png",wanted.recipe);
   yield return AchievementExit(current,false);

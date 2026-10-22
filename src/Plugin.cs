@@ -43,7 +43,7 @@ public class Plugin:BaseUnityPlugin
     {
         Instance=this;
         Text["rune_menu_instructions"]="Select to toggle · Hold to upgrade";
-        StatsEnabled=Config.Bind("Enhancements","StatsOverlay",true,"Show live run stats; F2 toggles. Stored in the mod configuration.");
+        StatsEnabled=Config.Bind("Enhancements","StatsOverlay",true,"F2 toggles native icon/value stats. Effective (base + bonus), before charge/conditional effects; PgUp/PgDn scroll collected skill icons. Stored in the mod configuration.");
         ColorfulEnabled=Config.Bind("Enhancements","ColorfulStyle",false,"Optional compatible Sprites Reborn art (Law / Daramos / Darkly77). Original is default. Selected over older Colorful Overhaul by measured current-build coverage.");
         new Harmony(Id).PatchAll(typeof(Plugin).Assembly);
         Logger.LogInfo("Native gameplay modernization loaded");

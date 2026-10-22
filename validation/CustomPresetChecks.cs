@@ -73,6 +73,10 @@ public partial class RuntimeChecks
  IEnumerator CheckCustomPresets()
  {
   RunResume.Invalidate();yield return OpenCustomConfiguration();SetPhase("native-custom-default-presets");
+  var challenge=CustomMode.Maps().Single(m=>m.name=="Challenge_Forest");
+  Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),challenge)));
+  Require(Loadout.difficultyLevel==0&&CustomMenu.Instance.GetComponentsInChildren<TMPro.TMP_InputField>().Single(f=>f.name=="CustomValue1").text=="1","Custom displays Challenge tier1 while preserving native zero-based difficulty");
+  CustomValue(1,"2");Require(Loadout.difficultyLevel==1,"displayed Challenge tier2 selects native tier index1");yield return Capture("custom-challenge-defaults.png");
   Click(CustomButton("CustomTab1"));CustomValue(0,"77");
   var quick=CustomMode.Maps().Single(m=>m.name=="10M_Forest");
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),quick)));

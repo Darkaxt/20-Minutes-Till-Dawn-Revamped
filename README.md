@@ -13,7 +13,15 @@ Implemented and verified in an isolated copied Windows player:
 
 Custom runs use obtained content and award credits while disabling unlocks, achievements and leaderboard submission. Switching mode defaults during play explicitly starts a new Custom run; restoring the current mode defaults removes its overrides.
 
-The transparent icon HUD, title credit, final integrated verification and usable installer/package remain in their assigned stages. One normal release follows their completion; stage commits are not releases.
+Gameplay and integrated HUD/title acceptance are complete. The usable installer/package and final delivery verification remain in progress. One normal release follows completion; stage commits are not releases.
+
+## Controls and behavior
+
+F2 or Options toggles the transparent stats HUD. Numbers show effective values followed by base and net bonus, before charge/conditional effects. Page Up/Page Down scroll the right-hand collected skill icons; T1/T2/T3 indicate tree tiers, S indicates a special upgrade, and ×N is its acquired count. Native movement, shooting, auto-targeting and controller bindings remain.
+
+Pause → Save & return suspends a supported run without cashing out its score. Continue reconstructs that build on the next launch. New run explicitly discards the checkpoint. Custom mode and its pause settings use native menus; Load mode defaults can restore the current mode or explicitly start another owned mode as a new Custom run.
+
+See [gameplay migration decisions](docs/MIGRATION.md) and the [anomaly/balance ledger](docs/ANOMALIES.md) for scope and retained differences.
 
 ## Development
 

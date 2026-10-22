@@ -1,0 +1,19 @@
+# Custom game controls
+
+Reference: [20MinutesTillChaos v0.9.0](https://www.nexusmods.com/20minutestildawn/mods/105), public description and four screenshots reviewed 2026-10-22. Screenshots show v0.8.5. The current binary requires a Nexus login and was not downloaded, installed, executed or copied. Exact parity with unseen fields is unproven. This is an independent native implementation of the documented gameplay controls; the reference's menu sizing, rainbow text and accent editor do not belong to the requested native layout.
+
+| Native menu | Controls / source of values |
+|---|---|
+| Run | Obtained scenario, Darkness within the earned normal range / earned Challenge tier, XP multiplier; credits allowed, unlocks and achievements disabled. Existing native character, weapon and purchased rune selection precedes Custom. |
+| Weapon | Current native recipe's base damage, shot cooldown, magazine, reload duration, projectile count, spread, knockback, projectile speed, bounce, piercing and inaccuracy. Defaults read from the real recipe. Changes are explicit run-local overrides and apply to evolved recipes too. |
+| Attributes | Each of the 21 native StatType multipliers from the reference's Stats screenshot; neutral 1, independent of normal upgrades. Native caps still apply. |
+| Enemies | Spawn amount multiplier (0 stops ordinary waves); ordinary/elite health, speed and contact damage; boss health, contact damage and attack cooldown rate. Values multiply normal scenario/Darkness/scaling rules for newly spawned actors. |
+| Summons | Obtained, active shooting summons: base damage multiplier and attack speed multiplier, by summon type; native global summon attributes remain separate. No arbitrary component editor. |
+| Upgrades | Grant an upgrade only from the actual run's finite native pools with prerequisites met; consumes its normal remaining availability. Edit the stat contribution scale of an already collected upgrade. Trigger/action graphs are read-only, matching the reference's stated editing limitation; do not rewrite subscriptions, timers or actions. |
+| Objects | Native red/soul heart pickups plus enemies/elites/bosses from the selected obtained scenario, using its native prefab/pool/spawn implementation. No locked scenario's actors or arbitrary prefab browser. |
+
+All persistent overrides are stored with the Custom checkpoint; granted upgrades are represented by the normal acquired-build checkpoint. Ordinary live spawned enemies and red/soul heart pickups are not a frozen-world snapshot; only the explicitly supported chest/devil-deal drop records return. Defaults/reset remove overrides rather than changing global assets. Live edits are available through the native pause menu. The clear Custom label and credits-only rule remain visible. New settings use opaque native palette panels, native TMP font and Unity UI controls, no ImGUI overlay or new input stack.
+
+Layout contract: 1280x720 reference canvas, centered 1060x600 opaque menu, 24-unit edge padding, category controls and an eight-row paginated content region, native cream/coral/green palette, visible focus and explicit controller/keyboard links. S5 verifies the integrated 1280x720 and 1920x1080 layouts. The mode row retains 24-unit side padding and 12-unit gaps; adding the fifth mode necessarily distributes the available width across five options. Original four-option evidence remains historical, not proof of the revised row.
+
+Acceptance: native owned selection -> configured Custom start -> actual modified gun/enemy/XP and live controls -> native credits-only result, no journal/ownership/Darkness/Steam/leaderboard write -> fresh-process Custom resume -> normal original-mode restart with no overrides. Test locked content, finite/prerequisite upgrade controls, Back/cancel/focus, corrupt Custom payload and retained source assets/settings.

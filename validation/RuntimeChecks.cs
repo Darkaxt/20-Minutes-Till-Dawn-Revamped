@@ -91,7 +91,10 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode.StartsWith("integrated-hud")){yield return CheckIntegratedHud(title);yield break;}
         if(testMode=="custom-native"){yield return CheckCustom();yield break;}
+        if(testMode=="custom-fresh"){yield return CheckFreshCustom();yield break;}
+        if(testMode=="custom-challenge"){yield return CheckCustomChallenge();yield break;}
         if(testMode=="custom-presets"){yield return CheckCustomPresets();yield break;}
         if(testMode=="resume-early-save"){yield return SaveEarlyCustom();yield break;}
         if(testMode=="resume-preset-continue"||testMode=="resume-early-continue"){yield return CheckPresetContinue(title);yield break;}
@@ -155,7 +158,8 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="achievements-legacy-stock")
         {
             Require(Progression.Gates.Where(g=>g.Character&&g.Index<12||!g.Character&&g.Index>=0&&g.Index<10).All(g=>Progression.Allowed(g.Data)),"every originally owned character and weapon remains owned from stock-shaped arrays");
-            Require(Progression.Gates.Where(g=>g.Id.StartsWith("scenario:")).All(g=>Progression.Allowed(g.Data)),"legacy mode and Darkness-based map access survives the new curve");
+            Require(Progression.Gates.Where(g=>g.Id.StartsWith("scenario:")&&g.Data.name!="Challenge_Forest").All(g=>Progression.Allowed(g.Data)),"legacy mode and Darkness-based map access survives the new curve");
+            Require(!Progression.Allowed(Progression.Gates.Single(g=>g.Data.name=="Challenge_Forest").Data),"old Windows clear arrays do not invent the new Challenge accomplishment");
             Require(Progression.State.bestLevel==1&&Progression.State.bestSeconds==0&&!Progression.State.facts.Any(f=>f.StartsWith("boss:")||f.StartsWith("perk:")),"migration does not invent historical survival, levels, perks or boss defeats");
             Require(!Progression.Allowed(Plugin.BaseGun)&&!Progression.Allowed(Characters.Data["Haruka"])&&!Progression.Allowed(Characters.Data["Dimond_Portrait"]),"old clears do not invent revised miniboss, build or second-boss conditions for new content");
             Require(Progression.State.version==2&&Progression.State.attempts.Count==0&&Progression.State.pending.Count==0&&Progression.State.notified.Count==26,"legacy ownership produces no retrospective notices or fabricated encounter attempts");
@@ -163,9 +167,9 @@ public partial class RuntimeChecks:MonoBehaviour
         }
         if(testMode=="achievements-complete-relaunch")
         {
-            Require(Progression.State.earned.Count==29&&Progression.Gates.All(g=>Progression.Allowed(g.Data)),"every earned character, weapon and scenario survives fresh-process journal/native save loading");
+            Require(Progression.State.earned.Count==30&&Progression.Gates.All(g=>Progression.Allowed(g.Data)),"every earned character, weapon and scenario survives fresh-process journal/native save loading");
             Require(Progression.Gates.Where(g=>g.Unlock!=null).All(g=>!g.Unlock.IsLocked),"all native unlock controls agree with persisted earned ownership");
-            Require(Progression.State.pending.Count==0&&Progression.State.notified.Count==29&&UnlockNotifications.Instance.Showing==null,"all delivered notifications stay deduplicated on complete-profile relaunch");
+            Require(Progression.State.pending.Count==0&&Progression.State.notified.Count==30&&UnlockNotifications.Instance.Showing==null,"all delivered notifications stay deduplicated on complete-profile relaunch");
             title.Save();SetPhase("PASS");Log("complete","Complete native progression and notice delivery retain exact values through fresh-process load/save");Application.Quit(0);yield break;
         }
         if(testMode=="achievements-fresh"||testMode=="achievements-relaunch")
@@ -444,7 +448,7 @@ public partial class RuntimeChecks:MonoBehaviour
         var previousTargets=cameras.Select(x=>x.targetTexture).ToArray();
         var previousRects=cameras.Select(x=>x.rect).ToArray();var previousOrtho=cameras.Select(x=>x.orthographicSize).ToArray();
         var pixelPerfect=cameras.SelectMany(x=>x.GetComponents<Behaviour>()).Where(x=>x.GetType().Name=="PixelPerfectCamera" && x.enabled).ToArray();
-        var rt=RenderTexture.GetTemporary(1280,720,24);var active=RenderTexture.active;
+        int width=Screen.width,height=Screen.height;var rt=RenderTexture.GetTemporary(width,height,24);var active=RenderTexture.active;
         try
         {
             foreach(var pp in pixelPerfect)pp.enabled=false;
@@ -454,7 +458,7 @@ public partial class RuntimeChecks:MonoBehaviour
             Canvas.ForceUpdateCanvases();
             foreach(var c in cameras)c.Render();
             camera.Render();
-            RenderTexture.active=rt;var t=new Texture2D(1280,720,TextureFormat.RGB24,false);t.ReadPixels(new Rect(0,0,1280,720),0,0);t.Apply();
+            RenderTexture.active=rt;var t=new Texture2D(width,height,TextureFormat.RGB24,false);t.ReadPixels(new Rect(0,0,width,height),0,0);t.Apply();
             File.WriteAllBytes(Path.Combine(ResultDir,file),t.EncodeToPNG());Object.Destroy(t);
             Log("offscreen-capture",file);
         }

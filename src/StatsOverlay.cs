@@ -20,12 +20,15 @@ public class StatsOverlay:MonoBehaviour
  public static bool Enabled{get=>Plugin.Instance.StatsEnabled.Value;set=>Plugin.Instance.StatsEnabled.Value=value;}
  public static readonly Color Ink=new Color(.13f,.12f,.18f,.94f),Cream=new Color(.96f,.84f,.76f),Coral=new Color(.99f,.32f,.38f),Green=new Color(.34f,.45f,.40f);
  public TMP_FontAsset Font;
- public GameObject Panel; public TMP_Text Body,Skills,Heading;
+ public GameObject Panel; public TMP_Text Body;
+ public RectTransform SkillContent;public ScrollRect SkillScroll;
+ public readonly List<Image> AttributeIcons=new List<Image>();
+ public readonly List<Image> SkillIcons=new List<Image>();
  public Button SettingButton;
  public string LastStatsText,LastSkillsText;
  PlayerController bound;bool dirty=true;
  readonly Dictionary<string,SkillEntry> collected=new Dictionary<string,SkillEntry>();
- public class SkillEntry{public string Name,Tier;public int Count;}
+ public class SkillEntry{public string Name,Tier;public int Count;public Sprite Icon;}
  public IReadOnlyDictionary<string,SkillEntry> Collected=>collected;
  void Awake(){Instance=this;}
  public static RectTransform Rect(GameObject o,Transform parent,Vector2 anchor,Vector2 pivot,Vector2 pos,Vector2 size)
@@ -43,22 +46,22 @@ public class StatsOverlay:MonoBehaviour
   var canvas=new GameObject("NativeStatsCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));canvas.transform.SetParent(transform,false);
   var c=canvas.GetComponent<Canvas>();c.renderMode=RenderMode.ScreenSpaceOverlay;c.sortingOrder=20;
   var scale=canvas.GetComponent<CanvasScaler>();scale.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scale.referenceResolution=new Vector2(1280,720);scale.matchWidthOrHeight=.5f;
-  Panel=Box(canvas.transform,"LiveStatsPanel",new Vector2(0,1),new Vector2(0,1),new Vector2(16,-176),new Vector2(302,494),Ink);Panel.GetComponent<Image>().raycastTarget=false;
-  var edge=Box(Panel.transform,"Accent",new Vector2(0,1),new Vector2(0,1),Vector2.zero,new Vector2(3,494),Green);edge.GetComponent<Image>().raycastTarget=false;
-  Heading=Text(Panel.transform,"StatsHeading",Font,"RUN STATS  <size=16>F2</size>",23,new Vector2(14,-12),new Vector2(274,28));Heading.color=Coral;
-  Text(Panel.transform,"StatsLegend",Font,"Effective  (base + bonus)",16,new Vector2(14,-44),new Vector2(274,22));
-  Body=Text(Panel.transform,"StatsValues",Font,"",17,new Vector2(14,-72),new Vector2(274,260));
-  Text(Panel.transform,"DamageScope",Font,"Before charge / conditional effects",16,new Vector2(14,-336),new Vector2(274,36)).color=Green;
-  Text(Panel.transform,"SkillsHeading",Font,"SKILLS  <size=16>PgUp / PgDn</size>",19,new Vector2(14,-374),new Vector2(274,24)).color=Coral;
-  var viewport=new GameObject("SkillsViewport",typeof(RectTransform),typeof(RectMask2D));Rect(viewport,Panel.transform,new Vector2(0,1),new Vector2(0,1),new Vector2(14,-406),new Vector2(274,78));
-  Skills=Text(viewport.transform,"SkillRows",Font,"None collected",16,Vector2.zero,new Vector2(274,78));Skills.lineSpacing=4;
-  var scroll=viewport.AddComponent<ScrollRect>();scroll.viewport=viewport.GetComponent<RectTransform>();scroll.content=Skills.rectTransform;scroll.horizontal=false;scroll.vertical=true;scroll.movementType=ScrollRect.MovementType.Clamped;scroll.scrollSensitivity=24;
+  Panel=new GameObject("LiveStatsHUD",typeof(RectTransform));Rect(Panel,canvas.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(1280,720));
+  var attributes=new GameObject("Attributes",typeof(RectTransform));Rect(attributes,Panel.transform,new Vector2(0,1),new Vector2(0,1),new Vector2(16,-176),new Vector2(302,420));
+  foreach(string key in new[]{"Vitality","PowerShot","RapidFire","QuickHands","FreshClip","DoubleShot","Sniper","BigShot","Penetration","RubberBullets","Haste","SummonMastery","Trainer","Evasive"})
+  {
+   var icon=Icon(attributes.transform,"Attribute_"+key,Vector2.zero,new Vector2(26,26));icon.rectTransform.anchoredPosition=new Vector2(0,-AttributeIcons.Count*30);AttributeIcons.Add(icon);
+  }
+  Body=Text(attributes.transform,"StatsValues",Font,"",18,new Vector2(36,-2),new Vector2(266,420));Body.enableWordWrapping=false;
+  var viewport=new GameObject("SkillsViewport",typeof(RectTransform),typeof(RectMask2D));Rect(viewport,Panel.transform,new Vector2(1,1),new Vector2(1,1),new Vector2(-16,-176),new Vector2(116,420));
+  var content=new GameObject("CollectedSkills",typeof(RectTransform));SkillContent=Rect(content,viewport.transform,new Vector2(0,1),new Vector2(0,1),Vector2.zero,new Vector2(116,420));
+  SkillScroll=viewport.AddComponent<ScrollRect>();SkillScroll.viewport=viewport.GetComponent<RectTransform>();SkillScroll.content=SkillContent;SkillScroll.horizontal=false;SkillScroll.vertical=true;SkillScroll.movementType=ScrollRect.MovementType.Clamped;SkillScroll.scrollSensitivity=42;
   // No GraphicRaycaster on this canvas: it cannot swallow a Fire/aim pointer.
  }
  void Update()
  {
-  var p=PlayerController.Instance;
-  if(p!=bound){Unbind();bound=p;collected.Clear();dirty=true;if(p!=null)foreach(StatType s in Enum.GetValues(typeof(StatType)))if(s<StatType.Count)p.stats[s].ChangedEvent+=Changed;}
+  var p=PlayerController.Instance;if(p==null)p=null;
+  if(!ReferenceEquals(p,bound)){Unbind();bound=p;collected.Clear();dirty=true;if(p!=null)foreach(StatType s in Enum.GetValues(typeof(StatType)))if(s<StatType.Count)p.stats[s].ChangedEvent+=Changed;}
   if(Panel==null && p!=null && p.gun.gunData!=null && p.loadedCharacter!=null)Build();
   if(Panel==null)return;
   if(Keyboard.current!=null && Keyboard.current.f2Key.wasPressedThisFrame)Toggle();
@@ -67,9 +70,8 @@ public class StatsOverlay:MonoBehaviour
   // Page the clipped skill list with native keyboard input without raycasting.
   if(Panel.activeSelf && Keyboard.current!=null)
   {
-   var scroll=Skills.GetComponentInParent<ScrollRect>();
-   if(Keyboard.current.pageDownKey.wasPressedThisFrame)scroll.verticalNormalizedPosition=Mathf.Clamp01(scroll.verticalNormalizedPosition-.5f);
-   if(Keyboard.current.pageUpKey.wasPressedThisFrame)scroll.verticalNormalizedPosition=Mathf.Clamp01(scroll.verticalNormalizedPosition+.5f);
+   if(Keyboard.current.pageDownKey.wasPressedThisFrame)SkillScroll.verticalNormalizedPosition=Mathf.Clamp01(SkillScroll.verticalNormalizedPosition-.5f);
+   if(Keyboard.current.pageUpKey.wasPressedThisFrame)SkillScroll.verticalNormalizedPosition=Mathf.Clamp01(SkillScroll.verticalNormalizedPosition+.5f);
   }
  }
  void Changed(object sender,EventArgs args){dirty=true;}
@@ -78,15 +80,31 @@ public class StatsOverlay:MonoBehaviour
  public void Toggle(){Enabled=!Enabled;dirty=true;UpdateSettingsLabels();}
  public void Dirty(){dirty=true;}
  static string N(float v)=>v.ToString("0.##",CultureInfo.InvariantCulture);
+ static Image Icon(Transform parent,string name,Vector2 position,Vector2 size)
+ {
+  var o=new GameObject(name,typeof(RectTransform),typeof(Image));Rect(o,parent,new Vector2(0,1),new Vector2(0,1),position,size);var i=o.GetComponent<Image>();i.preserveAspect=true;i.raycastTarget=false;return i;
+ }
  static string Row(string name,float basic,float final,string unit="")=>name+"  "+N(final)+unit+"  <color=#87988b>("+N(basic)+(final-basic>=0?" +":" ")+N(final-basic)+")</color>";
  public void Refresh()
  {
   var p=bound;var g=p.gun;var d=g.gunData;var recipe=g.GetProjectileRecipe();
-  var rows=new[]{Row("Damage",d.damage,recipe.damage),Row("Fire rate",1f/d.shotCooldown,1f/g.shotCooldown,"/s"),Row("Reload",d.reloadDuration,g.reloadDuration,"s"),Row("Magazine",d.maxAmmo,g.maxAmmo),Row("Projectiles",d.numOfProjectiles,g.numOfProjectiles),Row("Bullet speed",d.projectileSpeed,recipe.projectileSpeed),Row("Bullet size",100,recipe.size*100,"%"),Row("Pierce / bounce",d.piercing,recipe.piercing)+" / "+N(recipe.bounce),Row("Move speed",p.movementSpeed,p.finalMoveSpeed),Row("Summon damage",100,p.stats[StatType.SummonDamage].Modify(1)*100,"%"),Row("Summon speed",100,p.stats[StatType.SummonAttackSpeed].Modify(1)*100,"%")};
+  var rows=new[]{Row("Damage",d.damage,recipe.damage),Row("Fire rate",1f/d.shotCooldown,1f/g.shotCooldown,"/s"),Row("Reload",d.reloadDuration,g.reloadDuration,"s"),Row("Magazine",d.maxAmmo,g.maxAmmo),Row("Projectiles",d.numOfProjectiles,g.numOfProjectiles),Row("Bullet speed",d.projectileSpeed,recipe.projectileSpeed),Row("Bullet size",100,recipe.size*100,"%"),Row("Pierce",d.piercing,recipe.piercing),Row("Bounce",d.bounce,recipe.bounce),Row("Move speed",p.movementSpeed,p.finalMoveSpeed),Row("Summon damage",100,p.stats[StatType.SummonDamage].Modify(1)*100,"%"),Row("Summon speed",100,p.stats[StatType.SummonAttackSpeed].Modify(1)*100,"%")};
   float dodge=Mathf.Clamp(p.stats[StatType.Dodge].Modify(1)-1,0,p.stats[StatType.DodgeCapMod].Modify(60)/100);
-  LastStatsText="<line-height=20>"+Row("Max HP",p.loadedCharacter.startHP,p.playerHealth.maxHP)+"\n"+string.Join("\n",rows)+"\n"+Row("Dodge",0,dodge*100,"%");if(Body.text!=LastStatsText)Body.text=LastStatsText;
-  LastSkillsText=collected.Count==0?"None collected":string.Join("\n",collected.Values.OrderBy(x=>x.Name).Select(x=>x.Name+"  "+x.Tier+"  x"+x.Count));
-  if(Skills.text!=LastSkillsText){Skills.text=LastSkillsText;Skills.rectTransform.sizeDelta=new Vector2(274,Mathf.Max(78,Skills.preferredHeight));}
+  var all=new[]{Row("Max HP",p.loadedCharacter.startHP,p.playerHealth.maxHP)}.Concat(rows).Concat(new[]{Row("Dodge",0,dodge*100,"%")}).ToArray();
+  LastStatsText=string.Join("\n",all);Body.text="<line-height=30>"+string.Join("\n",all.Select(r=>r.Substring(r.IndexOf("  ",StringComparison.Ordinal)+2)));
+  var powers=Resources.FindObjectsOfTypeAll<Powerup>();
+  foreach(var icon in AttributeIcons){string key=icon.name.Substring("Attribute_".Length);icon.sprite=powers.First(x=>x.name==key).icon;}
+  string skills=string.Join("\n",collected.Values.OrderBy(x=>x.Name).Select(x=>x.Name+"  "+x.Tier+"  x"+x.Count));
+  if(LastSkillsText!=skills)
+  {
+   LastSkillsText=skills;foreach(Transform child in SkillContent)Object.Destroy(child.gameObject);SkillIcons.Clear();int index=0;
+   foreach(var entry in collected.Values.OrderBy(x=>x.Name))
+   {
+    float y=-index++*42;var icon=Icon(SkillContent,entry.Name,new Vector2(0,y),new Vector2(32,32));icon.sprite=entry.Icon;SkillIcons.Add(icon);
+    string tier=entry.Tier=="Special"?"S":"T"+entry.Tier.Substring(5);Text(SkillContent,"SkillRank",Font,tier+" ×"+entry.Count,16,new Vector2(40,y-7),new Vector2(76,24)).enableWordWrapping=false;
+   }
+   SkillContent.sizeDelta=new Vector2(116,Mathf.Max(420,index*42));
+  }
  }
  static string Key(Powerup p)=>((LocalizedString)AccessTools.Field(typeof(Powerup),"nameStrID").GetValue(p)).key;
  public void Record(Powerup perk,PlayerController player)
@@ -94,7 +112,7 @@ public class StatsOverlay:MonoBehaviour
   if(bound!=player){Unbind();bound=player;collected.Clear();foreach(StatType s in Enum.GetValues(typeof(StatType)))if(s<StatType.Count)bound.stats[s].ChangedEvent+=Changed;}
   string key=Key(perk);var tree=perk.powerupTreeUIData;string tier="Special";
   if(tree!=null)tier=tree.startingPowerup!=null && Key(tree.startingPowerup)==key?"Tier 1":tree.finalPowerup!=null && Key(tree.finalPowerup)==key?"Tier 3":"Tier 2";
-  if(!collected.TryGetValue(key,out var entry))collected[key]=entry=new SkillEntry{Name=perk.nameString,Tier=tier};entry.Count++;dirty=true;
+  if(!collected.TryGetValue(key,out var entry))collected[key]=entry=new SkillEntry{Name=perk.nameString,Tier=tier,Icon=perk.icon};entry.Count++;dirty=true;
  }
  public static void UpdateSettingsLabels()
  {foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="StatsSettingLabel"))t.text="Stats overlay: "+(Enabled?"On":"Off")+"  [F2]";}

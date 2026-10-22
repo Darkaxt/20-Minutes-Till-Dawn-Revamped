@@ -107,4 +107,35 @@ public partial class RuntimeChecks
   Require(!CustomMode.Active&&PlayerController.Instance.gun.gunData.damage==originalDamage&&!SelectedMap.MapData.achievementsDisabled,"ordinary Forest restart uses the original gun and progression rules");
   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Native configured/live Custom run, real modified shooting, credits-only victory and ordinary restart verified");Application.Quit(0);
  }
+ IEnumerator CheckFreshCustom()
+ {
+  RunResume.Invalidate();yield return OpenCustomConfiguration();
+  Require(CustomMode.Maps().Select(m=>m.name).OrderBy(n=>n).SequenceEqual(new[]{"10M_Forest","20M_Forest"}),"early-profile Custom presets expose only obtained Forest and Quickplay");
+  Click(CustomButton("CustomStart"));GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
+  GameTimer.SharedInstance.Stop();PlayerController.Instance.playerHealth.isInvincible.Flip();
+  Require(Loadout.RuneSelection.Count==0,"fresh Custom cannot enable unpurchased rune ranks");
+  Require(!CustomMode.AvailablePerks().Any(p=>Characters.Powers.Values.Contains(p.Item2)||p.Item2.name=="Fusillade"),"fresh Custom upgrade menu excludes unavailable character powers and unmet native prerequisites");
+  var source=SelectedMap.MapData.spawnSessions.First(w=>!w.isElite);var horde=Object.FindObjectOfType<HordeSpawner>();var existing=Object.FindObjectsOfType<Health>().Select(h=>h.GetInstanceID()).ToArray();
+  AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(horde,new object[]{source.monsterPrefab.name,source.HP,false});
+  Object.FindObjectsOfType<Health>().Single(h=>!existing.Contains(h.GetInstanceID())&&h.name==source.monsterPrefab.name+"(Clone)").TakeDamage(DamageType.Bullet,1000000);
+  int points=PointsTracker.pts;yield return CheckRevolver(game,PlayerController.Instance,"custom-fresh-gameplay.png");yield return AchievementExit(game,false);VerifyCustomResult(ResultDir,points);
+  SetPhase("PASS");Log("complete","Early-profile owned Custom modes, purchased-rune and native perk prerequisites, actual shooting/credits-only result verified");Application.Quit(0);
+ }
+ IEnumerator CheckCustomChallenge()
+ {
+  RunResume.Invalidate();yield return OpenCustomConfiguration();var source=CustomMode.Maps().Single(m=>m.name=="Challenge_Forest");
+  Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),source)));
+  CustomValue(1,(Progression.State.challengeDifficultyUnlocked+1).ToString());Click(CustomButton("CustomStart"));
+  GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
+  GameTimer.SharedInstance.Stop();PlayerController.Instance.playerHealth.isInvincible.Flip();var run=ChallengeRun.Instance;run.enabled=false;
+  Require(CustomMode.Active&&run!=null&&SelectedMap.MapData.achievementsDisabled,"Custom Challenge uses its real quota scheduler and native disabled-achievement map");
+  run.EnemyKills=ChallengeMode.EnemyTargets[run.Tier]-1;run.BossKills=ChallengeMode.BossTargets[run.Tier];
+  Log("fixture-precondition","Challenge quotas seeded one real enemy death below victory; no claim of a full unassisted Custom Challenge");
+  var last=ObjectPooler.SharedInstance.GetPooledObject("BrainMonster");last.transform.position=PlayerController.Instance.transform.position+Vector3.right*15;last.SetActive(true);last.GetComponent<Health>().TakeDamage(DamageType.Bullet,1000000);
+  Require(run.Completed&&game.CurrentState is KillEnemiesState,"actual final native enemy death completes Custom Challenge through the normal win transition");
+  while(!(game.CurrentState is PlayerSurvivedState))yield return null;
+  Require(Ownership()==File.ReadAllText(Path.Combine(ResultDir,"custom-ownership.txt")),"native Custom Challenge win leaves Challenge tier and all ordinary progression unchanged");
+  yield return Capture("custom-challenge-native-win.png");int points=PointsTracker.pts;yield return AchievementExit(game,true);VerifyCustomResult(ResultDir,points);
+  SetPhase("PASS");Log("complete","Actual Custom Challenge quota victory, native caller achievement guard, unchanged earned tier/ownership and retained credits verified");Application.Quit(0);
+ }
 }

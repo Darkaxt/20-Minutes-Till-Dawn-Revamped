@@ -42,6 +42,6 @@ class NoPreferenceWrites
  static bool Prefix()=>false;
 }
 [HarmonyPatch(typeof(OptionsSetter),nameof(OptionsSetter.Refresh))]
-class TestViewport{static void Postfix(){Screen.SetResolution(1280,720,false);}}
+class TestViewport{static void Postfix(){bool large=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").EndsWith("1080")||Environment.GetEnvironmentVariable("MODERNIZATION_VIEWPORT")=="1080";Screen.SetResolution(large?1920:1280,large?1080:720,false);}}
 [HarmonyPatch(typeof(GunEvolution),nameof(GunEvolution.Apply))]
 class EvolutionProbe{static void Prefix(GunEvolution __instance)=>RuntimeChecks.Log("evolution-apply",__instance.name);}

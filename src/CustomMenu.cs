@@ -59,7 +59,7 @@ public class CustomMenu:MonoBehaviour
     {
      if(CustomMode.Active&&CustomMode.Current.map!=target.name)
      {pendingPreset=target;status.text="Starts a new run at Darkness0 / Challenge1. Current run credits are retained; the current build ends.";page=0;Refresh();return;}
-     CustomMode.LoadDefaults(target);presets=false;page=0;status.text=CustomMode.Active?"Native defaults restored. Your current build, difficulty and clock are retained.":CustomMode.ModeName(target)+" defaults loaded. Darkness0 / Challenge1; no Custom overrides.";Refresh();
+     CustomMode.LoadDefaults(target);presets=false;page=0;status.text=CustomMode.Active?"Defaults restored. Your current build, difficulty and clock are retained.":CustomMode.ModeName(target)+" defaults loaded. Darkness0 / Challenge1; no Custom overrides.";Refresh();
     });
    }
    Command("Back to Custom settings",()=>{presets=false;status.text="";Refresh();});return;
@@ -69,7 +69,8 @@ public class CustomMenu:MonoBehaviour
    var maps=CustomMode.Maps();int selected=Array.FindIndex(maps,m=>m.name==CustomMode.Current.map);if(selected<0)selected=0;
    if(!CustomMode.Active)Command("Scenario: "+maps[selected].nameString,()=>{CustomMode.Current.map=maps[(selected+1)%maps.Length].name;Refresh();});
    else Command("Scenario: "+SelectedMap.MapData.nameString,()=>status.text="The scenario stays fixed for this run.");
-   rows.Add(new Row{label="Darkness / Challenge tier",get=()=>Loadout.difficultyLevel,set=v=>Loadout.difficultyLevel=(int)v,integer=true,max=CustomMode.Current.map=="Challenge_Forest"?Progression.State.challengeDifficultyUnlocked:SaveSystem.data.difficultyUnlocked});
+   bool challenge=CustomMode.Current.map=="Challenge_Forest";int offset=challenge?1:0;
+   rows.Add(new Row{label=challenge?"Challenge tier":"Darkness",get=()=>Loadout.difficultyLevel+offset,set=v=>Loadout.difficultyLevel=(int)v-offset,integer=true,min=offset,max=challenge?Progression.State.challengeDifficultyUnlocked+1:SaveSystem.data.difficultyUnlocked});
    if(CustomMode.Active)rows.RemoveAt(rows.Count-1);
    Add("Experience multiplier","xp",1,.25f,0,100);
    Command("Reset experience multiplier",()=>{CustomMode.Reset("xp");Refresh();});
@@ -93,7 +94,7 @@ public class CustomMenu:MonoBehaviour
   if(tab==4)
   {
    var summons=Object.FindObjectsOfType<ShootingSummon>().GroupBy(s=>s.SummonTypeID).OrderBy(g=>g.Key).ToArray();
-   foreach(var group in summons){Add(group.Key+" damage multiplier","summon:"+group.Key+":damage",1,.1f,0,100);Add(group.Key+" attack speed","summon:"+group.Key+":speed",1,.1f,0,100);}
+   foreach(var group in summons){string name=Resources.FindObjectsOfTypeAll<Powerup>().FirstOrDefault(power=>power.name==group.Key)?.nameString??DisplayName(group.Key);Add(name+" damage multiplier","summon:"+group.Key+":damage",1,.1f,0,100);Add(name+" attack speed","summon:"+group.Key+":speed",1,.1f,0,100);}
    if(summons.Length==0)Command("Collect a summon upgrade, then reopen this screen.",()=>{});
   }
   if(tab==5)
@@ -115,10 +116,11 @@ public class CustomMenu:MonoBehaviour
    var map=SelectedMap.MapData;
    var pickups=Resources.FindObjectsOfTypeAll<flanne.Pickups.HPPickup>().Cast<Component>().Concat(Resources.FindObjectsOfTypeAll<flanne.Pickups.SHPPickup>().Cast<Component>()).Where(c=>!c.gameObject.scene.IsValid());
    foreach(string name in pickups.Select(c=>c.name).Concat(map.spawnSessions.Select(w=>w.monsterPrefab.name)).Concat(map.bossSpawns.Select(b=>b.bossPrefab.name)).Distinct())
-   {string target=name;Command("Spawn: "+name,()=>{CustomMode.Spawn(target);status.text="Spawn requested. Bosses appear when play resumes.";});}
+   {string target=name;var pickup=pickups.FirstOrDefault(c=>c.name==target);string label=pickup is flanne.Pickups.HPPickup?"Red heart":pickup is flanne.Pickups.SHPPickup?"Soul heart":DisplayName(name);Command("Spawn: "+label,()=>{CustomMode.Spawn(target);status.text="Spawn requested. Bosses appear when play resumes.";});}
   }
   if(tab>=1&&tab<=5)Command("Reset "+Tabs[tab].ToLowerInvariant()+" adjustments",()=>{CustomMode.Reset(new[]{"","weapon:","stat:","spawn:","summon:","perk:"}[tab]);Refresh();});
  }
+ static string DisplayName(string key)=>System.Text.RegularExpressions.Regex.Replace(key.Replace("PF_","").Replace("(Clone)",""),"([a-z0-9])([A-Z])","$1 $2").Replace('_',' ').Trim();
  void Refresh()
  {
   Inventory();page=Mathf.Clamp(page,0,Math.Max(0,(rows.Count-1)/8));controls.Clear();
@@ -146,7 +148,7 @@ public class CustomMenu:MonoBehaviour
   Button("CustomNext",">",new Vector2(598,-530),new Vector2(52,38),()=>{page=Math.Min((rows.Count-1)/8,page+1);Refresh();});
   Button("CustomBack",start==null?"Back to pause":"Back",new Vector2(24,-530),new Vector2(230,42),back);
   if(start!=null)Button("CustomStart","Start Custom",new Vector2(806,-530),new Vector2(230,42),()=>Run(start));
-  else StatsOverlay.Text(content,"CustomTriggerScope",font,"Trigger/action effects retain native behavior.",15,new Vector2(700,-529),new Vector2(336,48));
+  else StatsOverlay.Text(content,"CustomTriggerScope",font,"Stats change; abilities keep their normal behavior.",15,new Vector2(700,-529),new Vector2(336,48));
   for(int i=0;i<controls.Count;i++){var nav=controls[i].navigation;nav.mode=Navigation.Mode.Explicit;nav.selectOnUp=nav.selectOnLeft=controls[(i+controls.Count-1)%controls.Count];nav.selectOnDown=nav.selectOnRight=controls[(i+1)%controls.Count];controls[i].navigation=nav;}
   if(presets)content.Find(pendingPreset!=null?"CustomAction1":"CustomAction0").GetComponent<Button>().Select();else controls[tab].Select();
  }
