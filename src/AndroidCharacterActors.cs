@@ -10,6 +10,8 @@ internal static class AndroidCharacterActors
 {
  internal static void ConfigurePrefab(GameObject prefab)
  {
+  // Source icicles collide with bodyless NPCs through this original body flag.
+  if(prefab.name=="PF_Icicle")prefab.GetComponent<Rigidbody2D>().useFullKinematicContacts=true;
   // The source Spirit has this lifetime component; Windows' prefab lacks it.
   if(prefab.name=="SpiritSummon"&&prefab.GetComponent<TimeToLive>()==null)
    Plugin.SetField(prefab.AddComponent<TimeToLive>(),"lifetime",5f);
