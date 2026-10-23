@@ -17,14 +17,13 @@ public sealed class AndroidWind:MonoBehaviour
  internal GameObject prototype,original;
  internal int BonusDamage;
  internal bool ScaleMovement,Eye;
- AndroidEffectPool order;
  PlayerController player;
  public int Damage=>Mathf.FloorToInt((20+BonusDamage)*(ScaleMovement?player.stats[StatType.MoveSpeed].Modify(1):1));
  internal static AndroidWind Current
  {
   get{var p=PlayerController.Instance;var wind=p.GetComponent<AndroidWind>();return wind!=null?wind:p.gameObject.AddComponent<AndroidWind>();}
  }
- void Awake(){player=GetComponent<PlayerController>();order=gameObject.AddComponent<AndroidEffectPool>();}
+ void Awake(){player=GetComponent<PlayerController>();}
  internal void Prepare(GameObject source)
  {
   if(prototype!=null)return;
@@ -38,8 +37,7 @@ public sealed class AndroidWind:MonoBehaviour
  }
  internal void Cast()
  {
-  var gale=order.Acquire(ObjectPooler.SharedInstance,PoolTag);
-  var member=gale.GetComponent<AndroidEffectPoolMember>();if(member==null){member=gale.AddComponent<AndroidEffectPoolMember>();member.Owner=order;}
+  var gale=ObjectPooler.SharedInstance.GetPooledObject(PoolTag);
   int angle=UnityEngine.Random.Range(-60,60);
   Vector2 aim=(Vector2)Camera.main.ScreenToWorldPoint(ShootingCursor.Instance.cursorPosition)-(Vector2)player.transform.position;
   gale.GetComponent<MoveComponent2D>().vector=3*aim.Rotate(angle).normalized;
@@ -55,15 +53,14 @@ public sealed class AndroidWindActor:MonoBehaviour
  internal int Damage;
  internal bool AreaEnabled;
  internal float ContactTimer,AreaTimer;
- readonly List<Health> contacts=new List<Health>();
- readonly HashSet<Health> activeTargets=new HashSet<Health>();
+ readonly List<int> contacts=new List<int>();
+ readonly List<int> areaTargets=new List<int>();
  void OnCollisionEnter2D(Collision2D collision)
  {
-  if(collision.gameObject.layer!=(int)TagLayerUtil.Enemy)return;
-  var health=collision.gameObject.GetComponent<Health>();if(health!=null)contacts.Add(health);
+  var target=collision.gameObject;if(AndroidPersistentTargets.Eligible(target))contacts.Add(target.GetInstanceID());
  }
  void OnCollisionExit2D(Collision2D collision)
- {var health=collision.gameObject.GetComponent<Health>();if(health!=null)contacts.Remove(health);}
+ {var target=collision.gameObject;if(AndroidPersistentTargets.Eligible(target))contacts.Remove(target.GetInstanceID());}
  void Update()
  {
   ContactTimer+=Time.deltaTime;
@@ -72,21 +69,17 @@ public sealed class AndroidWindActor:MonoBehaviour
    ContactTimer-=.5f;
    if(contacts.Count>0)
    {
-    // Source resolves retained actor IDs through the monster pool. Take one
-    // membership snapshot, preserving the list's duplicate collider entries.
-    activeTargets.Clear();
-    foreach(var list in ObjectPooler.SharedInstance.pooledObjectsDictionary.Values)
-     foreach(var target in list)if(target!=null&&target.activeInHierarchy&&target.layer==(int)TagLayerUtil.Enemy)
-     {var health=target.GetComponent<Health>();if(health!=null)activeTargets.Add(health);}
+    // Source resolves retained IDs at each tick; it does not require current
+    // ActiveList membership or clear duplicate contacts on pooled reuse.
     for(int i=contacts.Count-1;i>=0;i--)
-    {var health=contacts[i];if(health!=null&&activeTargets.Contains(health))AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Gale);}
+    {var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(contacts[i]);if(target==null)continue;var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Gale);}
    }
   }
   if(!AreaEnabled)return;
   AreaTimer+=Time.deltaTime;if(AreaTimer<2)return;AreaTimer-=2;
-  var targets=ObjectPooler.SharedInstance.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(target=>target!=null&&target.activeInHierarchy&&target.layer==(int)TagLayerUtil.Enemy&&Vector2.Distance(target.transform.position,transform.position)<3).Distinct().ToArray();
-  for(int i=targets.Length-1;i>=0;i--)
-  {var health=targets[i].GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Owner.Damage*2,DamageType.Gale);}
+  areaTargets.Clear();ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetMonsterInRange(areaTargets,3,transform.position);
+  for(int i=areaTargets.Count-1;i>=0;i--)
+  {var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(areaTargets[i]);if(target==null)continue;var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Owner.Damage*2,DamageType.Gale);}
  }
  // Source has no enable/disable timer or contact-list reset. Its pooled state
  // deliberately survives until collision exit, later ticks or scene teardown.
@@ -119,11 +112,10 @@ class AndroidWindRecipes
   {
    case "aero_magic_name":
     var native=(PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(__instance);
-    if(native.Any(effect=>AccessTools.Field(typeof(PerkEffect),"action").GetValue(effect) is AndroidGaleCast))return;
+     if(native.Any(effect=>AccessTools.Field(typeof(PerkEffect),"action").GetValue(effect) is AndroidGaleAcquire))return;
     var actions=native.Select(effect=>(flanne.PerkSystem.Action)AccessTools.Field(typeof(PerkEffect),"action").GetValue(effect)).ToArray();
     var cast=actions.OfType<ThrowProjectileTowardsCursorAction>().Single();var sound=actions.OfType<PlaySoundAction>().Single();
-    action=new AndroidGaleCast{Prefab=(GameObject)AccessTools.Field(typeof(ThrowProjectileTowardsCursorAction),"projectilePrefab").GetValue(cast),Sound=(SoundEffectSO)AccessTools.Field(typeof(PlaySoundAction),"soundFX").GetValue(sound)};
-    trigger=new PeriodicTrigger();Plugin.SetField(trigger,"triggerIntervalSeconds",2f);break;
+     action=new AndroidGaleAcquire{Cast=new AndroidGaleCast{Prefab=(GameObject)AccessTools.Field(typeof(ThrowProjectileTowardsCursorAction),"projectilePrefab").GetValue(cast),Sound=(SoundEffectSO)AccessTools.Field(typeof(PlaySoundAction),"soundFX").GetValue(sound)}};break;
    case "windborne_name":action=new AndroidWindUpgrade{Movement=true};break;
    case "aero_mastery_name":action=new AndroidWindUpgrade{FlatDamage=15};break;
    case "eye_of_the_storm_name":action=new AndroidWindUpgrade{FlatDamage=5,Eye=true};break;

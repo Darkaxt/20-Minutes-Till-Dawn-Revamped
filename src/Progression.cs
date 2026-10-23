@@ -25,6 +25,7 @@ public static partial class Progression
   public List<Attempt> attempts=new List<Attempt>();public List<Notice> notices=new List<Notice>();
   public List<string> facts=new List<string>(),earned=new List<string>(),pending=new List<string>(),notified=new List<string>();
   public List<string> enabledRunes;
+  public List<int> sourceAchievements=new List<int>(),sourceAchievementRewards=new List<int>();
   public int challengeDifficultyUnlocked;
  }
  public class Gate
@@ -106,6 +107,7 @@ public static partial class Progression
   if(State.version<2)
    foreach(string id in State.pending)State.notices.Add(new Notice{id=id,goal="Earned under previous unlock requirements"});
   State.version=2;
+  SourceAchievementRewards.Load();
   foreach(var gate in Gates)
   {
    bool legacyScenario=existingSave&&!journalExists&&gate.Id.StartsWith("scenario:")&&gate.Data.name!="Challenge_Forest"&&(gate.Data.name=="10M_Forest"||gate.Data.name=="Endless_Forest"||SaveSystem.data.difficultyUnlocked>0);
@@ -196,9 +198,6 @@ class CharacterGoal{static void Postfix(CharacterData __instance,ref string __re
 class WeaponGoal{static void Postfix(GunData __instance,ref string __result){__result=Progression.Description(__instance,__result);}}
 [HarmonyPatch(typeof(MapData),"get_description")]
 class MapGoal{static void Postfix(MapData __instance,ref string __result){__result=Progression.Description(__instance,__result);}}
-[HarmonyPatch(typeof(PlayerSurvivedState),nameof(PlayerSurvivedState.Enter))]
-class AchievementClear{static void Postfix(){Progression.Survived();}}
-
 [HarmonyPatch]
 class BossSpawnAchievementBoundary
 {

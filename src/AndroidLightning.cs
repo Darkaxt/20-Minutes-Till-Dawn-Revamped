@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
@@ -14,16 +15,15 @@ public sealed class AndroidThunderHitbox:MonoBehaviour
  void OnCollisionEnter2D(Collision2D collision)
  {
   var target=collision.gameObject;if(target.layer!=(int)TagLayerUtil.Enemy)return;
-  var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Bullet);
+  var health=target.GetComponent<Health>();if(health!=null){if(AndroidAffixes.Has(target,3))Damage/=2;AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Bullet);}
  }
 }
 public static class AndroidLightning
 {
+ static readonly ConditionalWeakTable<ThunderGenerator,List<int>> AreaTargets=new ConditionalWeakTable<ThunderGenerator,List<int>>();
  static GameObject Visual(ThunderGenerator owner,Vector3 position,int? damage,GameObject prefab,GameObject impactPrefab,ObjectPooler pool,SoundEffectSO sound)
  {
-  var order=owner.GetComponent<AndroidEffectPool>();if(order==null)order=owner.gameObject.AddComponent<AndroidEffectPool>();
-  var visual=order.Acquire(pool,prefab.name);
-  var member=visual.GetComponent<AndroidEffectPoolMember>();if(member==null){member=visual.AddComponent<AndroidEffectPoolMember>();member.Owner=order;}
+  var visual=pool.GetPooledObject(prefab.name);
   visual.transform.position=position+new Vector3(UnityEngine.Random.Range(-.05f,.05f),UnityEngine.Random.Range(-.05f,.05f));
   visual.transform.eulerAngles=new Vector3(0,0,UnityEngine.Random.Range(-45f,45f));
   var hitbox=visual.GetComponentInChildren<AndroidThunderHitbox>(true);
@@ -42,17 +42,19 @@ public static class AndroidLightning
  internal static void Targeted(ThunderGenerator owner,GameObject target,int damage,GameObject prefab,GameObject impactPrefab,ObjectPooler pool,SoundEffectSO sound)
  {
   if(target==null)return;
+  if(AndroidAffixes.Has(target,1))return;
   Visual(owner,target.transform.position,damage,prefab,impactPrefab,pool,sound);
   owner.PostNotification(ThunderGenerator.ThunderHitEvent,target);
  }
  internal static void Area(ThunderGenerator owner,Vector3 position,int damage,float radius,GameObject prefab,GameObject impactPrefab,ObjectPooler pool,SoundEffectSO sound)
  {
   Visual(owner,position,null,prefab,impactPrefab,pool,sound);
-  // Query the native monster pool once per actor, before callbacks can acquire
-  // additional pooled effects or mutate its dictionaries.
-  var targets=pool.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(actor=>actor!=null&&actor.activeInHierarchy&&actor.layer==(int)TagLayerUtil.Enemy&&Vector2.Distance(actor.transform.position,position)<radius*owner.sizeMultiplier).Distinct().ToArray();
-  foreach(var target in targets)
+  var targets=AreaTargets.GetOrCreateValue(owner);targets.Clear();
+  ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetMonsterInRange(targets,radius*owner.sizeMultiplier,position);
+  foreach(int id in targets)
   {
+   var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(id);if(target==null)continue;
+   if(AndroidAffixes.Has(target,1))continue;
    var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,damage,DamageType.Thunder);
    owner.PostNotification(ThunderGenerator.ThunderHitEvent,target);
   }

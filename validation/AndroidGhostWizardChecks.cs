@@ -15,7 +15,13 @@ public partial class RuntimeChecks
  GameObject wizardTarget,wizardProjectile,wizardPrototype;int wizardImpacts;readonly List<float> wizardBurns=new List<float>();readonly HashSet<GameObject> wizardMarkedShots=new HashSet<GameObject>();
  static MonoBehaviour WizardFlags(ShootingSummon ghost)=>ghost.GetComponents<MonoBehaviour>().SingleOrDefault(c=>c.GetType().Name=="AndroidShootingFlags");
  void WizardImpact(object sender,object args){if(wizardTarget!=null&&(args as GameObject)==wizardTarget&&(sender as GameObject)==PlayerController.Instance.gameObject)wizardImpacts++;}
- void WizardBurn(object sender,object args){if(wizardTarget!=null&&(args as GameObject)==wizardTarget)wizardBurns.Add((float)WindField(wizardTarget.GetComponent<AndroidBurnStatus>(),"damage"));}
+ void WizardBurn(object sender,object args)
+ {
+  if(wizardTarget==null)return;
+  Require(ReferenceEquals(sender,BurnSystem.SharedInstance)&&args==null,"source burn notification has the system sender and null payload");
+  // This controlled shot fixture observes the original pre-application event.
+  wizardBurns.Add(AndroidBurnState.Get(BurnSystem.SharedInstance).Find(wizardTarget)?.Damage??0);
+ }
  IEnumerator WizardHit(ShootingSummon ghost,bool forceMage,float[] expectedBurns,int expectedImpacts,bool assassinProbe=false)
  {
   var pool=ObjectPooler.SharedInstance;var actor=pool.GetPooledObject("Validation_Wizard_Enemy");var health=DurableEnemy(actor,ghost.transform.position+Vector3.right*3,false);actor.SetActive(true);health.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;
@@ -24,16 +30,25 @@ public partial class RuntimeChecks
   var originalPrefab=(GameObject)WindField(ghost,"projectilePrefab");Plugin.SetField(ghost,"projectilePrefab",wizardPrototype);
   string tag=wizardPrototype.name;foreach(var shot in pool.pooledObjectsDictionary[tag])shot.SetActive(false);
   ForceGlareBurn=forceMage;
-  try{Require(ShootingAttack(ghost),"actual Ghost shoots its pooled target");wizardProjectile=pool.pooledObjectsDictionary[tag].Single(p=>p.activeInHierarchy);while(hurt==0)yield return null;}
+  try
+  {
+   Require(ShootingAttack(ghost),"actual Ghost shoots its pooled target");wizardProjectile=pool.pooledObjectsDictionary[tag].Single(p=>p.activeInHierarchy);int observations=0;
+   while(hurt==0)
+   {
+    if(observations++<6){var state=wizardProjectile.GetComponent<AndroidProjectile>();Log("projectile-diagnostic","shot="+wizardProjectile.transform.position+" target="+actor.transform.position+" velocity="+wizardProjectile.GetComponent<MoveComponent2D>().vector+" owner="+(state!=null)+" sampleRadius="+(state==null?"none":WindField(state,"Radius").ToString())+" hp="+health.HP+" targetLayer="+actor.layer+" collider="+(Physics2D.OverlapCircle(actor.transform.position,.2f,1<<actor.layer)!=null));}
+    if(!wizardProjectile.activeInHierarchy)Require(false,"shot remains active until its real target contact; a missed/expired shot is a diagnostic failure");yield return null;
+   }
+  }
   finally{ForceGlareBurn=false;Plugin.SetField(ghost,"projectilePrefab",originalPrefab);}
   Log("wizard-contact","impact="+wizardImpacts+" burns="+string.Join(",",wizardBurns)+" projectile="+wizardProjectile.GetInstanceID());
-  Require(wizardImpacts==expectedImpacts&&wizardBurns.SequenceEqual(expectedBurns),"actual shot has one correctly owned impact and exact ordered source burn/proc contributions");
+  Require(wizardImpacts==expectedImpacts&&wizardBurns.SequenceEqual(expectedBurns),"actual shot has one correctly owned impact and exact ordered source pre-application burn notifications");
   if(assassinProbe){Log("plain-ghost-assassin","HP="+health.HP+" dead="+health.isDead);Require(!health.isDead&&health.HP==20,"plain Ghost bulletEffect=false excludes global Assassin at actual contact");}
   if(expectedBurns.Length>0)wizardMarkedShots.Add(wizardProjectile);
   actor.transform.position=PlayerController.Instance.transform.position+Vector3.right*50;wizardTarget=null;
  }
  IEnumerator CheckAndroidGhostWizard(bool continuation)
  {
+  bool projectileSuite=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("projectiles-");if(projectileSuite)PrepareProjectileAssets();
   GameController game;PlayerController player;
   if(!continuation)
   {
@@ -54,6 +69,11 @@ public partial class RuntimeChecks
   wizardPrototype=Object.Instantiate((GameObject)WindField(first,"projectilePrefab"));wizardPrototype.SetActive(false);wizardPrototype.name="Validation_Wizard_Projectile";wizardPrototype.transform.SetParent(pool.transform);pool.AddObject(wizardPrototype.name,wizardPrototype,2);
   Require(pool.pooledObjectsDictionary[wizardPrototype.name].Count==2,"fixture starts with two actual native pooled Ghost projectiles");
   Log("fixture-precondition","Two-member pool from the actual native Ghost projectile prefab exercises native rotating selection; wizard contacts warm both members before a plain shot");
+  if(projectileSuite)
+  {
+   if(!continuation)yield return AndroidPick(game,"Assassin",game.playerXP.level);
+   yield return CheckSharedProjectiles(game,continuation);
+  }
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")=="resume-ghost-wizard-projectile")
   {
    // A85 diagnostic reproduction. Expected to fail until the common source
@@ -65,10 +85,10 @@ public partial class RuntimeChecks
   {
    yield return WizardHit(first,false,new float[0],0);yield return AndroidPick(game,"GhostWizard",game.playerXP.level);
    var flags=WizardFlags(first);Require(flags!=null&&(bool)WindField(flags,"BulletEffect")&&(int)WindField(flags,"BurnDamage")==6,"actual Ghost Wizard assigns the source per-instance bulletEffect and burn-six fields");
-   yield return WizardHit(first,false,new[]{6f},1);
+   yield return WizardHit(first,false,new[]{0f},1);
    yield return AndroidPick(game,"GhostWizard",game.playerXP.level);Require(first.GetComponents<MonoBehaviour>().Count(c=>c.GetType().Name=="AndroidShootingFlags")==1&&(int)WindField(WizardFlags(first),"BurnDamage")==6,"repeat Ghost Wizard assigns six once without duplicate native summon-hit actions");
    yield return AndroidPick(game,"PyroMage",game.playerXP.level);Log("fixture-precondition","Existing native OnHitTrigger chance hook fixes the Pyro Mage roll for actual projectile contact; no probability-frequency claim");
-   yield return WizardHit(first,true,new[]{6f,9f},1);
+   yield return WizardHit(first,true,new[]{0f,6f},1);
    yield return AndroidPick(game,"GhostFriend",game.playerXP.level);var later=Ghosts()[1];while(WindField(later,"stats")==null)yield return null;later.enabled=false;
    Require(WizardFlags(later)==null&&ShootingRecipe(later).owner==later.gameObject,"later pristine Ghost does not inherit the older wizard fields or player-impact ownership");
    yield return WizardHit(later,true,new float[0],0);Require(wizardMarkedShots.Contains(wizardProjectile),"actual reused pooled projectile clears the older wizard shot's burn and player-impact flags");
@@ -77,7 +97,7 @@ public partial class RuntimeChecks
   {
    Require(Ghosts().Length==2&&WizardFlags(first)!=null&&(bool)WindField(WizardFlags(first),"BulletEffect")&&(int)WindField(WizardFlags(first),"BurnDamage")==6&&WizardFlags(Ghosts()[1])==null,"Continue preserves mixed upgraded/unupgraded Ghost flags through acquisition order");
    float[] clocks={.03f,.08f};for(int i=0;i<2;i++)Require(Mathf.Abs((float)WindField(Ghosts()[i],"_timer")-clocks[i])<.025f,"Continue preserves the Ghost Wizard actor interval "+i);
-   yield return WizardHit(first,true,new[]{6f,9f},1);yield return WizardHit(first,true,new[]{6f,9f},1);yield return WizardHit(Ghosts()[1],true,new float[0],0);Require(wizardMarkedShots.Contains(wizardProjectile),"continued pooled reuse clears source wizard flags for the plain Ghost");
+   yield return WizardHit(first,true,new[]{0f,6f},1);yield return WizardHit(first,true,new[]{0f,6f},1);yield return WizardHit(Ghosts()[1],true,new float[0],0);Require(wizardMarkedShots.Contains(wizardProjectile),"continued pooled reuse clears source wizard flags for the plain Ghost");
   }
   this.RemoveObserver(WizardImpact,Projectile.ImpactEvent);this.RemoveObserver(WizardBurn,BurnSystem.InflictBurnEvent);
   if(continuation)

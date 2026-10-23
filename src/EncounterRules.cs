@@ -108,11 +108,11 @@ public static partial class Progression
  static bool Standard(MapData map)=>map!=null&&!map.achievementsDisabled&&!map.endless&&map.timeLimit==1200&&(map.name==Forest||map.name==Temple||map.name==Pumpkin);
  static Encounter Snapshot(EncounterKind kind,int ordinal)
  {
-  var p=PlayerController.Instance;var game=Object.FindObjectOfType<GameController>();var map=SelectedMap.MapData;
+  var p=PlayerController.Instance;var map=SelectedMap.MapData;
   return new Encounter{Kind=kind,Ordinal=ordinal,Map=map.name,Darkness=map.darknessDisabled?0:Loadout.difficultyLevel,
    Character=Loadout.CharacterSelection.name,Weapon=Loadout.GunSelection.name,MaxHP=p.playerHealth.maxHP,SoulHP=p.playerHealth.shp,
    TotalHP=p.playerHealth.hp+p.playerHealth.shp,Damage=p.gun.damage,FireRate=1f/p.gun.shotCooldown,MoveSpeed=p.finalMoveSpeed,
-   Hitless=game.hitlessDetector.hitless,Perks=CurrentPerks()};
+   Hitless=RunRecorder.Instance.UnlockHitless,Perks=CurrentPerks()};
  }
  static void Record(Encounter e)
  {

@@ -32,7 +32,23 @@ public partial class RuntimeChecks
   game.playerInput.SwitchCurrentControlScheme("Keyboard&Mouse",fixtureKeyboard,fixtureMouse);game.playerInput.neverAutoSwitchControlSchemes=true;
   int hits=0;target.onHurt.AddListener(d=>hits++);bool fired=false;UnityEngine.Events.UnityAction shot=()=>fired=true;player.gun.OnShoot.AddListener(shot);
   bool exitRegression=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("cold-exit");
-  ColdNoFreeze=true;try{var aim=(Vector2)Camera.main.WorldToScreenPoint(target.transform.position);InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim}.WithButton(MouseButton.Left));while(!fired)yield return null;if(!exitRegression||!expectedDead)InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});player.gun.OnShoot.RemoveListener(shot);while(hits==0)yield return null;yield return null;}finally{ColdNoFreeze=false;}
+  ColdNoFreeze=true;
+  try
+  {
+   LastSourceProjectile=null;var aim=(Vector2)Camera.main.WorldToScreenPoint(target.transform.position);InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim}.WithButton(MouseButton.Left));while(!fired)yield return null;
+   if(!exitRegression||!expectedDead)InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});player.gun.OnShoot.RemoveListener(shot);int observations=0;
+   while(hits==0&&!target.isDead)
+   {
+    if(ObserveSourceProjectiles&&LastSourceProjectile!=null)
+    {
+     if(observations++<6)Log("native-shot-contact-diagnostic","shot="+LastSourceProjectile.transform.position+" target="+target.transform.position+" direction="+LastSourceProjectile.GetComponent<MoveComponent2D>().vector+" hp="+target.HP+" aim="+aim);
+     if(!LastSourceProjectile.gameObject.activeSelf)Require(false,"actual native gun shot reaches its contact before deactivation");
+    }
+    yield return null;
+   }
+   yield return null;
+  }
+  finally{ColdNoFreeze=false;}
   Require(target.isDead==expectedDead,"actual native bullet impact observes the source inclusive Assassin threshold and Champion eligibility");target.gameObject.SetActive(false);if(!exitRegression)while(!(player.CurrentState is flanne.Player.IdleState))yield return null;
  }
  IEnumerator CheckAndroidCold(bool continuation)
@@ -73,8 +89,8 @@ public partial class RuntimeChecks
   }
   Require(ColdHelpers("AndroidAssassin").Length==2&&Mathf.Abs(player.stats[StatType.ProjectileSpeed].Modify(1)-1.65f)<.001f,"actual repeated Assassin and Continue retain independent source owners and speed alongside native prerequisites");
   var direct=ColdEnemy(pool,player.transform.position+Vector3.right*5,100,21);direct.TakeDamage(DamageType.Summon,3);Require(!direct.isDead&&direct.HP==20,"source Assassin ignores direct damage without a projectile impact");direct.gameObject.SetActive(false);
-  int bullet=Mathf.FloorToInt(player.gun.damage)-2;Log("fixture-precondition","Stationary max100 targets start at native bullet damage after saved Might+21/+20 HP; damage="+bullet+". Native OnHitTrigger roll fixed above50% to exclude the acquired Frost Mage proc; no ordinary encounter or probability-frequency claim");
-  yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,21+bullet),false);yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,20+bullet,"EnemyChampion"),true);
+  Log("fixture-precondition","Stationary max100 targets start at21/20 HP to verify the source pre-Harmful impact threshold. Native OnHitTrigger roll fixed above50% to exclude the acquired Frost Mage proc; no ordinary encounter or probability-frequency claim");
+  yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,21),false);yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,20,"EnemyChampion"),true);
   this.RemoveObserver(ColdHurt,"Revamped.AndroidSurvivingHurt");this.RemoveObserver(ColdImpact,Projectile.ImpactEvent);
   if(continuation)
   {

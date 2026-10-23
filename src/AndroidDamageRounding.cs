@@ -16,6 +16,7 @@ class AndroidDamageRounding
  [ThreadStatic]internal static bool PositiveDamageStage;
  internal static void ChangeHealth(Health health,int change,DamageType type)
  {
+  var source=AndroidHealthEvents.Source(health);if(source!=null){source.Change(change,type);return;}
   // Windows' native damage API uses a positive argument. Source zero/positive
   // changes still need the signed pipeline, including heal/event ordering.
   if(change<0){health.TakeDamage(type,-change);return;}

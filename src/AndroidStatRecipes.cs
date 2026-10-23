@@ -17,6 +17,8 @@ class AndroidStatRecipes
   ["culling_name"]=new[]{Scale(StatType.SummonAttackSpeed,.3f)},
   ["vengeful_ghost_name"]=new[]{Scale(StatType.SummonDamage,.15f)},
   ["assassin_name"]=new[]{Scale(StatType.ProjectileSpeed,.1f)},
+  ["hina_perk_enhanced_shadow_name"]=new[]{Scale(StatType.SummonDamage,.25f)},
+  ["lilith_perk_necromancer_name"]=new[]{Scale(StatType.SummonDamage,.2f)},
   ["mini_clip_name"]=new[]{Scale(StatType.BulletDamage,.5f),Flat(StatType.MaxAmmo,-4),Scale(StatType.ReloadRate,.75f)},
   ["giant_name"]=new[]{Scale(StatType.CharacterSize,.5f),Flat(StatType.MaxHP,2)},
   ["tome_of_elasticity_name"]=new[]{Flat(StatType.Bounce,2),Scale(StatType.BulletDamage,-.05f),Flat(StatType.MaxHP,-1)},

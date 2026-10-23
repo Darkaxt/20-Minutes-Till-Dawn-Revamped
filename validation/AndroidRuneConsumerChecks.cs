@@ -30,12 +30,12 @@ public partial class RuntimeChecks
    }
    p=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;
    var clock=p.GetComponentInChildren<AndroidBodySoul>();var wall=p.GetComponentInChildren<ProjectileShieldRune>();
-   Require(clock.Grants==2&&clock.Remaining>122&&clock.Remaining<=123&&p.playerHealth.maxSHP==9,"Continue restores Android Body and Soul grant count, remaining interval and independent capacity");
+   Require(clock.Grants==2&&clock.IsInvoking("DropHP")&&p.playerHealth.maxSHP==9,"Continue restores Body and Soul grant count/capacity and starts its fresh source repeating schedule");
    Require(p.ammo.infiniteAmmo.value&&!wall.GetComponent<Collider2D>().enabled,"Continue restores active Ethereal ammo and recovering Wind Shield");
    Time.timeScale=10;while(p.ammo.infiniteAmmo.value||!wall.GetComponent<Collider2D>().enabled)yield return null;Time.timeScale=1;
    Require(!p.ammo.infiniteAmmo.value&&wall.GetComponent<Collider2D>().enabled,"restored Ethereal expires once and Wind Shield recovers on their saved clocks");
-   while(clock.Grants<clock.Limit){int next=clock.Grants+1;clock.Remaining=0;while(clock.Grants<next)yield return null;}
-   int soul=p.playerHealth.shp;clock.Remaining=0;yield return null;
+   while(clock.Grants<clock.Limit){int next=clock.Grants+1;clock.Invoke("DropHP",0);while(clock.Grants<next)yield return null;}
+   int soul=p.playerHealth.shp;clock.Invoke("DropHP",0);yield return null;
    Require(clock.Grants==6&&p.playerHealth.shp==soul,"Android Body and Soul stops after its six rank-three grants");
    yield return Capture("android-rune-consumers-continue.png");yield return AchievementExit(game,false);
    yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<RuneData>());game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
@@ -51,8 +51,8 @@ public partial class RuntimeChecks
   game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;
   var body=p.GetComponentInChildren<AndroidBodySoul>();var shield=p.GetComponentInChildren<ProjectileShieldRune>();
   Require(body.Limit==6&&p.playerHealth.maxSHP==9&&p.playerHealth.shp==0,"Android Body and Soul adds base-three plus rank capacity, with six finite rank-three grants and no immediate pickup");
-  for(int i=1;i<=2;i++){body.Remaining=0;while(body.Grants<i)yield return null;}
-  Require(p.playerHealth.shp==2,"actual timed Body and Soul callbacks grant souls directly without collection");
+  for(int i=1;i<=2;i++){body.Invoke("DropHP",0);while(body.Grants<i)yield return null;}
+  Require(p.playerHealth.shp==2,"source Body and Soul callbacks grant souls directly without collection");
   var template=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   var target=DurableEnemy(template,p.transform.position,true);target.gameObject.tag="Untagged";target.gameObject.SetActive(true);
   var boost=p.GetComponentInChildren<DamageBoostInRange>();Physics2D.SyncTransforms();yield return new WaitForFixedUpdate();yield return null;
@@ -79,7 +79,7 @@ public partial class RuntimeChecks
   var rigidbody=projectile.GetComponent<Rigidbody2D>();if(rigidbody!=null)rigidbody.velocity=Vector2.zero;
   Physics2D.SyncTransforms();yield return new WaitForFixedUpdate();yield return null;
   Require(WindCollision!=null&&!projectile.activeSelf&&!shield.GetComponent<Collider2D>().enabled,"real enemy-projectile collision returns the native pooled shot before Wind Shield cooldown");
-  body.Remaining=123;
+  Require(typeof(AndroidBodySoul).GetField("Remaining")==null,"Body and Soul does not retain a source-unsaved timer phase");
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();Click(Resources.FindObjectsOfTypeAll<Button>().Single(b=>b.name=="ResumeSaveAndReturn"&&b.gameObject.activeInHierarchy));
   while(Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>()==null||!Active(Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>().mainMenu))yield return null;
   File.Copy(RunCheckpoint,Path.Combine(ResultDir,"saved-run.json"));SetPhase("PASS");Log("complete","Android rune loadout, direct finite souls, unqualified Health death filters, Close Combat and signed rounding, Regeneration timing, real projectile block and checkpoint");Application.Quit(0);

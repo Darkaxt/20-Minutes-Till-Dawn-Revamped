@@ -22,20 +22,24 @@ public static partial class RunResume
  [Serializable]public class OfferPool{public string field;public List<PoolEntry> entries=new List<PoolEntry>();}
  [Serializable]public class Snapshot
  {
-  public int version=3;public bool valid=true;public string savedUtc,character,weapon,map;
+  public int version=7;public bool valid=true;public string savedUtc,character,weapon,map;
   public int darkness,hp,maxHP,soulHP,maxSoulHP,level,ammo,kills;
   public float xp,seconds,x,y,roundStart,roundElapsed;public int endlessCycle;public bool hitless,oneSecondWarning,usedShooting,usedManualShooting;
   public List<RuneRank> runes=new List<RuneRank>();public List<Acquisition> acquired=new List<Acquisition>();
   public List<OfferPool> pools=new List<OfferPool>();public List<string> taken=new List<string>();
+  public List<PoolEntry> sourcePowerupCounts;
   public List<int> killedBosses=new List<int>(),killedElites=new List<int>();
   public int challengeEnemies,challengeBosses;public int chests,devilDeals;
   public ResumeRuntime.State runtime;
   public CustomMode.Rules custom;
   public bool? blessingPending;public float blessingRemaining;
+  public bool? unlockHitless;
   public float[] hordeModifiers,bossModifiers;
+  public AndroidEndlessState sourceEndless;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
+ internal static bool LegacyRestoring=>Restoring&&Pending.runtime.sourcePowerups==null;
  public static string PathName=>Path.Combine(Application.persistentDataPath,"revamped-run.json");
  public static string Key(Powerup p)=>((LocalizedString)AccessTools.Field(typeof(Powerup),"nameStrID").GetValue(p)).key;
  public static string Key(GunEvolution e)=>((LocalizedString)AccessTools.Field(typeof(GunEvolution),"nameStrID").GetValue(e)).key;
@@ -47,7 +51,7 @@ public static partial class RunResume
  {
   if(!File.Exists(PathName))return null;
   Snapshot saved;using(var stream=File.OpenRead(PathName))saved=(Snapshot)new DataContractJsonSerializer(typeof(Snapshot)).ReadObject(stream);
-  if(saved==null||saved.version!=3)throw new InvalidOperationException("This run checkpoint uses an unsupported version; it has been preserved.");
+  if(saved==null||(saved.version<3||saved.version>7))throw new InvalidOperationException("This run checkpoint uses an unsupported version; it has been preserved.");
   if(!saved.valid)return null;
   if(string.IsNullOrEmpty(saved.character)||string.IsNullOrEmpty(saved.weapon)||string.IsNullOrEmpty(saved.map)||saved.hp<=0||saved.maxHP<saved.hp||saved.soulHP<0||saved.maxSoulHP<saved.soulHP||saved.level<1||saved.ammo<0||saved.kills<0||saved.endlessCycle<0||saved.roundElapsed<0||
    new[]{saved.xp,saved.seconds,saved.x,saved.y,saved.roundStart,saved.roundElapsed,saved.blessingRemaining}.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||saved.blessingRemaining<0||
@@ -56,6 +60,13 @@ public static partial class RunResume
    saved.runes.Any(r=>r==null||string.IsNullOrEmpty(r.name)||r.rank<1||r.rank>5)||saved.runes.Select(r=>r.name).Distinct().Count()!=saved.runes.Count||saved.acquired.Any(a=>a==null||string.IsNullOrEmpty(a.key))||saved.pools.Any(p=>p==null||p.entries==null||p.entries.Any(e=>e==null||string.IsNullOrEmpty(e.key)))||saved.taken.Any(string.IsNullOrEmpty))
    throw new InvalidOperationException("This run checkpoint is incomplete or invalid; it has been preserved.");
   ResumeRuntime.Validate(saved.runtime);CustomMode.Validate(saved.custom);
+  if(saved.version==7&&saved.runtime.sourcePowerups==null)throw new InvalidOperationException("This checkpoint omitted its ordered source runtime contract; it has been preserved.");
+  if(saved.version<7&&saved.runtime.sourcePowerups!=null||saved.version==7&&saved.runtime.sourcePowerups.Any(p=>!saved.acquired.Any(a=>!a.evolution&&a.key==p.key)))throw new InvalidOperationException("This checkpoint has an unsupported source runtime owner; it has been preserved.");
+  if(saved.version>=5&&saved.version<7&&(saved.runtime.generators==null||saved.runtime.growth==null||saved.runtime.rituals==null||saved.runtime.unharmed==null||saved.runtime.justice==null))throw new InvalidOperationException("This source checkpoint omitted its attachment runtime contract; it has been preserved.");
+  if(saved.version<5)
+  {ResumeRuntime.ConvertLegacyGenerators(saved.runtime);ResumeRuntime.ConvertLegacyDragonGrowth(saved.runtime);ResumeRuntime.ConvertLegacyAccumulated(saved.runtime);ResumeRuntime.Validate(saved.runtime);}
+  if(saved.version<7){ResumeRuntime.ConvertLegacyKillEffects(saved.runtime);ResumeRuntime.ConvertLegacyShieldEffects(saved.runtime);ResumeRuntime.ConvertLegacyCharacterStats(saved);ResumeRuntime.ConvertLegacyRecipes(saved);ResumeRuntime.Validate(saved.runtime);}
+  if(saved.sourcePowerupCounts!=null&&(saved.sourcePowerupCounts.Any(p=>p==null||string.IsNullOrEmpty(p.key))||saved.sourcePowerupCounts.Select(p=>p.key).Distinct().Count()!=saved.sourcePowerupCounts.Count))throw new InvalidOperationException("The checkpoint's source upgrade counts are invalid; it has been preserved.");
   if(saved.custom!=null&&saved.custom.map!=saved.map)throw new InvalidOperationException("The Custom scenario does not match its checkpoint.");
   return saved;
  }
@@ -77,10 +88,10 @@ public static partial class RunResume
  {
   if(!CanSave())return;
   var r=RunRecorder.Instance;var game=r.GetComponent<GameController>();var p=PlayerController.Instance;var hp=p.playerHealth;
-  var state=new Snapshot{savedUtc=DateTime.UtcNow.ToString("O"),character=Loadout.CharacterSelection.name,weapon=Loadout.GunSelection.name,map=SelectedMap.MapData.name,
+  var state=new Snapshot{version=r.LegacyContinuation?6:7,savedUtc=DateTime.UtcNow.ToString("O"),character=Loadout.CharacterSelection.name,weapon=Loadout.GunSelection.name,map=SelectedMap.MapData.name,
    darkness=Loadout.difficultyLevel,hp=hp.hp,maxHP=hp.maxHP,soulHP=hp.shp,maxSoulHP=hp.maxSHP,level=game.playerXP.level,
    xp=(float)AccessTools.Field(typeof(PlayerXP),"xp").GetValue(game.playerXP),ammo=p.ammo.amount,seconds=GameTimer.SharedInstance.timer,
-   x=p.transform.position.x,y=p.transform.position.y,hitless=game.hitlessDetector.hitless,kills=ScoreCalculator.SharedInstance.GetScore().enemiesKilled,
+   x=p.transform.position.x,y=p.transform.position.y,hitless=game.hitlessDetector.hitless,unlockHitless=r.UnlockHitless,kills=ScoreCalculator.SharedInstance.GetScore().enemiesKilled,
    acquired=r.Acquired.Select(a=>new Acquisition{key=a.key,evolution=a.evolution}).ToList(),runtime=ResumeRuntime.Capture(p),roundStart=r.RoundStart,roundElapsed=Time.time-r.RoundClock,endlessCycle=r.EndlessCycle,
    custom=CustomMode.Active?CustomMode.Current:null,blessingPending=r.Blessings.Any(b=>b.Waiting),blessingRemaining=r.Blessings.Where(b=>b.Waiting).Select(b=>Mathf.Max(0,b.Deadline-Time.time)).DefaultIfEmpty(0).Max(),usedShooting=game.shootDetector.usedShooting,usedManualShooting=game.shootDetector.usedManualShooting,
    killedBosses=r.KilledBosses.OrderBy(i=>i).ToList(),killedElites=r.KilledElites.OrderBy(i=>i).ToList(),oneSecondWarning=(bool)AccessTools.Field(typeof(GameTimer),"oneSecondWarningSent").GetValue(GameTimer.SharedInstance)};
@@ -92,7 +103,9 @@ public static partial class RunResume
    foreach(var value in values??new List<PowerupPoolItem>())pool.entries.Add(new PoolEntry{key=Key(value.powerup),remaining=value.numTimeRepeatable});state.pools.Add(pool);
   }
   state.taken=((List<Powerup>)AccessTools.Field(typeof(PowerupGenerator),"takenPowerups").GetValue(generator)).Select(Key).ToList();
+  state.sourcePowerupCounts=generator.GetComponent<AndroidPowerupCounts>().Capture();
   CaptureSpawners(state);
+  var endless=Object.FindObjectOfType<AndroidEndlessRun>();if(endless!=null)state.sourceEndless=endless.Capture();
   var challenge=ChallengeRun.Instance;if(challenge!=null)
   {state.roundStart=challenge.RoundStart;state.roundElapsed=state.seconds-challenge.RoundStart;state.challengeEnemies=challenge.EnemyKills;state.challengeBosses=challenge.BossKills;state.killedElites=challenge.KilledElites.OrderBy(i=>i).ToList();state.killedBosses=challenge.KilledBosses.OrderBy(i=>i).ToList();}
   CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
@@ -121,6 +134,7 @@ public static partial class RunResume
  public static IEnumerator Restore(GameController game)
  {
   var saved=Pending;var p=PlayerController.Instance;var r=RunRecorder.Instance;
+  bool source=saved.runtime.sourcePowerups!=null;r.LegacyContinuation=!source;
   // First frame boundary: all scene Start methods, including native loadout and
   // pool initialization, have completed before rebuilding acquired effects.
   yield return null;
@@ -132,11 +146,16 @@ public static partial class RunResume
   if(saved.pools.Count!=3||!saved.pools.Select(pool=>pool.field).OrderBy(f=>f).SequenceEqual(new[]{"characterPool","devilPool","powerupPool"}))throw new InvalidOperationException("The checkpoint's upgrade pool contract is unsupported");
   foreach(var pool in saved.pools)if(pool.entries.Any(e=>!powers.ContainsKey(e.key)))throw new InvalidOperationException("The checkpoint's upgrade pool is unavailable");
   if(saved.taken.Any(key=>!powers.ContainsKey(key)))throw new InvalidOperationException("The checkpoint's collected upgrade is unavailable");
+  if(saved.sourcePowerupCounts!=null&&saved.sourcePowerupCounts.Any(item=>!powers.ContainsKey(item.key)))throw new InvalidOperationException("The checkpoint's source upgrade count is unavailable");
   if(saved.custom!=null)foreach(var value in saved.custom.values)
   {
    if(value.key.StartsWith("perk:")&&!saved.acquired.Any(a=>!a.evolution&&value.key=="perk:"+a.key+":scale"))throw new InvalidOperationException("The Custom checkpoint edits an uncollected upgrade.");
    if(value.key.StartsWith("summon:")&&!Resources.FindObjectsOfTypeAll<AttackingSummon>().Where(s=>s is ShootingSummon||s is StabbingSummon).Any(s=>value.key=="summon:"+s.SummonTypeID+":damage"||value.key=="summon:"+s.SummonTypeID+":speed"))throw new InvalidOperationException("The Custom checkpoint edits an unavailable summon type.");
   }
+  // Source Restore restores its game clock before powerups and their runtime
+  // values. New helper deadlines created during acquisition replay use it too.
+  Plugin.SetField(GameTimer.SharedInstance,"<timer>k__BackingField",saved.seconds);
+  Plugin.SetField(GameTimer.SharedInstance,"oneSecondWarningSent",saved.oneSecondWarning);
   foreach(var bootstrap in r.Blessings)
   {
    var shield=(Powerup)AccessTools.Field(typeof(BlessingRune),"holyShieldPowerup").GetValue(bootstrap.Owner);
@@ -148,49 +167,72 @@ public static partial class RunResume
   var bootstrapAcquisitions=r.Acquired.Where(a=>!a.evolution).GroupBy(a=>a.key).ToDictionary(g=>g.Key,g=>g.Count());
   r.Recording=false;
   r.Rebuilding=true;
-  try{foreach(var acquisition in saved.acquired)
+  IEnumerable<IEnumerable<Acquisition>> groups=source?saved.acquired.Where(a=>!a.evolution).GroupBy(a=>a.key).Select(g=>(IEnumerable<Acquisition>)g):saved.acquired.Select(a=>(IEnumerable<Acquisition>)new[]{a});
+  try{foreach(var group in groups)
   {
+   foreach(var acquisition in group)
+   {
    if(!acquisition.evolution&&bootstrapAcquisitions.TryGetValue(acquisition.key,out int count)&&count>0){bootstrapAcquisitions[acquisition.key]=count-1;continue;}
    if(acquisition.evolution)p.playerPerks.Equip(evolutions[acquisition.key]);else p.playerPerks.Equip(powers[acquisition.key]);
-   // A later acquisition can consume a shield's StatMod immediately. Wait for
-   // its actual native Start initialization, rather than replaying that
-   // dependent acquisition against an uninitialized newly attached component.
-   while(p.GetComponentsInChildren<PreventDamage>().Any(shield=>shield.cooldownRate==null))yield return null;
+   // Legacy aggregate reconstruction retains its native initialization
+   // boundary. Fresh source cooldown data exists independently of Start;
+   // do not yield and start other reconstructed actors between source groups.
+   if(!source)while(p.GetComponentsInChildren<PreventDamage>().Any(shield=>shield.cooldownRate==null))yield return null;
+   }
+   if(source)ResumeRuntime.RestoreSourcePowerup(p,saved.runtime,group.First().key);
   }}finally{r.Rebuilding=false;}
   // Second boundary initializes the newly reconstructed effect components.
-  yield return null;
-  var hp=p.playerHealth;hp.maxSHP=saved.maxSoulHP;hp.maxHP=saved.maxHP;hp.hp=saved.hp;hp.shp=saved.soulHP;
+  if(!source)yield return null;
+  var hp=p.playerHealth;
+  if(source)
+  {
+   // Android restores maximum/red HP before assigning soul capacity and
+   // invoking its soul-HP setter. Keep the real health-change callbacks.
+   hp.maxHP=saved.maxHP;hp.hp=saved.hp;hp.maxSHP=saved.maxSoulHP;hp.shp=saved.soulHP;
+  }
+  else{hp.maxSHP=saved.maxSoulHP;hp.maxHP=saved.maxHP;hp.hp=saved.hp;hp.shp=saved.soulHP;}
   p.transform.position=new Vector3(saved.x,saved.y,p.transform.position.z);ResumeRuntime.Restore(p,saved.runtime);
+  if(source)foreach(var evolution in saved.acquired.Where(a=>a.evolution))p.playerPerks.Equip(evolutions[evolution.key]);
+  AndroidAmmo.Restore(p.ammo,saved.ammo);
   Plugin.SetField(game.playerXP,"<level>k__BackingField",saved.level);Plugin.SetField(game.playerXP,"xp",saved.xp);
+  if(source)game.playerXP.OnLevelChanged.Invoke(saved.level);
   game.playerXP.OnXPToLevelChanged.Invoke((float)AccessTools.Property(typeof(PlayerXP),"xpToLevel").GetValue(game.playerXP));game.playerXP.OnXPChanged.Invoke(saved.xp);
-  game.playerXP.OnLevelChanged.Invoke(saved.level);
-  Plugin.SetField(p.ammo,"<amount>k__BackingField",saved.ammo);p.ammo.OnAmmoChanged.Invoke(saved.ammo);
+  if(!source)game.playerXP.OnLevelChanged.Invoke(saved.level);
   p.transform.position=new Vector3(saved.x,saved.y,p.transform.position.z);
   Plugin.SetField(game.hitlessDetector,"<hitless>k__BackingField",saved.hitless);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",saved.kills);
+  // Earlier checkpoints used Windows' onHurt for both red and soul damage.
+  // Their saved hitless flag therefore retains the user's original gate meaning.
+  r.UnlockHitless=saved.unlockHitless??saved.hitless;
   Plugin.SetField(game.shootDetector,"<usedShooting>k__BackingField",saved.usedShooting);Plugin.SetField(game.shootDetector,"<usedManualShooting>k__BackingField",saved.usedManualShooting);
-  Plugin.SetField(GameTimer.SharedInstance,"<timer>k__BackingField",saved.seconds);
-  Plugin.SetField(GameTimer.SharedInstance,"oneSecondWarningSent",saved.oneSecondWarning);
   foreach(var pool in saved.pools)
    AccessTools.Field(typeof(PowerupGenerator),pool.field).SetValue(PowerupGenerator.Instance,pool.entries.Select(e=>new PowerupPoolItem{powerup=powers[e.key],numTimeRepeatable=e.remaining}).ToList());
   Plugin.SetField(PowerupGenerator.Instance,"takenPowerups",saved.taken.Select(k=>powers[k]).ToList());
+  PowerupGenerator.Instance.GetComponent<AndroidPowerupCounts>().Restore(PowerupGenerator.Instance,saved.sourcePowerupCounts,powers);
   RestoreSpawners(saved);RestoreDrops(saved);
   r.Acquired=saved.acquired.Select(a=>new Acquisition{key=a.key,evolution=a.evolution}).ToList();r.Recording=true;r.LastSaveMinute=Mathf.FloorToInt(saved.seconds/60);
   if(saved.blessingPending==true)foreach(var bootstrap in r.Blessings)r.StartCoroutine(ResumeBootstrapBlessing.Finish(bootstrap,saved.blessingRemaining));
+  // Source attachment restoration precedes Unity Start. Growth's explicit
+  // source initialization is idempotent when Unity later calls Start;
+  // Generator still must not receive the restored ammo notification above.
+  ResumeRuntime.StartRestoredAttachments(p);
+  ResumeRuntime.EnableSourceStarts();
   Pending=null;StatsOverlay.Instance?.Dirty();Plugin.Trace("run-checkpoint-restored",new{saved.map,saved.seconds,saved.level,saved.hitless});
  }
 }
 
 class RunRecorder:MonoBehaviour
 {
+ public bool LegacyContinuation;public readonly List<MonoBehaviour> SourceStarts=new List<MonoBehaviour>();
  public static RunRecorder Instance;
- public bool Recording=true,Finished,Rebuilding;public int LastSaveMinute=-1,EndlessCycle;public float RoundStart,RoundClock;MapData customMap;
+ public bool Recording=true,Finished,Rebuilding,UnlockHitless=true;public int LastSaveMinute=-1,EndlessCycle;public float RoundStart,RoundClock;MapData customMap;
+ public bool SourceRecklessSkillUsed;
  public List<RunResume.Acquisition> Acquired=new List<RunResume.Acquisition>();
  public readonly HashSet<int> KilledElites=new HashSet<int>(),KilledBosses=new HashSet<int>();
  public readonly Dictionary<Health,Tuple<bool,int>> Encounters=new Dictionary<Health,Tuple<bool,int>>();
  internal class BlessingBootstrap{public BlessingRune Owner;public IEnumerator Native;public bool Waiting;public float Deadline;}
  public readonly List<BlessingBootstrap> Blessings=new List<BlessingBootstrap>();
  void Awake(){Instance=this;customMap=CustomMode.Active?CustomMode.RunMap:null;this.AddObserver(OnDeath,Health.DeathEvent);}
- void OnDestroy(){this.RemoveObserver(OnDeath,Health.DeathEvent);ResumeRuntime.ForgetEggs();RunResume.ReleaseRunAssets();if(customMap!=null)CustomMode.End(customMap);if(Instance==this)Instance=null;}
+ void OnDestroy(){this.RemoveObserver(OnDeath,Health.DeathEvent);ResumeRuntime.ForgetRuntime();RunResume.ReleaseRunAssets();if(customMap!=null)CustomMode.End(customMap);if(Instance==this)Instance=null;}
  void OnDeath(object sender,object args)
  {if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);}}
  void Update()
@@ -231,7 +273,7 @@ class ResumePauseCheckpoint{static void Postfix(){RunResume.Save();}}
 class ResumeEndOfRun
 {
  static IEnumerable<System.Reflection.MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(PlayerDeadState),"Enter"),AccessTools.Method(typeof(KillEnemiesState),"Enter")};
- static void Prefix(){var r=RunRecorder.Instance;if(r!=null)r.Finished=true;RunResume.Invalidate();}
+ [HarmonyPrefix]internal static void Finish(){var r=RunRecorder.Instance;if(r!=null)r.Finished=true;RunResume.Invalidate();}
 }
 [HarmonyPatch(typeof(BlessingRune),"WaitToApplyCR")]
 class ResumeBootstrapBlessing
@@ -256,4 +298,4 @@ class ResumeBootstrapBlessing
  static IEnumerator Deferred(){yield break;}
 }
 [HarmonyPatch(typeof(GrowthRune),"OnLevelChanged")]
-class ResumeLevelIsNotAnAward{static bool Prefix()=>!RunResume.Restoring;}
+class ResumeLevelIsNotAnAward{static bool Prefix()=>!RunResume.LegacyRestoring;}

@@ -43,28 +43,25 @@ public sealed class AndroidShatterContact:MonoBehaviour
  void OnCollisionEnter2D(Collision2D collision)
  {
   var target=collision.gameObject;if(target.layer!=(int)TagLayerUtil.Enemy)return;
-  var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Bullet);
+  var health=target.GetComponent<Health>();if(health!=null){if(AndroidAffixes.Has(target,3))Damage/=2;AndroidDamageRounding.ChangeHealth(health,-Damage,DamageType.Bullet);}
  }
 }
 public sealed class AndroidShatterPool:MonoBehaviour
 {
  internal const string Tag="Revamped_AndroidShatter";
- GameObject prototype;AndroidEffectPool order;ObjectPooler pool;
+ GameObject prototype;ObjectPooler pool;
  internal void Prepare(GameObject original)
  {
   if(prototype!=null)return;
-  pool=GetComponent<ObjectPooler>();order=gameObject.AddComponent<AndroidEffectPool>();
+  pool=GetComponent<ObjectPooler>();
   prototype=Object.Instantiate(original);prototype.SetActive(false);prototype.name=Tag;prototype.transform.SetParent(transform,false);
   Object.DestroyImmediate(prototype.GetComponent<HarmfulOnContact>());prototype.AddComponent<AndroidShatterContact>();
   pool.AddObject(Tag,prototype,50);
  }
  internal void Cast(Health victim,SoundEffectSO sound)
  {
-  // Android AddObject uses max=50 and GetPooledObject returns null at that
-  // active limit. Preserve it independently of Windows pool growth policy.
-  if(pool.pooledObjectsDictionary[Tag].Count(g=>g.activeSelf)>=50)return;
-  var visual=order.Acquire(pool,Tag);var member=visual.GetComponent<AndroidEffectPoolMember>();
-  if(member==null){member=visual.AddComponent<AndroidEffectPoolMember>();member.Owner=order;}
+  // Source IsMax uses strictly greater-than, allowing the51st active actor.
+  var visual=pool.GetPooledObject(Tag);if(visual==null)return;
   visual.transform.position=victim.transform.position;visual.GetComponent<AndroidShatterContact>().Damage=Mathf.FloorToInt(victim.maxHP*.07f);visual.SetActive(true);sound?.Play();
  }
 }

@@ -11,6 +11,23 @@ using flanne.PerkSystem;
 using flanne.PerkSystem.Triggers;
 namespace TwentyMinutes.Modernization;
 
+[HarmonyPatch(typeof(SeismicWardRune),"Init")]
+class AndroidSeismicWardInitialization
+{
+ static readonly MethodInfo Attach=AccessTools.Method(typeof(SeismicWardRune),"AttachSeismicWard");
+ static bool Prefix(SeismicWardRune __instance,GameObject ___seismicWardPrefab,int ___cdrPerLevel,int ___level)
+ {
+  // Original source template is five seconds, but this actual rune producer
+  // assigns baseCooldown10 - rank*cdr1 to both actors before their first Start.
+  Plugin.SetField(___seismicWardPrefab.GetComponent<SetGameObjectActiveSummon>(),"attackCooldown",5f);
+  var upper=(AttackingSummon)Attach.Invoke(__instance,new object[]{Vector3.up});
+  var lower=(AttackingSummon)Attach.Invoke(__instance,new object[]{Vector3.down});
+  float cooldown=10f-(float)___cdrPerLevel*___level;
+  Plugin.SetField(upper,"attackCooldown",cooldown);Plugin.SetField(lower,"attackCooldown",cooldown);
+  return false;
+ }
+}
+
 [HarmonyPatch(typeof(DropHPOnKillRune),"OnDeath")]
 class AndroidHealingDeaths
 {
@@ -36,10 +53,10 @@ class AndroidEtherealDeaths
 }
 public sealed class AndroidBodySoul:MonoBehaviour
 {
- public int Limit,Grants;public float Remaining=300;
- void Update()
+ public int Limit,Grants;
+ internal void Init(int limit){Limit=limit;Grants=0;InvokeRepeating(nameof(DropHP),300,300);}
+ void DropHP()
  {
-  Remaining-=Time.deltaTime;if(Remaining>0)return;Remaining+=300;
   if(Grants>=Limit)return;Grants++;PlayerController.Instance.playerHealth.shp++;
  }
 }
@@ -50,7 +67,7 @@ class AndroidBodySoulInit
  {
   int limit=3+___level*___shpMaxPerLevel;
   PlayerController.Instance.playerHealth.maxSHP+=limit;
-  __instance.gameObject.AddComponent<AndroidBodySoul>().Limit=limit;return false;
+  __instance.gameObject.AddComponent<AndroidBodySoul>().Init(limit);return false;
  }
 }
 [HarmonyPatch(typeof(DropPrefabOverTime),"Start")]
@@ -62,9 +79,7 @@ class AndroidProjectileShieldCollision
  static bool Prefix(Collision2D collision)
  {
   if(collision.gameObject.layer!=(int)TagLayerUtil.EnemyProjectile)return false;
-  // Windows pool ownership is retained by deactivation; Android Release returns
-  // this same projectile to its pool before starting the shield cooldown.
-  collision.gameObject.SetActive(false);return true;
+  AndroidPools.Return(collision.gameObject);return true;
  }
 }
 [HarmonyPatch]
@@ -79,16 +94,5 @@ class AndroidCloseCombatCollision
   {__instance.AddObserver(callback,Health.TweakDamageEvent,health);____targetsInRange.Add(health);}
   else{__instance.RemoveObserver(callback,Health.TweakDamageEvent,health);____targetsInRange.Remove(health);}
   return false;
- }
-}
-[HarmonyPatch]
-class AndroidRegenerationRecipe
-{
- static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Powerup),nameof(Powerup.Apply)),AccessTools.Method(typeof(Powerup),nameof(Powerup.ApplyStack))};
- static void Prefix(Powerup __instance)
- {
-  if(RunResume.Key(__instance)!="regeneration_name")return;
-  var effects=(PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(__instance);
-  Plugin.SetField(__instance,"effects",effects.Where(e=>AccessTools.Field(typeof(PerkEffect),"trigger").GetValue(e) is PeriodicTrigger).ToArray());
  }
 }

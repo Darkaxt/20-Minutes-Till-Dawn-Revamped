@@ -9,25 +9,14 @@ using flanne.PerkSystem.Triggers;
 namespace TwentyMinutes.Modernization;
 
 // Android PreventDamage.ReduceCD / ReduceApplyTime / realCooldownTime.
-// Initialized shields use the source game-clock owner. Preserve native damage
-// and visual events, with explicit counted lifecycle/checkpoint reconstruction.
+// Source constructor data is available before Start; no native rate object is
+// needed for these operations. Preserve native damage/visual event boundaries.
 static class AndroidShieldCooldown
 {
- static readonly AccessTools.FieldRef<PreventDamage,float> Timer=AccessTools.FieldRefAccess<PreventDamage,float>("_timer");
  public static void Advance(PreventDamage shield,float seconds)
- {
-  var source=shield.GetComponent<AndroidShieldLifecycle>();if(source!=null){source.Advance(seconds);return;}
-  if(shield.isActive)return;
-  float remaining=shield.finalCooldown-Timer(shield)-seconds;
-  Timer(shield)=shield.finalCooldown-(remaining<0?1:remaining);
- }
+ {AndroidShieldLifecycle.Get(shield).Advance(seconds);}
  public static void Reduce(PreventDamage shield,float seconds)
- {
-  var source=shield.GetComponent<AndroidShieldLifecycle>();if(source!=null){source.Reduce(seconds);return;}
-  float remaining=shield.finalCooldown-Timer(shield)-seconds;
-  shield.cooldownTime-=seconds;
-  if(!shield.isActive)Timer(shield)=shield.finalCooldown-(remaining<0?1:remaining);
- }
+ {AndroidShieldLifecycle.Get(shield).Reduce(seconds);}
 }
 [System.Serializable]
 class AndroidStalwartAction:flanne.PerkSystem.Action
@@ -50,8 +39,8 @@ class AndroidStalwartRecipe
 [HarmonyPatch(typeof(PreventDamage),nameof(PreventDamage.finalCooldown),MethodType.Getter)]
 class AndroidShieldMinimum
 {
- static void Postfix(PreventDamage __instance,ref float __result)
- {var owner=__instance.GetComponent<AndroidShieldLifecycle>();__result=owner!=null?owner.Cooldown:Mathf.Max(10,__result);}
+ static bool Prefix(PreventDamage __instance,ref float __result)
+ {var owner=__instance.GetComponent<AndroidShieldLifecycle>();__result=owner!=null?owner.Cooldown:Mathf.Max(10,__instance.cooldownTime);return false;}
 }
 [HarmonyPatch(typeof(PreventDamage),nameof(PreventDamage.ReduceCDTimer))]
 class AndroidShieldRecoveryAdvance

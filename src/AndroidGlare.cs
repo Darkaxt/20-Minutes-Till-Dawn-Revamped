@@ -16,15 +16,17 @@ public sealed class AndroidGlare:MonoBehaviour
  public float Damage=15,Multiplier=1,Seconds=1;
  public bool TriggerOnHit;
  internal float Timer;
+ readonly List<int> targets=new List<int>();
  void Update()
  {
   Timer+=Time.deltaTime;if(Timer<Seconds)return;Timer-=Seconds;
   var player=PlayerController.Instance;
   float radius=player.stats[StatType.VisionRange].Modify(2);
-  var targets=ObjectPooler.SharedInstance.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(actor=>actor!=null&&actor.activeInHierarchy&&actor.layer==(int)TagLayerUtil.Enemy&&Vector2.Distance(actor.transform.position,player.transform.position)<radius).Distinct().ToArray();
-  for(int i=targets.Length-1;i>=0;i--)
+  targets.Clear();ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetMonsterInRange(targets,radius,player.transform.position);
+  for(int i=targets.Count-1;i>=0;i--)
   {
-   var target=targets[i];var health=target.GetComponent<Health>();if(health==null)continue;
+   var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(targets[i]);if(target==null)continue;
+   var health=target.GetComponent<Health>();if(health==null)continue;
    AndroidDamageRounding.ChangeHealth(health,-Mathf.CeilToInt(Damage*Multiplier),DamageType.Glare);
    // Android emits an actor ID on its unscoped hit channel. Windows' native
    // on-hit effects require the owning player and a GameObject payload.

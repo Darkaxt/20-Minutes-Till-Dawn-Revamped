@@ -15,7 +15,7 @@ public sealed class AndroidJusticeAcquire:flanne.PerkSystem.Action
  {
   // The shipped Android prefab contains only this native-compatible helper.
   var helper=new GameObject("PF_GainMaxHPOnSmiteKill");helper.transform.SetParent(PlayerController.Instance.transform,false);
-  var growth=helper.AddComponent<GainMaxHPOnSmiteKill>();Plugin.SetField(growth,"killsToGainMHP",500);Plugin.SetField(growth,"mhpGainCap",3);
+  var growth=helper.AddComponent<GainMaxHPOnSmiteKill>();Plugin.SetField(growth,"killsToGainMHP",500);Plugin.SetField(growth,"mhpGainCap",3);growth.enabled=!RunResume.Restoring;
  }
 }
 [HarmonyPatch]

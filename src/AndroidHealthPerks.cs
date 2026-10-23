@@ -14,11 +14,12 @@ namespace TwentyMinutes.Modernization;
 public sealed class AndroidSummonKillTrigger:Trigger
 {
  public int Count;
- const string KillEvent="Health.SummonDamageKill";
+ const string KillEvent="Health.DeathEvent";
  public override void OnEquip(PlayerController player)=>this.AddObserver(OnDeath,KillEvent);
  public override void OnUnEquip(PlayerController player)=>this.RemoveObserver(OnDeath,KillEvent);
  void OnDeath(object sender,object args)
  {
+  if(!(args is DamageType kind)||kind!=DamageType.Summon)return;
   if(++Count<500)return;Count=0;RaiseTrigger(PlayerController.Instance.gameObject);
  }
 }
@@ -55,14 +56,9 @@ class AndroidHealthPerkRecipes
   string key=RunResume.Key(__instance);Trigger trigger=null;flanne.PerkSystem.Action action=null;
   switch(key)
   {
-   case "bloodsuckers_name":trigger=new AndroidSummonKillTrigger();action=new AndroidGrantHeart();break;
-   case "soul_drain_name":trigger=new AndroidSummonKillTrigger();action=new AndroidGrantHeart{Soul=true};break;
    case "soul_expand_name":trigger=new InstantTrigger();action=new AndroidGrantHeart{Soul=true,Capacity=2};break;
    case "tome_of_elements_name":trigger=new InstantTrigger();action=new AndroidElementStats();break;
    case "electro_mastery_name":trigger=new InstantTrigger();action=new AndroidElectroMastery();break;
-   case "tome_of_might_name":
-    var buff=new DamageBuff();Plugin.SetField(buff,"modAllDamageType",true);Plugin.SetField(buff,"modifier",new AndroidMightDamage());
-    action=new ApplyPlayerBuffAction();Plugin.SetField(action,"buff",buff);trigger=new InstantTrigger();break;
    case "death_rounds_name":Plugin.SetField(__instance,"effects",new PerkEffect[0]);Plugin.SetField(__instance,"stackedEffects",new PerkEffect[0]);return;
    default:return;
   }

@@ -111,7 +111,7 @@ public class ChallengeRun:MonoBehaviour
   foreach(var p in map.spawnSessions.Select(s=>s.monsterPrefab).Distinct())ObjectPooler.SharedInstance.AddObject(p.name,p);
   foreach(var p in map.bossSpawns.Select(s=>s.bossPrefab).Distinct())ObjectPooler.SharedInstance.AddObject(p.name,p,1);
   GameTimer.SharedInstance.timeLimit=float.MaxValue;GameTimer.SharedInstance.endless=true;
-  PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);Object.Instantiate(map.mapPrefab);
+  AndroidRuneStartup.Apply();PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);AndroidAIRecipes.SpawnMap(map.mapPrefab);
   WaveTimers=new float[map.spawnSessions.Count];
   Plugin.Trace("challenge-start",new{Tier,waves=WaveTimers.Length,bosses=map.bossSpawns.Count,spawn=ChallengeMode.SpawnMultiplier(Tier),alive=ChallengeMode.AliveMultiplier(Tier)});
  }
@@ -194,7 +194,7 @@ public class ChallengeRun:MonoBehaviour
 // menu, corrupting PowerupMenu's entries. All scene Awake calls precede Start;
 // append through the concrete title owner before any native menu initializes.
 [HarmonyPatch(typeof(flanne.TitleScreen.TitleScreenController),"Awake")]
-class AppendChallengeBeforeMenu{static void Postfix(flanne.TitleScreen.TitleScreenController __instance){ChallengeMode.Append(__instance.modeSelectMenu);CustomMode.Append(__instance.modeSelectMenu);}}
+class AppendChallengeBeforeMenu{static void Postfix(flanne.TitleScreen.TitleScreenController __instance){AndroidMapTables.ConfigureLoaded();ChallengeMode.Append(__instance.modeSelectMenu);CustomMode.Append(__instance.modeSelectMenu);}}
 [HarmonyPatch(typeof(DifficultyController),"SetDifficulty")]
 class ChallengeDifficultySelection{static bool Prefix(DifficultyController __instance,int diff)=>ChallengeMode.SetDifficulty(__instance,diff);}
 [HarmonyPatch]
@@ -205,7 +205,7 @@ class ChallengeDifficultyButtons
  {if(!ChallengeMode.Selected)return true;ChallengeMode.SetDifficulty(__instance,__instance.difficulty+(__originalMethod.Name=="IncreaseDifficulty"?1:-1));return false;}
 }
 [HarmonyPatch(typeof(MapInitializer),"Start")]
-class ChallengeInitialize{static bool Prefix(MapInitializer __instance){if(RunResume.Restoring){RunResume.InitializeMap(__instance);return false;}if(!ChallengeMode.Active)return true;__instance.gameObject.AddComponent<ChallengeRun>().Initialize(__instance);return false;}}
+class ChallengeInitialize{static bool Prefix(MapInitializer __instance){if(AndroidEndlessRun.Active){__instance.gameObject.AddComponent<AndroidEndlessRun>().Initialize(__instance,RunResume.Pending);return false;}if(RunResume.Restoring){RunResume.InitializeMap(__instance);return false;}if(!ChallengeMode.Active)return true;__instance.gameObject.AddComponent<ChallengeRun>().Initialize(__instance);return false;}}
 [HarmonyPatch(typeof(DifficultyInitializer),"ApplyDifficulty")]
 class ChallengeDifficultyGameplay{static bool Prefix()=>!RunResume.Restoring&&!ChallengeMode.Active;}
 [HarmonyPatch(typeof(ObjectPooler),nameof(ObjectPooler.GetPooledObject))]

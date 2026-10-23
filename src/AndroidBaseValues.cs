@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 using flanne;
 using flanne.TitleScreen;
 using flanne.CharacterPassives;
@@ -33,6 +34,10 @@ class AndroidCharacterMovement
 [HarmonyPatch(typeof(ShadowClonePassive),"Init")]
 class AndroidHinaDash
 {
- static void Prefix(ShadowClonePassive __instance,ref float ___dashSpeedMulti)
- {___dashSpeedMulti=6;Plugin.SetField(__instance,"cooldown",1f);}
+ static bool Prefix(ShadowClonePassive __instance,ref float ___dashSpeedMulti,SpriteTrail ___spriteTrail,GameObject ___shadowClone)
+ {
+  ___dashSpeedMulti=6;Plugin.SetField(__instance,"cooldown",1f);
+  ___spriteTrail.mLeadingSprite=PlayerController.Instance.playerSprite;
+  ___shadowClone.SetActive(false);return false;
+ }
 }

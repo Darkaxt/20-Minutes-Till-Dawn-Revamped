@@ -50,7 +50,7 @@ public static partial class ResumeRuntime
  }
  internal static bool AttachTemporary(TemporaryStatBuff buff)
  {
-  if(RunRecorder.Instance?.Rebuilding==true){InertReplayedBuffs.Add(buff);return false;}
+  if(RunRecorder.Instance?.Rebuilding==true&&RunRecorder.Instance.LegacyContinuation){InertReplayedBuffs.Add(buff);return false;}
   TemporaryDeadlines[buff]=Time.time+Number(buff,"duration");return true;
  }
  internal static void DetachTemporary(TemporaryStatBuff buff){TemporaryDeadlines.Remove(buff);}
@@ -168,6 +168,7 @@ public static partial class ResumeRuntime
    if(state.singleShotActions[i]!=(bool)Field(ShotActions[i],"_isActive"))
    {if(state.singleShotActions[i])ShotActions[i].Activate(player.gameObject);else ShotActions[i].DeActivate();}
   var shields=player.GetComponentsInChildren<PreventDamage>(true);
+  RestoreLegacyShieldData(state,shields);
   foreach(var saved in state.shields)
   {
    if(saved.ordinal>=shields.Length)throw new InvalidOperationException("Native shield was not reconstructed");
@@ -209,5 +210,5 @@ class ResumeRevivalBoundary{static void Postfix(SecondWindRune __instance,ref IE
 class ResumeHealthIsNotAnEvent
 {
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(LastStandRune),"OnHealthChange"),AccessTools.Method(typeof(SecondWindRune),"OnHealthChange"),AccessTools.Method(typeof(HPThresholdStatRune),"OnHpChange")};
- static bool Prefix()=>!RunResume.Restoring;
+ static bool Prefix()=>!RunResume.LegacyRestoring;
 }

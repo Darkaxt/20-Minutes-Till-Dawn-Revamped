@@ -1,74 +1,117 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 using flanne;
-using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization;
 
-// Android 8.6 BurnBuff: one accumulated damage value and refreshed tick count,
-// preserving the existing tick phase on reapplication. The shipped scene's cap
-// is 1000, not the constructor's unused default of 100.
-public sealed class AndroidBurnStatus:MonoBehaviour
+// Source BurnBuff is a pooled plain object, not a component on the target.
+public sealed class AndroidBurnStatus
 {
  public const float BaseDuration=5;
  public const int TickCap=1000;
- public bool Live{get;private set;}
- BurnSystem owner;Health health;ObjectPooler pool;GameObject effect;
- float elapsed,damage;int remaining;
- public void Apply(BurnSystem source,Health target,int amount)
+ public GameObject Target{get;private set;}
+ public float Damage=>damage;
+ internal GameObject Effect;
+ float elapsed,damage,interval;int remaining;Health health;
+ internal bool Affect(GameObject target,float cd,float amount,int count)
  {
-  if(!Live)
-  {
-   owner=source;health=target;pool=ObjectPooler.SharedInstance;elapsed=0;damage=0;
-   effect=pool.GetPooledObject((string)AccessTools.Field(typeof(BurnSystem),"burnFXOPTag").GetValue(source));
-   effect.transform.position=target.transform.position;effect.SetActive(true);Live=true;enabled=true;
-  }
-  damage+=amount;remaining=Mathf.FloorToInt(source.burnDurationMultiplier.Modify(BaseDuration)+.1f);
+  if(!target.activeSelf)return false;
+  health=target.GetComponent<Health>();if(health==null)return false;
+  Target=target;interval=cd;remaining=count;damage+=amount;return true;
  }
- void Update()
+ internal void Tick(float dt)
  {
-  if(!Live)return;
-  if(owner==null||health==null||health.isDead||remaining<=0){Release();return;}
-  effect.transform.position=health.transform.position;elapsed+=Time.deltaTime;
-  if(elapsed<1)return;
+  if(health!=null&&health.isDead){Release();return;}
+  // Source leaves a zero-count entry registered instead of releasing it here.
+  if(remaining<1)return;
+  if(Effect!=null)Effect.transform.position=Target.transform.position;
+  elapsed+=dt;if(elapsed<interval)return;
   elapsed=0;remaining--;
-  int tick=Mathf.Min(TickCap,Mathf.FloorToInt(owner.burnDamageMultiplier.Modify(damage)));
-  health.TakeDamage(DamageType.Burn,tick);
+  if(!health.isDead)
+  {
+   var owner=BurnSystem.SharedInstance;
+   int amount=Mathf.FloorToInt(owner.burnDamageMultiplier.Modify(damage));
+   int cap=AndroidBurnState.Get(owner).MaxDamage;if(amount>cap)amount=cap;
+   AndroidDamageRounding.ChangeHealth(health,-amount,DamageType.Burn);
+  }
   if(remaining<=0)Release();
  }
- void OnDisable()=>Release();
- void Release()
+ internal void Release()
  {
-  if(!Live)return;
-  Live=false;elapsed=0;damage=0;remaining=0;
-  if(effect!=null)
-  {
-   if(pool!=null){effect.transform.SetParent(pool.transform,false);effect.SetActive(false);}
-   else Object.Destroy(effect);
-  }
-  effect=null;owner=null;health=null;pool=null;enabled=false;
+  AndroidBurnState.Get(BurnSystem.SharedInstance).Release(this);
+  damage=0;remaining=0;health=null;Target=null;
+  // Neither source Release nor Affect clears elapsed/interval. A reused buff
+  // can inherit the partial phase of a different, already-dead target.
+  if(Effect!=null){AndroidPools.Return(Effect);Effect=null;}
  }
 }
-[HarmonyPatch(typeof(BurnSystem),"Start")]
-class AndroidBurnDuration
+
+public sealed class AndroidBurnState:MonoBehaviour
 {
- static void Prefix(BurnSystem __instance)=>Plugin.SetField(__instance,"baseBurnDuration",AndroidBurnStatus.BaseDuration);
+ readonly Stack<AndroidBurnStatus> free=new Stack<AndroidBurnStatus>();
+ List<AndroidBurnStatus> active;
+ internal BurnSystem Owner;
+ internal int MaxDamage=AndroidBurnStatus.TickCap;
+ internal string Tag;
+ public static AndroidBurnState Get(BurnSystem owner)=>owner.GetComponent<AndroidBurnState>();
+ internal void Initialize(BurnSystem owner,string tag,GameObject prefab)
+ {
+  Owner=owner;Tag=tag;
+  ObjectPooler.SharedInstance.GetComponent<AndroidPools>().Register(tag,prefab,-1);
+  owner.burnDamageMultiplier=new StatMod();owner.burnDurationMultiplier=new StatMod();
+  active=new List<AndroidBurnStatus>();
+ }
+ internal int Index(GameObject target)
+ {for(int i=0;i<active.Count;i++)if(active[i].Target==target)return i;return -1;}
+ public AndroidBurnStatus Find(GameObject target)
+ {int index=Index(target);return index<0?null:active[index];}
+ internal void Burn(GameObject target,int amount)
+ {
+  if(target==null||!target.activeSelf||target.layer==(int)TagLayerUtil.Player)return;
+  if(AndroidAffixes.Has(target,0))return;
+  int index=Index(target);AndroidBurnStatus buff;
+  if(index>=0)buff=active[index];
+  else
+  {
+   var effect=ObjectPooler.SharedInstance.GetPooledObject(Tag);
+   buff=free.Count>0?free.Pop():new AndroidBurnStatus();buff.Effect=effect;active.Add(buff);
+  }
+  // Source sends no target payload, before the amount/target/count assignment.
+  Owner.PostNotification(BurnSystem.InflictBurnEvent,null);
+  buff.Affect(target,1,amount,Mathf.FloorToInt(Owner.burnDurationMultiplier.Modify(AndroidBurnStatus.BaseDuration)+.1f));
+ }
+ void FixedUpdate()
+ {
+  // Forward the original component's enabled ownership of this Unity callback.
+  if(!Owner.enabled)return;
+  for(int i=active.Count-1;i>=0;i--)active[i].Tick(Time.fixedDeltaTime);
+ }
+ internal void Release(AndroidBurnStatus buff){free.Push(buff);active.Remove(buff);}
+ internal void ReleaseAll(){for(int i=active.Count-1;i>=0;i--)active[i].Release();}
+ internal static void Clear()=>Get(BurnSystem.SharedInstance).ReleaseAll();
+}
+[HarmonyPatch(typeof(BurnSystem),"Awake")]
+class AndroidBurnOwner
+{static void Postfix(BurnSystem __instance){var state=__instance.gameObject.AddComponent<AndroidBurnState>();state.Owner=__instance;}}
+[HarmonyPatch(typeof(BurnSystem),"Start")]
+class AndroidBurnInitialization
+{
+ static bool Prefix(BurnSystem __instance,string ___burnFXOPTag,GameObject ___burnFXPrefab)
+ {
+  Plugin.SetField(__instance,"baseBurnDuration",AndroidBurnStatus.BaseDuration);
+  AndroidBurnState.Get(__instance).Initialize(__instance,___burnFXOPTag,___burnFXPrefab);return false;
+ }
 }
 [HarmonyPatch(typeof(BurnSystem),nameof(BurnSystem.Burn))]
 class AndroidApplyBurn
 {
  static bool Prefix(BurnSystem __instance,GameObject target,int burnDamage)
- {
-  if(target==null||!target.activeSelf||target.CompareTag("Player"))return false;
-  var health=target.GetComponent<Health>();if(health==null)return false;
-  var status=target.GetComponent<AndroidBurnStatus>();if(status==null)status=target.AddComponent<AndroidBurnStatus>();
-  status.Apply(__instance,health,burnDamage);
-  // Keep the native notification payload expected by the Windows consumers.
-  __instance.PostNotification(BurnSystem.InflictBurnEvent,target);return false;
- }
+ {AndroidBurnState.Get(__instance).Burn(target,burnDamage);return false;}
 }
 [HarmonyPatch(typeof(BurnSystem),nameof(BurnSystem.IsBurning))]
 class AndroidIsBurning
 {
- static bool Prefix(GameObject target,ref bool __result)
- {__result=target!=null&&target.activeSelf&&target.GetComponent<AndroidBurnStatus>() is AndroidBurnStatus status&&status.Live;return false;}
+ // Keep Windows' Boolean ABI; the source method returns an index or minus1.
+ static bool Prefix(BurnSystem __instance,GameObject target,ref bool __result)
+ {__result=AndroidBurnState.Get(__instance).Index(target)>=0;return false;}
 }

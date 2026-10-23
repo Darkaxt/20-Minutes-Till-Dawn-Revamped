@@ -13,24 +13,32 @@ class AndroidHealthStat
 [HarmonyPatch(typeof(PlayerHealth),nameof(PlayerHealth.maxHP),MethodType.Setter)]
 class AndroidMaximumHealth
 {
+ static readonly AccessTools.FieldRef<PlayerHealth,int> HP=AccessTools.FieldRefAccess<PlayerHealth,int>("_hp");
  static bool Prefix(PlayerHealth __instance,int value,ref int ____maxHP)
  {
   int difference=value-____maxHP;____maxHP=value;
   __instance.onMaxHPChangedTo.Invoke(value);
-  __instance.hp=difference>0?__instance.hp+difference:__instance.hp;
-  if(difference<=0&&value<=0)__instance.onDeath.Invoke();
+  // Source's increase branch writes the sum directly. Its non-increase
+  // branch clamps against the live maximum after max-health observers run.
+  // Calling the native hp setter here adds a clamp to the increase branch.
+  int restored=difference>0?__instance.hp+difference:Mathf.Clamp(__instance.hp,0,____maxHP);
+  HP(__instance)=restored;__instance.onHealthChangedTo.Invoke(restored);
+  if(difference<=0&&____maxHP<=0)__instance.onDeath.Invoke();
   return false;
  }
 }
 [HarmonyPatch(typeof(PlayerHealth),nameof(PlayerHealth.shp),MethodType.Setter)]
 class AndroidSoulHealth
 {
+ internal const string ChangeEvent="Health.ShieldHealthChangeEvent";
  static bool Prefix(PlayerHealth __instance,int value,ref int ____shp)
  {
   // Android rejects an over-cap request, rather than truncating it. Red HP
   // and shield capacity are independent; there is no combined twenty cap.
   if(value>__instance.maxSHP)return false;
   int previous=____shp;____shp=value;
+  if(__instance.transform==PlayerController.Instance.playerHealth.transform)
+   __instance.PostNotification(ChangeEvent,value-previous);
   if(value>previous)__instance.onGainedSHP.Invoke();
   else if(value<previous)__instance.onLostSHP.Invoke();
   __instance.onSoulHPChangedTo.Invoke(value);return false;

@@ -168,6 +168,7 @@ def android_assets(apkm, dummy, output):
                            'effects': effects, 'powers': powers, 'fog': fog})
     (art / 'characters.json').write_text(json.dumps({'characters': characters, 'sprites': list(sprite_records.values())}, indent=2), encoding='utf8')
     expected = {f'T_ChargeCannon_SS_{i}' for i in range(7)} | {f'weapon-{letter}_{i}' for letter in 'abc' for i in range(1, 4)}
+    expected |= {'Affix_Fire', 'Affix_Thunder', 'Affix_Ice', 'Affix_BulletDamageReduce'}
     found = collections.Counter()
     for obj in env.objects:
         if obj.type.name == 'Sprite' and obj.peek_name() in expected:
@@ -175,7 +176,31 @@ def android_assets(apkm, dummy, output):
             d.image.save(output / (d.m_Name + '.png'))
             found[d.m_Name] += 1
     if set(found) != expected or any(count != 1 for count in found.values()):
-        raise ValueError('Charge Cannon sprite whitelist mismatch: ' + repr(found))
+        raise ValueError('Gameplay sprite whitelist mismatch: ' + repr(found))
+    affixes = {'icons': [], 'actors': []}
+    for obj in env.objects:
+        if obj.type.name == 'Sprite' and obj.peek_name().startswith('Affix_') and obj.peek_name() in expected:
+            sprite = obj.read()
+            affixes['icons'].append({'name': sprite.m_Name, 'ppu': sprite.m_PixelsToUnits,
+                                    'pivotX': sprite.m_Pivot.x, 'pivotY': sprite.m_Pivot.y})
+        elif obj.type.name == 'MonoBehaviour':
+            head = obj.parse_monobehaviour_head()
+            script = head.m_Script.deref().read_typetree()
+            if script.get('m_Namespace') != 'flanne' or script.get('m_ClassName') != 'Affix':
+                continue
+            data = read_mono(obj)
+            root = head.m_GameObject.deref()
+            parent = deref(obj, data['iconParent'])
+            prefab = deref(obj, data['iconPrefab'])
+            renderer = next(deref(prefab, p['component']) for p in prefab.read_typetree()['m_Component']
+                            if deref(prefab, p['component']).type.name == 'SpriteRenderer').read_typetree()
+            actor = {'name': root.peek_name(), 'poses': transform_chain(parent, root),
+                     'sortingLayer': renderer['m_SortingLayerID'], 'sortingOrder': renderer['m_SortingOrder']}
+            # Repeated scene instances carry the same local contract. Collapse
+            # only fully identical records, never pick an arbitrary variant.
+            if actor not in affixes['actors']:
+                affixes['actors'].append(actor)
+    (output / 'affixes.json').write_text(json.dumps(affixes, indent=2), encoding='utf8')
     fallback = output / 'powerups'
     fallback.mkdir()
     powers = []
@@ -192,7 +217,62 @@ def android_assets(apkm, dummy, output):
                                   'isFlatMod': int(c.get('isFlatMod', 0)), 'value': c['value']} for c in data['statChanges']],
                        'icon': name + '.png', 'ppu': icon.m_PixelsToUnits})
     (fallback / 'manifest.json').write_text(json.dumps({'powers': powers}, indent=2), encoding='utf8')
-    print('Recovered 2 character contracts, 83 character sprites, 16 weapon frames and 6 fallback upgrades.', flush=True)
+    achievements = output / 'achievements'
+    achievements.mkdir()
+
+    def achievement_icon(owner, pointer, filename):
+        if not pointer['m_PathID']:
+            return None
+        deref(owner, pointer).read().image.save(achievements / filename)
+        return filename
+
+    catalog = objects['sharedassets1.assets', 3399]
+    catalog_data = read_mono(catalog)
+    if catalog_data['m_Name'] != 'AchieveProfile':
+        raise ValueError('Achievement catalog whitelist identity mismatch')
+    entries = []
+    for pointer in catalog_data['achievePool']:
+        obj = deref(catalog, pointer)
+        data = read_mono(obj)
+        identity = data['type']
+        steam_id = 'ACH_MAGIC_BOW' if data['m_Name'] == 'ACH_MAGICPOW' else data['m_Name'].upper()
+        entries.append({'type': identity, 'steamId': steam_id,
+                        'name': loc[data['nameStringID']['key']],
+                        'description': loc[data['descriptionStringID']['key']],
+                        'icon': achievement_icon(obj, data['icon'], f'{identity}-earned.png'),
+                        'iconGray': achievement_icon(obj, data['iconGray'], f'{identity}-locked.png')})
+    reward_profile = objects['sharedassets1.assets', 3400]
+    reward_data = read_mono(reward_profile)
+    if reward_data['m_Name'] != 'AchieveRewardProfile':
+        raise ValueError('Achievement reward whitelist identity mismatch')
+    rewards = []
+    for row in reward_data['AchieveRewardDatas']:
+        reward = row['rewardData']
+        if reward['etype'] != 0:  # Only the source Gold claims; skins/wings are excluded.
+            continue
+        rewards.append({'id': row['id'], 'count': row['achieveCount'], 'amount': reward['value'],
+                        'icon': achievement_icon(reward_profile, reward['icon'], f'reward-{row["id"]}.png')})
+    (achievements / 'manifest.json').write_text(json.dumps({'entries': entries, 'rewards': rewards}, indent=2), encoding='utf8')
+    controller = objects['level2', 3848]
+    controller_data = read_mono(controller)
+    controller_script = deref(controller, controller_data['m_Script']).read()
+    if controller_script.m_ClassName != 'GameController' or controller_script.m_Namespace != 'flanne.Core':
+        raise ValueError('Damage-display controller whitelist identity mismatch')
+    (output / 'damage-display.json').write_text(json.dumps({
+        'threshold': controller_data['lowFpsThreshold'], 'duration': controller_data['lowFpsDuration'],
+        'interval': 1.0, 'tipDuration': 2.0, 'tip': loc['damage_display_auto']}, indent=2), encoding='utf8')
+    camera_maps = []
+    for file, identity, name in [
+            ('sharedassets1.assets', 3447, '10M_Forest'), ('sharedassets1.assets', 3448, '20M_Forest'),
+            ('sharedassets1.assets', 3449, '20M_Forest_new'), ('sharedassets1.assets', 3450, '20M_PumpkinPatch'),
+            ('sharedassets1.assets', 3451, '20M_Temple'), ('sharedassets1.assets', 3452, 'Challenge_Forest'),
+            ('sharedassets1.assets', 3453, 'Endless_Forest'), ('sharedassets2.assets', 212, 'Dev_Map')]:
+        data = read_mono(objects[file, identity])
+        if data['m_Name'] != name:
+            raise ValueError('Camera map whitelist identity mismatch')
+        camera_maps.append({'name': name, 'height': data['cameraHeight']})
+    (output / 'camera-height.json').write_text(json.dumps({'maps': camera_maps}, indent=2), encoding='utf8')
+    print('Recovered character/weapon contracts, affix icons/placements, fallback upgrades, achievement rewards, damage-display tuning and map view heights.', flush=True)
 
 
 def style_assets(game_data, archive, output):

@@ -137,13 +137,16 @@ public class PortedShooter:Shooter
     public override void OnStopShoot(ProjectileRecipe r,Vector2 direction,int n,float spread,float inaccuracy)
     {
         if(!Charging)return;
+        // Source release checks current ammo before changing the recipe or
+        // invoking base Shoot; an empty release still resets its charge.
+        if(PlayerController.Instance.ammo.amount==0){ResetCharge();return;}
         LastPlan=ChargeRules.Plan(ChargeTime,Mode);
-        r.damage=Mathf.Round(r.damage*LastPlan.DamageMultiplier);r.size*=LastPlan.SizeMultiplier;
+        r.damage=Mathf.RoundToInt(r.damage*LastPlan.DamageMultiplier);r.size*=LastPlan.SizeMultiplier;
         if(LastPlan.PierceAll)r.piercing+=999;
         LastDamage=r.damage;Shots++;
         Plugin.Trace("shot",new{mode=Mode.ToString(),seconds=ChargeTime,tier=LastPlan.Tier,damage=r.damage,size=r.size,piercing=r.piercing,projectiles=n});
         base.Shoot(r,direction,n,spread,inaccuracy);
-        Charging=false;ChargeTime=0;Renderer.sprite=Plugin.ModeSprites[Mode][0];
+        ResetCharge();
     }
-    void OnDisable(){Charging=false;ChargeTime=0;}
+    void ResetCharge(){Charging=false;ChargeTime=0;Renderer.sprite=Plugin.ModeSprites[Mode][0];}
 }

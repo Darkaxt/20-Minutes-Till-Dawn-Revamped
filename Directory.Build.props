@@ -16,6 +16,8 @@
  <ItemGroup>
   <Reference Include="$(GameManaged)/UnityEngine.ParticleSystemModule.dll"/>
   <Reference Include="$(GameManaged)/Assembly-CSharp.dll"/><Reference Include="$(GameManaged)/com.flanne.extensions.dll"/>
+  <Reference Include="$(GameManaged)/Facepunch.Steamworks.Win64.dll"/>
+  <Reference Include="$(GameManaged)/Unity.2D.PixelPerfect.dll"/>
   <Reference Include="$(GameManaged)/UnityEngine.dll"/><Reference Include="$(GameManaged)/UnityEngine.CoreModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.Physics2DModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.UI.dll"/><Reference Include="$(GameManaged)/UnityEngine.AnimationModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.AudioModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.ImageConversionModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.InputLegacyModule.dll"/><Reference Include="$(GameManaged)/Unity.TextMeshPro.dll"/><Reference Include="$(GameManaged)/Unity.InputSystem.dll"/><Reference Include="$(GameManaged)/UnityEngine.JSONSerializeModule.dll"/><Reference Include="$(GameManaged)/UnityEngine.UIModule.dll"/>
   <Reference Include="$(BepCore)/BepInEx.dll"/><Reference Include="$(BepCore)/0Harmony.dll"/>
  </ItemGroup>

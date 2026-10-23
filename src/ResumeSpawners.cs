@@ -53,7 +53,7 @@ static partial class RunResume
    var copy=new BossSpawn{bossPrefab=b.bossPrefab,maxHP=b.maxHP,spawnPosition=b.spawnPosition,timeToSpawn=Mathf.Max(0,b.timeToSpawn-relative),dontSpawnArena=b.dontSpawnArena,killAllOnSpawn=b.killAllOnSpawn};
    BossIndices.Add(copy,i);scheduled.Add(copy);
   }
-  boss.LoadSpawners(scheduled);PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);Object.Instantiate(map.mapPrefab);
+  boss.LoadSpawners(scheduled);AndroidRuneStartup.Apply();PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);AndroidAIRecipes.SpawnMap(map.mapPrefab);
   if(map.endless)
   {
    float duration=saved.endlessCycle==0?map.timeLimit:map.endlessLoopTime;
@@ -74,7 +74,24 @@ static partial class RunResume
  static void RestoreSpawners(Snapshot saved)
  {
   var r=RunRecorder.Instance;r.RoundStart=saved.roundStart;r.RoundClock=Time.time-saved.roundElapsed;r.EndlessCycle=saved.endlessCycle;r.KilledBosses.UnionWith(saved.killedBosses);r.KilledElites.UnionWith(saved.killedElites);
-  RestoreValues(Object.FindObjectOfType<HordeSpawner>(),HordeFields,saved.hordeModifiers);RestoreValues(Object.FindObjectOfType<BossSpawner>(),BossFields,saved.bossModifiers);
+  var horde=Object.FindObjectOfType<HordeSpawner>();var boss=Object.FindObjectOfType<BossSpawner>();
+  var source=Object.FindObjectOfType<AndroidEndlessRun>();
+  var hordeValues=(float[])saved.hordeModifiers.Clone();var bossValues=(float[])saved.bossModifiers.Clone();
+  int previousCycle=source?.PreviousWindowsCycle??saved.endlessCycle;
+  if(saved.version==3&&SelectedMap.MapData.endless&&previousCycle>0)
+  {
+   // Remove only the previous Windows loop's documented growth. Health fields
+   // were overwritten by that loop, so recover their fresh native difficulty
+   // values after all scene Start initializers have completed.
+   hordeValues[1]=horde.healthMultiplier;hordeValues[2]=horde.eliteHealthMultiplier;hordeValues[5]-=.2f*previousCycle;
+   bossValues[0]-=3*previousCycle;bossValues[2]-=.25f*previousCycle;
+  }
+  // D15 is a source assignment, not accumulated run history. The old native
+  // snapshot must not overwrite it with1.8. Custom scales are saved separately.
+  if(!SelectedMap.MapData.endless&&!ChallengeMode.Active&&saved.darkness==15)
+   bossValues[2]=AndroidDarknessBossCooldown.SourceReduction;
+  RestoreValues(horde,HordeFields,hordeValues);RestoreValues(boss,BossFields,bossValues);
+  if(source!=null)source.RestoreEncounters(saved);
   var challenge=ChallengeRun.Instance;if(challenge==null)return;
   challenge.RoundStart=saved.roundStart;challenge.EnemyKills=saved.challengeEnemies;challenge.BossKills=saved.challengeBosses;
   challenge.KilledElites.UnionWith(saved.killedElites);challenge.SpawnedElites.UnionWith(saved.killedElites);
@@ -89,18 +106,18 @@ static partial class RunResume
  }
  static void CaptureDrops(Snapshot saved)
  {
-  saved.chests=Object.FindObjectsOfType<ChestPickup>().Count(c=>AccessTools.Field(typeof(ChestPickup),"_xpFountainCoroutine").GetValue(c)==null);
-  saved.devilDeals=Object.FindObjectsOfType<DevilDealPickup>().Length;
+  var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();
+  saved.chests=pool.CountCollectableDrops("Chest");saved.devilDeals=pool.CountCollectableDrops("DevilDeal");
  }
  static void RestoreDrops(Snapshot saved)
  {
+  var pool=ObjectPooler.SharedInstance;if(pool==null)return;
+  var player=PlayerController.Instance;var center=player!=null?player.transform.position:Vector3.zero;
   foreach(var pair in new[]{Tuple.Create(typeof(ChestPickup),saved.chests),Tuple.Create(typeof(DevilDealPickup),saved.devilDeals)})
   {
-   if(pair.Item2==0)continue;
-   var prefab=Resources.FindObjectsOfTypeAll(pair.Item1).Cast<Component>().First(c=>!c.gameObject.scene.IsValid()).gameObject;
-   var pool=ObjectPooler.SharedInstance;pool.AddObject(prefab.name,prefab,1);
+   string tag=pair.Item1==typeof(ChestPickup)?"Chest":"DevilDeal";
    for(int i=0;i<pair.Item2;i++)
-   {var drop=pool.GetPooledObject(prefab.name);float angle=2*Mathf.PI*i/Math.Max(1,pair.Item2);drop.transform.position=PlayerController.Instance.transform.position+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*3;drop.SetActive(true);}
+   {var offset=UnityEngine.Random.insideUnitCircle;var drop=pool.GetPooledObject(tag);if(drop!=null)drop.transform.position=center+new Vector3(offset.x*2,offset.y*2,0);}
   }
  }
  internal static SpawnIdentity BossIdentity(object routine)

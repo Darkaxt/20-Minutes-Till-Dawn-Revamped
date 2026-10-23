@@ -18,7 +18,15 @@ class AndroidGhostAttachment
  static readonly MethodInfo Attach=AccessTools.Method(typeof(AttachPrefabToPlayerAction),"AttachPrefab");
  static bool Prefix(AttachPrefabToPlayerAction __instance,GameObject ___prefab,int ___amountToAttach)
  {
-  var summon=___prefab.GetComponentInChildren<ShootingSummon>(true);if(summon==null||summon.SummonTypeID!="GhostFriend")return true;
+  // Excitement's original Android helper lasts one second, not Windows' two.
+  // Set the source template before attachment rather than resetting a live
+  // helper's countdown or overwriting fields after Custom has applied values.
+  var xpBuff=___prefab.GetComponent<flanne.PowerupSystem.BuffOnXP>();
+  if(xpBuff!=null)Plugin.SetField(xpBuff,"duration",1f);
+  var summon=___prefab.GetComponentInChildren<Summon>(true);
+  // Source values belong to the original serialized Dragon, before the egg's
+  // inactive summon can accumulate growth. Do not reset it at hatch/Start.
+  if(summon is ShootingSummon dragon&&dragon.SummonTypeID=="Dragon"){dragon.baseDamage=10;Plugin.SetField(dragon,"attackCooldown",3f);}
   for(int i=0;i<___amountToAttach;i++)Attach.Invoke(__instance,new object[]{___prefab});return false;
  }
 }

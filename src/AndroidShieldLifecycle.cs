@@ -3,17 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Events;
 using flanne;
 using flanne.PerkSystem;
 using flanne.PerkSystem.Actions;
 using flanne.PowerupSystem;
 namespace TwentyMinutes.Modernization;
 
-// Health.isProtected is a BoolToggle in Android, a bool in Windows. Keep its
-// native counted implementation and project only its value into the native API.
+// Source shields flip Health.isInvincible itself. Value records only this
+// owner's shield contributions for continuation; the native health counter is
+// shared with hit, skill and rune invulnerability, as it is in Android.
 public sealed class AndroidProtection:MonoBehaviour
 {
  internal readonly BoolToggle Value=new BoolToggle(false);
@@ -21,10 +22,15 @@ public sealed class AndroidProtection:MonoBehaviour
  void Awake(){health=GetComponent<PlayerHealth>();Value.ToggleEvent+=(sender,value)=>health.isProtected=value;}
  internal static AndroidProtection Get(PlayerHealth health)
  {var owner=health.GetComponent<AndroidProtection>();return owner!=null?owner:health.gameObject.AddComponent<AndroidProtection>();}
+ internal void Add(){Value.Flip();health.isInvincible.Flip();}
+ internal void Remove(){Value.UnFlip();health.isInvincible.UnFlip();}
  internal void RestoreCount(int count)
- {Plugin.SetField(Value,"_flip",count);health.isProtected=Value.value;}
- internal static void KeepProtection(PlayerHealth health,bool value)
- {var owner=health.GetComponent<AndroidProtection>();health.isProtected=owner!=null?owner.Value.value:value;}
+ {
+  int delta=count-Value.flips;
+  for(int i=0;i<delta;i++)health.isInvincible.Flip();
+  for(int i=0;i>delta;i--)health.isInvincible.UnFlip();
+  Plugin.SetField(Value,"_flip",count);health.isProtected=Value.value;
+ }
 }
 public sealed class AndroidShieldLifecycle:MonoBehaviour
 {
@@ -32,13 +38,19 @@ public sealed class AndroidShieldLifecycle:MonoBehaviour
  internal float Reduction,ApplyAt=-1,BreakUntil=-1;
  internal bool Contributes;
  PreventDamage shield;
- AndroidProtection protection;
+ AndroidProtection Protection=>AndroidProtection.Get(PlayerController.Instance.playerHealth);
  internal float Cooldown=>Mathf.Max(10,shield.cooldownTime-Reduction);
- internal void Bind(PreventDamage owner){shield=owner;protection=AndroidProtection.Get(PlayerController.Instance.playerHealth);}
+ internal void Bind(PreventDamage owner){shield=owner;}
+ internal static AndroidShieldLifecycle Get(PreventDamage shield)
+ {
+  var owner=shield.GetComponent<AndroidShieldLifecycle>();
+  if(owner==null){owner=shield.gameObject.AddComponent<AndroidShieldLifecycle>();owner.Bind(shield);}
+  return owner;
+ }
  internal void Apply()
  {
   Plugin.SetField(shield,"_waitCooldownCoroutine",null);ApplyAt=-1;BreakUntil=-1;Plugin.SetField(shield,"<isActive>k__BackingField",true);
-  protection.Value.Flip();Contributes=true;shield.OnCooldownDone.Invoke();LastCount=Count;
+  Protection.Add();Contributes=true;shield.OnCooldownDone.Invoke();LastCount=Count;
  }
  internal void Hit()
  {
@@ -49,7 +61,7 @@ public sealed class AndroidShieldLifecycle:MonoBehaviour
  {
   BreakUntil=Time.time+remaining;if(notify)shield.OnDamagePrevented.Invoke();
   yield return new WaitForSeconds(remaining);
-  Plugin.SetField(shield,"<isActive>k__BackingField",false);protection.Value.UnFlip();Contributes=false;BreakUntil=-1;
+  Plugin.SetField(shield,"<isActive>k__BackingField",false);Protection.Remove();Contributes=false;BreakUntil=-1;
   ApplyAt=GameTimer.SharedInstance.timer+Cooldown;
  }
  void Update()
@@ -79,25 +91,35 @@ public sealed class AndroidShieldLifecycle:MonoBehaviour
  }
  static IEnumerator Ended(){yield break;}
 }
+[HarmonyPatch]
+class AndroidShieldStartLifetime
+{
+ static IEnumerable<MethodBase> TargetMethods()
+ {yield return AccessTools.Method(typeof(PreventDamage),"Start");yield return AccessTools.Method(typeof(PreventDamage),"OnDestroy");}
+ static bool Prefix(PreventDamage __instance,MethodBase __originalMethod)
+ {
+  var handler=(UnityAction)Delegate.CreateDelegate(typeof(UnityAction),__instance,AccessTools.Method(typeof(PreventDamage),"OnPreventDamage"));
+  if(__originalMethod.Name=="OnDestroy")PlayerController.Instance.playerHealth.onDamagePrevented.RemoveListener(handler);
+  else
+  {
+   // Native-only storage remains for owned legacy snapshots; source cooldown
+   // arithmetic does not read it. Do not reset the source reduction/deadline
+   // already changed by an upgrade applied before this first Start.
+   __instance.cooldownRate=new StatMod();Plugin.SetField(__instance,"_waitCooldownCoroutine",null);
+   PlayerController.Instance.playerHealth.onDamagePrevented.AddListener(handler);
+   AccessTools.Method(typeof(PreventDamage),"ApplyInvincibility").Invoke(__instance,null);
+  }
+  return false;
+ }
+}
 [HarmonyPatch(typeof(PreventDamage),"ApplyInvincibility")]
 class AndroidShieldApply
 {
  static bool Prefix(PreventDamage __instance)
- {var owner=__instance.GetComponent<AndroidShieldLifecycle>();if(owner==null){owner=__instance.gameObject.AddComponent<AndroidShieldLifecycle>();owner.Bind(__instance);}owner.Apply();return false;}
+ {AndroidShieldLifecycle.Get(__instance).Apply();return false;}
 }
 [HarmonyPatch(typeof(PreventDamage),"OnPreventDamage")]
-class AndroidShieldHit{static bool Prefix(PreventDamage __instance){__instance.GetComponent<AndroidShieldLifecycle>().Hit();return false;}}
-[HarmonyPatch(typeof(PlayerHealth),"CheckCollision")]
-class AndroidProtectionCollision
-{
- static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
- {
-  int writes=0;var field=AccessTools.Field(typeof(PlayerHealth),nameof(PlayerHealth.isProtected));
-  foreach(var instruction in instructions)
-  {if(instruction.opcode==OpCodes.Stfld&&Equals(instruction.operand,field)){instruction.opcode=OpCodes.Call;instruction.operand=AccessTools.Method(typeof(AndroidProtection),nameof(AndroidProtection.KeepProtection));writes++;}yield return instruction;}
-  if(writes!=1)throw new InvalidOperationException("Unsupported native protection-consumption boundary");
- }
-}
+class AndroidShieldHit{static bool Prefix(PreventDamage __instance){AndroidShieldLifecycle.Get(__instance).Hit();return false;}}
 [HarmonyPatch]
 class AndroidRepeatedShieldRecipe
 {
@@ -118,9 +140,8 @@ class AndroidShieldThunder
   if(___holyShield.isActive)____timer+=Time.deltaTime;if(____timer<=___cooldown)return false;____timer-=___cooldown;
   for(int i=0;i<___thundersPerWave;i++)
   {
-   Vector3 center=PlayerController.Instance.transform.position;
-   var candidates=ObjectPooler.SharedInstance.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(actor=>actor!=null&&actor.activeInHierarchy&&actor.layer==(int)TagLayerUtil.Enemy&&Mathf.Abs(actor.transform.position.x-center.x)<___range.x&&Mathf.Abs(actor.transform.position.y-center.y)<___range.y).Distinct().ToArray();
-   if(candidates.Length>0)___TGen.GenerateAt(candidates[UnityEngine.Random.Range(0,candidates.Length)],___baseDamage);
+   var target=AndroidSummonTargets.Random(___range.x,___range.y);
+   if(target!=null)___TGen.GenerateAt(target,___baseDamage);
   }
   return false;
  }
