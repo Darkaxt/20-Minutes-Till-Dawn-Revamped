@@ -202,7 +202,15 @@ class AndroidSplinterDeaths
 }
 [HarmonyPatch(typeof(OrbitalWeapon),"Init")]
 class AndroidScytheRotation
-{static void Prefix(OrbitalWeapon __instance,ref float ___baseRotationSpeed){if(__instance.SummonTypeID=="Scythe")___baseRotationSpeed=-160;}}
+{
+ static void Prefix(OrbitalWeapon __instance,ref float ___baseRotationSpeed)
+ {
+  if(__instance.SummonTypeID!="Scythe")return;
+  ___baseRotationSpeed=-160;
+  // Original source Rigidbody2D2470 contacts bodyless monster colliders.
+  __instance.GetComponent<Rigidbody2D>().useFullKinematicContacts=true;
+ }
+}
 
 // Android uses set membership for the three Scythe flags, so repeated picks do
 // not add repeated downstream damage modifiers. The player owns this build.
