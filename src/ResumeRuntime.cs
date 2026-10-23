@@ -40,6 +40,7 @@ public static partial class ResumeRuntime
   public List<RitualState> rituals;public List<UnharmedState> unharmed;public List<JusticeState> justice;
   public float? feedTheBeastsDamage;
   public List<SourcePowerup> sourcePowerups;public int? sourceHealing,sourceBodySoul;
+  public List<int> customRageAmmo,customFusilladeProjectiles;
   // Earlier aggregate writers predate these two source stat recipes. New
   // legacy saves already include them and must not migrate them a second time.
   public bool? characterSummonBonuses;
@@ -117,7 +118,9 @@ public static partial class ResumeRuntime
  public static State Capture(PlayerController player)
  {
   if(!RunRecorder.Instance.LegacyContinuation)return CaptureSource(player);
-  var state=new State{generators=new List<GeneratorState>(),growth=new List<GrowthState>(),characterSummonBonuses=true};
+  var state=new State{generators=new List<GeneratorState>(),growth=new List<GrowthState>(),characterSummonBonuses=true,
+   customRageAmmo=CustomMode.Active?RunRecorder.Instance.CustomRageAmmo?.ToList():null,
+   customFusilladeProjectiles=CustomMode.Active?RunRecorder.Instance.CustomFusilladeProjectiles?.ToList():null};
   for(int i=0;i<(int)StatType.Count;i++)state.stats.Add(Capture(player.stats[(StatType)i]));
   state.xpMultiplier=Capture(player.GetComponentInChildren<flanne.Player.PlayerXP>().xpMultiplier);
   foreach(var pair in Fields)
@@ -181,7 +184,7 @@ public static partial class ResumeRuntime
    if(effect.id.StartsWith("generator_name#")&&effect.action=="flanne.PerkSystem.Actions.AttachPrefabToPlayerAction")
     effect.action=typeof(AndroidCombatAttachment).FullName;
  }
- public static void Restore(PlayerController player,State state)
+ public static void Restore(PlayerController player,State state,RunResume.Snapshot snapshot)
  {
   Validate(state);
   if(state.sourcePowerups!=null){RestoreSourceRunes(player,state);return;}
@@ -241,10 +244,34 @@ public static partial class ResumeRuntime
   // RunResume already assigned the snapshot's actual health. Its explicit
   // maximum can differ from the derived stat (for example Justice's20 cap).
   // Restore native stat notifications without assigning/healing health again.
+  // These six channels have only static acquisition contributors. Replay
+  // already applies their source values and current Custom perk scales,
+  // including recorded extra picks. Keep all other saved channels: in
+  // particular, earned fire-rate bonuses and Tiny's separate size reduction.
+  // No writer-version guess, aggregate division or provenance flag is needed.
+  var rebuiltStatic=new Dictionary<StatType,ModState>{
+   {StatType.CharacterSize,Capture(player.stats[StatType.CharacterSize])},
+   {StatType.ProjectileSpeed,Capture(player.stats[StatType.ProjectileSpeed])},
+   {StatType.FireRate,Capture(player.stats[StatType.FireRate])},
+   {StatType.ReloadRate,Capture(player.stats[StatType.ReloadRate])},
+   {StatType.BulletDamage,Capture(player.stats[StatType.BulletDamage])},
+   {StatType.Knockback,Capture(player.stats[StatType.Knockback])}};
+  // Ordinary weapon/evolution inputs are recorded. In Custom, all flat-ammo
+  // recipes are likewise reconstructable except Rage's application-time
+  // weapon capacity, which older snapshots did not record independently.
+  if(snapshot.custom==null||state.customRageAmmo!=null||!snapshot.acquired.Any(a=>!a.evolution&&a.key=="tome_of_rage"))
+   rebuiltStatic.Add(StatType.MaxAmmo,Capture(player.stats[StatType.MaxAmmo]));
   bool explicitMaximum=AndroidHealthStat.ExplicitMaximum;AndroidHealthStat.ExplicitMaximum=true;
   try{for(int i=0;i<state.stats.Count;i++)
   {
    var saved=state.stats[i];
+   if(rebuiltStatic.TryGetValue((StatType)i,out var rebuilt))
+   {
+    bool additive=i==(int)StatType.CharacterSize||i==(int)StatType.ProjectileSpeed;
+    bool flat=i==(int)StatType.MaxAmmo;
+    saved=new ModState{flat=flat?rebuilt.flat:saved.flat,bonus=additive?rebuilt.bonus:saved.bonus,
+     reduction=additive||flat?saved.reduction:rebuilt.reduction};
+   }
    if(i==(int)StatType.FireRate&&state.generators!=null)
    {
     // Raw saved stats include the actual live contribution, which can differ

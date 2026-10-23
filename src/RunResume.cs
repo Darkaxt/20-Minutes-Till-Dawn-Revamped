@@ -135,6 +135,7 @@ public static partial class RunResume
  {
   var saved=Pending;var p=PlayerController.Instance;var r=RunRecorder.Instance;
   bool source=saved.runtime.sourcePowerups!=null;r.LegacyContinuation=!source;
+  ResumeRuntime.PrepareCustomBaseHistory(saved);
   // First frame boundary: all scene Start methods, including native loadout and
   // pool initialization, have completed before rebuilding acquired effects.
   yield return null;
@@ -191,7 +192,7 @@ public static partial class RunResume
    hp.maxHP=saved.maxHP;hp.hp=saved.hp;hp.maxSHP=saved.maxSoulHP;hp.shp=saved.soulHP;
   }
   else{hp.maxSHP=saved.maxSoulHP;hp.maxHP=saved.maxHP;hp.hp=saved.hp;hp.shp=saved.soulHP;}
-  p.transform.position=new Vector3(saved.x,saved.y,p.transform.position.z);ResumeRuntime.Restore(p,saved.runtime);
+  p.transform.position=new Vector3(saved.x,saved.y,p.transform.position.z);ResumeRuntime.Restore(p,saved.runtime,saved);
   if(source)foreach(var evolution in saved.acquired.Where(a=>a.evolution))p.playerPerks.Equip(evolutions[evolution.key]);
   AndroidAmmo.Restore(p.ammo,saved.ammo);
   Plugin.SetField(game.playerXP,"<level>k__BackingField",saved.level);Plugin.SetField(game.playerXP,"xp",saved.xp);
@@ -223,6 +224,7 @@ public static partial class RunResume
 class RunRecorder:MonoBehaviour
 {
  public bool LegacyContinuation;public readonly List<MonoBehaviour> SourceStarts=new List<MonoBehaviour>();
+ public List<int> CustomRageAmmo=new List<int>(),CustomFusilladeProjectiles=new List<int>();
  public static RunRecorder Instance;
  public bool Recording=true,Finished,Rebuilding,UnlockHitless=true;public int LastSaveMinute=-1,EndlessCycle;public float RoundStart,RoundClock;MapData customMap;
  public bool SourceRecklessSkillUsed;

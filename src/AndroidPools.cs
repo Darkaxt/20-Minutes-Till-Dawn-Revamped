@@ -26,6 +26,8 @@ public sealed class AndroidPools:MonoBehaviour
  readonly Dictionary<GameObject,Pool> owners=new Dictionary<GameObject,Pool>();
  readonly Dictionary<int,GameObject> byID=new Dictionary<int,GameObject>();
  readonly Dictionary<GameObject,GameObject> sourceTemplates=new Dictionary<GameObject,GameObject>();
+ readonly Dictionary<int,Transform> timedReleases=new Dictionary<int,Transform>();
+ readonly List<int> expiredReleases=new List<int>();
  Transform sourceTemplateRoot;
  internal GameObject SourceTemplate(GameObject original)
  {
@@ -70,6 +72,9 @@ public sealed class AndroidPools:MonoBehaviour
   native=owner;ObjectPooler.SharedInstance=owner;
   owner.itemDictionary=new Dictionary<string,ObjectPoolItem>();owner.pooledObjectsDictionary=new Dictionary<string,List<GameObject>>();owner.pooledObjects=new List<GameObject>();
   var originals=Resources.FindObjectsOfTypeAll<GameObject>().Where(g=>!g.scene.IsValid()).GroupBy(g=>g.name).ToDictionary(g=>g.Key,g=>g.First());
+  // Windows creates one-shot Sound objects instead of shipping this source
+  // pool prefab. Construct its default 2D AudioSource under the scene owner.
+  originals["Audio Source"]=AndroidGameplaySound.Template(transform);
   // Source target indices follow its serialized scene-table registration order.
   // Resolve the same owned counterparts as before, before native-only entries.
   foreach(var item in AndroidPoolTables.Items)
@@ -111,6 +116,22 @@ public sealed class AndroidPools:MonoBehaviour
  {
   if(!pools.TryGetValue(tag,out var pool)||pool.Count>pool.Maximum)return null;
   var value=Acquire(pool,Vector3.zero,pool.Parent);value.name=tag;return value;
+ }
+ internal void TimeOutRelease(Transform target,int duration)
+ {
+  int end=unchecked(AndroidGameClock.Milliseconds+duration);
+  while(timedReleases.ContainsKey(end))end=unchecked(end+1);
+  timedReleases.Add(end,target);
+ }
+ void Update()
+ {
+  // Follow the source ObjectPooler component's Unity message eligibility.
+  if(!native.enabled)return;
+  expiredReleases.Clear();
+  foreach(var entry in timedReleases)
+   if(AndroidGameClock.Milliseconds>=entry.Key)
+   {expiredReleases.Add(entry.Key);if(entry.Value!=null)Release(entry.Value.gameObject);}
+  foreach(int key in expiredReleases)timedReleases.Remove(key);
  }
  internal GameObject Get(string tag,Vector3 position,Transform parent)
  {

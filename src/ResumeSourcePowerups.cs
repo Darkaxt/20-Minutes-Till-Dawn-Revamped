@@ -32,7 +32,9 @@ public static partial class ResumeRuntime
  }
  static State CaptureSource(PlayerController player)
  {
-  var state=new State{sourcePowerups=new List<SourcePowerup>()};
+  var state=new State{sourcePowerups=new List<SourcePowerup>(),
+   customRageAmmo=CustomMode.Active?RunRecorder.Instance.CustomRageAmmo?.ToList():null,
+   customFusilladeProjectiles=CustomMode.Active?RunRecorder.Instance.CustomFusilladeProjectiles?.ToList():null};
   foreach(string key in RunRecorder.Instance.Acquired.Where(a=>!a.evolution).Select(a=>a.key).Distinct())
   {
    var saved=new SourcePowerup{key=key};

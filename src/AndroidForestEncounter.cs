@@ -64,7 +64,7 @@ class AndroidForestBoss
  static bool Prefix(ForestMapRhogogSpawner __instance,bool ___treesActivated,GameTimer ___timer,GameObject ___rhogogPrefab)
  {
   if(!___treesActivated)return false;
-  ___timer.Stop();var actor=AndroidForestEncounter.Spawn(___rhogogPrefab);
+  AndroidGameClock.Stop(___timer,true);var actor=AndroidForestEncounter.Spawn(___rhogogPrefab);
   actor.transform.position=PlayerController.Instance.transform.position+new Vector3(20,0,0);
   var health=actor.GetComponent<Health>();
   Action<object,object> defeated=(sender,args)=>AndroidForestEncounter.Defeated.Invoke(__instance,null);

@@ -12,10 +12,21 @@ using flanne.PerkSystem.Triggers;
 namespace TwentyMinutes.Modernization;
 
 public sealed class AndroidReloadSwords:MonoBehaviour
-{public int Amount=1,Counter;}
+{
+ public const string AddSpawnEvent="Event_AddSpawnNums";
+ public int Amount=1,Counter;
+ internal void Listen()=>this.AddObserver(AddSpawn,AddSpawnEvent);
+ void AddSpawn(object sender,object args)=>Amount++;
+ // Source OnDestroy only removes the Ammo.OnReload listener. Its separate
+ // AddSpawn observer is retained until the source notification clear.
+}
 [HarmonyPatch(typeof(SpawnSummonOnReload),"Start")]
 class AndroidSwordReloadOwner
-{static void Prefix(SpawnSummonOnReload __instance)=>__instance.gameObject.AddComponent<AndroidReloadSwords>();}
+{
+ static void Prefix(SpawnSummonOnReload __instance)=>__instance.gameObject.AddComponent<AndroidReloadSwords>();
+ // Native Start already registers the pool and cached Ammo.OnReload first.
+ static void Postfix(SpawnSummonOnReload __instance)=>__instance.GetComponent<AndroidReloadSwords>().Listen();
+}
 [HarmonyPatch(typeof(SpawnSummonOnReload),"OnReload")]
 class AndroidSwordReload
 {
@@ -72,7 +83,7 @@ public sealed class AndroidCharacterUpgrade:flanne.PerkSystem.Action
   {
    case "katana_perk_fire_edge_name":FireEdge.Apply();break;
    case "katana_perk_sword_mastery_name":AndroidWeaponRules.Get().Bullet.Add("MagicSword");break;
-   case "katana_perk_thousand_blades_name":foreach(var owner in UnityEngine.Object.FindObjectsOfType<AndroidReloadSwords>())owner.Amount++;break;
+   case "katana_perk_thousand_blades_name":this.PostNotification(AndroidReloadSwords.AddSpawnEvent);break;
    case "raven_perk_flock_of_crows_name":AndroidWeaponRules.Get().Bullet.Add("Crow");break;
    case "raven_perk_shadow_flame_name":AndroidCrowCollision.BurnMultiplier=.35f;break;
    case "scarlett_perk_pyro_affinity_name":BurnSystem.SharedInstance.burnDamageMultiplier.AddMultiplierBonus(.67f);break;
