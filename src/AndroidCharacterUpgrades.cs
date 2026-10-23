@@ -87,13 +87,16 @@ public sealed class AndroidCharacterUpgrade:flanne.PerkSystem.Action
    case "raven_perk_flock_of_crows_name":AndroidWeaponRules.Get().Bullet.Add("Crow");break;
    case "raven_perk_shadow_flame_name":AndroidCrowCollision.BurnMultiplier=.35f;break;
    case "scarlett_perk_pyro_affinity_name":BurnSystem.SharedInstance.burnDamageMultiplier.AddMultiplierBonus(.67f);break;
+   // HaloActivatePowerup.Apply runs StatPowerup.Apply, then ActivateSprite.
+   // The native Powerup supplies the matching stats before its instant action.
+   case "shana_perk_halo_name":target.GetComponentInChildren<ShanasHalo>().ActivateSprite();break;
   }
  }
 }
 [HarmonyPatch]
 class AndroidCharacterUpgradeRecipes
 {
- static readonly HashSet<string> Keys=new HashSet<string>{"katana_perk_fire_edge_name","katana_perk_sword_mastery_name","katana_perk_thousand_blades_name","raven_perk_flock_of_crows_name","raven_perk_shadow_flame_name","scarlett_perk_pyro_affinity_name","luna_perk_parallel_star_name","dasher_perk_deer_friend_name"};
+ static readonly HashSet<string> Keys=new HashSet<string>{"katana_perk_fire_edge_name","katana_perk_sword_mastery_name","katana_perk_thousand_blades_name","raven_perk_flock_of_crows_name","raven_perk_shadow_flame_name","scarlett_perk_pyro_affinity_name","luna_perk_parallel_star_name","dasher_perk_deer_friend_name","shana_perk_halo_name"};
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Powerup),nameof(Powerup.Apply)),AccessTools.Method(typeof(Powerup),nameof(Powerup.ApplyStack))};
  static void Prefix(Powerup __instance)
  {
