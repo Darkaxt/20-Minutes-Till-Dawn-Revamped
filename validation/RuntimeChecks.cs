@@ -137,6 +137,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-combat-runes-")){yield return CheckAndroidCombatRunes(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-status-runes-")){yield return CheckAndroidStatusRunes(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-character-actors-")){yield return CheckAndroidCharacterActors(testMode.EndsWith("continue"));yield break;}
+        if(testMode.StartsWith("resume-named-weapons-")){yield return CheckAndroidNamedWeapons(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-shooting-exit-")){yield return CheckShootingExit(testMode.EndsWith("baseline"));yield break;}
         if(testMode.StartsWith("resume-shooting-")){yield return CheckAndroidShooting(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-ghost-upgrades-")){yield return CheckAndroidGhostUpgrades(testMode.EndsWith("continue"));yield break;}
