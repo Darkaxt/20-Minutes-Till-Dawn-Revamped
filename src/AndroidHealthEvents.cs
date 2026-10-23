@@ -15,6 +15,7 @@ public sealed class AndroidHealthEvents:MonoBehaviour
  static readonly AccessTools.FieldRef<Health,int> Maximum=AccessTools.FieldRefAccess<Health,int>("_maxHP");
  Health health;AndroidHealthTables.Recipe recipe;
  public bool Fragile;
+ public int CreatureType;
  internal static AndroidHealthEvents Source(Health target)=>target.GetComponent<AndroidHealthEvents>();
  internal static void Bind(Health target)
  {
@@ -22,7 +23,7 @@ public sealed class AndroidHealthEvents:MonoBehaviour
   name=AndroidPoolTables.PrefabName(name);
   if(!AndroidHealthTables.Recipes.TryGetValue(name,out var source))return;
   var owner=Source(target);
-  if(owner==null){Maximum(target)=source.MaxHP;owner=target.gameObject.AddComponent<AndroidHealthEvents>();}
+  if(owner==null){Maximum(target)=source.MaxHP;owner=target.gameObject.AddComponent<AndroidHealthEvents>();owner.CreatureType=source.CreatureType;}
   owner.health=target;owner.recipe=source;
   // Reconstruct the original source event fields too: maxHP <= 0 invokes
   // this event even though ordinary damage and AutoKill do not.
@@ -58,7 +59,7 @@ public sealed class AndroidHealthEvents:MonoBehaviour
  {
   health.GetComponentInChildren<PlaySoundEffect>().Play();
   health.GetComponent<FlashSprite>().Flash();
-  health.GetComponent<DamagePopupSpawner>().OnDamageTaken(Mathf.Abs(change));
+  AndroidDamagePopup.PopDamage(Mathf.Abs(change),health.transform);
  }
  internal void Death(bool notify,DamageType kind)
  {

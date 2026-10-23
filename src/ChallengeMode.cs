@@ -213,4 +213,18 @@ class ChallengeEncounterIdentity{static void Postfix(GameObject __result){if(Cha
 [HarmonyPatch(typeof(GameTimer),nameof(GameTimer.TimeRemainingToString))]
 class ChallengeElapsedClock{static bool Prefix(GameTimer __instance,ref string __result){if(!ChallengeMode.Active)return true;__result=__instance.TimeToString();return false;}}
 [HarmonyPatch(typeof(PlayerSurvivedState),"CheckDifficultyUnlock")]
-class ChallengeTierClear{static bool Prefix(){if(!ChallengeMode.Active)return true;ChallengeMode.Clear();return false;}}
+class ChallengeTierClear
+{
+ static bool Prefix()
+ {
+  if(!ChallengeMode.Active)return true;
+  ChallengeMode.Clear();
+  // Android rejoins the common highest-clear writes after its Challenge
+  // branch. Keep native indices/storage without unlocking normal Darkness.
+  int tier=Loadout.difficultyLevel;
+  var data=SaveSystem.data;
+  data.characterHighestClear[Loadout.CharacterIndex]=Math.Max(data.characterHighestClear[Loadout.CharacterIndex],tier);
+  data.gunHighestClear[Loadout.GunIndex]=Math.Max(data.gunHighestClear[Loadout.GunIndex],tier);
+  return false;
+ }
+}

@@ -17,7 +17,7 @@ public sealed class AndroidPlayerCollision:MonoBehaviour
  readonly ContactPoint2D[] contacts=new ContactPoint2D[1];
  internal bool OnHitInvicibility,Fragile;
  PlayerController player;PlayerHealth health;FlashSprite flasher;ScreenFlash screenFlash;
- SpawnPrefabFromObjectPool dodgePopup;bool deathPlayed;
+ bool deathPlayed;
  internal static readonly int ExplosionLayer=LayerMask.NameToLayer("HarmEverythingExplosion");
  internal static readonly int BoundaryMask=LayerMask.GetMask("EnemyProjectile","Wall");
  internal static AndroidPlayerCollision Get(PlayerHealth health)=>health.GetComponent<AndroidPlayerCollision>();
@@ -58,8 +58,6 @@ public sealed class AndroidPlayerCollision:MonoBehaviour
   foreach(var callbacks in new[]{health.onDeath,health.onDodged})
    for(int i=0;i<callbacks.GetPersistentEventCount();i++)
     if(callbacks.GetPersistentTarget(i) is flanne.Core.Minipause)callbacks.SetPersistentListenerState(i,UnityEventCallState.Off);
-  for(int i=0;i<health.onDodged.GetPersistentEventCount();i++)
-   if(health.onDodged.GetPersistentTarget(i) is SpawnPrefabFromObjectPool popup)dodgePopup=popup;
   screenFlash=Resources.FindObjectsOfTypeAll<ScreenFlash>().Single(s=>s.name=="DamageScreenFlash"&&s.gameObject.scene==gameObject.scene);
   // The source DespawnRange object is inactive. Its callback body otherwise
   // matches Windows; do not keep native range-based enemy deactivation alive.
@@ -80,7 +78,7 @@ public sealed class AndroidPlayerCollision:MonoBehaviour
   // contacts. It displays the popup and returns without the native dodge FX.
   float roll=Random.Range(0f,1f),chance=player.stats[StatType.Dodge].Modify(1)-1;
   float cap=player.stats[StatType.DodgeCapMod].Modify(60)/100;
-  if(roll<Mathf.Clamp(chance,0,cap)){dodgePopup.Spawn();return;}
+  if(roll<Mathf.Clamp(chance,0,cap)){AndroidDamagePopup.Pop(LocalizationSystem.GetLocalizedValue("dodge_label"),transform);return;}
   var ai=other.GetComponent<AIComponent>();Damage(ai!=null?ai.damageToPlayer:1);
   if(health.isInvincible.value)
   {

@@ -110,7 +110,7 @@ public static partial class ResumeRuntime
  }
  internal static void DeferSourceStarts(PlayerController player)
  {
-  foreach(var owner in SourceOwners.Keys.SelectMany(key=>SourceHelpers(player,key)).Distinct())
+  foreach(var owner in SourceOwners.Keys.SelectMany(key=>SourceHelpers(player,key)).Concat(player.GetComponentsInChildren<AndroidAmmoOnThunder>(true)).Distinct())
   {
    var components=owner is BuffPlayerStats?owner.GetComponents<MonoBehaviour>():new[]{owner};
    foreach(var component in components)
@@ -119,9 +119,9 @@ public static partial class ResumeRuntime
  }
  internal static void EnableSourceStarts()
  {foreach(var owner in RunRecorder.Instance.SourceStarts.Where(o=>o!=null))owner.enabled=true;RunRecorder.Instance.SourceStarts.Clear();}
- internal static void DeferLegacySpecializeStarts(PlayerController player)
+ internal static void DeferLegacyAttachmentStarts(PlayerController player)
  {
-  foreach(var owner in SourceHelpers(player,"shana_perk_specialize_name"))
+  foreach(var owner in SourceHelpers(player,"shana_perk_specialize_name").Concat(player.GetComponentsInChildren<AndroidAmmoOnThunder>(true)))
    if(owner.enabled){owner.enabled=false;RunRecorder.Instance.SourceStarts.Add(owner);}
  }
 }
@@ -133,6 +133,6 @@ class ResumeSourceAttachmentStarts
  {
   if(!RunResume.Restoring||!RunRecorder.Instance.Rebuilding)return;
   if(RunResume.Pending.runtime.sourcePowerups!=null)ResumeRuntime.DeferSourceStarts(PlayerController.Instance);
-  else ResumeRuntime.DeferLegacySpecializeStarts(PlayerController.Instance);
+  else ResumeRuntime.DeferLegacyAttachmentStarts(PlayerController.Instance);
  }
 }

@@ -86,6 +86,13 @@ static partial class RunResume
    hordeValues[1]=horde.healthMultiplier;hordeValues[2]=horde.eliteHealthMultiplier;hordeValues[5]-=.2f*previousCycle;
    bossValues[0]-=3*previousCycle;bossValues[2]-=.25f*previousCycle;
   }
+  // Legacy Windows D10 may have saved its one-shot late enemy-damage
+  // addition. The source's asset Update has no reached producer. These map
+  // owners have not loaded saved modifiers before this post-Start boundary;
+  // use their actual fresh damage, without guessing the old timer history.
+  // Custom spawn factors remain separately owned and applied at spawn time.
+  if(saved.runtime.sourcePowerups==null&&source!=null&&!SelectedMap.MapData.darknessDisabled&&saved.darkness>=10)
+   hordeValues[3]=horde.enemyDamage;
   // D15 is a source assignment, not accumulated run history. The old native
   // snapshot must not overwrite it with1.8. Custom scales are saved separately.
   if(!SelectedMap.MapData.endless&&!ChallengeMode.Active&&saved.darkness==15)

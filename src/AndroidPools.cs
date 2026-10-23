@@ -90,6 +90,7 @@ public sealed class AndroidPools:MonoBehaviour
   AndroidAIRecipes.ConfigurePrefab(prefab);
   AndroidContacts.ConfigurePrefab(prefab);
   BossArenaLifetime.ConfigurePrefab(prefab);
+  AndroidDamagePopup.ConfigurePrefab(prefab);
   prefab=SourceTemplate(prefab);
   var source=AndroidPoolTables.Items.FirstOrDefault(i=>i.Tag==tag)??AndroidPoolTables.Items.FirstOrDefault(i=>i.Prefab==prefab.name);
   int maximum=source?.Maximum??99999,visible=sourceVisible??source?.Visible??-1,initial=source?.Initial??0;
@@ -204,16 +205,15 @@ class AndroidPrefabDropPoolOwner
  }
 }
 
-// Source PopupText.Pop explicitly returns when its capped pool is exhausted.
-// Preserve that branch at the Windows numeric-popup producer.
+// Adapt remaining native numeric-popup calls to the source PopDamage entry.
+// Reached Android Health.Hurt calls that entry directly.
 [HarmonyPatch(typeof(DamagePopupSpawner),nameof(DamagePopupSpawner.OnDamageTaken))]
 class AndroidDamagePopupPoolConsumer
 {
- static bool Prefix(DamagePopupSpawner __instance,int amount,string ___popupOpTag)
+ static bool Prefix(DamagePopupSpawner __instance,int amount)
  {
-  if(amount==0||PlayerPrefs.GetInt("ShowDamagePopup",1)!=1)return false;
-  var value=ObjectPooler.SharedInstance.GetPooledObject(___popupOpTag);if(value==null)return false;
-  value.transform.position=__instance.transform.position;value.GetComponent<TMPro.TextMeshPro>().text=Mathf.Abs(amount).ToString();return false;
+  if(amount!=0)AndroidDamagePopup.PopDamage(Mathf.Abs(amount),__instance.transform);
+  return false;
  }
 }
 

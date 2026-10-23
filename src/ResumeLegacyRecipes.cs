@@ -18,11 +18,12 @@ public static partial class ResumeRuntime
  }
  static readonly Dictionary<string,LegacyRecipe> LegacyRecipes=new Dictionary<string,LegacyRecipe>
  {
+  ["culling_name"]=new LegacyRecipe("SummonOnHitTrigger>AutoKillAction",null,typeof(AndroidSummonHurtApplication)),
   ["aero_magic_name"]=new LegacyRecipe("PeriodicTrigger>ThrowProjectileTowardsCursorAction;PeriodicTrigger>PlaySoundAction",null,typeof(AndroidGaleAcquire),typeof(InstantTrigger)),
   ["regeneration_name"]=new LegacyRecipe("InstantTrigger>SpawnPrefabAction;PeriodicTrigger>SpawnPrefabAction",null,typeof(AndroidRegenerationAcquire),typeof(InstantTrigger)),
-  ["energized_name"]=new LegacyRecipe("OnThunderTrigger>RefillAmmoAction;OnThunderTrigger>SpawnPrefabAction;OnThunderTrigger>PlaySoundAction",null,typeof(AndroidEnergizedActions),typeof(AndroidRandomThunder)),
-  ["hellspawns_name"]=new LegacyRecipe("SummonOnHitTrigger>ApplyBurnAction",null,typeof(ApplyBurnAction),typeof(AndroidSummonHurtTrigger)),
-  ["thunderspawns_name"]=new LegacyRecipe("SummonOnHitTrigger>ApplyThunderAction",null,typeof(ApplyThunderAction),typeof(AndroidSummonHurtTrigger)),
+  ["energized_name"]=new LegacyRecipe("OnThunderTrigger>RefillAmmoAction;OnThunderTrigger>SpawnPrefabAction;OnThunderTrigger>PlaySoundAction",null,typeof(AndroidEnergizedAttach)),
+  ["hellspawns_name"]=new LegacyRecipe("SummonOnHitTrigger>ApplyBurnAction",null,typeof(AndroidSummonHurtApplication)),
+  ["thunderspawns_name"]=new LegacyRecipe("SummonOnHitTrigger>ApplyThunderAction",null,typeof(AndroidSummonHurtApplication)),
   ["abby_perk_whirlwind_name"]=new LegacyRecipe("OnReloadTrigger>ApplyPlayerBuffAction",null,typeof(AndroidRefreshAttachment)),
   ["aero_mastery_name"]=new LegacyRecipe("InstantTrigger>ApplyPlayerBuffAction",null,typeof(AndroidWindUpgrade)),
   ["aged_dragon"]=new LegacyRecipe("PeriodicTrigger>ModShootingSummonDamageAction",null,typeof(AndroidCombatAttachment)),
@@ -110,6 +111,17 @@ public static partial class ResumeRuntime
   return key=="aero_magic_name"&&saved[0].action==typeof(AndroidGaleCast).FullName||
    key=="regeneration_name"&&saved[0].action==typeof(SpawnPrefabAction).FullName;
  }
+ // The previous source adapter used a per-pick surviving-hurt trigger. Its
+ // exact element layouts move to the original-asset observer owner; the old
+ // Energized action wrapper moves to its source MonoBehaviour attachment.
+ static bool MatchesPreviousSummonHurt(string key,EffectState[] saved,string scope)
+ {
+  if(saved.Length!=1||saved[0].id!=scope+"@0")return false;
+  if(key=="energized_name")return saved[0].trigger=="TwentyMinutes.Modernization.AndroidRandomThunder"&&saved[0].action=="TwentyMinutes.Modernization.AndroidEnergizedActions";
+  if(saved[0].trigger!="TwentyMinutes.Modernization.AndroidSummonHurtTrigger")return false;
+  return key=="hellspawns_name"&&saved[0].action==typeof(ApplyBurnAction).FullName||
+   key=="thunderspawns_name"&&saved[0].action==typeof(ApplyThunderAction).FullName;
+ }
  internal static void ConvertLegacyCharacterStats(RunResume.Snapshot snapshot)
  {
   var state=snapshot.runtime;if(state.characterSummonBonuses==true)return;
@@ -139,7 +151,7 @@ public static partial class ResumeRuntime
     // Already translated/current layouts retain their actual saved fields.
     bool current=recipe.Action==null?saved.Length==0:saved.Length==1&&saved[0].id==scope+"@0"&&
      saved[0].trigger==recipe.Trigger.FullName&&saved[0].action==recipe.Action.FullName;
-    if(current||!MatchesLegacyRecipe(saved,scope,application==0?recipe.First:recipe.Repeat)&&!MatchesPreviousTimedRecipe(acquired.Key,saved,scope))continue;
+    if(current||!MatchesLegacyRecipe(saved,scope,application==0?recipe.First:recipe.Repeat)&&!MatchesPreviousTimedRecipe(acquired.Key,saved,scope)&&!MatchesPreviousSummonHurt(acquired.Key,saved,scope))continue;
     // These replaced source recipes own their runtime in attached helpers or
     // the original powerup asset, not in the obsolete native effect slots.
     // Unknown layouts remain untouched for the existing strict effect reader.

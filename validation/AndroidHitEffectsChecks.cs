@@ -70,9 +70,9 @@ public partial class RuntimeChecks
   calls=HitEffectThunderCalls;boss.TakeDamage(DamageType.Summon,1000000);Require(HitEffectThunderCalls==calls,"lethal native summon damage does not roll Android Thunderspawns");
   if(!continuation)yield return AndroidPick(game,"Energized",game.playerXP.level);
   target.transform.position=p.transform.position+Vector3.right*35;target.gameObject.SetActive(false);target.gameObject.SetActive(true);Physics2D.SyncTransforms();
-  int particles=ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticParticles"].Count(o=>o!=null&&o.activeSelf);
+  int particles=ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticFX"].Count(o=>o!=null&&o.activeSelf);
   Plugin.SetField(p.ammo,"<amount>k__BackingField",1);GenerateThunderWithRoll(target.gameObject,0,.2f);
-  Require(p.ammo.amount==4&&ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticParticles"].Count(o=>o!=null&&o.activeSelf)==particles+1,"Android Energized can grant three ammo and its native pooled feedback on the first actual native lightning hit");
+  Require(p.ammo.amount==4&&ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticFX"].Count(o=>o!=null&&o.activeSelf)==particles+1,"Android Energized can grant three ammo and its native pooled feedback on the first actual native lightning hit");
   Plugin.SetField(p.ammo,"<amount>k__BackingField",1);for(int i=0;i<5;i++)GenerateThunderWithRoll(target.gameObject,.2f,1);
   Require(p.ammo.amount==1,"five failed Android Energized rolls do not grant deterministic cadence ammo");
   yield return Capture(continuation?"android-hit-effects-continue.png":"android-hit-effects-save.png");
@@ -97,7 +97,7 @@ class AndroidHitEffectsThunderProbe
 {
  static void Prefix(GameObject target,int damage){if(damage==22){RuntimeChecks.HitEffectThunderCalls++;RuntimeChecks.HitEffectThunderTarget=target;}}
 }
-[HarmonyPatch(typeof(AndroidRandomThunder),"OnThunder")]
+[HarmonyPatch(typeof(AndroidAmmoOnThunder),"OnThunderHit")]
 class AndroidHitEffectsRollProbe
 {
  // Native thunder visuals and SoundEffectSO consume their own random draws.
