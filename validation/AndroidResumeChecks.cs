@@ -16,10 +16,10 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
- IEnumerator AndroidWhirlwindChest(GameController game)
+ IEnumerator AndroidWhirlwindChest(GameController game,string key="abby_perk_whirlwind_name")
  {
   var field=AccessTools.Field(typeof(PowerupGenerator),"characterPool");var pool=(List<PowerupPoolItem>)field.GetValue(game.powerupGenerator);
-  var wanted=pool.Single(x=>PerkKey(x.powerup).key=="abby_perk_whirlwind_name");field.SetValue(game.powerupGenerator,new List<PowerupPoolItem>{wanted});
+  var wanted=pool.Single(x=>PerkKey(x.powerup).key==key);field.SetValue(game.powerupGenerator,new List<PowerupPoolItem>{wanted});
   this.PostNotification(flanne.Pickups.ChestPickup.ChestPickupEvent);while(!(game.CurrentState is ChestState))yield return null;
   var chest=(ChestUIController)AccessTools.Property(typeof(GameState),"chestUIController").GetValue(game.CurrentState);var take=(Button)AccessTools.Field(typeof(ChestUIController),"takeButton").GetValue(chest);
   while(!take.IsInteractable())yield return null;Click(take);while(!(game.CurrentState is CombatState))yield return null;
