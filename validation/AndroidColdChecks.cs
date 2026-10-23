@@ -18,13 +18,21 @@ public partial class RuntimeChecks
  void ColdHurt(object sender,object args){if((sender as Health)==coldObserved)coldDamage.Add((DamageType)args);}
  void ColdImpact(object sender,object args)=>coldImpacts++;
  static MonoBehaviour[] ColdHelpers(string type)=>PlayerController.Instance.GetComponentsInChildren<MonoBehaviour>().Where(c=>c.GetType().Name==type).ToArray();
+ static bool ColdObserversReady()
+ {
+  var table=(Dictionary<string,Dictionary<object,List<Action<object,object>>>>)AccessTools.Field(typeof(NotificationCenter),"_table").GetValue(NotificationCenter.instance);
+  foreach(var entry in new[]{new{type="AndroidFrostbite",notice=FreezeSystem.InflictFreezeEvent},new{type="AndroidShatter",notice=Health.DeathEvent},new{type="AndroidAssassin",notice=Projectile.ImpactEvent}})
+   foreach(var helper in ColdHelpers(entry.type))
+    if(!table.TryGetValue(entry.notice,out var senders)||!senders.Values.SelectMany(handlers=>handlers).Any(handler=>ReferenceEquals(handler.Target,helper)))return false;
+  return true;
+ }
  Health ColdEnemy(ObjectPooler pool,Vector3 position,int max=101,int hp=101,string tag="Enemy")
  {
   var actor=pool.GetPooledObject("Validation_Cold_Enemy");DurableEnemy(actor,position,false);actor.SetActive(true);actor.tag=tag;var h=actor.GetComponent<Health>();h.maxHP=max;Plugin.SetField(h,"<HP>k__BackingField",hp);{var fixedBody=actor.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}return h;
  }
  IEnumerator ColdFreeze(Health target,int expected,string tag=null)
  {
-  if(tag!=null)target.tag=tag;int before=target.HP;coldObserved=target;coldDamage.Clear();Log("cold-freeze-before","tag="+target.tag);FreezeSystem.SharedInstance.Freeze(target.gameObject);Log("cold-freeze-synchronous","tag="+target.tag);yield return null;Log("cold-freeze","before="+before+" after="+target.HP+" tag="+target.tag);Require(before-target.HP==expected,"actual freeze applies independently floored full-strength source Frostbite helpers");Require(coldDamage.All(t=>t==(DamageType)9),"source freeze keeps a distinct damage category instead of Bullet or Summon");target.gameObject.SetActive(false);coldObserved=null;
+  if(tag!=null)target.tag=tag;int before=target.HP;coldObserved=target;coldDamage.Clear();Log("cold-freeze-before","tag="+target.tag);FreezeSystem.SharedInstance.Freeze(target.gameObject);Log("cold-freeze-synchronous","tag="+target.tag);yield return null;Log("cold-freeze","before="+before+" after="+target.HP+" tag="+target.tag);Require(before-target.HP==expected,"actual freeze applies independently floored full-strength source Frostbite helpers");Require(coldDamage.All(t=>t==(DamageType)9),"source freeze keeps a distinct damage category instead of Bullet or Summon");ReturnFixtureActor(target.gameObject);while(FreezeSystem.SharedInstance.IsFrozen(target.gameObject))yield return null;coldObserved=null;
  }
  IEnumerator ColdShot(GameController game,Health target,bool expectedDead)
  {
@@ -62,7 +70,8 @@ public partial class RuntimeChecks
   {
    var title=Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>();Click(Entries(title.mainMenu)[0].button);yield return null;Click(Resources.FindObjectsOfTypeAll<Button>().Single(b=>b.name=="ResumeContinue"&&b.gameObject.activeInHierarchy));while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState)){var error=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().FirstOrDefault(t=>t.name=="CheckpointDescription"&&t.gameObject.activeInHierarchy&&t.text.StartsWith("Could not restore"));if(error!=null)throw new InvalidOperationException(error.text);yield return null;}player=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;
   }
-  player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;pool.AddObject("Validation_Cold_Enemy",template,8);
+  StopFixtureSpawning();player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();var pool=ObjectPooler.SharedInstance;pool.AddObject("Validation_Cold_Enemy",pool.itemDictionary["BrainMonster"].objectToPool,8);
+  Log("cold-start-observers","before="+ColdObserversReady());while(!ColdObserversReady())yield return null;Log("cold-start-observers","ready=true");
   this.AddObserver(ColdHurt,"Revamped.AndroidSurvivingHurt");this.AddObserver(ColdImpact,Projectile.ImpactEvent);
   if(!continuation)
   {
@@ -73,11 +82,11 @@ public partial class RuntimeChecks
   if(!continuation){yield return AndroidPick(game,"Shatter",game.playerXP.level);yield return AndroidPick(game,"Shatter",game.playerXP.level);}
   Require(ColdHelpers("AndroidShatter").Length==2,"repeats and Continue retain two full-strength source Shatter death owners");
   var victim=ColdEnemy(pool,player.transform.position+Vector3.right*5,101,101,"Untagged");var nearby=ColdEnemy(pool,victim.transform.position+Vector3.right*.7f,1000,1000);
-  Require(!FreezeSystem.SharedInstance.IsFrozen(victim.gameObject),"source Shatter fixture victim is unfrozen and lacks an Enemy tag");coldObserved=nearby;coldDamage.Clear();int impacts=coldImpacts;victim.AutoKill();Physics2D.SyncTransforms();while(nearby.HP==1000)yield return null;yield return new WaitForFixedUpdate();Log("cold-shatter","hp="+nearby.HP);Require(nearby.HP==(continuation?990:986)&&coldDamage.SequenceEqual(new[]{DamageType.Bullet,DamageType.Bullet})&&coldImpacts==impacts,"actual untagged/unfrozen Health death spawns two independently modified source Bullet contacts without bullet-hit procs");nearby.gameObject.SetActive(false);coldObserved=null;
-  while(Object.FindObjectsOfType<MonoBehaviour>().Any(c=>c.GetType().Name=="AndroidShatterContact"))yield return null;
-  Log("fixture-precondition","Twenty-six same-frame native Health deaths at a distant position exercise Shatter's50-active source cap; no normal spawn-rate claim");
+  Require(!FreezeSystem.SharedInstance.IsFrozen(victim.gameObject),"source Shatter fixture victim is unfrozen and lacks an Enemy tag");coldObserved=nearby;coldDamage.Clear();int impacts=coldImpacts;victim.AutoKill();Physics2D.SyncTransforms();while(nearby.HP==1000)yield return null;yield return new WaitForFixedUpdate();Log("cold-shatter","hp="+nearby.HP);Require(nearby.HP==(continuation?990:986)&&coldDamage.SequenceEqual(new[]{DamageType.Bullet,DamageType.Bullet})&&coldImpacts==impacts,"actual untagged/unfrozen Health death spawns two independently modified source Bullet contacts without bullet-hit procs");ReturnFixtureActor(nearby.gameObject);coldObserved=null;
+  while(pool.pooledObjectsDictionary["Revamped_AndroidShatter"].Any(actor=>actor.activeSelf))yield return null;
+  Log("fixture-precondition","Twenty-six same-frame source Health deaths at a distant position exercise the original count>50 rejection, allowing51 active effects; no normal spawn-rate claim");
   float capStart=Time.time;for(int i=0;i<26;i++)ColdEnemy(pool,player.transform.position+Vector3.right*100,101,101,"Untagged").AutoKill();
-  Require(pool.pooledObjectsDictionary["Revamped_AndroidShatter"].Count(g=>g.activeSelf)==50,"two independent Shatter owners stop at the source shared50-active effect limit");
+  Require(pool.pooledObjectsDictionary["Revamped_AndroidShatter"].Count(g=>g.activeSelf)==51,"two independent Shatter owners preserve the source off-by-one cap with51 active effects");
   while(pool.pooledObjectsDictionary["Revamped_AndroidShatter"].Any(g=>g.activeSelf))yield return null;
   Require(Time.time-capStart>=.49f&&ColdLastReleased!=null,"source Shatter contacts expire and return after the actual half-second lifetime");var released=ColdLastReleased;
   ColdEnemy(pool,player.transform.position+Vector3.right*100,101,101,"Untagged").AutoKill();Require(released.activeSelf,"next real death reuses the last returned source Shatter effect");while(pool.pooledObjectsDictionary["Revamped_AndroidShatter"].Any(g=>g.activeSelf))yield return null;
@@ -88,8 +97,8 @@ public partial class RuntimeChecks
    yield return AndroidPick(game,"Assassin",game.playerXP.level);Require(ColdHelpers("AndroidAssassin").Length==1&&Mathf.Abs(player.stats[StatType.ProjectileSpeed].Modify(1)-speed-.1f)<.001f,"first actual Assassin adds its source10% projectile speed");yield return AndroidPick(game,"Assassin",game.playerXP.level);Require(Mathf.Abs(player.stats[StatType.ProjectileSpeed].Modify(1)-speed-.2f)<.001f,"repeated actual Assassin adds another source10% projectile speed");
   }
   Require(ColdHelpers("AndroidAssassin").Length==2&&Mathf.Abs(player.stats[StatType.ProjectileSpeed].Modify(1)-1.65f)<.001f,"actual repeated Assassin and Continue retain independent source owners and speed alongside native prerequisites");
-  var direct=ColdEnemy(pool,player.transform.position+Vector3.right*5,100,21);direct.TakeDamage(DamageType.Summon,3);Require(!direct.isDead&&direct.HP==20,"source Assassin ignores direct damage without a projectile impact");direct.gameObject.SetActive(false);
-  Log("fixture-precondition","Stationary max100 targets start at21/20 HP to verify the source pre-Harmful impact threshold. Native OnHitTrigger roll fixed above50% to exclude the acquired Frost Mage proc; no ordinary encounter or probability-frequency claim");
+  var direct=ColdEnemy(pool,player.transform.position+Vector3.right*5,100,21);direct.TakeDamage(DamageType.Summon,3);Require(!direct.isDead&&direct.HP==20,"source Assassin ignores direct damage without a projectile impact");ReturnFixtureActor(direct.gameObject);
+  Log("fixture-precondition","Stationary max100 targets start at21/20 HP to verify the source pre-Harmful impact threshold. Actual source FreezeOnHit/BurnOnHit roll fixed above50% to exclude unrelated elemental procs; no ordinary encounter or probability-frequency claim");
   yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,21),false);yield return ColdShot(game,ColdEnemy(pool,player.transform.position+Vector3.right*3,100,20,"EnemyChampion"),true);
   this.RemoveObserver(ColdHurt,"Revamped.AndroidSurvivingHurt");this.RemoveObserver(ColdImpact,Projectile.ImpactEvent);
   if(continuation)
