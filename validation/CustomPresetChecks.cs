@@ -26,6 +26,7 @@ public partial class RuntimeChecks
    var error=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().FirstOrDefault(t=>t.name=="CheckpointDescription"&&t.gameObject.activeInHierarchy&&t.text.StartsWith("Could not restore"));
    if(error!=null)throw new InvalidOperationException(error.text);yield return null;
   }
+  StopFixtureSpawning();GameTimer.SharedInstance.Stop();
   Require(CustomMode.Active&&CustomMode.Current.map==expected.map&&CustomMode.Current.values.Count==expected.custom.values.Count&&SelectedMap.MapData.achievementsDisabled,"fresh process continues the saved Custom mode and overrides");
   if(expected.blessingPending==true)
   {
@@ -34,7 +35,9 @@ public partial class RuntimeChecks
    RunResume.Save();var restored=RunResume.Read();
    Require(restored.blessingPending==false&&restored.acquired.Count(a=>!a.evolution&&a.key=="holy_shield_name")==1&&Time.time-began>=expected.blessingRemaining-.02f,"the original starting rune completes once at its saved remaining native delay");
    Require(restored.pools.Single(p=>p.field=="powerupPool").entries.All(e=>e.key!="holy_shield_name"),"delayed starting rune consumes its native finite offer after restoration");
-   var shield=restored.runtime.shields.Single();Require(shield.source&&shield.active&&shield.contributes&&shield.count==1&&shield.applyAt==-1&&restored.runtime.protectionFlips==1&&PlayerController.Instance.playerHealth.isProtected,"the resumed native Blessing grants one initialized Android shield owner and saves its counted active protection contract");
+   var shield=PlayerController.Instance.GetComponentInChildren<PreventDamage>();while(shield.cooldownRate==null)yield return null;var owner=ShieldOwner(shield);
+   Require(shield.isActive&&(bool)WindField(owner,"Contributes")&&(int)WindField(owner,"Count")==1&&(float)WindField(owner,"ApplyAt")==-1&&PlayerController.Instance.playerHealth.isProtected,"the resumed native Blessing grants one initialized source shield and its actual protection contribution");
+   Require(restored.runtime.shields.Count==0&&!restored.runtime.protectionFlips.HasValue,"source schema7 does not serialize the shield's unsaved active phase");
   }
   yield return CheckCustomNavigation(game);
   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Fresh-process imported preset continuation and native exit verified");Application.Quit(0);
@@ -77,7 +80,9 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckCustomPresets()
  {
-  RunResume.Invalidate();yield return OpenCustomConfiguration();SetPhase("native-custom-default-presets");
+  RunResume.Invalidate();foreach(string map in new[]{"scenario:Challenge_Forest","scenario:10M_Forest","scenario:Endless_Forest"})Progression.State.earned.Add(map);Progression.State.challengeDifficultyUnlocked=Mathf.Max(1,Progression.State.challengeDifficultyUnlocked);Progression.Refresh();
+  Log("fixture-precondition","Isolated owned-map and Challenge-tier records explicitly enable the preset controls; no natural unlock-gate claim.");
+  yield return OpenCustomConfiguration();SetPhase("native-custom-default-presets");
   var challenge=CustomMode.Maps().Single(m=>m.name=="Challenge_Forest");
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),challenge)));
   Require(Loadout.difficultyLevel==0&&CustomMenu.Instance.GetComponentsInChildren<TMPro.TMP_InputField>().Single(f=>f.name=="CustomValue1").text=="1","Custom displays Challenge tier1 while preserving native zero-based difficulty");
@@ -86,10 +91,10 @@ public partial class RuntimeChecks
   var quick=CustomMode.Maps().Single(m=>m.name=="10M_Forest");
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),quick)));
   Require(CustomMode.Current.map==quick.name&&CustomMode.Current.values.Count==0&&Loadout.difficultyLevel==0,"native Quickplay preset selects its real mode and clears prior Custom overrides");
-  yield return Capture("custom-quickplay-defaults.png");Click(CustomButton("CustomStart"));
+  yield return Capture("custom-quickplay-defaults.png");Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();Click(CustomButton("CustomStart"));
   GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
   Require(SelectedMap.MapData.name==quick.name&&SelectedMap.MapData.timeLimit==quick.timeLimit&&SelectedMap.MapData.runesDisabled==quick.runesDisabled&&SelectedMap.MapData.numPowerupsRepeat==quick.numPowerupsRepeat&&GameTimer.SharedInstance.timeLimit==quick.timeLimit,"preset starts the actual Quickplay timer, rune policy and native repeat limit");
-  GameTimer.SharedInstance.Stop();CustomMode.Set("weapon:damage",77);CustomMode.Set("stat:BulletDamage",3);float nativeDamage=Loadout.GunSelection.damage;
+  GameTimer.SharedInstance.Stop();StopFixtureSpawning();PlayerController.Instance.playerHealth.isInvincible.Flip();CustomMode.Set("weapon:damage",77);CustomMode.Set("stat:BulletDamage",3);float nativeDamage=Loadout.GunSelection.damage;
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();Click(game.pauseMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="CustomSettings"));
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),quick)));
   Require(CustomMode.Current.values.Count==0&&PlayerController.Instance.gun.gunData.damage==nativeDamage&&SelectedMap.MapData.name==quick.name,"loading current-mode defaults removes live overrides without changing mode/build/clock");
@@ -100,7 +105,7 @@ public partial class RuntimeChecks
   Require(CustomMode.Current.map==quick.name,"keeping the current run cancels a mode switch without changes");
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),endless)));Click(CustomButton("CustomAction0"));
   var previous=game;while((game=Object.FindObjectOfType<GameController>())==null||game==previous||!(game.CurrentState is CombatState))yield return null;
-  GameTimer.SharedInstance.Stop();
+  GameTimer.SharedInstance.Stop();StopFixtureSpawning();PlayerController.Instance.playerHealth.isInvincible.Flip();
   Require(CustomMode.Active&&SelectedMap.MapData.name==endless.name&&SelectedMap.MapData.endless&&SelectedMap.MapData.spawnSessions.Count==endless.spawnSessions.Count&&SelectedMap.MapData.endlessSpawnSessions.Count==endless.endlessSpawnSessions.Count&&CustomMode.Current.values.Count==0&&Loadout.difficultyLevel==0,"explicit preset restart starts a fresh native Endless Custom run with its original schedules");
   Require(PointsTracker.pts>=credits&&SaveSystem.data.points==PointsTracker.pts,"preset restart retains the prior run's native credits");
   Require(Ownership()==File.ReadAllText(Path.Combine(ResultDir,"custom-ownership.txt")),"preset imports/restart preserve all ownership, rune purchases and achievement records");

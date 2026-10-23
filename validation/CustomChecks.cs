@@ -123,19 +123,21 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckCustomChallenge()
  {
-  RunResume.Invalidate();yield return OpenCustomConfiguration();var source=CustomMode.Maps().Single(m=>m.name=="Challenge_Forest");
+  RunResume.Invalidate();Progression.State.earned.Add("scenario:Challenge_Forest");Progression.State.challengeDifficultyUnlocked=0;Progression.Refresh();
+  Log("fixture-precondition","Isolated ownership explicitly enables Challenge tier1; a normal win would unlock tier2. No natural map-unlock claim.");
+  yield return OpenCustomConfiguration();var source=CustomMode.Maps().Single(m=>m.name=="Challenge_Forest");
   Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),source)));
-  CustomValue(1,(Progression.State.challengeDifficultyUnlocked+1).ToString());Click(CustomButton("CustomStart"));
+  CustomValue(1,(Progression.State.challengeDifficultyUnlocked+1).ToString());Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>();Click(CustomButton("CustomStart"));
   GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
-  GameTimer.SharedInstance.Stop();PlayerController.Instance.playerHealth.isInvincible.Flip();var run=ChallengeRun.Instance;run.enabled=false;
+  GameTimer.SharedInstance.Stop();StopFixtureSpawning();PlayerController.Instance.playerHealth.isInvincible.Flip();var run=ChallengeRun.Instance;
   Require(CustomMode.Active&&run!=null&&SelectedMap.MapData.achievementsDisabled,"Custom Challenge uses its real quota scheduler and native disabled-achievement map");
   run.EnemyKills=ChallengeMode.EnemyTargets[run.Tier]-1;run.BossKills=ChallengeMode.BossTargets[run.Tier];
   Log("fixture-precondition","Challenge quotas seeded one real enemy death below victory; no claim of a full unassisted Custom Challenge");
-  var last=ObjectPooler.SharedInstance.GetPooledObject("BrainMonster");last.transform.position=PlayerController.Instance.transform.position+Vector3.right*15;last.SetActive(true);last.GetComponent<Health>().TakeDamage(DamageType.Bullet,1000000);
+  int points=PointsTracker.pts;var last=ObjectPooler.SharedInstance.GetPooledObject("BrainMonster");last.transform.position=PlayerController.Instance.transform.position+Vector3.right*15;last.GetComponent<Health>().TakeDamage(DamageType.Bullet,1000000);
   Require(run.Completed&&game.CurrentState is KillEnemiesState,"actual final native enemy death completes Custom Challenge through the normal win transition");
   while(!(game.CurrentState is PlayerSurvivedState))yield return null;
   Require(Ownership()==File.ReadAllText(Path.Combine(ResultDir,"custom-ownership.txt")),"native Custom Challenge win leaves Challenge tier and all ordinary progression unchanged");
-  yield return Capture("custom-challenge-native-win.png");int points=PointsTracker.pts;yield return AchievementExit(game,true);VerifyCustomResult(ResultDir,points);
+  yield return Capture("custom-challenge-native-win.png");yield return AchievementExit(game,true);VerifyCustomResult(ResultDir,points);
   SetPhase("PASS");Log("complete","Actual Custom Challenge quota victory, native caller achievement guard, unchanged earned tier/ownership and retained credits verified");Application.Quit(0);
  }
 }
