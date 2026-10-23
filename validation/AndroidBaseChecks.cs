@@ -18,10 +18,10 @@ public partial class RuntimeChecks
  IEnumerator CheckAndroidBase()
  {
   RunResume.Invalidate();foreach(string id in new[]{"weapon:GrenadeLauncherData","weapon:DualSMGsData","character:Abby","character:Hina"})Progression.State.earned.Add(id);Progression.Refresh();
-  yield return AchievementRun("Shana","GrenadeLauncherData","20M_Forest");var game=Object.FindObjectOfType<GameController>();var p=PlayerController.Instance;
+  yield return AchievementRun("Shana","GrenadeLauncherData","20M_Forest");StopFixtureSpawning();var game=Object.FindObjectOfType<GameController>();var p=PlayerController.Instance;
   Require(p.gun.gunData.damage==45&&Mathf.Abs(p.movementSpeed-3.2f)<.001f,"Android Grenade Launcher base damage and Shana movement load natively");
   yield return CheckRevolver(game,p,"android-grenade-shana.png","GrenadeLauncherData");yield return AchievementExit(game,false);
-  yield return AchievementRun("Abby","DualSMGsData","20M_Forest");game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
+  yield return AchievementRun("Abby","DualSMGsData","20M_Forest");StopFixtureSpawning();game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
   Require(p.playerHealth.maxHP==3&&p.movementSpeed==3,"Android Abby starts with three hearts and base movement");
   var xp=game.playerXP;AccessTools.Field(typeof(PlayerXP),"<level>k__BackingField").SetValue(xp,19);AccessTools.Field(typeof(PlayerXP),"xp").SetValue(xp,0f);
   xp.GainXP((float)AccessTools.Property(typeof(PlayerXP),"xpToLevel").GetValue(xp)+1);
@@ -39,7 +39,7 @@ public partial class RuntimeChecks
   Require(FlashActivations==1,"native Flash Mag activates its lightning action on the twentieth shot");
   while(!(p.CurrentState is IdleState))yield return null;
   yield return Capture("android-flash-mag.png");yield return AchievementExit(game,false);
-  yield return AchievementRun("Hina","RevolverData","20M_Forest");game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
+  yield return AchievementRun("Hina","RevolverData","20M_Forest");StopFixtureSpawning();game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
   var skill=p.GetComponentInChildren<ShadowClonePassive>();Require((float)AccessTools.Field(typeof(SkillPassive),"cooldown").GetValue(skill)==1,"Android Hina native skill cooldown is one second");
   var input=(InputActionAsset)AccessTools.Field(typeof(SkillPassive),"inputs").GetValue(skill);var action=input.FindActionMap("PlayerMap").FindAction("Skill");
   Require(action.bindings.Any(b=>b.effectivePath=="<Mouse>/rightButton"),"native Hina skill retains the Windows right-button binding");

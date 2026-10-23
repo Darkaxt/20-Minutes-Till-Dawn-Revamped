@@ -39,6 +39,13 @@ public partial class RuntimeChecks:MonoBehaviour
     {if(damageObservers.TryGetValue(target,out var callbacks))callbacks.Remove(callback);}
     public static void ObservedSourceDamage(Health target,int amount)
     {if(damageObservers.TryGetValue(target,out var callbacks))foreach(var callback in callbacks.ToArray())callback(amount);}
+    static void StopFixtureSpawning()
+    {
+        Object.FindObjectOfType<HordeSpawner>().enabled=false;
+        Object.FindObjectOfType<AndroidEndlessRun>().enabled=false;
+        foreach(var actor in ObjectPooler.SharedInstance.pooledObjectsDictionary.Values.SelectMany(list=>list).Where(actor=>actor.activeSelf&&actor.layer==LayerMask.NameToLayer("Enemy")&&actor.GetComponent<Health>()!=null).Distinct().ToArray())ReturnFixtureActor(actor);
+        Log("fixture-precondition","Disable the actual source scheduler and return pre-existing monsters for controlled combat checks; no natural encounter/scheduling claim.");
+    }
     static string ResultDir=>Environment.GetEnvironmentVariable("MODERNIZATION_RESULT_DIR") ?? throw new InvalidOperationException("Missing validation result directory");
     Mouse fixtureMouse;Keyboard fixtureKeyboard;
     static string phase;

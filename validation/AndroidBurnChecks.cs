@@ -13,8 +13,7 @@ public partial class RuntimeChecks
  {
   RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest");
   var game=Object.FindObjectOfType<GameController>();var player=PlayerController.Instance;
-  Health template;while((template=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name.StartsWith("BrainMonster")&&!h.isDead))==null)yield return null;
-  Object.FindObjectOfType<HordeSpawner>().enabled=false;var target=DurableEnemy(template.gameObject,player.transform.position+Vector3.right*30,true);
+  StopFixtureSpawning();var pool=ObjectPooler.SharedInstance;var target=DurableEnemy(pool.GetPooledObject("BrainMonster"),player.transform.position+Vector3.right*30,false);
   var hits=new List<int>();ObserveDamage(target,d=>{hits.Add(d);Log("native-burn-hit",d);});var burn=BurnSystem.SharedInstance;
   burn.Burn(target.gameObject,3);while(hits.Count<2)yield return null;
   Require(hits.Take(2).All(d=>d==3),"native burn starts with three damage each tick");burn.Burn(target.gameObject,3);
@@ -24,8 +23,8 @@ public partial class RuntimeChecks
   Require(hits.Count==7&&hits.Skip(2).All(d=>d==6),"Android base five-tick lifetime refresh retains all accumulated damage for five further ticks");
   hits.Clear();burn.Burn(target.gameObject,2000);while(hits.Count==0)yield return null;
   Require(hits[0]==1000,"Android shipped scene cap limits each burn tick to one thousand before native damage processing");
-  target.HPChange(-1000000);yield return null;Require(!burn.IsBurning(target.gameObject),"dead/released native actors lose their burn state and pooled effect");
-  var replacement=DurableEnemy(template.gameObject,player.transform.position+Vector3.right*30,true);Require(!burn.IsBurning(replacement.gameObject),"another native actor has no inherited burn state");
+  target.HPChange(-1000000);Require(target.isDead,"actual source damage kills the burning pooled actor");while(burn.IsBurning(target.gameObject))yield return new WaitForFixedUpdate();Require(!burn.IsBurning(target.gameObject),"source fixed-step burn owner releases the dead actor's status and effect");
+  var replacement=DurableEnemy(pool.GetPooledObject("BrainMonster"),player.transform.position+Vector3.right*30,false);Require(ReferenceEquals(replacement,target)&&replacement.gameObject.activeInHierarchy&&!burn.IsBurning(replacement.gameObject),"actual source pool reuses the dead actor without its released burn state");ReturnFixtureActor(replacement.gameObject);
   yield return Capture("android-burn-native.png");yield return AchievementExit(game,false);
   yield return AchievementRun("Shana","RevolverData","20M_Forest");game=Object.FindObjectOfType<GameController>();
   yield return CheckRevolver(game,PlayerController.Instance,"android-burn-original-restart.png");yield return AchievementExit(game,false);
