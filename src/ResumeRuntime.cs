@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Serialization;
 using HarmonyLib;
 using UnityEngine;
 using flanne;
@@ -19,31 +20,31 @@ public static partial class ResumeRuntime
  [Serializable]public class ModState{public int flat;public float bonus,reduction;}
  [Serializable]public class FieldValue{public string field,value;}
  [Serializable]public class ProviderState{public string type;public int ordinal;public List<FieldValue> values=new List<FieldValue>();}
- [Serializable]public class SummonState{public string id;public int ordinal,damage;public ModState speed;public float? cooldown;}
+ [Serializable,DataContract]public class SummonState{[DataMember(IsRequired=true)]public string id;[DataMember(IsRequired=true)]public int ordinal,damage;[DataMember(IsRequired=true)]public ModState speed;[DataMember]public float? cooldown;}
  [Serializable]public class EggState{public int ordinal;public float remaining;public bool hatched;}
  [Serializable]public class GeneratorState{public int ordinal,stacks,contributions;}
  [Serializable]public class GrowthState{public string type;public int ordinal,count;public float remaining;}
- [Serializable]public class State
+ [Serializable,DataContract]public class State
  {
-  public List<ModState> stats=new List<ModState>();public ModState xpMultiplier;
-  public List<ProviderState> providers=new List<ProviderState>();
-  public List<SummonState> summons=new List<SummonState>();public List<EggState> eggs=new List<EggState>();
-  public List<TimedEffect> timed=new List<TimedEffect>();public List<TemporaryEffect> temporary=new List<TemporaryEffect>();
-  public List<string> liveOneUseRunes=new List<string>();public List<bool> singleShotActions=new List<bool>();
-  public List<ShieldState> shields=new List<ShieldState>();
-  public List<EffectState> effects=new List<EffectState>();
-  public int? protectionFlips;
-  public bool? summonDurationDamage;public string summonDurationData;
+  [DataMember(IsRequired=true)]public List<ModState> stats=new List<ModState>();[DataMember(IsRequired=true)]public ModState xpMultiplier;
+  [DataMember(IsRequired=true)]public List<ProviderState> providers=new List<ProviderState>();
+  [DataMember(IsRequired=true)]public List<SummonState> summons=new List<SummonState>();[DataMember(IsRequired=true)]public List<EggState> eggs=new List<EggState>();
+  [DataMember(IsRequired=true)]public List<TimedEffect> timed=new List<TimedEffect>();[DataMember(IsRequired=true)]public List<TemporaryEffect> temporary=new List<TemporaryEffect>();
+  [DataMember(IsRequired=true)]public List<string> liveOneUseRunes=new List<string>();[DataMember(IsRequired=true)]public List<bool> singleShotActions=new List<bool>();
+  [DataMember(IsRequired=true)]public List<ShieldState> shields=new List<ShieldState>();
+  [DataMember(IsRequired=true)]public List<EffectState> effects=new List<EffectState>();
+  [DataMember]public int? protectionFlips;
+  [DataMember]public bool? summonDurationDamage;[DataMember]public string summonDurationData;
   // Null identifies a legacy checkpoint awaiting recipe/provider conversion.
-  public List<GeneratorState> generators;
-  public List<GrowthState> growth;
-  public List<RitualState> rituals;public List<UnharmedState> unharmed;public List<JusticeState> justice;
-  public float? feedTheBeastsDamage;
-  public List<SourcePowerup> sourcePowerups;public int? sourceHealing,sourceBodySoul;
-  public List<int> customRageAmmo,customFusilladeProjectiles;
+  [DataMember]public List<GeneratorState> generators;
+  [DataMember]public List<GrowthState> growth;
+  [DataMember]public List<RitualState> rituals;[DataMember]public List<UnharmedState> unharmed;[DataMember]public List<JusticeState> justice;
+  [DataMember]public float? feedTheBeastsDamage;
+  [DataMember]public List<SourcePowerup> sourcePowerups;[DataMember]public int? sourceHealing,sourceBodySoul;
+  [DataMember]public List<int> customRageAmmo,customFusilladeProjectiles;
   // Earlier aggregate writers predate these two source stat recipes. New
   // legacy saves already include them and must not migrate them a second time.
-  public bool? characterSummonBonuses;
+  [DataMember]public bool? characterSummonBonuses;
  }
  static readonly Dictionary<Type,string[]> Fields=new Dictionary<Type,string[]>
  {

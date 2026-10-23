@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Serialization;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,8 +21,8 @@ public static partial class ResumeRuntime
  [Serializable]public class TimedEffect{public string type,method;public int ordinal;public float remaining;}
  [Serializable]public class SavedChange{public string type;public bool flat;public int flatValue;public float value;}
  [Serializable]public class TemporaryEffect{public float remaining;public List<SavedChange> changes=new List<SavedChange>();}
- [Serializable]public class ShieldState{public int ordinal;public bool active;public float timer,flashRemaining,cooldown;public ModState rate;
-  public bool source,contributes;public int count,lastCount;public float reduction,applyAt;}
+ [Serializable,DataContract]public class ShieldState{[DataMember(IsRequired=true)]public int ordinal;[DataMember(IsRequired=true)]public bool active;[DataMember(IsRequired=true)]public float timer,flashRemaining,cooldown;[DataMember(IsRequired=true)]public ModState rate;
+  [DataMember]public bool source,contributes;[DataMember]public int count,lastCount;[DataMember]public float reduction,applyAt;}
  // Old runtime DTOs remain readable; they never reinstall unsaved phases.
  static readonly HashSet<MonoBehaviour> Reviving=new HashSet<MonoBehaviour>();
  internal static bool RevivalInProgress=>Reviving.Count>0;

@@ -80,6 +80,10 @@ public sealed class AndroidEndlessRun:MonoBehaviour
  {
   // Version3 saved the semantic build and elapsed map clock, not a frozen
   // spawn queue. Translate encounter indices by the original prefab identity.
+  // Native Endless's initial negative display clock (A70) is not elapsed
+  // source time. Its recorded first-round encounter clock owns that position.
+  if(endless&&saved.version<7&&saved.endlessCycle==0&&saved.seconds<0)
+   saved.seconds=saved.roundStart+saved.roundElapsed;
   var oldWaves=AndroidMapTables.LegacyWaves(map,saved.endlessCycle);var oldBosses=AndroidMapTables.LegacyBosses(map,saved.endlessCycle);
   saved.killedElites=saved.killedElites.SelectMany(index=>waves.Select((w,i)=>new{w,i}).Where(x=>x.w.Session.isElite&&x.w.Pools.Any(tag=>PrefabName(tag)==oldWaves[index].monsterPrefab.name)).Select(x=>x.i)).Distinct().ToList();
   if(!endless)saved.killedBosses=saved.killedBosses.SelectMany(index=>map.bossSpawns.Select((b,i)=>new{b,i}).Where(x=>x.b.bossPrefab.name==oldBosses[index].bossPrefab.name).Select(x=>x.i)).Distinct().ToList();

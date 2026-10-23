@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
+using System.Runtime.Serialization;
 using HarmonyLib;
 using UnityEngine;
 using flanne;
@@ -20,22 +21,24 @@ public static partial class RunResume
  [Serializable]public class RuneRank{public string name;public int rank;}
  [Serializable]public class PoolEntry{public string key;public int remaining;}
  [Serializable]public class OfferPool{public string field;public List<PoolEntry> entries=new List<PoolEntry>();}
- [Serializable]public class Snapshot
+ // Optional wire members let the existing version-aware validator/migrator
+ // read older schemas. Serializable alone makes every field required in Mono.
+ [Serializable,DataContract]public class Snapshot
  {
-  public int version=7;public bool valid=true;public string savedUtc,character,weapon,map;
-  public int darkness,hp,maxHP,soulHP,maxSoulHP,level,ammo,kills;
-  public float xp,seconds,x,y,roundStart,roundElapsed;public int endlessCycle;public bool hitless,oneSecondWarning,usedShooting,usedManualShooting;
-  public List<RuneRank> runes=new List<RuneRank>();public List<Acquisition> acquired=new List<Acquisition>();
-  public List<OfferPool> pools=new List<OfferPool>();public List<string> taken=new List<string>();
-  public List<PoolEntry> sourcePowerupCounts;
-  public List<int> killedBosses=new List<int>(),killedElites=new List<int>();
-  public int challengeEnemies,challengeBosses;public int chests,devilDeals;
-  public ResumeRuntime.State runtime;
-  public CustomMode.Rules custom;
-  public bool? blessingPending;public float blessingRemaining;
-  public bool? unlockHitless;
-  public float[] hordeModifiers,bossModifiers;
-  public AndroidEndlessState sourceEndless;
+  [DataMember(IsRequired=true)]public int version=7;[DataMember(IsRequired=true)]public bool valid=true;[DataMember(IsRequired=true)]public string savedUtc,character,weapon,map;
+  [DataMember(IsRequired=true)]public int darkness,hp,maxHP,soulHP,maxSoulHP,level,ammo,kills;
+  [DataMember(IsRequired=true)]public float xp,seconds,x,y,roundStart,roundElapsed;[DataMember(IsRequired=true)]public int endlessCycle;[DataMember(IsRequired=true)]public bool hitless,oneSecondWarning,usedShooting,usedManualShooting;
+  [DataMember(IsRequired=true)]public List<RuneRank> runes=new List<RuneRank>();[DataMember(IsRequired=true)]public List<Acquisition> acquired=new List<Acquisition>();
+  [DataMember(IsRequired=true)]public List<OfferPool> pools=new List<OfferPool>();[DataMember(IsRequired=true)]public List<string> taken=new List<string>();
+  [DataMember]public List<PoolEntry> sourcePowerupCounts;
+  [DataMember(IsRequired=true)]public List<int> killedBosses=new List<int>(),killedElites=new List<int>();
+  [DataMember(IsRequired=true)]public int challengeEnemies,challengeBosses;[DataMember(IsRequired=true)]public int chests,devilDeals;
+  [DataMember(IsRequired=true)]public ResumeRuntime.State runtime;
+  [DataMember]public CustomMode.Rules custom;
+  [DataMember]public bool? blessingPending;[DataMember]public float blessingRemaining;
+  [DataMember]public bool? unlockHitless;
+  [DataMember(IsRequired=true)]public float[] hordeModifiers,bossModifiers;
+  [DataMember]public AndroidEndlessState sourceEndless;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
