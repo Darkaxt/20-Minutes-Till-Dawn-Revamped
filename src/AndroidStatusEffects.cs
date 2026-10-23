@@ -74,7 +74,9 @@ class AndroidMysticismFreeze
 {
  static bool Prefix(BurnFreezeOnHitRune __instance,object args,int ___level)
  {
-  var target=(GameObject)args;if(target.layer!=(int)TagLayerUtil.Enemy)return false;
+  // Android checks both NPC layers and then the Enemy tag substring. Both
+  // Android NPC layers map to Windows' single native Enemy layer.
+  var target=(GameObject)args;if(target.layer!=(int)TagLayerUtil.Enemy||!target.tag.Contains("Enemy"))return false;
   if(UnityEngine.Random.Range(0f,1f)<__instance.chancePerLevel*___level)BurnSystem.SharedInstance.Burn(target,__instance.burnDamge);
   if(UnityEngine.Random.Range(0f,1f)<__instance.chancePerLevel*___level)AndroidFreezeApplication.Apply(FreezeSystem.SharedInstance,target,__instance.freezeDuration);
   return false;
