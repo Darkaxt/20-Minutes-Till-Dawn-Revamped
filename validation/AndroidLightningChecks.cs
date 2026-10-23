@@ -43,24 +43,26 @@ public partial class RuntimeChecks
    yield return AndroidPick(game,"Energized",game.playerXP.level);yield return AndroidPick(game,"ElectroMastery",game.playerXP.level);
    yield return NativeTomePick(game,false,"TomeOfElements");
   }
-  Object.FindObjectOfType<HordeSpawner>().enabled=false;
+  StopFixtureSpawning();GameTimer.SharedInstance.Stop();p.SetPosition(new Vector3(100,100,0));
+  while(p.GetComponentsInChildren<AndroidAmmoOnThunder>().Any(h=>AccessTools.Field(typeof(AndroidAmmoOnThunder),"ammo").GetValue(h)==null))yield return null;
+  Log("fixture-precondition","Actual source-pooled Brain actors, stopped source scheduler, controlled geometry/health and individual Energized rolls; no natural scheduling or proc-frequency claim.");
   var thunder=ThunderGenerator.SharedInstance;var pool=ObjectPooler.SharedInstance;
   Require(thunder.damageMod.FlatBonus==12&&Mathf.Abs(thunder.sizeMultiplier-1.75f)<.001f,"Android Electro Mastery adds twelve before thunder damage composition and multiplies size by one point seven five");
   Require(Mathf.Abs(Bonus(thunder.damageMod)-.35f)<.001f,"the actual Elements tome composes its additive elemental bonus with Electro Mastery's flat modifier");
   this.AddObserver(OnLightningBullet,"Health.TweakBulletDamage");this.AddObserver(OnLightningThunder,"Health.TweakThunderDamage");this.AddObserver(OnLightningNotification,ThunderGenerator.ThunderHitEvent);
-  var template=pool.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
-  var position=p.transform.position+Vector3.right*35;var target=DurableEnemy(template,position,true);target.gameObject.SetActive(true);
+  var template=pool.itemDictionary["BrainMonster"].objectToPool;
+  var position=p.transform.position+Vector3.right*35;var target=DurableEnemy(pool.GetPooledObject("BrainMonster"),position,false);Physics2D.SyncTransforms();
   int hp=target.HP,notifications=LightningNotifications;thunder.GenerateAt(target.gameObject,22);
   Require(target.HP==hp&&LightningNotifications==notifications+1,"targeted Android thunder posts its notification before any physics-delivered damage");
   var prefab=(GameObject)AccessTools.Field(typeof(ThunderGenerator),"thunderPrefab").GetValue(thunder);
   var visual=pool.pooledObjectsDictionary[prefab.name].Single(o=>o.activeSelf);
   Physics2D.SyncTransforms();yield return new WaitForFixedUpdate();yield return null;
   Require(hp-target.HP==(continuation?43:45)&&LightningBulletStages>0&&LightningThunderStages==0,"real Android thunder collision applies mastery before Elements, floors captured damage and uses Bullet classification, with signed Might when equipped");
-  while(visual.activeSelf)yield return null;target.gameObject.SetActive(false);
+  while(visual.activeSelf)yield return null;ReturnFixtureActor(target.gameObject);
   pool.AddObject("Validation_Thunder_Enemies",template,3);var actors=new Health[3];float[] distances={0,.25f,.8f};
   for(int i=0;i<actors.Length;i++)
   {
-   var actor=pool.GetPooledObject("Validation_Thunder_Enemies");actors[i]=DurableEnemy(actor,position+Vector3.right*distances[i],false);actor.SetActive(true);Plugin.SetField(actors[i],"<HP>k__BackingField",9000);
+   var actor=pool.GetPooledObject("Validation_Thunder_Enemies");actors[i]=DurableEnemy(actor,position+Vector3.right*distances[i],false);Plugin.SetField(actors[i],"<HP>k__BackingField",9000);
   }
   actors[0].gameObject.AddComponent<CircleCollider2D>().radius=.18f;
   notifications=LightningNotifications;int bullets=LightningBulletStages;Plugin.SetField(p.ammo,"<amount>k__BackingField",0);GenerateAreaWithRoll(position,22);
@@ -79,6 +81,7 @@ public partial class RuntimeChecks
   GenerateAreaWithRoll(position,22);Require(actors[2].HP==24,"the source positive-area change can restore a seeded active zero-HP actor and bypasses damage-only invulnerability");actors[2].isInvincible.UnFlip();
   int beforeNull=LightningNotifications;thunder.GenerateAt((GameObject)null,22);Require(LightningNotifications==beforeNull,"Android targeted null input returns without a lightning notification");
   yield return Capture(continuation?"android-lightning-continue.png":"android-lightning-save.png");
+  foreach(var actor in actors)ReturnFixtureActor(actor.gameObject);
   this.RemoveObserver(OnLightningBullet,"Health.TweakBulletDamage");this.RemoveObserver(OnLightningThunder,"Health.TweakThunderDamage");this.RemoveObserver(OnLightningNotification,ThunderGenerator.ThunderHitEvent);
   if(!continuation)
   {

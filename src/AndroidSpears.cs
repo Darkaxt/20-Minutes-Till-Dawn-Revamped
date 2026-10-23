@@ -27,7 +27,13 @@ class AndroidSpearRegistration
  {
   if(___prefab.GetComponentInChildren<StabbingSummon>(true)==null)return;
   var player=PlayerController.Instance;var owner=AndroidSpearBonuses.Get(player);
-  foreach(var spear in player.GetComponentsInChildren<StabbingSummon>(true))if(!owner.Spears.Contains(spear))owner.Spears.Add(spear);
+  foreach(var spear in player.GetComponentsInChildren<StabbingSummon>(true))
+  {
+   // Source Spear Rigidbody2D2494 enables full contacts. Several source NPCs
+   // have no body; native's false flag otherwise prevents their collision.
+   spear.GetComponent<Rigidbody2D>().useFullKinematicContacts=true;
+   if(!owner.Spears.Contains(spear))owner.Spears.Add(spear);
+  }
  }
 }
 [Serializable]

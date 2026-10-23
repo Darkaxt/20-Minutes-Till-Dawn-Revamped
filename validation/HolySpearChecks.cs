@@ -18,6 +18,10 @@ public partial class RuntimeChecks
   yield return new WaitForFixedUpdate();
   controlledSpear.transform.position=target.transform.position;
   Log("native-spear-contact", "spear="+controlledSpear.transform.position+" target="+target.transform.position+" spear-colliders="+controlledSpear.GetComponents<Collider2D>().Length+" target-colliders="+target.GetComponents<Collider2D>().Length+" scale="+Time.timeScale);
+  yield return new WaitForFixedUpdate();
+  var contact=controlledSpear.GetComponent<Collider2D>();var victim=target.GetComponent<Collider2D>();
+  var sb=contact.attachedRigidbody;var tb=victim.attachedRigidbody;
+  Log("native-spear-physics","spear active="+controlledSpear.gameObject.activeInHierarchy+" enabled="+contact.enabled+" trigger="+contact.isTrigger+" layer="+controlledSpear.gameObject.layer+" bounds="+contact.bounds+" body="+(sb==null?"none":sb.bodyType+" sim="+sb.simulated+" full="+sb.useFullKinematicContacts+" position="+sb.position)+" target active="+target.gameObject.activeInHierarchy+" enabled="+victim.enabled+" trigger="+victim.isTrigger+" layer="+target.gameObject.layer+" bounds="+victim.bounds+" body="+(tb==null?"none":tb.bodyType+" sim="+tb.simulated+" full="+tb.useFullKinematicContacts+" position="+tb.position)+" ignored="+Physics2D.GetIgnoreLayerCollision(contact.gameObject.layer,victim.gameObject.layer)+" hp="+target.HP+" hits="+hits.Count);
   while(hits.Count==0)yield return null;
   Log("native-spear-damage",reason+" hits="+string.Join(",",hits)+" currentHP="+PlayerController.Instance.playerHealth.hp+" maxHP="+PlayerController.Instance.playerHealth.maxHP);
   Require(hits.All(d=>d==expected),"actual native spear collision damage "+expected+": "+reason);

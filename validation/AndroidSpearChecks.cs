@@ -12,6 +12,7 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
+ static int SpearAcquisitions()=>((List<RunResume.Acquisition>)AccessTools.Field(AccessTools.TypeByName("TwentyMinutes.Modernization.RunRecorder"),"Acquired").GetValue(Object.FindObjectOfType<GameController>().GetComponent(AccessTools.TypeByName("TwentyMinutes.Modernization.RunRecorder")))).Count(a=>!a.evolution&&a.key==RunResume.Key(Resources.FindObjectsOfTypeAll<Powerup>().First(p=>p.name=="MagicSpear")));
  static float SpearCooldown(StabbingSummon spear)=>(float)AccessTools.Property(typeof(AttackingSummon),"finalAttackCooldown").GetValue(spear);
  static bool SpearAttack(StabbingSummon spear)=>(bool)AccessTools.Method(typeof(StabbingSummon),"Attack").Invoke(spear,null);
  void ControlSpears(StabbingSummon[] spears,StabbingSummon selected)
@@ -28,7 +29,7 @@ public partial class RuntimeChecks
    var map=CustomMode.Maps().Single(m=>m.name=="Endless_Forest");Click(CustomButton("CustomLoadDefaults"));Click(CustomButton("CustomAction"+Array.IndexOf(CustomMode.Maps(),map)));
    Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();Click(CustomButton("CustomStart"));
    while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
-   player=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();
+   player=PlayerController.Instance;StopFixtureSpawning();player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();
    yield return AndroidPick(game,"MagicSpear",game.playerXP.level);
   }
   else
@@ -39,18 +40,18 @@ public partial class RuntimeChecks
    {
     var error=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().FirstOrDefault(t=>t.name=="CheckpointDescription"&&t.gameObject.activeInHierarchy&&t.text.StartsWith("Could not restore"));if(error!=null)throw new InvalidOperationException(error.text);yield return null;
    }
-   player=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;GameTimer.SharedInstance.Stop();
+   player=PlayerController.Instance;StopFixtureSpawning();GameTimer.SharedInstance.Stop();
   }
+  StopFixtureSpawning();player.SetPosition(new Vector3(100,100,0));
+  Log("fixture-precondition","Actual source pools, stopped scheduler, controlled NPC positions/health and individual spear actors; hand-edited stats/actor clocks deliberately omitted by source replay, while acquired upgrades/Custom factors and actual saved health remain.");
   Require(CustomMode.Active&&CustomMode.Current.map=="Endless_Forest"&&SelectedMap.MapData.achievementsDisabled,"spear workflow uses actual obtained-mode Custom defaults with progression disabled");
   var spears=player.GetComponentsInChildren<StabbingSummon>(true);Require(spears.Length==(continuation?4:2),"actual Magic Spear applications reconstruct the complete two-per-pick owned group");
   while(spears.Any(s=>!SummonStarted(s)))yield return null;
   if(continuation)
   {
-   Require(player.playerHealth.maxHP==5&&player.playerHealth.shp==3&&Mathf.Abs(Bonus(player.stats[StatType.SummonDamage])-.5f)<.001f&&player.stats[StatType.SummonDamage].FlatBonus==10,"Continue retains the actual source health and summon-stat inputs");
+   Require(player.playerHealth.maxHP==5&&player.playerHealth.shp==3&&Mathf.Abs(Bonus(player.stats[StatType.SummonDamage]))<.001f&&player.stats[StatType.SummonDamage].FlatBonus==10,"source Continue keeps saved health and acquired Death Rounds but omits the fixture's unattributed summon stat mutation");
    Require(CustomMode.Get("summon:Spear:damage")==2&&CustomMode.Get("summon:Spear:speed")==1.5f,"Continue restores the real native Spear Custom controls");
-   float[] clocks={.12f,.22f,.32f,.42f};for(int i=0;i<spears.Length;i++)Require(Mathf.Abs((float)WindField(spears[i],"_timer")-clocks[i])<.1f,"continued owned spear retains its independent source interval, ordinal "+i);
-   Require(Mathf.Abs(Bonus(spears[2].attackSpeedMod)-.25f)<.001f,"the source spear's per-instance attack effect survives reconstruction");
-   Require((int)WindField(spears[0],"baseDamage")==37&&(int)WindField(spears[2],"baseDamage")==20&&Mathf.Abs(Bonus(spears[0].attackSpeedMod)-.25f)<.001f,"Continue retains the edited older spear independently of the later pristine spear");
+   Require(spears.All(s=>StartedSummonTimers[s.GetInstanceID()]==0&&(int)WindField(s,"baseDamage")==20&&Mathf.Abs(Bonus(s.attackSpeedMod))<.001f),"source Continue recreates all four pristine spear fields and initial clocks instead of importing unsaved actor edits");
    ControlSpears(spears,spears[2]);
   }
   else
@@ -60,26 +61,27 @@ public partial class RuntimeChecks
    Require(Mathf.Abs((float)WindField(controlledSpear,"_timer")-(3+delta-cd))<.001f&&WindField(controlledSpear,"_stabbingCoroutine")==null,"source spear consumes one attack interval even when no pooled target is available");
    player.stats[StatType.SummonAttackSpeed].AddMultiplierBonus(100);Require(Mathf.Abs(SpearCooldown(controlledSpear)-.2f)<.001f,"source spear attack cooldown has the recovered0.2-second minimum");player.stats[StatType.SummonAttackSpeed].AddMultiplierBonus(-100);
   }
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
-  pool.AddObject("Validation_Spear_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Spear_Enemy");var target=DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);targetActor.tag="Untagged";targetActor.SetActive(true);{var fixedBody=target.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary["BrainMonster"].objectToPool;
+  pool.AddObject("Validation_Spear_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Spear_Enemy");var target=DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);targetActor.tag="Untagged";{var fixedBody=target.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}
+  Require(spears.All(s=>s.GetComponent<Rigidbody2D>().useFullKinematicContacts)&&target.GetComponent<Rigidbody2D>()==null,"all source spear instances enable original full kinematic contacts against a real bodyless Brain target");
   var hits=new List<int>();ObserveDamage(target,d=>hits.Add(d));
   if(continuation)
   {
-   yield return SpearHit(target,hits,378,"continued Custom coefficient/stat/Might composition");player.playerHealth.shp=0;yield return SpearHit(target,hits,288,"continued soul-heart loss removes the current-heart contribution");
+   yield return SpearHit(target,hits,348,"continued acquired stat/coefficient/Custom/Might composition without manual stats");player.playerHealth.shp=0;yield return SpearHit(target,hits,258,"continued soul-heart loss removes the current-heart contribution");
    yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());game=Object.FindObjectOfType<GameController>();player=PlayerController.Instance;
    Require(!CustomMode.Active&&Object.FindObjectsOfType<StabbingSummon>().Length==0&&player.GetComponents<MonoBehaviour>().All(c=>c.GetType().Name!="AndroidSpearBonuses"),"original restart clears Custom controls, detached/parented spear actors and the player-owned source coefficients");
-   yield return CheckRevolver(game,player,"android-spear-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Android spear acquisition order, detached-owner save, source intervals, Custom controls, live health damage and original restart survive fresh-process Continue");Application.Quit(0);yield break;
+   yield return CheckRevolver(game,player,"android-spear-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Android spear grouped source rebuild, pristine actor clocks, Custom controls, live health damage and original restart survive fresh-process Continue");Application.Quit(0);yield break;
   }
-  targetActor.SetActive(false);DurableEnemy(targetActor,player.transform.position+new Vector3(4.5f,4.5f),false);targetActor.SetActive(true);
-  var outside=pool.GetPooledObject("Validation_Spear_Enemy");DurableEnemy(outside,player.transform.position+Vector3.right*5,false);outside.GetComponent<CircleCollider2D>().radius=.8f;outside.SetActive(true);
+  DurableEnemy(targetActor,player.transform.position+new Vector3(4.5f,4.5f),false);
+  var outside=pool.GetPooledObject("Validation_Spear_Enemy");DurableEnemy(outside,player.transform.position+Vector3.right*5,false);outside.GetComponent<CircleCollider2D>().radius=.8f;
   var unpooled=DurableEnemy(template,player.transform.position+Vector3.right*2,true);unpooled.gameObject.SetActive(true);
   controlledSpear.transform.position=player.transform.position+Vector3.left;Vector2 origin=controlledSpear.transform.position,expected=origin+((Vector2)target.transform.position-origin).normalized*5;
   int stabs=SpearNativeProbe.Calls;Require(SpearAttack(controlledSpear)&&SpearNativeProbe.Calls==stabs+1&&Vector2.Distance(SpearNativeProbe.Destination,expected)<.001f,"actual stab selects the one strict pooled target beyond the native radial limit, ignoring tagged unpooled and boundary-center targets");
   Require(!SpearAttack(controlledSpear)&&SpearNativeProbe.Calls==stabs+1&&controlledSpear.transform.parent==null,"source busy guard starts only one native stab coroutine and detaches its persistent spear");
-  Require(ResumeRuntime.Capture(player).summons.Count(s=>s.id=="Spear")==2,"semantic checkpoint capture includes a persistent spear while its native outbound tween has detached it");
+  Require(ResumeRuntime.Capture(player).summons.Count==0&&SpearAcquisitions()==1&&((System.Collections.IList)WindField(player.GetComponent<AndroidSpearBonuses>(),"Spears")).Count==2,"source checkpoint keeps the acquisition that rebuilds both persistent spears, while the live owner retains the detached actor without serializing its phase");
   while(WindField(controlledSpear,"_stabbingCoroutine")!=null)yield return null;
-  Require(controlledSpear.transform.parent!=null&&controlledSpear.transform.localPosition.sqrMagnitude<.001f,"the complete actual native outbound/return tween restores its owner and local origin");outside.SetActive(false);unpooled.gameObject.SetActive(false);
-  targetActor.SetActive(false);DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);targetActor.SetActive(true);
+  Require(controlledSpear.transform.parent!=null&&controlledSpear.transform.localPosition.sqrMagnitude<.001f,"the complete actual native outbound/return tween restores its owner and local origin");ReturnFixtureActor(outside);unpooled.gameObject.SetActive(false);Object.Destroy(unpooled.gameObject);
+  DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);
   yield return AndroidPick(game,"HolySpear",game.playerXP.level);yield return SpearHit(target,hits,60,"first Holy Spear at four maximum hearts");
   player.playerHealth.maxSHP=4;player.playerHealth.shp=0;Log("fixture-precondition","Soul capacity4 seeded for direct multi-heart assignments; no claim that a single acquired upgrade grants that capacity");
   yield return AndroidPick(game,"SoulKnight",game.playerXP.level);Require(player.playerHealth.shp==0,"source Soul Knight acquisition does not spawn the native extra soul-heart pickup");
@@ -103,7 +105,7 @@ public partial class RuntimeChecks
   for(int i=0;i<spears.Length;i++)Plugin.SetField(spears[i],"_timer",new[]{.12f,.22f,.32f,.42f}[i]);spears[2].attackSpeedMod.AddMultiplierBonus(.25f);
   Require(Mathf.Abs(SpearCooldown(spears[2])-1.3f/1.25f/1.5f)<.001f,"actual Custom speed composes with the source per-spear attack effect");
   controlledSpear.transform.position=player.transform.position+Vector3.left;Require(SpearAttack(controlledSpear)&&controlledSpear.transform.parent==null,"the actual saved native spear is mid-stab and detached");
-  PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();var saved=ResumeRuntime.Capture(player);Require(saved.summons.Count(s=>s.id=="Spear")==4,"the complete four-spear group remains captured while one owner is detached");yield return Capture("android-spear-detached-checkpoint.png");
+  PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();var saved=ResumeRuntime.Capture(player);Require(saved.summons.Count==0&&saved.stats.Count==0&&SpearAcquisitions()==2&&((System.Collections.IList)WindField(player.GetComponent<AndroidSpearBonuses>(),"Spears")).Count==4,"both acquired spear groups remain replayable while one live actor is detached; source-unsaved actor phases and manual stats are absent");yield return Capture("android-spear-detached-checkpoint.png");
   Click(Resources.FindObjectsOfTypeAll<Button>().Single(b=>b.name=="ResumeSaveAndReturn"&&b.gameObject.activeInHierarchy));
   while(Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>()==null||!Active(Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>().mainMenu))yield return null;
   File.Copy(RunCheckpoint,Path.Combine(ResultDir,"saved-run.json"));SetPhase("PASS");Log("complete","Android spear source target/interval/motion, live health coefficients, signed damage, native Custom controls and detached-owner checkpoint");Application.Quit(0);
