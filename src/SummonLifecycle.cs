@@ -30,14 +30,14 @@ class AndroidSummonParent
    !Equals(code[2].operand,AccessTools.Field(typeof(Summon),"player"))||
    !Equals(code[7].operand,AccessTools.Field(typeof(Summon),"stats")))
    throw new InvalidOperationException("Unsupported native summon initialization boundary");
-  code[8].labels.AddRange(code.Take(8).SelectMany(c=>c.labels));
+  foreach(var removed in code.Take(8))removed.MoveLabelsTo(code[8]);
   var original=AccessTools.Method(typeof(Transform),nameof(Transform.SetParent),new[]{typeof(Transform)});
   var source=AccessTools.Method(typeof(Transform),nameof(Transform.SetParent),new[]{typeof(Transform),typeof(bool)});int calls=0;
   foreach(var instruction in code.Skip(8))
   {
    if(instruction.Calls(original))
    {
-    var localPose=new CodeInstruction(OpCodes.Ldc_I4_0);localPose.labels.AddRange(instruction.labels);instruction.labels.Clear();
+    var localPose=new CodeInstruction(OpCodes.Ldc_I4_0);instruction.MoveLabelsTo(localPose);
     yield return localPose;instruction.operand=source;calls++;
    }
    yield return instruction;

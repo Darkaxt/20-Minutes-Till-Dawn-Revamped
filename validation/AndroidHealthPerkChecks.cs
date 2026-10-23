@@ -29,7 +29,7 @@ public partial class RuntimeChecks
    }
    p=PlayerController.Instance;Require(AndroidKillCounters().Length==2&&AndroidKillCounters().All(t=>t.Kills==0),"fresh-process Continue omits the two source asset partial-kill counters");
    Require(Mathf.Abs(Bonus(BurnSystem.SharedInstance.burnDamageMultiplier)-.7f)<.001f&&Mathf.Abs(Bonus(ThunderGenerator.SharedInstance.damageMod)-.7f)<.001f,"Continue reconstructs additive element modifiers once per tome");
-   var enemyPrefab=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+   var enemyPrefab=ObjectPooler.SharedInstance.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
    var restoredTarget=DurableEnemy(enemyPrefab,p.transform.position+Vector3.right*35,true);restoredTarget.gameObject.SetActive(true);
    int restoredHP=restoredTarget.HP;restoredTarget.TakeDamage(DamageType.Bullet,20);Require(restoredHP-restoredTarget.HP==18,"continued Might retains Android damage sign at TakeDamage");
    restoredHP=restoredTarget.HP;restoredTarget.HPChange(-20);Require(restoredHP-restoredTarget.HP==18,"continued Might retains Android damage sign at direct HPChange");
@@ -47,7 +47,7 @@ public partial class RuntimeChecks
   Require(p.stats[StatType.BulletDamage].FlatBonus==bullet+10&&p.stats[StatType.SummonDamage].FlatBonus==summon+10,"Android Death Rounds adds flat damage before both bullet and summon stat multipliers");
   yield return AndroidPick(game,"Bloodsuckers",game.playerXP.level);yield return AndroidPick(game,"SoulDrain",game.playerXP.level);
   var counters=AndroidKillCounters();Require(counters.Length==2,"each acquired heart perk resolves one source asset kill counter");
-  var template=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  var template=ObjectPooler.SharedInstance.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   var target=DurableEnemy(template,p.transform.position+Vector3.right*35,true);target.gameObject.SetActive(true);
   p.playerHealth.hp=p.playerHealth.maxHP-1;p.playerHealth.shp=0;foreach(var t in counters)t.Kills=499;
   target.TakeDamage(DamageType.Bullet,1000000);yield return null;

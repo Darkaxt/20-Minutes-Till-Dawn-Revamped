@@ -14,7 +14,7 @@ namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
  public static bool ShootingExitProbe;
- public static int ExitNativeSaves,ExitLiveStops,ExitCanceledCharges;
+ public static int ExitNativeSaves,ExitLiveStops;
  IEnumerator CheckShootingExit(bool baseline)
  {
   ShootingExitProbe=true;bool continuation=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").EndsWith("continue");
@@ -62,7 +62,7 @@ public partial class RuntimeChecks
    int before=Projectiles,shots=PortedShooter.Shots;InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});while(!(player.CurrentState is flanne.Player.IdleState))yield return null;
    if(kind=="live-release")Require(Projectiles>before&&PortedShooter.Shots==shots+1,"actual live Charge Cannon release still creates its native projectile volley exactly once");
   }
-  int stops=ExitLiveStops,saves=ExitNativeSaves,points=PointsTracker.pts,projectiles=Projectiles,canceled=ExitCanceledCharges;bool charged=player.gun.shooters[0].fireOnStop,ported=player.gun.shooters[0] is PortedShooter;string weapon=player.gun.gunData.name;SetPhase("native-shooting-exit-"+weapon+"-"+kind);
+  int stops=ExitLiveStops,saves=ExitNativeSaves,points=PointsTracker.pts,projectiles=Projectiles,chargedShots=PortedShooter.Shots;bool charged=player.gun.shooters[0].fireOnStop,ported=player.gun.shooters[0] is PortedShooter;string weapon=player.gun.gunData.name;SetPhase("native-shooting-exit-"+weapon+"-"+kind);
   if(suspend)
   {
    PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();Click(Resources.FindObjectsOfTypeAll<Button>().Single(b=>b.name=="ResumeSaveAndReturn"&&b.gameObject.activeInHierarchy));
@@ -75,7 +75,7 @@ public partial class RuntimeChecks
   Require(released?ExitLiveStops==stops:ExitLiveStops==stops+1,"shooting stop runs exactly once with live aim dependencies, and a released gun is not stopped twice");
   if(charged&&!released)
   {
-   if(ported)Require(ExitCanceledCharges==canceled+1&&Projectiles==projectiles,"Charge Cannon preserves the recorded disable cancellation without a phantom release at title exit");
+   if(ported)Require(PortedShooter.Shots==chargedShots+1&&Projectiles>projectiles,"source Charge Cannon stop releases its held shot exactly once before title teardown, without an invented disable cancellation");
    else Require(Projectiles>projectiles,"charged Crossbow exit retains actual native projectile creation before scene teardown");
   }
  }
@@ -83,6 +83,7 @@ public partial class RuntimeChecks
 [HarmonyPatch(typeof(Gun),nameof(Gun.StopShooting))]
 class ShootingExitReferenceProbe
 {
+ [HarmonyPriority(Priority.First)]
  static void Prefix(Gun __instance)
  {
   if(!RuntimeChecks.ShootingExitProbe||!__instance.isShooting)return;
@@ -94,12 +95,3 @@ class ShootingExitReferenceProbe
 [HarmonyPatch(typeof(TransitionToTitleState),"Save")]
 class ShootingExitSaveProbe
 {static void Prefix(){if(RuntimeChecks.ShootingExitProbe)RuntimeChecks.ExitNativeSaves++;}}
-[HarmonyPatch(typeof(PortedShooter),"OnDisable")]
-class ShootingExitChargeCancelProbe
-{
- static void Prefix(PortedShooter __instance)
- {
-  if(!RuntimeChecks.ShootingExitProbe||!__instance.Charging)return;
-  RuntimeChecks.ExitCanceledCharges++;RuntimeChecks.Log("native-charge-disable",new{__instance.Charging,active=__instance.gameObject.activeInHierarchy,state=Object.FindObjectOfType<GameController>()?.CurrentState?.GetType().Name});
- }
-}

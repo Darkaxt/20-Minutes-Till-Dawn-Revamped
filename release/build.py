@@ -38,8 +38,8 @@ shutil.copytree(ROOT / 'docs', stage / 'docs')
 for name in ('README.md', 'LICENSE', 'INSTALL.md'):
     shutil.copy2(ROOT / name, stage / name)
 contract = asset_contract(args.prepared_assets)
-if len(contract) != 589:
-    raise SystemExit('Prepared asset contract must contain the complete 589-file local runtime set, including affixes, achievement icons/catalog and source display/camera data')
+if len(contract) != 593:
+    raise SystemExit('Prepared asset contract must contain the complete 593-file local runtime set, including affixes, achievement icons/catalog, source display/camera data and both gameplay sounds with provenance')
 release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.0.1', 'source_commit': revision,
            'candidate': args.candidate, 'plugin_sha256': digest(plugin), 'assets': contract,
            'asset_delivery': 'Prepared locally from pinned owned inputs; no extracted game art/data in this archive'}

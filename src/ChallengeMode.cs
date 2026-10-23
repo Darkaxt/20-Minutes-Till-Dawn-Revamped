@@ -20,7 +20,9 @@ public static class ChallengeMode
  public static bool Active=>SelectedMap.MapData!=null&&SelectedMap.MapData.name=="Challenge_Forest";
  public static bool Selected=>Progression.Title!=null&&Progression.Title.modeSelectMenu.toggledData==Map&&Map!=null;
  public static Toggle[] Toggles(GameModeMenu menu)=>(Toggle[])AccessTools.Field(typeof(ToggleGroupMenu<MapData>),"toggles").GetValue(menu);
- public static float SpawnMultiplier(int tier)=>1+AdditionalSpawns.Take(tier+1).Sum();
+ public static float SpawnMultiplier(int tier)=>SpawnRate(1,tier);
+ internal static float SpawnRate(float initial,int tier)
+ {foreach(float value in AdditionalSpawns.Take(tier+1))initial+=value;return initial;}
  public static float AliveMultiplier(int tier)=>AliveMultipliers.Take(tier+1).Aggregate(1f,(a,b)=>a*b);
  public static void Append(GameModeMenu menu)
  {
@@ -86,95 +88,42 @@ public static class ChallengeMode
  }
 }
 
-// The recovered challenge clock drives its waves. Native Windows spawn bodies,
-// pools, enemy AI, Health, boss arenas and end-of-run states remain the owners.
+// Challenge owns quotas and their native presentation. AndroidEndlessRun owns
+// the same source wave/boss scheduler and spawn bodies for every map mode.
 public class ChallengeRun:MonoBehaviour
 {
  public static ChallengeRun Instance;
+ internal const string CompleteEvent="ChallengeMode.Complete";
  public int EnemyKills,BossKills;public bool Completed;
- public readonly HashSet<int> SpawnedElites=new HashSet<int>(),KilledElites=new HashSet<int>(),SpawnedBosses=new HashSet<int>(),KilledBosses=new HashSet<int>();
- public float RoundStart;public float[] WaveTimers;
- public int Tier;public HordeSpawner Horde;public BossSpawner Boss;
- readonly Queue<int> pending=new Queue<int>();
- readonly Dictionary<Health,Tuple<bool,int>> encounters=new Dictionary<Health,Tuple<bool,int>>();
+ public int Tier;
  TMP_Text counts;GameObject hud;
- static readonly System.Reflection.MethodInfo Spawn=AccessTools.Method(typeof(HordeSpawner),"Spawn"),BossRoutine=AccessTools.Method(typeof(BossSpawner),"WaitToSpawnCR");
- internal static ChallengeRun Spawning;internal static int WaveIndex=-1,BossIndex=-1;
- void Awake(){Instance=this;this.AddObserver(OnDeath,Health.DeathEvent);}
- void OnDestroy(){this.RemoveObserver(OnDeath,Health.DeathEvent);if(Instance==this)Instance=null;}
- public void Initialize(MapInitializer initializer)
+ void OnEnable(){Instance=this;EnemyKills=BossKills=0;Completed=false;this.AddObserver(OnDeath,Health.DeathEvent);}
+ void OnDisable(){this.RemoveObserver(OnDeath,Health.DeathEvent);if(Instance==this)Instance=null;}
+ public void Initialize()
  {
-  Tier=Mathf.Clamp(Loadout.difficultyLevel,0,4);var map=SelectedMap.MapData;
-  Horde=(HordeSpawner)AccessTools.Field(typeof(MapInitializer),"hordeSpawner").GetValue(initializer);
-  Boss=(BossSpawner)AccessTools.Field(typeof(MapInitializer),"bossSpawner").GetValue(initializer);
-  Horde.LoadSpawners(new List<SpawnSession>());Horde.enabled=false;Boss.LoadSpawners(new List<BossSpawn>());
-  foreach(var p in map.spawnSessions.Select(s=>s.monsterPrefab).Distinct())ObjectPooler.SharedInstance.AddObject(p.name,p);
-  foreach(var p in map.bossSpawns.Select(s=>s.bossPrefab).Distinct())ObjectPooler.SharedInstance.AddObject(p.name,p,1);
-  GameTimer.SharedInstance.timeLimit=float.MaxValue;GameTimer.SharedInstance.endless=true;
-  AndroidRuneStartup.Apply();PowerupGenerator.Instance.InitPowerupPool(map.numPowerupsRepeat);AndroidAIRecipes.SpawnMap(map.mapPrefab);
-  WaveTimers=new float[map.spawnSessions.Count];
-  Plugin.Trace("challenge-start",new{Tier,waves=WaveTimers.Length,bosses=map.bossSpawns.Count,spawn=ChallengeMode.SpawnMultiplier(Tier),alive=ChallengeMode.AliveMultiplier(Tier)});
+  Tier=Loadout.difficultyLevel;
+  Plugin.Trace("challenge-start",new{Tier,waves=SelectedMap.MapData.spawnSessions.Count,bosses=SelectedMap.MapData.bossSpawns.Count,spawn=ChallengeMode.SpawnMultiplier(Tier),alive=ChallengeMode.AliveMultiplier(Tier)});
  }
- internal void Bind(Health health)
+ internal void RestoreKills(int enemies,int bosses)
  {
-  if(health==null)return;
-  if(BossIndex>=0)encounters[health]=Tuple.Create(true,BossIndex);
-  else if(WaveIndex>=0)encounters[health]=Tuple.Create(false,WaveIndex);
+  EnemyKills=enemies;BossKills=bosses;Completed=false;CheckComplete();
  }
  void OnDeath(object sender,object args)
  {
-  var health=sender as Health;var game=Object.FindObjectOfType<GameController>();
-  if(health==null||health.GetComponent<PlayerHealth>()!=null||Completed||!(game?.CurrentState is CombatState)||BossSpawnAchievementBoundary.Spawning)return;
-  string name=health.name.Replace("(Clone)","").Trim();var map=SelectedMap.MapData;
-  bool isBoss=map.bossSpawns.Any(b=>b.bossPrefab.name==name)||map.spawnSessions.Any(w=>w.isElite&&w.monsterPrefab.name==name);
-  if(isBoss)BossKills++;else if(health.CompareTag("Enemy"))EnemyKills++;else return;
-  if(encounters.TryGetValue(health,out var encounter))
-  {if(encounter.Item1)KilledBosses.Add(encounter.Item2);else if(map.spawnSessions[encounter.Item2].isElite)KilledElites.Add(encounter.Item2);encounters.Remove(health);}
+  var health=sender as Health;if(health==null)return;
+  if(AndroidHealthEvents.Source(health).CreatureType==2)BossKills++;else EnemyKills++;
   Plugin.Trace("challenge-kills",new{EnemyKills,BossKills});
-  CheckComplete(game);
+  CheckComplete();
  }
- void CheckComplete(GameController game)
+ void CheckComplete()
  {
-  if(Completed||EnemyKills<ChallengeMode.EnemyTargets[Tier]||BossKills<ChallengeMode.BossTargets[Tier]||!(game.CurrentState is CombatState))return;
-  Completed=true;pending.Clear();game.ChangeState<KillEnemiesState>();
+  if(Completed||EnemyKills<ChallengeMode.EnemyTargets[Tier]||BossKills<ChallengeMode.BossTargets[Tier])return;
+  Completed=true;this.PostNotification(CompleteEvent);
  }
  void Update()
  {
-  var game=Object.FindObjectOfType<GameController>();if(game==null||WaveTimers==null)return;
+  var game=Object.FindObjectOfType<GameController>();if(game==null)return;
   if(hud==null)BuildHUD();if(hud!=null){hud.SetActive(game.CurrentState is CombatState&&!PauseController.isPaused);counts.text=EnemyKills+" / "+ChallengeMode.EnemyTargets[Tier]+"     "+BossKills+" / "+ChallengeMode.BossTargets[Tier];}
-  if(Completed||PauseController.isPaused||!(game.CurrentState is CombatState))return;
-  CheckComplete(game);if(Completed)return;
-  var map=SelectedMap.MapData;float now=GameTimer.SharedInstance.timer;
-  float roundLength=map.spawnSessions.Max(s=>s.startTime+s.duration);if(now-RoundStart>=roundLength){RoundStart+=roundLength;Array.Clear(WaveTimers,0,WaveTimers.Length);}
-  for(int i=0;i<map.spawnSessions.Count;i++)
-  {
-   var wave=map.spawnSessions[i];float time=now-RoundStart;
-   if(time<wave.startTime||time>=wave.startTime+wave.duration||wave.isElite&&SpawnedElites.Contains(i))continue;
-   WaveTimers[i]-=Time.deltaTime;if(WaveTimers[i]>=0)continue;
-   int alive=ObjectPooler.SharedInstance.GetAllPooledObjects(wave.monsterPrefab.name).Count(o=>o.activeInHierarchy);
-   if(alive<Mathf.FloorToInt(wave.maximum*ChallengeMode.AliveMultiplier(Tier)))
-    for(int n=Mathf.FloorToInt(wave.numPerSpawn*ChallengeMode.SpawnMultiplier(Tier));n>0;n--)pending.Enqueue(i);
-   WaveTimers[i]+=wave.spawnCooldown;
-  }
-  // Android CheckSpawn drains at most five entries per frame.
-  for(int n=0;n<5&&pending.Count>0;n++)
-  {
-   int index=pending.Dequeue();var wave=map.spawnSessions[index];Spawning=this;WaveIndex=index;
-   try{Spawn.Invoke(Horde,new object[]{wave.monsterPrefab.name,wave.HP,wave.isElite});if(wave.isElite)SpawnedElites.Add(index);}
-   finally{Spawning=null;WaveIndex=-1;}
-  }
-  for(int i=0;i<map.bossSpawns.Count;i++)if(now>=map.bossSpawns[i].timeToSpawn&&SpawnedBosses.Add(i))StartCoroutine(SpawnBoss(i));
- }
- IEnumerator SpawnBoss(int index)
- {
-  var b=SelectedMap.MapData.bossSpawns[index];var immediate=new BossSpawn{bossPrefab=b.bossPrefab,maxHP=b.maxHP,spawnPosition=b.spawnPosition,timeToSpawn=0,dontSpawnArena=b.dontSpawnArena,killAllOnSpawn=b.killAllOnSpawn};
-  var routine=(IEnumerator)BossRoutine.Invoke(Boss,new object[]{immediate});
-  while(true)
-  {
-   bool next;Spawning=this;BossIndex=index;
-   try{next=routine.MoveNext();}finally{Spawning=null;BossIndex=-1;}
-   if(!next)yield break;yield return routine.Current;
-  }
  }
  void BuildHUD()
  {
@@ -205,11 +154,17 @@ class ChallengeDifficultyButtons
  {if(!ChallengeMode.Selected)return true;ChallengeMode.SetDifficulty(__instance,__instance.difficulty+(__originalMethod.Name=="IncreaseDifficulty"?1:-1));return false;}
 }
 [HarmonyPatch(typeof(MapInitializer),"Start")]
-class ChallengeInitialize{static bool Prefix(MapInitializer __instance){if(AndroidEndlessRun.Active){__instance.gameObject.AddComponent<AndroidEndlessRun>().Initialize(__instance,RunResume.Pending);return false;}if(RunResume.Restoring){RunResume.InitializeMap(__instance);return false;}if(!ChallengeMode.Active)return true;__instance.gameObject.AddComponent<ChallengeRun>().Initialize(__instance);return false;}}
+class ChallengeInitialize{static bool Prefix(MapInitializer __instance){if(AndroidEndlessRun.Active){__instance.gameObject.AddComponent<AndroidEndlessRun>().Initialize(__instance,RunResume.Pending);return false;}if(RunResume.Restoring){RunResume.InitializeMap(__instance);return false;}return true;}}
 [HarmonyPatch(typeof(DifficultyInitializer),"ApplyDifficulty")]
 class ChallengeDifficultyGameplay{static bool Prefix()=>!RunResume.Restoring&&!ChallengeMode.Active;}
-[HarmonyPatch(typeof(ObjectPooler),nameof(ObjectPooler.GetPooledObject))]
-class ChallengeEncounterIdentity{static void Postfix(GameObject __result){if(ChallengeRun.Spawning!=null&&__result!=null)ChallengeRun.Spawning.Bind(__result.GetComponent<Health>());}}
+[HarmonyPatch]
+class ChallengeCompletionBoundary
+{
+ static IEnumerable<System.Reflection.MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(CombatState),"Enter"),AccessTools.Method(typeof(CombatState),"Exit")};
+ static void Postfix(CombatState __instance,System.Reflection.MethodBase __originalMethod)
+ {if(__originalMethod.Name=="Enter")__instance.AddObserver(Complete,ChallengeRun.CompleteEvent);else __instance.RemoveObserver(Complete,ChallengeRun.CompleteEvent);}
+ static void Complete(object sender,object args)=>Object.FindObjectOfType<GameController>().ChangeState<KillEnemiesState>();
+}
 [HarmonyPatch(typeof(GameTimer),nameof(GameTimer.TimeRemainingToString))]
 class ChallengeElapsedClock{static bool Prefix(GameTimer __instance,ref string __result){if(!ChallengeMode.Active)return true;__result=__instance.TimeToString();return false;}}
 [HarmonyPatch(typeof(PlayerSurvivedState),"CheckDifficultyUnlock")]

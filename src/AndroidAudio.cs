@@ -1,10 +1,33 @@
 using System;
+using System.IO;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using flanne;
 using flanne.Audio;
 namespace TwentyMinutes.Modernization;
+
+// These two actual gameplay sounds have no clip/SoundEffectSO counterpart in
+// the original native player. The owned-input builder supplies their source PCM.
+internal static class AndroidPerkSounds
+{
+ static SoundEffectSO icicle,overload;
+ internal static SoundEffectSO Icicle()=>icicle!=null?icicle:icicle=Load("icicle-whoosh","Spell_Ice_Small_Whoosh_01","IcicleWoosh_SFX",new Vector2Int(0,4),new Vector2(1,1.2599065f));
+ internal static SoundEffectSO Overload()=>overload!=null?overload:overload=Load("overload","Fire Spelll 27","Overload_SFX",new Vector2Int(2,6),new Vector2(1.1224556f,1.4141891f));
+ static SoundEffectSO Load(string stem,string clipName,string soundName,Vector2Int semitones,Vector2 pitch)
+ {
+  using(var reader=new BinaryReader(File.OpenRead(Path.Combine(Plugin.AssetRoot,"audio",stem+".pcm"))))
+  {
+   int channels=reader.ReadInt32(),frequency=reader.ReadInt32(),frames=reader.ReadInt32();
+   var samples=new float[frames*channels];for(int i=0;i<samples.Length;i++)samples[i]=reader.ReadSingle();
+   var clip=AudioClip.Create(clipName,frames,channels,frequency,false);clip.SetData(samples,0);
+   var sound=ScriptableObject.CreateInstance<SoundEffectSO>();sound.name=soundName;
+   Plugin.SetField(sound,"clips",new[]{clip});Plugin.SetField(sound,"volume",Vector2.one);
+   Plugin.SetField(sound,"useSemitones",true);Plugin.SetField(sound,"semitones",semitones);Plugin.SetField(sound,"pitch",pitch);
+   UnityEngine.Object.DontDestroyOnLoad(clip);UnityEngine.Object.DontDestroyOnLoad(sound);return sound;
+  }
+ }
+}
 
 // Source PlaySoundEffect.Play uses Unity object inequality before playback.
 // Its separate ClickSFX analytics branch is outside native gameplay/audio.

@@ -28,7 +28,6 @@ internal class AndroidProjectileRecipe:ProjectileRecipe
 {
  internal bool BulletEffect=true;
  internal int BurnDamage;
- internal float? Radius;
 }
 internal sealed class AndroidSummonRecipe:AndroidProjectileRecipe{}
 [HarmonyPatch(typeof(ProjectileFactory),nameof(ProjectileFactory.SpawnProjectile))]

@@ -47,16 +47,13 @@ class AndroidCharacterProjectileSpawn
  {
   var player=PlayerController.Instance;
   var actor=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().Get(___projectilePrefab.name,__instance.transform.position,null);
-  var projectile=actor.GetComponent<Projectile>();var pulse=actor.GetComponentInChildren<FreezeOrHarm>(true);
-  // Source Projectile.damage writes its serialized Harmful, which is a child
-  // FreezeOrHarm for the moth. Windows stores damage only on the root.
+  var projectile=actor.GetComponent<Projectile>();
+  // The damage-property bridge owns the moth's serialized child Harmful too.
   projectile.damage=player.stats[StatType.BulletDamage].Modify(___projectilePrefab.GetComponentInChildren<Harmful>().damageAmount);
-  if(pulse!=null)pulse.damageAmount=(int)projectile.damage;
   float size=player.stats[StatType.ProjectileSize].Modify(1);projectile.size=size;
   projectile.vector=___speed*direction.normalized;projectile.angle=Mathf.Atan2(direction.y,direction.x)*Mathf.Rad2Deg;
   projectile.bounce=0;
-  if(___setToGunDamage)
-  {projectile.damage=___percentOfGunDamage*player.gun.damage;if(pulse!=null)pulse.damageAmount=(int)projectile.damage;}
+  if(___setToGunDamage)projectile.damage=___percentOfGunDamage*player.gun.damage;
   var state=actor.GetComponent<AndroidProjectile>();if(state==null)state=actor.AddComponent<AndroidProjectile>();
   state.Configure(new AndroidProjectileRecipe{objectPoolTag=___projectilePrefab.name,BulletEffect=true,BurnDamage=0,size=size});
   if(___projHasPeriodicDamage)
@@ -66,6 +63,19 @@ class AndroidCharacterProjectileSpawn
 }
 [HarmonyPatch(typeof(ProjectileSummon),"OnEnable")]
 class AndroidSpiritEnable{static bool Prefix()=>false;}
+[HarmonyPatch(typeof(SummonOnEnemyDeath),"OnDeath")]
+class AndroidSpiritDeathSpawn
+{
+ static bool Prefix(GameObject ___summonPrefab,SoundEffectSO ___soundFX,object sender)
+ {
+  // Source observes every Health death. It does not filter the Enemy tag,
+  // reparent the spirit to the player, or explicitly activate it a second time.
+  var dead=(sender as Health).gameObject;
+  var actor=ObjectPooler.SharedInstance.GetPooledObject(___summonPrefab.name);
+  actor.transform.position=dead.transform.position;
+  ___soundFX?.Play();return false;
+ }
+}
 [HarmonyPatch(typeof(ProjectileSummon),"OnCollisionEnter2D")]
 class AndroidSpiritContact
 {

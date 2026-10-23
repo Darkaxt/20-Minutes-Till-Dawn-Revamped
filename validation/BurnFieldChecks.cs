@@ -46,7 +46,7 @@ public partial class RuntimeChecks
   if(!baseline)
   {
    Require(!BurnSystem.SharedInstance.IsBurning(edge.gameObject)&&all.Any(c=>c.gameObject==edge.gameObject),"Android strict center-radius query excludes an outside center despite collider overlap");
-   field.enabled=false;int damage=0;targets[0].onHurt.AddListener(value=>damage=value);
+   field.enabled=false;int damage=0;ObserveDamage(targets[0],value=>damage=value);
    while(damage==0)yield return null;
    Require(damage==3,"one pooled actor with two colliders receives exactly one burn application");
   }

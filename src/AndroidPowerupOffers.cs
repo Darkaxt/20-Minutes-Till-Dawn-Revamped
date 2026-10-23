@@ -17,7 +17,10 @@ public sealed class AndroidPowerupCounts:MonoBehaviour
  internal static readonly string[] PoolFields={"powerupPool","devilPool","characterPool"};
  internal static List<PowerupPoolItem> Pool(PowerupGenerator owner,string field)=>(List<PowerupPoolItem>)AccessTools.Field(typeof(PowerupGenerator),field).GetValue(owner);
  internal void Initialize(PowerupGenerator owner)
- {Counts.Clear();Register(Pool(owner,"powerupPool"));Register(Pool(owner,"devilPool"));}
+ {
+  var ordinary=Pool(owner,"powerupPool");AndroidOfferPrerequisites.Configure(ordinary);
+  Counts.Clear();Register(ordinary);Register(Pool(owner,"devilPool"));
+ }
  internal void Register(List<PowerupPoolItem> pool)
  {foreach(var item in pool)Counts.Add(item.powerup,item.numTimeRepeatable);}
  internal void Remove(PowerupGenerator owner,string field,Powerup powerup)
@@ -82,9 +85,33 @@ class AndroidAppendOffers
   return false;
  }
 }
+[HarmonyPatch]
+class AndroidAscensionPoolOrder
+{
+ static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Powerup),nameof(Powerup.Apply)),AccessTools.Method(typeof(Powerup),nameof(Powerup.ApplyStack))};
+ static void Prefix(Powerup __instance)
+ {
+  if(RunResume.Key(__instance)!="shana_perk_ascension_name")return;
+  var effects=(flanne.PerkSystem.PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(__instance);
+  var action=effects.Select(e=>AccessTools.Field(typeof(flanne.PerkSystem.PerkEffect),"action").GetValue(e)).OfType<flanne.PerkSystem.Actions.AddPerksToPoolAction>().Single();
+  var pieces=(List<Powerup>)AccessTools.Field(typeof(flanne.PerkSystem.Actions.AddPerksToPoolAction),"powerupsToAdd").GetValue(action);
+  // Source appends HaloPiece1/2/3. Native's reversed asset list changes the
+  // candidate at a given random index, even though all three remain eligible.
+  Plugin.SetField(action,"powerupsToAdd",new[]{"shana_halo_piece_1","shana_halo_piece_2","shana_halo_piece_3"}.Select(key=>pieces.Single(piece=>RunResume.Key(piece)==key)).ToList());
+ }
+}
 [HarmonyPatch(typeof(PowerupGenerator),"PrereqsMet")]
 class AndroidOfferPrerequisites
 {
+ internal static void Configure(List<PowerupPoolItem> pool)
+ {
+  Powerup Find(string key)=>pool.Single(p=>RunResume.Key(p.powerup)==key).powerup;
+  Find("giant_name").anyPrereqFulfill=false;
+  var moving=Find("run_and_gun_name");moving.anyPrereqFulfill=false;
+  moving.prereqs=new List<Powerup>{Find("haste_name")};
+  var frenzy=Find("frenzy_name");frenzy.anyPrereqFulfill=true;
+  frenzy.prereqs=new List<Powerup>{Find("magic_scythe_name"),Find("holy_spear_name"),Find("ghost_friend_name"),Find("dragon_egg_name")};
+ }
  static bool Prefix(Powerup powerup,List<Powerup> ___takenPowerups,ref bool __result)
  {
   __result=!(powerup.name=="Assassin"&&AndroidSpecialize.Count>0)&&
@@ -165,7 +192,7 @@ class AndroidPowerupApplicationOrder
   {
    if(instruction.opcode==OpCodes.Ret)
    {
-    var sender=new CodeInstruction(OpCodes.Ldarg_0);sender.labels.AddRange(instruction.labels);instruction.labels.Clear();
+    var sender=new CodeInstruction(OpCodes.Ldarg_0);instruction.MoveLabelsTo(sender);
     yield return sender;yield return new CodeInstruction(OpCodes.Ldsfld,field);yield return new CodeInstruction(OpCodes.Call,post);
    }
    yield return instruction;

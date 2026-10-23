@@ -63,7 +63,7 @@ public partial class RuntimeChecks
    }
    Health target;while((target=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name==boss.bossPrefab.name+"(Clone)"&&!h.isDead))==null)yield return null;
    target.TakeDamage(DamageType.Bullet,1000000);Require(target.isDead,"actual native scheduled boss is defeated before suspension");yield return null;
-   if(challenge)Require(ChallengeRun.Instance.KilledBosses.Contains(0)&&ChallengeRun.Instance.KilledElites.Contains(waves.IndexOf(elite)),"real Challenge scheduling records both exact defeated encounter identities before saving");
+   if(challenge)Require(DefeatedEncounters("KilledBosses").Contains(0)&&DefeatedEncounters("KilledElites").Contains(waves.IndexOf(elite)),"real Challenge scheduling records both exact defeated encounter identities before saving");
    AccessTools.Method(typeof(PlayerHealth),"TakeDamage").Invoke(p.playerHealth,new object[]{1});p.playerHealth.Heal(1);
    Require(!game.hitlessDetector.hitless,"actual native hurt and healing leave a non-hitless run to preserve");
    yield return CheckRevolver(game,p,"resume-save-native-shooting.png",p.gun.gunData.name);
@@ -124,7 +124,7 @@ public partial class RuntimeChecks
   Require(Object.FindObjectsOfType<flanne.Pickups.ChestPickup>().Count(c=>AccessTools.Field(typeof(flanne.Pickups.ChestPickup),"_xpFountainCoroutine").GetValue(c)==null)==original.chests&&Object.FindObjectsOfType<flanne.Pickups.DevilDealPickup>().Length==original.devilDeals,"uncollected native chest/devil-deal counts restore without duplicating defeated encounters");
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("runtime"))yield return VerifyResumeRuntime(current,player,original);
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("cycle"))yield return VerifyEndlessCycle(original);
-  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("challenge"))Require(ChallengeRun.Instance.EnemyKills==original.challengeEnemies&&ChallengeRun.Instance.BossKills==original.challengeBosses&&ChallengeRun.Instance.KilledBosses.SetEquals(original.killedBosses)&&ChallengeRun.Instance.KilledElites.SetEquals(original.killedElites),"Challenge resumes its exact quotas and defeated encounter identities");
+  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("challenge"))Require(ChallengeRun.Instance.EnemyKills==original.challengeEnemies&&ChallengeRun.Instance.BossKills==original.challengeBosses&&DefeatedEncounters("KilledBosses").SetEquals(original.killedBosses)&&DefeatedEncounters("KilledElites").SetEquals(original.killedElites),"Challenge resumes its exact quotas and defeated encounter identities");
   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("runes"))Require(Loadout.RuneSelection.Single(r=>r.name=="GrowthRuneData").level==2&&Object.FindObjectsOfType<flanne.UI.RuneUnlocker>().Length==0,"saved run-local rune rank is restored independently of title purchases");
   yield return null;StatsOverlay.Instance.Refresh();
   Require(StatsOverlay.Instance.Collected.Values.Any(e=>e.Name==Resources.FindObjectsOfTypeAll<Powerup>().First(x=>x.name=="BigShot").nameString)&&StatsOverlay.Instance.SkillIcons.All(i=>i.sprite!=null),"continued native acquisitions rebuild the transparent skill icon/count HUD");

@@ -78,7 +78,7 @@ public static class SourceAchievementRewards
   // shared data dirty. The subsequent Points request coalesces into that write.
   // Keep the native persistence owner and save both final values together.
   int amount=PointsTracker.pts+reward.amount;
-  AccessTools.StaticFieldRefAccess<int>(typeof(PointsTracker),"_pts")()=amount;
+  AccessTools.StaticFieldRefAccess<int>(typeof(PointsTracker),"_pts")=amount;
   SaveSystem.data.points=amount;
   SaveSystem.Save();
   PointsTracker.PointsChangedEvent?.Invoke(typeof(PointsTracker),SaveSystem.data.points);

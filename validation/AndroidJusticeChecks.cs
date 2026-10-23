@@ -52,7 +52,7 @@ public partial class RuntimeChecks
   // Source RestoreAmmo also invokes OnAmmoChanged. An empty restored clip can
   // already have a real Smite coroutine pending; do not overlap a new test hit.
   while(JusticeSmiteFlowProbe.Running)yield return null;
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
   pool.AddObject("Validation_Justice_Enemy",template,1);var target=pool.GetPooledObject("Validation_Justice_Enemy").GetComponent<Health>();
   this.AddObserver(JusticeSmiteSeen,SmitePassive.SmiteKillNotification);
   if(continuation)

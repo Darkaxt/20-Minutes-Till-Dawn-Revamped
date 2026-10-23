@@ -21,14 +21,20 @@ public static partial class ResumeRuntime
   ["dragon_egg_name"]=typeof(SummonEgg),["aged_dragon"]=typeof(BuffSummonDamageOverTime),["trained_dragon_name"]=typeof(BuffSummonAttackSpeedOverTime),
   ["ritual_name"]=typeof(DamageBuffOnCurseKill),["in_the_wind_name"]=typeof(DmgAndMSOnNotHurt),["justice_name"]=typeof(GainMaxHPOnSmiteKill),
   ["shana_perk_specialize_name"]=typeof(TripleNextPowerup),["generator_name"]=typeof(BuffPlayerStats),
-  ["diamond_perk_berserk_name"]=typeof(BuffPlayerStats),["diamond_perk_bulk_up_name"]=typeof(BuffPlayerStats),["scarlett_perk_pyromaniac_name"]=typeof(BuffPlayerStats)
+  ["diamond_perk_berserk_name"]=typeof(BuffPlayerStats),["diamond_perk_bulk_up_name"]=typeof(BuffPlayerStats),["scarlett_perk_pyromaniac_name"]=typeof(BuffPlayerStats),
+  ["diamond_perk_strong_will_name"]=typeof(NonStackingBuff),["abby_perk_whirlwind_name"]=typeof(TemporaryRefreshingBuff),["lilith_perk_necrophile_name"]=typeof(TemporaryRefreshingBuff)
  };
  static readonly Dictionary<string,string> BuffRoots=new Dictionary<string,string>
- { ["generator_name"]="PF_FireRateBuffOnAmmoGain",["diamond_perk_berserk_name"]="PF_BuffOnHurt",["diamond_perk_bulk_up_name"]="PF_BuffOnHeal",["scarlett_perk_pyromaniac_name"]="BuffOnBurn" };
+ {
+  ["generator_name"]="PF_FireRateBuffOnAmmoGain",["diamond_perk_berserk_name"]="PF_BuffOnHurt",["diamond_perk_bulk_up_name"]="PF_BuffOnHeal",["scarlett_perk_pyromaniac_name"]="BuffOnBurn",
+  ["diamond_perk_strong_will_name"]="PF_BuffOnBelowHalfHP",["abby_perk_whirlwind_name"]="PF_BuffOnReload",["lilith_perk_necrophile_name"]="PF_BuffOnDeath"
+ };
  static MonoBehaviour[] SourceHelpers(PlayerController player,string key)
  {
   if(!SourceOwners.TryGetValue(key,out var type))return new MonoBehaviour[0];
-  return Providers(player,type).Where(c=>type!=typeof(BuffPlayerStats)||c.gameObject.name.Replace("(Clone)","")==BuffRoots[key]).ToArray();
+  // Source GetComponentInChildren<BuffPlayerStats>(true) includes these
+  // actual derived helpers; each powerup still owns its own root/list order.
+  return Providers(player,type).Where(c=>!BuffRoots.TryGetValue(key,out var root)||c.gameObject.name.Replace("(Clone)","")==root).ToArray();
  }
  static State CaptureSource(PlayerController player)
  {
@@ -121,11 +127,7 @@ public static partial class ResumeRuntime
  }
  internal static void EnableSourceStarts()
  {foreach(var owner in RunRecorder.Instance.SourceStarts.Where(o=>o!=null))owner.enabled=true;RunRecorder.Instance.SourceStarts.Clear();}
- internal static void DeferLegacyAttachmentStarts(PlayerController player)
- {
-  foreach(var owner in SourceHelpers(player,"shana_perk_specialize_name").Concat(player.GetComponentsInChildren<AndroidAmmoOnThunder>(true)))
-   if(owner.enabled){owner.enabled=false;RunRecorder.Instance.SourceStarts.Add(owner);}
- }
+
 }
 [HarmonyPatch]
 class ResumeSourceAttachmentStarts
@@ -134,7 +136,6 @@ class ResumeSourceAttachmentStarts
  static void Postfix()
  {
   if(!RunResume.Restoring||!RunRecorder.Instance.Rebuilding)return;
-  if(RunResume.Pending.runtime.sourcePowerups!=null)ResumeRuntime.DeferSourceStarts(PlayerController.Instance);
-  else ResumeRuntime.DeferLegacyAttachmentStarts(PlayerController.Instance);
+  ResumeRuntime.DeferSourceStarts(PlayerController.Instance);
  }
 }

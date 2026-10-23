@@ -20,7 +20,7 @@ public partial class RuntimeChecks
  static MonoBehaviour[] ColdHelpers(string type)=>PlayerController.Instance.GetComponentsInChildren<MonoBehaviour>().Where(c=>c.GetType().Name==type).ToArray();
  Health ColdEnemy(ObjectPooler pool,Vector3 position,int max=101,int hp=101,string tag="Enemy")
  {
-  var actor=pool.GetPooledObject("Validation_Cold_Enemy");DurableEnemy(actor,position,false);actor.SetActive(true);actor.tag=tag;var h=actor.GetComponent<Health>();h.maxHP=max;Plugin.SetField(h,"<HP>k__BackingField",hp);actor.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;return h;
+  var actor=pool.GetPooledObject("Validation_Cold_Enemy");DurableEnemy(actor,position,false);actor.SetActive(true);actor.tag=tag;var h=actor.GetComponent<Health>();h.maxHP=max;Plugin.SetField(h,"<HP>k__BackingField",hp);{var fixedBody=actor.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}return h;
  }
  IEnumerator ColdFreeze(Health target,int expected,string tag=null)
  {
@@ -30,7 +30,7 @@ public partial class RuntimeChecks
  {
   var player=PlayerController.Instance;while(PauseController.isPaused||!(player.CurrentState is flanne.Player.IdleState))yield return null;
   game.playerInput.SwitchCurrentControlScheme("Keyboard&Mouse",fixtureKeyboard,fixtureMouse);game.playerInput.neverAutoSwitchControlSchemes=true;
-  int hits=0;target.onHurt.AddListener(d=>hits++);bool fired=false;UnityEngine.Events.UnityAction shot=()=>fired=true;player.gun.OnShoot.AddListener(shot);
+  int hits=0;ObserveDamage(target,d=>hits++);bool fired=false;UnityEngine.Events.UnityAction shot=()=>fired=true;player.gun.OnShoot.AddListener(shot);
   bool exitRegression=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").Contains("cold-exit");
   ColdNoFreeze=true;
   try
@@ -49,7 +49,7 @@ public partial class RuntimeChecks
    yield return null;
   }
   finally{ColdNoFreeze=false;}
-  Require(target.isDead==expectedDead,"actual native bullet impact observes the source inclusive Assassin threshold and Champion eligibility");target.gameObject.SetActive(false);if(!exitRegression)while(!(player.CurrentState is flanne.Player.IdleState))yield return null;
+  Require(target.isDead==expectedDead,"actual native bullet impact observes the source inclusive Assassin threshold and Champion eligibility");ReturnFixtureActor(target.gameObject);if(!exitRegression)while(!(player.CurrentState is flanne.Player.IdleState))yield return null;
  }
  IEnumerator CheckAndroidCold(bool continuation)
  {
@@ -62,7 +62,7 @@ public partial class RuntimeChecks
   {
    var title=Object.FindObjectOfType<flanne.TitleScreen.TitleScreenController>();Click(Entries(title.mainMenu)[0].button);yield return null;Click(Resources.FindObjectsOfTypeAll<Button>().Single(b=>b.name=="ResumeContinue"&&b.gameObject.activeInHierarchy));while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState)){var error=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().FirstOrDefault(t=>t.name=="CheckpointDescription"&&t.gameObject.activeInHierarchy&&t.text.StartsWith("Could not restore"));if(error!=null)throw new InvalidOperationException(error.text);yield return null;}player=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;
   }
-  player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;pool.AddObject("Validation_Cold_Enemy",template,8);
+  player.SetPosition(new Vector3(100,100,0));GameTimer.SharedInstance.Stop();var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;pool.AddObject("Validation_Cold_Enemy",template,8);
   this.AddObserver(ColdHurt,"Revamped.AndroidSurvivingHurt");this.AddObserver(ColdImpact,Projectile.ImpactEvent);
   if(!continuation)
   {
@@ -107,8 +107,10 @@ class ColdReleaseProbe
 {
  static void Prefix(TimeToLive __instance){if(__instance.GetComponents<MonoBehaviour>().Any(c=>c.GetType().Name=="AndroidShatterContact"))RuntimeChecks.ColdLastReleased=__instance.gameObject;}
 }
-[HarmonyPatch(typeof(flanne.PerkSystem.Triggers.OnHitTrigger),"OnImpact")]
+[HarmonyPatch]
 class ColdFreezeRollProbe
 {
+ static IEnumerable<System.Reflection.MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(flanne.PerkSystem.Triggers.OnHitTrigger),"OnImpact"),AccessTools.Method(typeof(FreezeOnHit),"OnImpact"),AccessTools.Method(typeof(BurnOnHit),"OnImpact")};
+ [HarmonyPriority(Priority.First)]
  static void Prefix(){if(RuntimeChecks.ColdNoFreeze)RuntimeChecks.SeedFirstRoll(.5f,1);}
 }

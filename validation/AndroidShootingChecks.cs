@@ -37,12 +37,12 @@ public partial class RuntimeChecks
    {var error=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().FirstOrDefault(t=>t.name=="CheckpointDescription"&&t.gameObject.activeInHierarchy&&t.text.StartsWith("Could not restore"));if(error!=null)throw new InvalidOperationException(error.text);yield return null;}
    player=PlayerController.Instance;Object.FindObjectOfType<HordeSpawner>().enabled=false;GameTimer.SharedInstance.Stop();
   }
-  var summon=player.GetComponentsInChildren<ShootingSummon>().Single(s=>s.SummonTypeID=="GhostFriend");while(WindField(summon,"stats")==null)yield return null;summon.enabled=false;
+  var summon=player.GetComponentsInChildren<ShootingSummon>().Single(s=>s.SummonTypeID=="GhostFriend");while(!SummonStarted(summon))yield return null;summon.enabled=false;
   if(continuation)
   {
-   Require(Mathf.Abs((float)WindField(summon,"_timer")-.31f)<.1f,"Continue restores the persistent shooting summon interval");
-   Require(Mathf.Abs(Bonus(summon.attackSpeedMod)-.25f)<.001f&&CustomMode.Get("summon:GhostFriend:damage")==2&&CustomMode.Get("summon:GhostFriend:speed")==1.5f,"Continue restores independent shooting speed and actual Custom controls");
-   Require(Mathf.Abs(ShootingRecipe(summon).damage-17.92f)<.001f,"Continue retains the unrounded source recipe with the Custom factor");
+   Require(StartedSummonTimers[summon.GetInstanceID()]==0,"source-unsaved shooting interval starts fresh before its first Update");
+   Require(Mathf.Abs(Bonus(summon.attackSpeedMod))<.001f&&CustomMode.Get("summon:GhostFriend:damage")==2&&CustomMode.Get("summon:GhostFriend:speed")==1.5f,"Continue rebuilds the source-unsaved manual actor bonus while retaining actual Custom controls");
+   Require(Mathf.Abs(ShootingRecipe(summon).damage-16f)<.001f,"Continue rebuilds unattributed manual stat mutations and retains the source recipe with the recorded Custom factor");
   }
   else
   {
@@ -52,8 +52,8 @@ public partial class RuntimeChecks
    player.stats[StatType.SummonDamage].AddMultiplierBonus(.12f);Require(Mathf.Abs(ShootingRecipe(summon).damage-8.96f)<.001f,"source shooting recipe retains fractional transformed damage before projectile creation, including default Custom settings");
    summon.inheritPlayerDamage=true;Require(Mathf.Abs(ShootingRecipe(summon).damage-summon.summonDamageMod.Modify(player.gun.damage))<.001f,"source inherited-player-damage branch applies the summon stat without early producer rounding");summon.inheritPlayerDamage=false;
   }
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
-  pool.AddObject("Validation_Shooting_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Shooting_Enemy");var target=DurableEnemy(targetActor,player.transform.position+new Vector3(8,5),false);targetActor.tag="Untagged";targetActor.SetActive(true);target.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
+  pool.AddObject("Validation_Shooting_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Shooting_Enemy");var target=DurableEnemy(targetActor,player.transform.position+new Vector3(8,5),false);targetActor.tag="Untagged";targetActor.SetActive(true);{var fixedBody=target.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}
   var boundary=pool.GetPooledObject("Validation_Shooting_Enemy");DurableEnemy(boundary,player.transform.position+Vector3.right*9,false);boundary.GetComponent<CircleCollider2D>().radius=.8f;boundary.SetActive(true);
   var unpooled=DurableEnemy(template,player.transform.position+Vector3.right*2,true);unpooled.gameObject.SetActive(true);
   ShootingNativeProbe.Summon=summon;int shots=ShootingNativeProbe.Calls;Vector2 direction=(Vector2)(target.transform.position-summon.transform.position);
@@ -62,7 +62,7 @@ public partial class RuntimeChecks
   boundary.SetActive(false);unpooled.gameObject.SetActive(false);targetActor.SetActive(false);
   foreach(var projectile in Object.FindObjectsOfType<Projectile>())if(projectile.owner==summon.gameObject)projectile.gameObject.SetActive(false);
   targetActor.tag="Enemy";targetActor.SetActive(true);target.transform.position=summon.transform.position+Vector3.right*3;
-  int hurt=0,last=0;target.onHurt.AddListener(amount=>{hurt++;last=amount;});
+  int hurt=0,last=0;ObserveDamage(target,amount=>{hurt++;last=amount;});
   Require(ShootingAttack(summon),"actual native summon attack creates a projectile for contact verification");
   while(hurt==0)yield return null;
   Log("shooting-contact","damage="+last+" recipe="+ShootingRecipe(summon).damage);

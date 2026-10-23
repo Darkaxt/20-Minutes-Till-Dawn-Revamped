@@ -23,7 +23,6 @@ public sealed class AndroidPools:MonoBehaviour
  readonly Dictionary<string,Pool> pools=new Dictionary<string,Pool>();
  readonly List<Pool> monsterPools=new List<Pool>();
  readonly List<GameObject> randomTargets=new List<GameObject>();
- readonly Dictionary<GameObject,Pool> owners=new Dictionary<GameObject,Pool>();
  readonly Dictionary<int,GameObject> byID=new Dictionary<int,GameObject>();
  readonly Dictionary<GameObject,GameObject> sourceTemplates=new Dictionary<GameObject,GameObject>();
  readonly Dictionary<int,Transform> timedReleases=new Dictionary<int,Transform>();
@@ -31,14 +30,17 @@ public sealed class AndroidPools:MonoBehaviour
  Transform sourceTemplateRoot;
  internal GameObject SourceTemplate(GameObject original)
  {
-  if(!original.GetComponentsInChildren<AIComponent>(true).Any(AndroidAIRecipes.IsBodyless))return original;
+  if(!AndroidProjectileTemplates.OwnsEnemy(original)&&!AndroidLobbedProjectiles.OwnsTemplate(original)&&!AndroidContacts.OwnsTemplate(original)&&!original.GetComponentsInChildren<AIComponent>(true).Any(AndroidAIRecipes.IsBodyless))return original;
   if(sourceTemplates.TryGetValue(original,out var owned))return owned;
   if(sourceTemplateRoot==null)
   {var root=new GameObject("AndroidActorTemplates");root.SetActive(false);root.transform.SetParent(transform,false);sourceTemplateRoot=root.transform;}
   owned=Object.Instantiate(original,sourceTemplateRoot,false);owned.name=original.name;
-  AndroidAIRecipes.ConfigureTemplate(owned);sourceTemplates.Add(original,owned);return owned;
+  AndroidAIRecipes.ConfigureTemplate(owned);AndroidLobbedProjectiles.ConfigureTemplate(owned);AndroidProjectileTemplates.ConfigureEnemy(owned);AndroidContacts.ConfigureTemplate(owned);sourceTemplates.Add(original,owned);return owned;
  }
  internal GameObject GetFromID(int id)=>byID.TryGetValue(id,out var value)?value:null;
+ // Source get_countActive is allocated minus returned, including hidden
+ // allocations. It is not an activeInHierarchy or visible-list count.
+ internal int CountAllocated(string tag)=>pools.TryGetValue(tag,out var pool)?pool.Count:int.MinValue;
  internal int CountCollectableDrops(string tag)
  {
   if(!pools.TryGetValue(tag,out var pool))return 0;
@@ -149,7 +151,7 @@ public sealed class AndroidPools:MonoBehaviour
   if(pool.Returned.Count>0)
   {value=pool.Returned.Pop();value.transform.position=position;var trail=value.GetComponentInChildren<TrailRenderer>();if(trail!=null)trail.Clear();}
   else
-  {value=Object.Instantiate(pool.Prefab,parent);AndroidPickup.Attach(value);value.name=pool.Prefab.name;value.transform.position=position;value.transform.localRotation=Quaternion.identity;pool.All.Add(value);owners.Add(value,pool);value.AddComponent<AndroidPoolObject>().Owner=this;}
+  {value=Object.Instantiate(pool.Prefab,parent);AndroidPickup.Attach(value);value.name=pool.Prefab.name;value.transform.position=position;value.transform.localRotation=Quaternion.identity;pool.All.Add(value);}
   value.SetActive(true);
   if(value.transform.parent!=parent)value.transform.SetParent(parent);
   if(pool.Visible>0&&pool.Active.Count>=pool.Visible)
@@ -159,7 +161,9 @@ public sealed class AndroidPools:MonoBehaviour
  internal void Release(GameObject value)
  {
   if(value==null||!value.activeSelf)return;
-  if(!owners.TryGetValue(value,out var pool)){value.SetActive(false);return;}
+  // GameObjectPoolMap.Release selects by the current Transform name. It
+  // does not require membership in an instance-ownership registry.
+  if(!pools.TryGetValue(value.name,out var pool)){value.SetActive(false);return;}
   ReleaseMember(value,pool);
  }
  static void ReleaseMember(GameObject value,Pool pool)
@@ -183,11 +187,10 @@ public sealed class AndroidPools:MonoBehaviour
  internal static void SetActive(GameObject value,bool active)
  {
   if(active){value.SetActive(true);return;}
-  var member=value.GetComponent<AndroidPoolObject>();if(member!=null)member.Owner.Release(value);else value.SetActive(false);
+  ObjectPooler.SharedInstance.GetComponent<AndroidPools>().Release(value);
  }
  internal static void Return(GameObject value)=>SetActive(value,false);
 }
-public sealed class AndroidPoolObject:MonoBehaviour{internal AndroidPools Owner;}
 [HarmonyPatch(typeof(TimeToLive),"Deactivate")]
 class AndroidTimedPoolRelease
 {static bool Prefix(TimeToLive __instance){AndroidPools.Return(__instance.gameObject);return false;}}
@@ -240,8 +243,8 @@ class AndroidDamagePopupPoolConsumer
 
 // Original source callers of ObjectPooler.Release have native SetActive(false)
 // counterparts. Route those exact component families, including their compiler
-// generated coroutines, through the same release owner. Unpooled actors retain
-// their native deactivation behavior.
+// generated coroutines, through the same source name-based release owner.
+// A missing name follows the source's plain deactivation branch.
 [HarmonyPatch]
 class AndroidPoolReleaseCallers
 {

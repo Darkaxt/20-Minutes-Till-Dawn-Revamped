@@ -48,7 +48,7 @@ public partial class RuntimeChecks
   Require(thunder.damageMod.FlatBonus==12&&Mathf.Abs(thunder.sizeMultiplier-1.75f)<.001f,"Android Electro Mastery adds twelve before thunder damage composition and multiplies size by one point seven five");
   Require(Mathf.Abs(Bonus(thunder.damageMod)-.35f)<.001f,"the actual Elements tome composes its additive elemental bonus with Electro Mastery's flat modifier");
   this.AddObserver(OnLightningBullet,"Health.TweakBulletDamage");this.AddObserver(OnLightningThunder,"Health.TweakThunderDamage");this.AddObserver(OnLightningNotification,ThunderGenerator.ThunderHitEvent);
-  var template=pool.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  var template=pool.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   var position=p.transform.position+Vector3.right*35;var target=DurableEnemy(template,position,true);target.gameObject.SetActive(true);
   int hp=target.HP,notifications=LightningNotifications;thunder.GenerateAt(target.gameObject,22);
   Require(target.HP==hp&&LightningNotifications==notifications+1,"targeted Android thunder posts its notification before any physics-delivered damage");

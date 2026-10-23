@@ -47,7 +47,7 @@ public partial class RuntimeChecks
    yield return AndroidPick(game,"Hellspawns",game.playerXP.level);
   }
   Object.FindObjectOfType<HordeSpawner>().enabled=false;
-  var template=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  var template=ObjectPooler.SharedInstance.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   var target=DurableEnemy(template,p.transform.position+Vector3.right*35,true);target.gameObject.tag="Untagged";target.gameObject.SetActive(true);
   target.TakeDamage(DamageType.Bullet,20);Require(!BurnSystem.SharedInstance.IsBurning(target.gameObject),"Android Hellspawns ignores non-summon damage");
   target.TakeDamage(DamageType.Summon,20);Require(BurnSystem.SharedInstance.IsBurning(target.gameObject),"Android Hellspawns responds to actual surviving Summon-classified Health damage without a Summon producer notification");
@@ -84,7 +84,7 @@ public partial class RuntimeChecks
   }
   yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
   game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
-  template=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  template=ObjectPooler.SharedInstance.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   target=DurableEnemy(template,p.transform.position+Vector3.right*35,true);target.gameObject.SetActive(true);calls=HitEffectThunderCalls;
   for(int i=0;i<32;i++)target.TakeDamage(DamageType.Summon,1);
   Plugin.SetField(p.ammo,"<amount>k__BackingField",1);GenerateThunderWithRoll(target.gameObject,0,.2f);

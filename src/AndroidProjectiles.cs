@@ -12,6 +12,29 @@ namespace TwentyMinutes.Modernization;
 // Keep that source component identity when a pool tag or owner changes.
 public sealed class AndroidMultiProjectile:MonoBehaviour{}
 
+// Native's integer damage property already matches the ordinary source harm
+// scalar. Moth has a separate live FreezeOrHarm consumer: source Projectile's
+// serialized harm points there, so every producer/modifier must share it.
+[HarmonyPatch(typeof(Projectile),"get_damage")]
+class AndroidProjectileChildDamageRead
+{
+ static bool Prefix(Projectile __instance,ref float __result)
+ {
+  var harm=__instance.GetComponentInChildren<FreezeOrHarm>(true);
+  if(harm==null)return true;
+  __result=harm.damageAmount;return false;
+ }
+}
+[HarmonyPatch(typeof(Projectile),"set_damage")]
+class AndroidProjectileChildDamageWrite
+{
+ static void Postfix(Projectile __instance,int ____damage)
+ {
+  var harm=__instance.GetComponentInChildren<FreezeOrHarm>(true);
+  if(harm!=null)harm.damageAmount=____damage;
+ }
+}
+
 // The shared Android movement owner dispatches the source IMoveUpdate callback.
 // This component owns the contact state that the older native Projectile lacks.
 public sealed class AndroidProjectile:MonoBehaviour
@@ -29,7 +52,11 @@ public sealed class AndroidProjectile:MonoBehaviour
  Component[] ordered;string poolTag;
  void Awake(){Shot=GetComponent<Projectile>();Move=GetComponent<MoveComponent2D>();ordered=GetComponents<Component>();}
  internal static void ConfigurePrefab(GameObject prefab)
- {if(prefab.name=="PF_ShadowCloneAttack"&&prefab.GetComponent<AndroidMultiProjectile>()==null)prefab.AddComponent<AndroidMultiProjectile>();}
+ {
+  if(prefab.name=="PF_ShadowCloneAttack"&&prefab.GetComponent<AndroidMultiProjectile>()==null)prefab.AddComponent<AndroidMultiProjectile>();
+  if(prefab.name=="PF_RevolverProjectile")prefab.GetComponent<MoveComponent2D>().drag=1;
+  AndroidArrowGround.ConfigurePrefab(prefab);
+ }
  void OnEnable(){if(!multi)hit.Clear();Array.Clear(multiHits,0,multiHits.Length);changed=false;multiTriggered=false;}
  internal void Configure(ProjectileRecipe recipe)
  {
@@ -39,9 +66,6 @@ public sealed class AndroidProjectile:MonoBehaviour
   multi=GetComponent<AndroidMultiProjectile>()!=null;shootingPet=summon=="GhostFriend"||summon=="Dragon";
   var circle=GetComponent<CircleCollider2D>();manual=circle!=null;Radius=circle!=null?circle.radius:0;
   if(poolTag=="PF_Fireball")Radius=.2f;
-  // Native Charge Cannon currently shares the original gun's pool. Capture
-  // source radius per shot, so other users of that pool keep their geometry.
-  if(flags?.Radius!=null)Radius=flags.Radius.Value;
   if(multi)Radius=1.7f;
   Size=Mathf.Clamp(recipe.size,0,5);if(circle!=null)circle.enabled=false;
   changed=false;multiTriggered=false;Array.Clear(multiHits,0,multiHits.Length);if(!multi)hit.Clear();
@@ -144,16 +168,6 @@ public sealed class AndroidProjectile:MonoBehaviour
   if(notify)PlayerController.Instance.StartCoroutine(BounceNotice(Shot));
  }
  static IEnumerator BounceNotice(Projectile shot){yield return new WaitForEndOfFrame();shot.PostNotification(Projectile.BounceEvent);}
-}
-
-[HarmonyPatch(typeof(Gun),"GetProjectileRecipe")]
-class AndroidCannonProjectileGeometry
-{
- static void Postfix(Gun __instance,ref ProjectileRecipe __result)
- {
-  if(!Plugin.TryMode(__instance.gunData,out _))return;var r=__result;
-  __result=new AndroidProjectileRecipe{objectPoolTag=r.objectPoolTag,damage=r.damage,projectileSpeed=r.projectileSpeed,size=r.size,knockback=r.knockback,bounce=r.bounce,piercing=r.piercing,owner=r.owner,Radius=.15f};
- }
 }
 
 [HarmonyPatch(typeof(Projectile),"SetSize")]

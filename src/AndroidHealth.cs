@@ -3,6 +3,14 @@ using UnityEngine;
 using flanne;
 namespace TwentyMinutes.Modernization;
 
+[HarmonyPatch(typeof(PlayerController),"Awake")]
+class AndroidSoulCapacityInitialization
+{
+ // Source Health's private, nonserialized capacity starts at zero. The native
+ // player prefab serializes three; source runes/perks grant capacity later.
+ static void Postfix(PlayerController __instance)=>__instance.playerHealth.maxSHP=0;
+}
+
 [HarmonyPatch(typeof(StatModHealth),"OnStatChanged")]
 class AndroidHealthStat
 {

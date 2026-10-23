@@ -34,7 +34,7 @@ public sealed class AndroidEndlessBossState
 {public string tag;public int level;public List<int> affixes=new List<int>();}
 public sealed class AndroidEndlessRun:MonoBehaviour
 {
- internal static bool Active=>SelectedMap.MapData!=null&&new[]{"Endless_Forest","10M_Forest","20M_Forest","20M_Temple","20M_PumpkinPatch"}.Contains(SelectedMap.MapData.name);
+ internal static bool Active=>SelectedMap.MapData!=null&&new[]{"Endless_Forest","10M_Forest","20M_Forest","20M_Temple","20M_PumpkinPatch","Challenge_Forest"}.Contains(SelectedMap.MapData.name);
  bool endless;MapData map;
  internal int? PreviousWindowsCycle;
  HordeSpawner horde;BossSpawner boss;
@@ -53,8 +53,9 @@ public sealed class AndroidEndlessRun:MonoBehaviour
   map=SelectedMap.MapData;endless=map.endless;
   horde=(HordeSpawner)AccessTools.Field(typeof(MapInitializer),"hordeSpawner").GetValue(initializer);boss=(BossSpawner)AccessTools.Field(typeof(MapInitializer),"bossSpawner").GetValue(initializer);
   horde.LoadSpawners(new List<SpawnSession>());horde.enabled=false;boss.LoadSpawners(new List<BossSpawn>());
+  if(ChallengeMode.Active)initializer.gameObject.AddComponent<ChallengeRun>().Initialize();
   prefabs=Resources.FindObjectsOfTypeAll<Health>().Where(h=>!h.gameObject.scene.IsValid()).GroupBy(h=>h.gameObject.name).ToDictionary(g=>g.Key,g=>g.First().gameObject);
-  waves=endless?AndroidEndlessTables.Waves():map.spawnSessions.Select((s,i)=>new AndroidEndlessTables.Wave{Session=s,Pools=new[]{AndroidMapTables.PoolTags(map)[i]}}).ToList();roundDuration=waves.Max(w=>w.Session.startTime+w.Session.duration);
+  waves=endless?AndroidEndlessTables.Waves():map.spawnSessions.Select((s,i)=>new AndroidEndlessTables.Wave{Session=s,Pools=new[]{ChallengeMode.Active?s.monsterPrefab.name:AndroidMapTables.PoolTags(map)[i]}}).ToList();roundDuration=waves.Max(w=>w.Session.startTime+w.Session.duration);
   foreach(var tag in waves.SelectMany(w=>w.Pools).Concat(endless?AndroidEndlessTables.BossPools:map.bossSpawns.Select(b=>b.bossPrefab.name)).Distinct())ObjectPooler.SharedInstance.AddObject(tag,prefabs[PrefabName(tag)],1);
   nextBoss=AndroidEndlessTables.FirstBoss;
   for(int i=0;i<waves.Count;i++)pending.Add(i);
@@ -82,7 +83,7 @@ public sealed class AndroidEndlessRun:MonoBehaviour
   var oldWaves=AndroidMapTables.LegacyWaves(map,saved.endlessCycle);var oldBosses=AndroidMapTables.LegacyBosses(map,saved.endlessCycle);
   saved.killedElites=saved.killedElites.SelectMany(index=>waves.Select((w,i)=>new{w,i}).Where(x=>x.w.Session.isElite&&x.w.Pools.Any(tag=>PrefabName(tag)==oldWaves[index].monsterPrefab.name)).Select(x=>x.i)).Distinct().ToList();
   if(!endless)saved.killedBosses=saved.killedBosses.SelectMany(index=>map.bossSpawns.Select((b,i)=>new{b,i}).Where(x=>x.b.bossPrefab.name==oldBosses[index].bossPrefab.name).Select(x=>x.i)).Distinct().ToList();
-  var state=new AndroidEndlessState{roundStart=Mathf.Floor(saved.seconds/roundDuration)*roundDuration,nextBoss=AndroidEndlessTables.FirstBoss,waveTimers=new float[waves.Count]};
+  var state=new AndroidEndlessState{roundStart=ChallengeMode.Active?saved.roundStart:Mathf.Floor(saved.seconds/roundDuration)*roundDuration,nextBoss=AndroidEndlessTables.FirstBoss,waveTimers=new float[waves.Count]};
   float relative=saved.seconds-state.roundStart;
   for(int i=0;i<waves.Count;i++)
   {
@@ -129,10 +130,11 @@ public sealed class AndroidEndlessRun:MonoBehaviour
   foreach(int i in active)
   {
    var wave=waves[i];var session=wave.Session;session.timer-=Time.deltaTime;if(session.timer>=0)continue;
-   int count=wave.Pools.Sum(tag=>ObjectPooler.SharedInstance.GetAllPooledObjects(tag).Count(actor=>actor.activeInHierarchy));
-   int maximum=Mathf.FloorToInt(session.maximum*(endless?AndroidEndlessTables.HordeMaxNumsUp.Value(level):1));
+   int count=0;var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();
+   foreach(string tag in wave.Pools)count=unchecked(count+pool.CountAllocated(tag));
+   int maximum=Mathf.FloorToInt(session.maximum*(endless?AndroidEndlessTables.HordeMaxNumsUp.Value(level):1)*(ChallengeMode.Active?ChallengeMode.AliveMultiplier(Loadout.difficultyLevel):1));
    if(count<maximum)
-   {int amount=Mathf.FloorToInt(session.numPerSpawn*Modifier("spawnRateMulitplier",horde.spawnRateMulitplier)*(endless?AndroidEndlessTables.HordeNumPerWpawnUp.Value(level):1));for(int j=0;j<amount;j++)queue.Enqueue(i);}
+   {float rate=ChallengeMode.Active?ChallengeMode.SpawnRate(horde.spawnRateMulitplier,Loadout.difficultyLevel):horde.spawnRateMulitplier;int amount=Mathf.FloorToInt(Modifier("spawnRateMulitplier",rate)*session.numPerSpawn*(endless?AndroidEndlessTables.HordeNumPerWpawnUp.Value(level):1));for(int j=0;j<amount;j++)queue.Enqueue(i);}
    session.timer+=session.spawnCooldown*(endless?AndroidEndlessTables.HordeSpawnCdUp.Value(level):1);
   }
   int batch=Mathf.Min(5,queue.Count);for(int n=0;n<batch;n++)Spawn(queue.Dequeue());
@@ -146,22 +148,32 @@ public sealed class AndroidEndlessRun:MonoBehaviour
  }
  void Spawn(int index)
  {
-  var wave=waves[index];string tag=wave.Pools[UnityEngine.Random.Range(0,wave.Pools.Length)];var previous=RunResume.SpawnContext;
-  if(wave.Session.isElite)RunResume.SpawnContext=new RunResume.SpawnIdentity{boss=false,index=index,tag=tag};
+  var wave=waves[index];string tag=wave.Pools[UnityEngine.Random.Range(0,wave.Pools.Length)];
+  SpawnActor(tag,wave.Session.HP,wave.Session.isElite,index);
+ }
+ internal void SpawnActor(string tag,int baseHP,bool elite,int index=-1)
+ {
+  var previous=RunResume.SpawnContext;
+  if(elite&&index>=0)RunResume.SpawnContext=new RunResume.SpawnIdentity{boss=false,index=index,tag=tag};
   GameObject actor;try{actor=ObjectPooler.SharedInstance.GetPooledObject(tag);}finally{RunResume.SpawnContext=previous;}
+  float radius=(float)AccessTools.Field(typeof(HordeSpawner),"spawnRadius").GetValue(horde);
+  Vector2 point=UnityEngine.Random.insideUnitCircle.normalized*radius;
   if(actor==null){Debug.LogError("Monster spawn failed: "+tag);return;}
-  actor.SetActive(true);float radius=(float)AccessTools.Field(typeof(HordeSpawner),"spawnRadius").GetValue(horde);
-  Vector2 point=UnityEngine.Random.insideUnitCircle.normalized*radius;actor.transform.position=PlayerController.Instance.transform.position+(Vector3)point;
+  actor.transform.position=PlayerController.Instance.transform.position+(Vector3)point;
   float level=Mathf.Floor(GameTimer.SharedInstance.timer/AndroidEndlessTables.LevelSeconds),growth=endless?AndroidEndlessTables.HordehealthUp.Value(level):1;
-  var health=actor.GetComponent<Health>();bool elite=wave.Session.isElite;
-  if(health!=null)health.maxHP=Mathf.FloorToInt(wave.Session.HP*growth*(elite?Modifier("eliteHealthMultiplier",horde.eliteHealthMultiplier):Modifier("healthMultiplier",horde.healthMultiplier)));
+  var health=actor.GetComponent<Health>();
+  if(health!=null)
+  {
+   health.maxHP=Mathf.FloorToInt((elite?Modifier("eliteHealthMultiplier",horde.eliteHealthMultiplier):Modifier("healthMultiplier",horde.healthMultiplier))*baseHP*growth);
+   if(elite&&index>=0)spawnedElites.Add(index);
+  }
   var ai=actor.GetComponent<AIComponent>();
   if(ai!=null)
   {
    ai.damageToPlayer=(int)(elite?Modifier("eliteDamage",horde.eliteDamage):Modifier("enemyDamage",horde.enemyDamage));
-   float speed=(endless?AndroidEndlessTables.HordeMovespeedUp.Value(level):1)*(elite?Modifier("eliteSpeedMultiplier",horde.eliteSpeedMultiplier):Modifier("speedMultiplier",horde.speedMultiplier));ai.maxMoveSpeed=ai.baseMaxMoveSpeed*speed;ai.acceleration=ai.baseAcceleration*speed;
+   float speed=elite?Modifier("eliteSpeedMultiplier",horde.eliteSpeedMultiplier):Modifier("speedMultiplier",horde.speedMultiplier),speedGrowth=endless?AndroidEndlessTables.HordeMovespeedUp.Value(level):1;
+   ai.maxMoveSpeed=ai.baseMaxMoveSpeed*speed*speedGrowth;ai.acceleration=ai.baseAcceleration*speed*speedGrowth;
   }
-  if(elite)spawnedElites.Add(index);
  }
  void SpawnBoss(AndroidEndlessBossState saved=null)
  {
@@ -184,10 +196,10 @@ public sealed class AndroidEndlessRun:MonoBehaviour
   liveBosses[health]=record;
   Arena(health);
  }
- void SpawnScheduledBoss(int index)
+ internal void SpawnScheduledBoss(int index,bool scheduled=true)
  {
   var spawn=map.bossSpawns[index];string tag=spawn.bossPrefab.name;var previous=RunResume.SpawnContext;bool previousSpawning=BossSpawnAchievementBoundary.Spawning;
-  RunResume.SpawnContext=new RunResume.SpawnIdentity{boss=true,index=index,tag=tag};BossSpawnAchievementBoundary.Spawning=true;GameObject actor;
+  if(scheduled)RunResume.SpawnContext=new RunResume.SpawnIdentity{boss=true,index=index,tag=tag};BossSpawnAchievementBoundary.Spawning=true;GameObject actor;
   try{actor=ObjectPooler.SharedInstance.GetPooledObject(tag);}finally{RunResume.SpawnContext=previous;BossSpawnAchievementBoundary.Spawning=previousSpawning;}
   actor.transform.position=PlayerController.Instance.transform.position+spawn.spawnPosition;
   var health=actor.GetComponent<Health>();if(health!=null)health.maxHP=Mathf.FloorToInt(spawn.maxHP*Modifier("bossHealth",boss.healthMultiplier));

@@ -81,7 +81,7 @@ public partial class RuntimeChecks
   Require(Vector2.Distance(gale.transform.position,p.transform.position)<.01f&&Mathf.Abs(movement.vector.magnitude-3)<.001f&&Mathf.Abs(Vector2.SignedAngle(aim,movement.vector)-59)<.01f,"actual acquired wind cast starts at the player with speed three and source integer spread reaching fifty nine degrees");
   var position=p.transform.position+Vector3.right*35;gale.transform.position=position;movement.vector=Vector2.zero;
   Plugin.SetField(actor,"ContactTimer",0f);Plugin.SetField(actor,"AreaTimer",0f);
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.layer==(int)TagLayerUtil.Enemy&&i.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.layer==(int)TagLayerUtil.Enemy&&i.objectToPool.GetComponent<Health>()!=null).objectToPool;
   pool.AddObject("Validation_Wind_Enemies",template,3);
   var target=pool.GetPooledObject("Validation_Wind_Enemies");var health=DurableEnemy(target,position,false);target.AddComponent<CircleCollider2D>().radius=.18f;target.SetActive(true);
   Physics2D.SyncTransforms();yield return new WaitForFixedUpdate();while(health.HP==10000)yield return null;

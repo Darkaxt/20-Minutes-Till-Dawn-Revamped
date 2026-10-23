@@ -21,9 +21,9 @@ public static class AndroidCameraHeight
     data=(Contract)new DataContractJsonSerializer(typeof(Contract)).ReadObject(stream);
   int height=data.maps.Single(m=>m.name==SelectedMap.MapData.name).height;
   var cameras=Resources.FindObjectsOfTypeAll<PixelPerfectCamera>().Where(c=>c.gameObject.scene==owner.gameObject.scene).ToArray();
-  // The three original native roles correspond to the source array's UI,
-  // main and fog cameras. The extra Android damage-render role is separate
-  // required consumer work, not a camera fabricated by this adapter.
+  // Keep the three original native UI/main/fog roles. Source's separate
+  // damage-only camera renders the popup layer; A227 maps those producers to
+  // native popup/font presentation rather than adding a mobile render pass.
   foreach(string name in new[]{"UICam","Main Camera","VisibleInFogCamera"})
   {
    var camera=cameras.Single(c=>c.name==name);

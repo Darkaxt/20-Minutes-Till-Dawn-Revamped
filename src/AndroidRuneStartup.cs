@@ -56,8 +56,8 @@ class AndroidNativeMapRunes
     // The original generator/count arguments remain on the stack. Move the
     // call-site metadata to the inserted first instruction at this boundary.
     var apply=new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(AndroidRuneStartup),nameof(AndroidRuneStartup.Apply)));
-    apply.labels.AddRange(instruction.labels);instruction.labels.Clear();
-    apply.blocks.AddRange(instruction.blocks);instruction.blocks.Clear();
+    instruction.MoveLabelsTo(apply);
+    instruction.MoveBlocksTo(apply);
     yield return apply;inserted++;
    }
    yield return instruction;

@@ -8,9 +8,6 @@ public sealed class AndroidGenerator:MonoBehaviour
 {
  public bool Applied;
  public float AppliedAt;
- // Count actual recipe contributions separately from the source's monotonically
- // accumulated saved counter. Only the checkpoint bridge consumes this value.
- public int Contributions;
  BuffPlayerStats buff;
  void Start()
  {buff=GetComponent<BuffPlayerStats>();PlayerController.Instance.ammo.OnAmmoChanged.AddListener(Apply);}

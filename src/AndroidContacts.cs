@@ -15,6 +15,15 @@ static class AndroidContacts
 {
  static readonly HashSet<string> Names=new HashSet<string>{"PF_DeerHitbox","PF_LunaBlackHoleDamage","Damage","PF_BombExplosion","PF_ThunderCallerProjectileRetrieving","PF_MagicBowProjectileRetrieving","Shockwave","PF_FireWave","PF_GrenadeExplosion","PF_SporeExplosion","BigBoomerExplosion","AttackHitbox","PF_OverloadExplosion","PF_Shatter","PF_Fireball","BoomerExplosion"};
  static string Name(GameObject actor)=>actor.name.Replace("(Clone)","");
+ internal static bool OwnsTemplate(GameObject prefab)=>prefab.name=="PF_GrenadeExplosion";
+ internal static void ConfigureTemplate(GameObject prefab)
+ {
+  // Source GrenadeExplosion posts its impact from Harmful itself. The native
+  // prefab's separate, unfiltered collision sender would post a second impact
+  // (and post for rejected contacts). Remove it from the inactive owned copy,
+  // before pool members are cloned, rather than destroying an asset component.
+  if(OwnsTemplate(prefab))Object.DestroyImmediate(prefab.GetComponent<TriggerOnHitEffects>());
+ }
  internal static void ConfigurePrefab(GameObject prefab)
  {
   if(prefab.name=="PF_FlameCannonProjectile"||prefab.name=="PF_MeteorGunProjectile")

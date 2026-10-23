@@ -13,13 +13,12 @@ public static partial class ResumeRuntime
  internal static void PrepareCustomBaseHistory(RunResume.Snapshot snapshot)
  {
   if(snapshot.custom==null)return;
-  var state=snapshot.runtime;var recorder=RunRecorder.Instance;
-  bool legacy=state.sourcePowerups==null;
-  // Null means the aggregate contains an older, unrecorded contribution.
-  // An empty list is known history with no applications yet. Source snapshots
-  // without these fields retain their previous source-replay behavior.
-  recorder.CustomRageAmmo=legacy&&state.customRageAmmo==null&&snapshot.acquired.Any(a=>!a.evolution&&a.key=="tome_of_rage")?null:new List<int>();
-  recorder.CustomFusilladeProjectiles=legacy&&state.customFusilladeProjectiles==null&&snapshot.acquired.Any(a=>!a.evolution&&a.key=="fusillade_name")?null:new List<int>();
+  var recorder=RunRecorder.Instance;
+  // Missing older history is rebuilt from the saved current settings under
+  // the user's source-reconstruction policy. New replayed operands then form
+  // known history; existing saved operands are substituted at the mutation.
+  recorder.CustomRageAmmo=new List<int>();
+  recorder.CustomFusilladeProjectiles=new List<int>();
  }
 }
 

@@ -141,10 +141,13 @@ public static class CustomMode
  {
   if(!Active)throw new InvalidOperationException("Custom run required");
   var p=PlayerController.Instance;var map=SelectedMap.MapData;
+  var source=Object.FindObjectOfType<AndroidEndlessRun>();
   var enemy=map.spawnSessions.FirstOrDefault(w=>w.monsterPrefab.name==name);
-  if(enemy!=null){AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(Object.FindObjectOfType<HordeSpawner>(),new object[]{name,enemy.HP,enemy.isElite});return;}
+  if(enemy!=null)
+  {source.SpawnActor(name,enemy.HP,enemy.isElite);return;}
   var boss=map.bossSpawns.FirstOrDefault(b=>b.bossPrefab.name==name);
-  if(boss!=null){Object.FindObjectOfType<BossSpawner>().LoadSpawners(new List<BossSpawn>{new BossSpawn{bossPrefab=boss.bossPrefab,maxHP=boss.maxHP,spawnPosition=boss.spawnPosition,timeToSpawn=0,dontSpawnArena=boss.dontSpawnArena,killAllOnSpawn=false}});return;}
+  if(boss!=null)
+  {source.SpawnScheduledBoss(map.bossSpawns.IndexOf(boss),false);return;}
   var pickup=Resources.FindObjectsOfTypeAll<flanne.Pickups.HPPickup>().Cast<Component>().Concat(Resources.FindObjectsOfTypeAll<flanne.Pickups.SHPPickup>().Cast<Component>()).FirstOrDefault(c=>!c.gameObject.scene.IsValid()&&c.name==name);
   if(pickup==null)throw new InvalidOperationException("Pickup unavailable");var pool=ObjectPooler.SharedInstance;pool.AddObject(name,pickup.gameObject,1);var obj=pool.GetPooledObject(name);obj.transform.position=p.transform.position+Vector3.right*3;obj.SetActive(true);
  }

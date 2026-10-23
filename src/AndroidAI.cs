@@ -31,6 +31,46 @@ static class AndroidAIRecipes
   // The common-key actor AI field comparison differs here: Android's shipped
   // Shoggoth has a four-second special cooldown, Windows has two seconds.
   if(prefab.name=="Shoggoth")prefab.GetComponent<AIComponent>().specialCooldown=4;
+  var ai=prefab.GetComponent<AIComponent>();
+  if(ai!=null&&ai.specialSO is AIRandomAreaProjectileSpecial lobbed&&lobbed.name=="RhogogShoot")
+   Plugin.SetField(lobbed,"airTime",new Vector2(.70968f,1.3194f));
+ }
+}
+[HarmonyPatch(typeof(Spawner))]
+class AndroidSecondaryEnemySpawner
+{
+ [HarmonyPrefix,HarmonyPatch("Start")]
+ static bool Start(GameObject ___spawnedObject,ref ObjectPooler ___OP)
+ {
+  ___OP=ObjectPooler.SharedInstance;
+  ___OP.GetComponent<AndroidPools>().Register(___spawnedObject.name,___spawnedObject);
+  return false;
+ }
+ [HarmonyPrefix,HarmonyPatch(nameof(Spawner.Spawn))]
+ static bool Spawn(Spawner __instance,GameObject ___spawnedObject,Transform[] ___spawnPoints,float ___initialSpeed,ObjectPooler ___OP)
+ {
+  // Acquire with the source position before the pool's SetActive call,
+  // replacing native fetch-at-zero, reposition and second activation.
+  var pool=___OP.GetComponent<AndroidPools>();
+  foreach(var point in ___spawnPoints)
+  {
+   var actor=pool.Get(___spawnedObject.name,point.position);
+   var move=actor.GetComponent<MoveComponent2D>();
+   if(move!=null)move.vector=(actor.transform.position-__instance.transform.position).normalized*___initialSpeed;
+  }
+  return false;
+ }
+}
+[HarmonyPatch(typeof(HomeTowardsPlayer),"FixedUpdate")]
+class AndroidEnemyProjectileHoming
+{
+ static bool Prefix(HomeTowardsPlayer __instance,Transform ___playerTransform,MoveComponent2D ___moveComponent,float ___acceleration)
+ {
+  if(___playerTransform==null)return false;
+  Vector2 direction=___playerTransform.position-__instance.transform.position;
+  Vector2 before=___moveComponent.vector;
+  ___moveComponent.vector=before+direction.normalized*___acceleration*Time.fixedDeltaTime;
+  return false;
  }
 }
 public sealed class AndroidAIActor:MonoBehaviour

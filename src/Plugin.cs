@@ -66,6 +66,7 @@ public class Plugin:BaseUnityPlugin
         ModeSprites[Evolution.None]=Sprites.Take(3).ToArray();
         foreach(var pair in new[]{new{mode=Evolution.OverloadShell,prefix="weapon-a_"},new{mode=Evolution.ArmorPierce,prefix="weapon-b_"},new{mode=Evolution.DualBarrage,prefix="weapon-c_"}})
             ModeSprites[pair.mode]=Enumerable.Range(1,3).Select(i=>LoadSprite(pair.prefix+i+".png",original.icon.pixelsPerUnit)).ToArray();
+        var cannonProjectile=AndroidProjectileTemplates.Cannon(original.bullet);
         foreach(Evolution mode in Enum.GetValues(typeof(Evolution)))
         {
             var data=Object.Instantiate(original);data.name="ModernizationChargeCannon_"+mode;
@@ -75,8 +76,7 @@ public class Plugin:BaseUnityPlugin
             data.numOfProjectiles=mode==Evolution.DualBarrage?2:1;data.spread=mode==Evolution.DualBarrage?30f:0f;
             data.knockback=5f;data.projectileSpeed=28f;data.bounce=0;data.piercing=0;data.inaccuracy=5f;
             data.icon=Sprites[0];data.disableManualReload=false;data.isSummonGun=false;
-            // Reuse the Windows projectile physics and effects; Android gun art is recovered.
-            data.bullet=original.bullet;data.model=original.model;data.gunEvolutions=new List<GunEvolution>();
+            data.bullet=cannonProjectile;data.model=original.model;data.gunEvolutions=new List<GunEvolution>();
             Guns[data]=mode;Object.DontDestroyOnLoad(data);
             if(mode==Evolution.None)BaseGun=data;
         }

@@ -19,7 +19,7 @@ class AndroidRefreshAttachment:flanne.PerkSystem.Action
  public string key;
  public override void Activate(GameObject target)
  {
-  var root=new GameObject("Revamped_"+key);root.transform.SetParent(PlayerController.Instance.transform,false);
+  var root=new GameObject(key=="abby_perk_whirlwind_name"?"PF_BuffOnReload":"Revamped_"+key);root.transform.SetParent(PlayerController.Instance.transform,false);
   if(key=="fresh_clip_name")
   {
    var buff=root.AddComponent<DamageUpOnReload>();Plugin.SetField(buff,"damageBonus",.3f);Plugin.SetField(buff,"duration",1f);

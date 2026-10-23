@@ -43,7 +43,7 @@ public partial class RuntimeChecks
   }
   Require(CustomMode.Active&&CustomMode.Current.map=="Endless_Forest"&&SelectedMap.MapData.achievementsDisabled,"spear workflow uses actual obtained-mode Custom defaults with progression disabled");
   var spears=player.GetComponentsInChildren<StabbingSummon>(true);Require(spears.Length==(continuation?4:2),"actual Magic Spear applications reconstruct the complete two-per-pick owned group");
-  while(spears.Any(s=>WindField(s,"stats")==null))yield return null;
+  while(spears.Any(s=>!SummonStarted(s)))yield return null;
   if(continuation)
   {
    Require(player.playerHealth.maxHP==5&&player.playerHealth.shp==3&&Mathf.Abs(Bonus(player.stats[StatType.SummonDamage])-.5f)<.001f&&player.stats[StatType.SummonDamage].FlatBonus==10,"Continue retains the actual source health and summon-stat inputs");
@@ -60,9 +60,9 @@ public partial class RuntimeChecks
    Require(Mathf.Abs((float)WindField(controlledSpear,"_timer")-(3+delta-cd))<.001f&&WindField(controlledSpear,"_stabbingCoroutine")==null,"source spear consumes one attack interval even when no pooled target is available");
    player.stats[StatType.SummonAttackSpeed].AddMultiplierBonus(100);Require(Mathf.Abs(SpearCooldown(controlledSpear)-.2f)<.001f,"source spear attack cooldown has the recovered0.2-second minimum");player.stats[StatType.SummonAttackSpeed].AddMultiplierBonus(-100);
   }
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
-  pool.AddObject("Validation_Spear_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Spear_Enemy");var target=DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);targetActor.tag="Untagged";targetActor.SetActive(true);target.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;
-  var hits=new List<int>();target.onHurt.AddListener(d=>hits.Add(d));
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.CompareTag("Enemy")&&i.objectToPool.GetComponent<Health>()!=null&&i.objectToPool.GetComponent<MoveComponent2D>()!=null).objectToPool;
+  pool.AddObject("Validation_Spear_Enemy",template,2);var targetActor=pool.GetPooledObject("Validation_Spear_Enemy");var target=DurableEnemy(targetActor,player.transform.position+Vector3.right*3,false);targetActor.tag="Untagged";targetActor.SetActive(true);{var fixedBody=target.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}
+  var hits=new List<int>();ObserveDamage(target,d=>hits.Add(d));
   if(continuation)
   {
    yield return SpearHit(target,hits,378,"continued Custom coefficient/stat/Might composition");player.playerHealth.shp=0;yield return SpearHit(target,hits,288,"continued soul-heart loss removes the current-heart contribution");
@@ -94,7 +94,7 @@ public partial class RuntimeChecks
   Plugin.SetField(spears[0],"baseDamage",37);spears[0].attackSpeedMod.AddMultiplierBonus(.25f);Log("fixture-precondition","Existing first spear base37/per-instance speed0.25 explicitly seeded to test later original-prefab creation; no ordinary upgrade is claimed to grant these values");
   Require(spears[0].GetComponentInParent<Orbital>().GetComponentsInChildren<MonoBehaviour>(true).All(c=>c.GetType().Name!="PrefabReference"),"native spear hierarchy has no matching PrefabReference that would select the existing-actor clone path");
   yield return SpearHit(target,hits,213,"the older spear retains its own edited base damage before another acquisition");
-  yield return AndroidPick(game,"MagicSpear",game.playerXP.level);spears=player.GetComponentsInChildren<StabbingSummon>(true);while(spears.Length<4||spears.Any(s=>WindField(s,"stats")==null)){spears=player.GetComponentsInChildren<StabbingSummon>(true);yield return null;}
+  yield return AndroidPick(game,"MagicSpear",game.playerXP.level);spears=player.GetComponentsInChildren<StabbingSummon>(true);while(spears.Length<4||spears.Any(s=>!SummonStarted(s))){spears=player.GetComponentsInChildren<StabbingSummon>(true);yield return null;}
   Require((int)WindField(spears[0],"baseDamage")==37&&Mathf.Abs(Bonus(spears[0].attackSpeedMod)-.25f)<.001f&&spears.Skip(2).All(s=>(int)WindField(s,"baseDamage")==20&&Mathf.Abs(Bonus(s.attackSpeedMod))<.001f),"later native spear pickup uses pristine actor fields while preserving the older spear edits");
   ControlSpears(spears,spears[2]);yield return SpearHit(target,hits,188,"a later-created spear inherits the source coefficients without double-counting old buffs");
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();Click(game.pauseMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="CustomSettings"));Click(CustomButton("CustomTab4"));

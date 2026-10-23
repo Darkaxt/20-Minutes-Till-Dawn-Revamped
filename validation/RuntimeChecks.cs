@@ -26,6 +26,19 @@ public partial class RuntimeChecks:MonoBehaviour
     public static int Projectiles;
     public static int TargetId,DamageEvents;
     public static int TargetDamage;
+    public static readonly HashSet<int> StartedSummons=new HashSet<int>();
+    public static readonly Dictionary<int,float> StartedSummonTimers=new Dictionary<int,float>();
+    static bool SummonStarted(Summon summon)=>StartedSummons.Contains(summon.GetInstanceID());
+    static readonly Dictionary<Health,List<UnityEngine.Events.UnityAction<int>>> damageObservers=new Dictionary<Health,List<UnityEngine.Events.UnityAction<int>>>();
+    static void ObserveDamage(Health target,UnityEngine.Events.UnityAction<int> callback)
+    {
+        if(!damageObservers.TryGetValue(target,out var callbacks))damageObservers.Add(target,callbacks=new List<UnityEngine.Events.UnityAction<int>>());
+        callbacks.Add(callback);
+    }
+    static void UnobserveDamage(Health target,UnityEngine.Events.UnityAction<int> callback)
+    {if(damageObservers.TryGetValue(target,out var callbacks))callbacks.Remove(callback);}
+    public static void ObservedSourceDamage(Health target,int amount)
+    {if(damageObservers.TryGetValue(target,out var callbacks))foreach(var callback in callbacks.ToArray())callback(amount);}
     static string ResultDir=>Environment.GetEnvironmentVariable("MODERNIZATION_RESULT_DIR") ?? throw new InvalidOperationException("Missing validation result directory");
     Mouse fixtureMouse;Keyboard fixtureKeyboard;
     static string phase;
@@ -208,7 +221,7 @@ public partial class RuntimeChecks:MonoBehaviour
         {
             yield return AchievementRun("Katana","MagicBowData","20M_Forest");var lifecycleGame=Object.FindObjectOfType<GameController>();
             var sword=ObjectPooler.SharedInstance.GetPooledObject("PF_MagicSword");sword.transform.position=new Vector3(15,15,0);sword.SetActive(true);
-            while(AccessTools.Field(typeof(Summon),"stats").GetValue(sword.GetComponent<SeekerWeapon>())==null)yield return null;
+            while(!SummonStarted(sword.GetComponent<SeekerWeapon>()))yield return null;
             Require(Resources.FindObjectsOfTypeAll<SeekerWeapon>().Any(x=>x.gameObject.scene.IsValid()&&!x.gameObject.activeSelf&&object.ReferenceEquals(AccessTools.Field(typeof(Summon),"stats").GetValue(x),null)),"native pool contains both an initialized sword and unused uninitialized members before scene exit");
             yield return AchievementWin(lifecycleGame);SetPhase("PASS");Log("complete","Native Katana/Magic Bow scene lifecycle");Application.Quit(0);yield break;
         }

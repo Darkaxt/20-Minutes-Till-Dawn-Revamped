@@ -12,7 +12,7 @@ internal static class AndroidLens
  internal static void Apply(BulletEnhanceSummon lens,Projectile shot)
  {
   shot.damage=lens.summonDamageMod.Modify(shot.damage)*lens.overallMultiplier*lens.damageMultiplier;
-  shot.size=Mathf.Clamp(shot.transform.localScale.x*lens.sizeMultiplier*lens.overallMultiplier,0,5);
+  shot.size=Mathf.Clamp(shot.transform.localScale.x*(lens.sizeMultiplier*lens.overallMultiplier),0,5);
   shot.bounce+=Mathf.FloorToInt(lens.additionalBounces*lens.overallMultiplier);
   var state=shot.GetComponent<AndroidProjectile>();state.IsBurn=lens.addBurn;state.BurnDamage=Mathf.FloorToInt(3*lens.overallMultiplier);
  }

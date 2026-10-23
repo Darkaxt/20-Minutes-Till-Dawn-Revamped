@@ -15,7 +15,7 @@ public partial class RuntimeChecks
   var game=Object.FindObjectOfType<GameController>();var player=PlayerController.Instance;
   Health template;while((template=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name.StartsWith("BrainMonster")&&!h.isDead))==null)yield return null;
   Object.FindObjectOfType<HordeSpawner>().enabled=false;var target=DurableEnemy(template.gameObject,player.transform.position+Vector3.right*30,true);
-  var hits=new List<int>();target.onHurt.AddListener(d=>{hits.Add(d);Log("native-burn-hit",d);});var burn=BurnSystem.SharedInstance;
+  var hits=new List<int>();ObserveDamage(target,d=>{hits.Add(d);Log("native-burn-hit",d);});var burn=BurnSystem.SharedInstance;
   burn.Burn(target.gameObject,3);while(hits.Count<2)yield return null;
   Require(hits.Take(2).All(d=>d==3),"native burn starts with three damage each tick");burn.Burn(target.gameObject,3);
   while(hits.Count<5)yield return null;

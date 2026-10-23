@@ -30,16 +30,7 @@ class AndroidPlayerBuffApplication
 {
  // Source ApplyBuff increments this counter itself. RemoveBuff does not
  // decrement it, including Generator's remove/reapply refresh sequence.
- static void Prefix(BuffPlayerStats __instance,ref int ____stacks)
- {____stacks++;var generator=__instance.GetComponent<AndroidGenerator>();if(generator!=null)generator.Contributions++;}
-}
-[HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.RemoveBuff))]
-class AndroidPlayerBuffRemoval
-{
- // This measures the actual contribution for the Windows raw-stat checkpoint
- // bridge. It does not change the source saved counter or gameplay arithmetic.
- static void Prefix(BuffPlayerStats __instance)
- {var generator=__instance.GetComponent<AndroidGenerator>();if(generator!=null)generator.Contributions--;}
+ static void Prefix(ref int ____stacks)=>____stacks++;
 }
 [HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.AddStack))]
 class AndroidPlayerBuffAddStack

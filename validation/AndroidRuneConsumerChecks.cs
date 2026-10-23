@@ -53,7 +53,7 @@ public partial class RuntimeChecks
   Require(body.Limit==6&&p.playerHealth.maxSHP==9&&p.playerHealth.shp==0,"Android Body and Soul adds base-three plus rank capacity, with six finite rank-three grants and no immediate pickup");
   for(int i=1;i<=2;i++){body.Invoke("DropHP",0);while(body.Grants<i)yield return null;}
   Require(p.playerHealth.shp==2,"source Body and Soul callbacks grant souls directly without collection");
-  var template=ObjectPooler.SharedInstance.itemsToPool.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
+  var template=ObjectPooler.SharedInstance.itemDictionary.Values.First(item=>item.objectToPool.layer==(int)TagLayerUtil.Enemy&&item.objectToPool.GetComponent<Health>()!=null).objectToPool;
   var target=DurableEnemy(template,p.transform.position,true);target.gameObject.tag="Untagged";target.gameObject.SetActive(true);
   var boost=p.GetComponentInChildren<DamageBoostInRange>();Physics2D.SyncTransforms();yield return new WaitForFixedUpdate();yield return null;
   var inRange=(List<Health>)AccessTools.Field(typeof(DamageBoostInRange),"_targetsInRange").GetValue(boost);

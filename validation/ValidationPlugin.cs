@@ -16,9 +16,12 @@ public class ValidationPlugin:BaseUnityPlugin
  {
   if(Application.companyName!="CodexModernization" || Application.productName!="20MTD-Modernization-Validation" || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MODERNIZATION_RESULT_DIR")))throw new InvalidOperationException("Validation fixture refuses the non-isolated player");
   Application.runInBackground=true;
-  new Harmony("local.20mtd.modernization.validation").PatchAll(typeof(ValidationPlugin).Assembly);
+  AudioListener.volume=0f;
   Plugin.Diagnostic+=RuntimeChecks.Log;
   gameObject.AddComponent<RuntimeChecks>();
+  // Install error/cancellation observation before fixture patches, so a
+  // rejected probe terminates the owned test instead of leaving a silent game.
+  new Harmony("local.20mtd.modernization.validation").PatchAll(typeof(ValidationPlugin).Assembly);
  }
  void OnDestroy(){Plugin.Diagnostic-=RuntimeChecks.Log;}
 }
@@ -45,3 +48,18 @@ class NoPreferenceWrites
 class TestViewport{static void Postfix(){bool large=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").EndsWith("1080")||Environment.GetEnvironmentVariable("MODERNIZATION_VIEWPORT")=="1080";Screen.SetResolution(large?1920:1280,large?1080:720,false);}}
 [HarmonyPatch(typeof(GunEvolution),nameof(GunEvolution.Apply))]
 class EvolutionProbe{static void Prefix(GunEvolution __instance)=>RuntimeChecks.Log("evolution-apply",__instance.name);}
+[HarmonyPatch(typeof(Summon),"Start")]
+class SummonInitializationObservation
+{
+ static void Postfix(Summon __instance)
+ {
+  int id=__instance.GetInstanceID();RuntimeChecks.StartedSummons.Add(id);
+  if(__instance is AttackingSummon)RuntimeChecks.StartedSummonTimers[id]=(float)AccessTools.Field(typeof(AttackingSummon),"_timer").GetValue(__instance);
+ }
+}
+// Android's NPC Hurt performs feedback directly; its serialized onHurt event
+// is not the damage publisher. Observe the real source body, without publishing
+// an invented gameplay event or changing any production callback.
+[HarmonyPatch(typeof(AndroidHealthEvents),"Hurt")]
+class SourceDamageObservation
+{static void Prefix(AndroidHealthEvents __instance,int change)=>RuntimeChecks.ObservedSourceDamage(__instance.GetComponent<Health>(),Mathf.Abs(change));}

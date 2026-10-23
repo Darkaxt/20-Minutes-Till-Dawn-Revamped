@@ -8,6 +8,7 @@ import math
 import pathlib
 import re
 import struct
+import wave
 import zipfile
 
 import UnityPy
@@ -65,12 +66,46 @@ def read_mono(obj):
     return data
 
 
+def weapon_audio(env, output):
+    """Prepare the two source gameplay clips absent from the native player."""
+    audio = output / 'audio'
+    audio.mkdir(exist_ok=True)
+    for identity, name, stem, expected_frames in (
+        (392, 'Spell_Ice_Small_Whoosh_01', 'icicle-whoosh', 44100),
+        (399, 'Fire Spelll 27', 'overload', 184012),
+    ):
+        obj = next(o for o in env.objects if o.assets_file.name == 'sharedassets1.assets' and o.path_id == identity)
+        clip = obj.read()
+        if obj.type.name != 'AudioClip' or clip.m_Name != name:
+            raise ValueError('Gameplay sound whitelist identity mismatch: ' + stem)
+        decoded = clip.samples
+        if set(decoded) != {name + '.wav'}:
+            raise ValueError('Unexpected gameplay audio samples: ' + stem)
+        wav_bytes = decoded[name + '.wav']
+        with wave.open(io.BytesIO(wav_bytes), 'rb') as wav:
+            channels, frequency, frames = wav.getnchannels(), wav.getframerate(), wav.getnframes()
+            if (channels, frequency, frames, wav.getsampwidth(), wav.getcomptype()) != (2, 44100, expected_frames, 2, 'NONE'):
+                raise ValueError('Unexpected pinned gameplay PCM format: ' + stem)
+            pcm = wav.readframes(frames)
+        samples = [sample / 32768.0 for sample, in struct.iter_unpack('<h', pcm)]
+        payload = struct.pack('<iii', channels, frequency, frames) + struct.pack('<' + str(len(samples)) + 'f', *samples)
+        (audio / (stem + '.pcm')).write_bytes(payload)
+        (audio / (stem + '.json')).write_text(json.dumps({
+            'source': {'file': obj.assets_file.name, 'id': obj.path_id, 'name': clip.m_Name},
+            'format': 'three little-endian int32: channels, frequency, frames; interleaved little-endian float32 PCM',
+            'channels': channels, 'frequency': frequency, 'frames': frames,
+            'decoded_wav_sha256': hashlib.sha256(wav_bytes).hexdigest(),
+            'pcm_sha256': hashlib.sha256(payload).hexdigest(),
+        }, indent=2), encoding='utf8')
+
+
 def android_assets(apkm, dummy, output):
     env = load_android(apkm)
     generator = TypeTreeGenerator('2022.3.56f1')
     generator.load_local_dll_folder(str(dummy))
     env.typetree_generator = generator
     objects = {(o.assets_file.name, o.path_id): o for o in env.objects}
+    weapon_audio(env, output)
     loc = {}
     for obj in env.objects:
         if obj.type.name == 'TextAsset' and obj.peek_name() == 'localization':

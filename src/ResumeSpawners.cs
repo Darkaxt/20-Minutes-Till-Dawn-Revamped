@@ -30,7 +30,6 @@ static partial class RunResume
  public static void InitializeMap(MapInitializer initializer)
  {
   var saved=Pending;var map=SelectedMap.MapData;
-  if(ChallengeMode.Active){initializer.gameObject.AddComponent<ChallengeRun>().Initialize(initializer);return;}
   var horde=(HordeSpawner)AccessTools.Field(typeof(MapInitializer),"hordeSpawner").GetValue(initializer);
   var boss=(BossSpawner)AccessTools.Field(typeof(MapInitializer),"bossSpawner").GetValue(initializer);
   GameTimer.SharedInstance.timeLimit=map.timeLimit;GameTimer.SharedInstance.endless=map.endless;
@@ -91,7 +90,7 @@ static partial class RunResume
   // owners have not loaded saved modifiers before this post-Start boundary;
   // use their actual fresh damage, without guessing the old timer history.
   // Custom spawn factors remain separately owned and applied at spawn time.
-  if(saved.runtime.sourcePowerups==null&&source!=null&&!SelectedMap.MapData.darknessDisabled&&saved.darkness>=10)
+  if(saved.version<7&&source!=null&&!SelectedMap.MapData.darknessDisabled&&saved.darkness>=10)
    hordeValues[3]=horde.enemyDamage;
   // D15 is a source assignment, not accumulated run history. The old native
   // snapshot must not overwrite it with1.8. Custom scales are saved separately.
@@ -99,17 +98,7 @@ static partial class RunResume
    bossValues[2]=AndroidDarknessBossCooldown.SourceReduction;
   RestoreValues(horde,HordeFields,hordeValues);RestoreValues(boss,BossFields,bossValues);
   if(source!=null)source.RestoreEncounters(saved);
-  var challenge=ChallengeRun.Instance;if(challenge==null)return;
-  challenge.RoundStart=saved.roundStart;challenge.EnemyKills=saved.challengeEnemies;challenge.BossKills=saved.challengeBosses;
-  challenge.KilledElites.UnionWith(saved.killedElites);challenge.SpawnedElites.UnionWith(saved.killedElites);
-  challenge.KilledBosses.UnionWith(saved.killedBosses);challenge.SpawnedBosses.UnionWith(saved.killedBosses);
-  var waves=SelectedMap.MapData.spawnSessions;
-  for(int i=0;i<waves.Count;i++)
-  {
-   var wave=waves[i];if(!wave.isElite||saved.killedElites.Contains(i)||saved.seconds-saved.roundStart<wave.startTime+wave.duration)continue;
-   SpawnContext=new SpawnIdentity{boss=false,index=i,tag=wave.monsterPrefab.name};ChallengeRun.Spawning=challenge;ChallengeRun.WaveIndex=i;
-   try{AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(challenge.Horde,new object[]{wave.monsterPrefab.name,wave.HP,true});challenge.SpawnedElites.Add(i);}finally{SpawnContext=null;ChallengeRun.Spawning=null;ChallengeRun.WaveIndex=-1;}
-  }
+  ChallengeRun.Instance?.RestoreKills(saved.challengeEnemies,saved.challengeBosses);
  }
  static void CaptureDrops(Snapshot saved)
  {
@@ -130,8 +119,7 @@ static partial class RunResume
  internal static SpawnIdentity BossIdentity(object routine)
  {
   var b=(BossSpawn)AccessTools.Field(routine.GetType(),"spawner").GetValue(routine);if(b==null)return null;
-  int index=ChallengeRun.Spawning!=null&&ChallengeRun.BossIndex>=0?ChallengeRun.BossIndex:
-   BossIndices.TryGetValue(b,out int stored)?stored:Bosses(SelectedMap.MapData,RunRecorder.Instance.EndlessCycle).IndexOf(b);
+  int index=BossIndices.TryGetValue(b,out int stored)?stored:Bosses(SelectedMap.MapData,RunRecorder.Instance.EndlessCycle).IndexOf(b);
   return index<0?null:new SpawnIdentity{boss=true,index=index,tag=b.bossPrefab.name};
  }
  internal static void SpawnFromSession(HordeSpawner owner,string tag,int hp,bool elite,int activeIndex)

@@ -57,7 +57,7 @@ public partial class RuntimeChecks
   Object.FindObjectOfType<HordeSpawner>().enabled=false;p.playerHealth.isInvincible.Flip();
   var helpers=GlareHelpers();Require(helpers.Length==(continuation?2:1)&&helpers.All(h=>Mathf.Abs(GlareSeconds(h)-.5f)<.001f),"every repeated Saccade assigns a half second instead of accumulating Windows tick speed");
   this.AddObserver(GlareImpact,Projectile.ImpactEvent);this.AddObserver(GlareTyped,"Health.TweakGlareDamage");
-  var pool=ObjectPooler.SharedInstance;var template=pool.itemsToPool.First(i=>i.objectToPool.layer==(int)TagLayerUtil.Enemy&&i.objectToPool.GetComponent<Health>()!=null).objectToPool;pool.AddObject("Validation_Glare_Enemies",template,2);
+  var pool=ObjectPooler.SharedInstance;var template=pool.itemDictionary.Values.First(i=>i.objectToPool.layer==(int)TagLayerUtil.Enemy&&i.objectToPool.GetComponent<Health>()!=null).objectToPool;pool.AddObject("Validation_Glare_Enemies",template,2);
   var insideObject=pool.GetPooledObject("Validation_Glare_Enemies");var outsideObject=pool.GetPooledObject("Validation_Glare_Enemies");float radius=p.stats[StatType.VisionRange].Modify(2);
   var inside=DurableEnemy(insideObject,p.transform.position+Vector3.right*(radius-.15f),false);insideObject.AddComponent<CircleCollider2D>().radius=.18f;insideObject.SetActive(true);glareObserved=insideObject;
   var outside=DurableEnemy(outsideObject,p.transform.position+Vector3.right*(radius+.3f),false);outsideObject.GetComponent<CircleCollider2D>().radius=.8f;outsideObject.SetActive(true);
@@ -100,6 +100,10 @@ public partial class RuntimeChecks
   Require(GlareHelpers().Length==0,"normal restart has no retained Glare producer, modifiers or hit events");yield return CheckRevolver(game,p,"android-glare-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Android Glare independent clocks and ordered acquisitions survive fresh-process Continue and clear on original restart");Application.Quit(0);
  }
 }
-[HarmonyPatch(typeof(OnHitTrigger),"OnImpact")]
+[HarmonyPatch]
 class GlareBurnRollProbe
-{static void Prefix(){if(RuntimeChecks.ForceGlareBurn)RuntimeChecks.SeedFirstRoll(0,.5f);}}
+{
+ static IEnumerable<System.Reflection.MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(OnHitTrigger),"OnImpact"),AccessTools.Method(typeof(BurnOnHit),"OnImpact")};
+ [HarmonyPriority(Priority.First)]
+ static void Prefix(){if(RuntimeChecks.ForceGlareBurn)RuntimeChecks.SeedFirstRoll(0,.5f);}
+}

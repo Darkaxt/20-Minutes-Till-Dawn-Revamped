@@ -13,6 +13,13 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
+ static AndroidEndlessState ChallengeSchedule()=>(AndroidEndlessState)AccessTools.Method(typeof(AndroidEndlessRun),"Capture").Invoke(Object.FindObjectOfType<AndroidEndlessRun>(),null);
+ static System.Collections.Generic.HashSet<int> DefeatedEncounters(string field)
+ {
+  var type=typeof(Plugin).Assembly.GetType("TwentyMinutes.Modernization.RunRecorder",true);
+  var recorder=AccessTools.Field(type,"Instance").GetValue(null);
+  return (System.Collections.Generic.HashSet<int>)AccessTools.Field(type,field).GetValue(recorder);
+ }
  public static bool GunBackReady;
  IEnumerator CheckChallenge(TitleScreenController title,bool relaunch)
  {
@@ -82,21 +89,21 @@ public partial class RuntimeChecks
   while((current=Object.FindObjectOfType<GameController>())==null||!(current.CurrentState is CombatState))yield return null;
   PlayerController.Instance.playerHealth.isInvincible.Flip();GameTimer.SharedInstance.Stop();
   var run=ChallengeRun.Instance;
-  Require(run!=null&&run.Tier==0&&run.WaveTimers.Length==36&&SelectedMap.MapData.bossSpawns.Count==10,"native menu loads the complete recovered Challenge schedule");
+  Require(run!=null&&run.Tier==0&&ChallengeSchedule().waveTimers.Length==36&&SelectedMap.MapData.bossSpawns.Count==10,"native menu loads the complete recovered Challenge schedule");
   Require(GameTimer.SharedInstance.timeLimit==float.MaxValue&&GameTimer.SharedInstance.endless,"Challenge has no20-minute survival win");
   Require(Mathf.Abs(ChallengeMode.SpawnMultiplier(4)-2.65f)<.00001&&Mathf.Abs(ChallengeMode.AliveMultiplier(4)-4.8384f)<.00001,"recovered five-tier modifiers accumulate in source order");
   AccessTools.Field(typeof(GameTimer),"<timer>k__BackingField").SetValue(GameTimer.SharedInstance,180f);
   Health elite;while((elite=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name=="ElderBrain(Clone)"&&!h.isDead))==null)yield return null;
-  Require(elite.maxHP==1000&&run.SpawnedElites.Contains(5),"actual challenge clock spawns the source elite with native Health and recovered HP");
+  Require(elite.maxHP==1000&&ChallengeSchedule().spawnedElites.Contains(5),"actual challenge clock spawns the source elite with native Health and recovered HP");
   elite.TakeDamage(DamageType.Bullet,100000);yield return null;
-  Require(run.BossKills==1&&run.KilledElites.Contains(5),"source boss classification includes the real elite and records its exact session");
+  Require(run.BossKills==1&&DefeatedEncounters("KilledElites").Contains(5),"source boss classification includes the real elite and records its exact session");
   AccessTools.Field(typeof(GameTimer),"<timer>k__BackingField").SetValue(GameTimer.SharedInstance,300f);
   Health boss;while((boss=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name=="ShubNiggurath(Clone)"&&!h.isDead))==null)yield return null;
-  Require(boss.maxHP==4000&&run.SpawnedBosses.Contains(0),"actual challenge clock creates the first native boss at its recovered HP");
+  Require(boss.maxHP==4000&&!ChallengeSchedule().pendingBosses.Contains(0),"actual challenge clock creates the first native boss at its recovered HP");
   while(BossArenas().Length==0)yield return null;
   boss.TakeDamage(DamageType.Bullet,100000);yield return null;
-  Require(run.BossKills==2&&run.KilledBosses.Contains(0),"native boss defeat increments the quota and exact boss index");
-  run.enabled=false;
+  Require(run.BossKills==2&&DefeatedEncounters("KilledBosses").Contains(0),"native boss defeat increments the quota and exact boss index");
+  run.enabled=false;Object.FindObjectOfType<AndroidEndlessRun>().enabled=false;
   var brain=ObjectPooler.SharedInstance.GetPooledObject("BrainMonster");brain.transform.position=PlayerController.Instance.transform.position+Vector3.right*10;brain.SetActive(true);
   int before=run.EnemyKills;brain.GetComponent<Health>().TakeDamage(DamageType.Bullet,100000);
   Require(run.EnemyKills==before+1&&run.BossKills==2,"ordinary native enemy death increments only the enemy quota");

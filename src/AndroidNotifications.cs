@@ -46,7 +46,7 @@ class AndroidTransitionNotifications
     (method.Name==nameof(SceneManager.LoadScene)||method.Name==nameof(SceneManager.LoadSceneAsync)))
    {
     var clear=new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(AndroidNotifications),nameof(AndroidNotifications.Clear)));
-    clear.labels.AddRange(instruction.labels);instruction.labels.Clear();yield return clear;
+    instruction.MoveLabelsTo(clear);yield return clear;
     var owner=__originalMethod.DeclaringType.DeclaringType;
     if(owner==typeof(TransitionToRetryState)||owner==typeof(TransitionToTitleState))
     {

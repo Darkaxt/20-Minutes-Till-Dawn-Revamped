@@ -28,8 +28,8 @@ public partial class RuntimeChecks
   Health target;while((target=Object.FindObjectsOfType<Health>().FirstOrDefault(h=>h.name.StartsWith("BrainMonster")&&!h.isDead))==null)yield return null;
   Object.FindObjectOfType<HordeSpawner>().enabled=false;
   foreach(var other in Object.FindObjectsOfType<Health>().Where(h=>h!=target&&h.gameObject.layer==(int)TagLayerUtil.Enemy))other.gameObject.SetActive(false);
-  target=DurableEnemy(target.gameObject,player.transform.position+Vector3.right*3,false);target.GetComponent<Rigidbody2D>().constraints=RigidbodyConstraints2D.FreezeAll;
-  var hits=new List<int>();target.onHurt.AddListener(d=>hits.Add(d));
+  target=DurableEnemy(target.gameObject,player.transform.position+Vector3.right*3,false);{var fixedBody=target.GetComponent<Rigidbody2D>();if(fixedBody!=null)fixedBody.constraints=RigidbodyConstraints2D.FreezeAll;}
+  var hits=new List<int>();ObserveDamage(target,d=>hits.Add(d));
   yield return AchievementPick(game,"MagicSpear",game.playerXP.level);
   StabbingSummon[] spears;while((spears=Object.FindObjectsOfType<StabbingSummon>()).Length<2)yield return null;
   // Isolate the modifier from autonomous target choice; Unity still delivers

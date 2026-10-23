@@ -1,9 +1,41 @@
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 using flanne;
 namespace TwentyMinutes.Modernization;
+
+// Keep the original arrow families on one source drop/retrieval lifecycle.
+// Arrow Caller deliberately uses the same ground template as Thunder Caller
+// in the shipped Android asset graph, rather than the native Magic Bow one.
+internal static class AndroidArrowGround
+{
+ static readonly FieldInfo Prefab=AccessTools.Field(typeof(SpawnOnDisableProjectile),"prefab");
+ internal static void ConfigurePrefab(GameObject prefab)
+ {
+  if(prefab.name!="PF_ArrowCallerProjectile")return;
+  var thunder=Resources.FindObjectsOfTypeAll<SpawnOnDisableProjectile>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_ThunderCallerProjectile");
+  Prefab.SetValue(prefab.GetComponent<SpawnOnDisableProjectile>(),Prefab.GetValue(thunder));
+ }
+}
+[HarmonyPatch(typeof(SpawnOnDisableProjectile))]
+class AndroidArrowGroundLifecycle
+{
+ [HarmonyPrefix,HarmonyPatch("Start")]
+ static bool Start(GameObject ___prefab,ref ObjectPooler ___OP,ref bool ___isInitialized)
+ {
+  ___OP=ObjectPooler.SharedInstance;___OP.GetComponent<AndroidPools>().Register(___prefab.name,___prefab);
+  ___isInitialized=true;return false;
+ }
+ [HarmonyPrefix,HarmonyPatch("OnDisable")]
+ static bool Disable(SpawnOnDisableProjectile __instance,GameObject ___prefab,ObjectPooler ___OP,bool ___isInitialized)
+ {
+  if(!__instance.isSecondary&&___isInitialized)
+   ___OP.GetComponent<AndroidPools>().Get(___prefab.name,__instance.transform.position);
+  return false;
+ }
+}
 
 public sealed class AndroidHoming:MonoBehaviour
 {
