@@ -159,13 +159,13 @@ public partial class RuntimeChecks
   for(int factor=2;factor<=6;factor+=2)
   {
    if(factor>2){var pool=(List<PowerupPoolItem>)WindField(game.powerupGenerator,"devilPool");yield return NativeTomePick(game,false,pool.Single(x=>RunResume.Key(x.powerup)=="tome_of_glass_name").powerup.name);}
-   int before=target.HP;target.TakeDamage(DamageType.Bullet,20);float expected=(-20*.85f+2)*factor*movement;
+   int before=target.HP;target.TakeDamage(DamageType.Bullet,20);float expected=(-20*.85f-2)*factor*movement;
    Require(before-target.HP==-Mathf.FloorToInt(expected),"actual Wind/Might/Glass order composes signed Bullet damage with source retained Glass factor "+factor);
-   before=target.HP;target.HPChange(7);expected=(7*.85f+2)*factor*movement;
+   before=target.HP;target.HPChange(7);expected=7*.85f*factor*movement;
    Require(target.HP-before==Mathf.FloorToInt(expected),"same shared source evaluator preserves positive health-change composition with Glass factor "+factor);
   }
   Log("fixture-precondition","Temporary unrecorded movement operand exercises source Wind's nonpositive-factor branch and is removed immediately; ordinary Haste remains an actual acquisition.");
-  p.stats[StatType.MoveSpeed].AddMultiplierBonus(-movement);int old=target.HP;target.TakeDamage(DamageType.Summon,20);Require(old-target.HP==-Mathf.FloorToInt((-20*.85f+2)*6),"zero movement omits Wind's later multiplier while retaining source0.85, Might and Glass6");p.stats[StatType.MoveSpeed].AddMultiplierBonus(movement);yield return StatusReturn(target);
+  p.stats[StatType.MoveSpeed].AddMultiplierBonus(-movement);int old=target.HP;target.TakeDamage(DamageType.Summon,20);Require(old-target.HP==-Mathf.FloorToInt((-20*.85f-2)*6),"zero movement omits Wind's later multiplier while retaining Wind0.85, corrected Might and Glass6");p.stats[StatType.MoveSpeed].AddMultiplierBonus(movement);yield return StatusReturn(target);
   yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;StopFixtureSpawning();target=StatusEnemy();target.TakeDamage(DamageType.Bullet,20);Require(target.HP==99980,"ordinary scene restart removes original tome asset observers and their accumulated factors");yield return StatusReturn(target);yield return CheckRevolver(game,p,"android-modifier-tomes-original-restart.png");yield return AchievementExit(game,false);
  }
 }

@@ -111,6 +111,8 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="resume-route-inventory"){ExportNativeRoutes();yield break;}
+        if(testMode.StartsWith("resume-closure-")){yield return CheckParityClosure(testMode);yield break;}
         if(testMode=="powerups-android-numeric"){yield return CheckAndroidNumeric();yield break;}
         if(testMode=="powerups-android-shield"){yield return CheckAndroidShield();yield break;}
         if(testMode=="powerups-android-refresh"){yield return CheckAndroidRefresh();yield break;}
@@ -356,6 +358,10 @@ public partial class RuntimeChecks:MonoBehaviour
         if(characterTest)
         {
             while(title.characterMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
+            string key=testMode=="gale"?"Haruka":"Dimond_Portrait";
+            Progression.State.earned.Add("character:"+Characters.Data[key].name);Progression.Refresh();
+            Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();
+            Log("fixture-precondition","Recovered-form ability regression: grant only this character's isolated ownership and clear rune selections to measure its native baseline; no natural unlock or purchase claim.");
             Require(Characters.Items(title.characterMenu).Count==15,"all thirteen original characters retained with two appended native entries");
             int slot=Characters.Slots[testMode=="gale"?"Haruka":"Dimond_Portrait"];Entries(title.characterMenu)[slot].button.Select();
             Snapshot("character-selection-ui.json");yield return Capture("character-selection.png");Click(Entries(title.characterMenu)[slot].button);

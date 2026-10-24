@@ -127,7 +127,13 @@ public partial class RuntimeChecks
    Require(Mathf.Abs(player.gun.damage-20*1.35f)<.01f&&Mathf.Abs(player.stats[StatType.ProjectileSize].Modify(1)-1.35f)<.001f,"Barrel Reinforcement applies native damage and size stats");
    InputSystem.QueueStateEvent(fixtureKeyboard,new KeyboardState(Key.D));while(player.moveVec.x<.99f)yield return null;
    player.SetPosition(Vector3.zero);
-   var targets=Enumerable.Range(0,4).Select(i=>DurableEnemy(original,player.transform.position+Vector3.right*(.45f+i*.9f),true)).ToArray();
+   // Use the original serialized prefab through the real source pool. Cloning
+   // an already initialized actor copies its companion components without
+   // their nonserialized Actor/Move references and is not a normal spawn.
+   var fixturePool=ObjectPooler.SharedInstance;
+   var template=fixturePool.itemDictionary.Values.First(x=>x.objectToPool.name==original.name).objectToPool;
+   fixturePool.AddObject("Validation_Bulwark_Enemy",template,4);
+   var targets=Enumerable.Range(0,4).Select(i=>DurableEnemy(fixturePool.GetPooledObject("Validation_Bulwark_Enemy"),player.transform.position+Vector3.right*(.45f+i*.9f),false)).ToArray();
    PortedCharacterSkill.Timer(skill)=0;yield return SkillInput(skill);
    Require(skill.ChargeDamage==Mathf.FloorToInt(player.gun.damage*5)&&Mathf.Abs(player.moveSpeedMultiplier-3.5f)<.001f,"Steel Acceleration increases charge damage/speed by the recovered additions");
    string lastMovement=null;

@@ -72,7 +72,7 @@ public partial class RuntimeChecks
    var victim=continuedPool.GetPooledObject("Validation_Shield_Continued_Enemy");var victimHealth=DurableEnemy(victim,p.transform.position+Vector3.right,false);victim.tag="Enemy";Physics2D.SyncTransforms();
    float deadline=(float)WindField(first,"ApplyAt"),otherDeadline=(float)WindField(second,"ApplyAt");
    yield return ShieldSmite(p,victimHealth,9960);
-   Require((float)WindField(first,"ApplyAt")==deadline-2&&(float)WindField(second,"ApplyAt")==otherDeadline,"both continued full-strength Smite producers notify Sword and Shield on a surviving target, advancing only the first deadline twice");ReturnFixtureActor(victim);
+   Require((float)WindField(first,"ApplyAt")==deadline&&(float)WindField(second,"ApplyAt")==otherDeadline,"corrected surviving Smite does not publish a false kill or advance either shield deadline");ReturnFixtureActor(victim);
    ShieldGateway(p.playerHealth);Require(p.playerHealth.hp==hp-1,"unprotected continued source health gateway deals ordinary damage");
    yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
    game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;

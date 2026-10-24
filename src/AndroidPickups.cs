@@ -51,9 +51,14 @@ public sealed class AndroidPickup:MonoBehaviour
 [HarmonyPatch(typeof(Pickup),"OnTriggerEnter2D")]
 class AndroidPickupTrigger
 {
- static bool Prefix(Pickup __instance)
+ static bool Prefix(Pickup __instance,Collider2D other)
  {
   if(!(__instance is HPPickup)&&!(__instance is XPPickup))return true;
+  // Source XP is on Pick13, which cannot contact Player11. Windows merges
+  // XP and red hearts on Pickup10; red hearts use VisiblePick20 on Android
+  // and do admit that contact. Preserve the two authored matrix behaviors
+  // at this shared native callback rather than disabling heart contacts.
+  if(__instance is XPPickup&&other.gameObject.layer==(int)TagLayerUtil.Player)return false;
   __instance.GetComponent<AndroidPickup>().TargetPick(PlayerController.Instance.gameObject);return false;
  }
 }

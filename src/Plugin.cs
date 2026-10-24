@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.1.1")]
+[BepInPlugin(Id,"20MTD Modernization","1.1.2")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -42,6 +42,9 @@ public class Plugin:BaseUnityPlugin
     public void Awake()
     {
         Instance=this;
+        // Original Android TimeManager. FixedUpdate owners and projectile
+        // sampling must run at its shipped cadence, not Windows'0.02.
+        Time.fixedDeltaTime=.03f;
         Text["rune_menu_instructions"]="Select to toggle · Hold to upgrade";
         Text["thunderspawns_description"]="Your summons have a <color=#f5d6c1>15%</color> chance on hit to call down <color=#f5d6c1>Lightning</color> for <color=#f5d6c1>22</color> damage.";
         Text["soul_knight_description"]="<color=#f5d6c1>Magic Spear</color> gains <color=#f5d6c1>+15</color> damage per <color=#f5d6c1>Soul Heart</color> you currently hold.";

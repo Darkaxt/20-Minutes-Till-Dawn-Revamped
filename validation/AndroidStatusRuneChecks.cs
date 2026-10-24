@@ -78,7 +78,8 @@ public partial class RuntimeChecks
   }
   Physics2D.SyncTransforms();while(actors.Any(a=>a.activeInHierarchy))yield return null;
   Require(BurnSystem.SharedInstance.IsBurning(near.gameObject)==success&&FreezeSystem.SharedInstance.IsFrozen(near.gameObject)==success,"actual short-lived physical spreaders apply burn and freeze to the nearby enemy");
-  Require(!BurnSystem.SharedInstance.IsBurning(far.gameObject)&&!FreezeSystem.SharedInstance.IsFrozen(far.gameObject)&&!BurnSystem.SharedInstance.IsBurning(untagged.gameObject)&&!FreezeSystem.SharedInstance.IsFrozen(untagged.gameObject),"source spread radius and collision tag predicates reject distant and untagged neighbors");
+  Require(!BurnSystem.SharedInstance.IsBurning(far.gameObject)&&!FreezeSystem.SharedInstance.IsFrozen(far.gameObject),"source spread radius rejects the distant neighbor");
+  Require(BurnSystem.SharedInstance.IsBurning(untagged.gameObject)==success&&!FreezeSystem.SharedInstance.IsFrozen(untagged.gameObject),"A284 source fire admits nearby untagged NPC layers while the distinct freeze callback retains its tag predicate");
   if(success)CombatClose(AndroidBurnState.Get(BurnSystem.SharedInstance).Find(near.gameObject).Damage,3,"actual spread collision applies the original three-damage burn");
   foreach(var h in new[]{near,far,untagged})ReturnFixtureActor(h.gameObject);
   while(new[]{dead,near,far,untagged}.Any(h=>FreezeSystem.SharedInstance.IsFrozen(h.gameObject)))yield return null;

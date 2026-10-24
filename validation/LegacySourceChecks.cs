@@ -22,6 +22,8 @@ public partial class RuntimeChecks
  internal static bool LegacyCaptureShot;
  internal static int LegacyPrimaryShots;
  static RunResume.Snapshot LegacyRaw(string file){using(var stream=File.OpenRead(file))return (RunResume.Snapshot)new DataContractJsonSerializer(typeof(RunResume.Snapshot)).ReadObject(stream);}
+ static byte[] LegacyBytes(RunResume.Snapshot value)
+ {using(var stream=new MemoryStream()){new DataContractJsonSerializer(typeof(RunResume.Snapshot)).WriteObject(stream,value);return stream.ToArray();}}
  void LegacyLive(string family,RunResume.Snapshot expected,bool migrated)
  {
   var p=PlayerController.Instance;Require(p.playerHealth.maxHP==expected.maxHP&&p.playerHealth.maxSHP==expected.maxSoulHP,"native source rebuild retains the converted red/soul capacity: "+family);
@@ -103,6 +105,21 @@ public partial class RuntimeChecks
      byte[] bytes=File.ReadAllBytes(path);File.WriteAllBytes(RunCheckpoint,bytes);var original=LegacyRaw(path);var rebuilt=RunResume.Read();
      Require(rebuilt!=null&&rebuilt.version==original.version&&rebuilt.runtime.sourcePowerups!=null&&rebuilt.runtime.stats.Count==0,"actual supported historical checkpoint enters the source reader: "+path);
      Require(bytes.SequenceEqual(File.ReadAllBytes(RunCheckpoint)),"source decoding preserves the historical file bytes: "+path);read++;
+     // Published v3 inputs are the historical corpus. Later contract layouts
+     // are explicit derived fixtures, not invented historical playthroughs.
+     // Verify their entire reconstructed snapshot against the same canonical
+     // v3 result, whose actual Continue/combat/save workflow is checked below.
+     foreach(int version in new[]{4,5,6})
+     {
+      var derived=LegacyRaw(path);derived.version=version;
+      if(version>=5)
+       foreach(string conversion in new[]{"ConvertLegacyGenerators","ConvertLegacyDragonGrowth","ConvertLegacyAccumulated"})
+        AccessTools.Method(typeof(ResumeRuntime),conversion).Invoke(null,new object[]{derived.runtime});
+      byte[] layout=LegacyBytes(derived);File.WriteAllBytes(RunCheckpoint,layout);var actual=RunResume.Read();
+      Require(layout.SequenceEqual(File.ReadAllBytes(RunCheckpoint)),"derived schema"+version+" reader preserves exact input bytes");
+      actual.version=rebuilt.version;
+      Require(LegacyBytes(actual).SequenceEqual(LegacyBytes(rebuilt)),"derived schema"+version+" reconstructs the same complete source snapshot as its historical input");
+     }
     }
    }
    finally{File.WriteAllBytes(RunCheckpoint,before);}

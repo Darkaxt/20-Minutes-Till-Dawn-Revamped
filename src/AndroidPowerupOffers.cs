@@ -9,6 +9,16 @@ using flanne;
 using flanne.PowerupSystem;
 namespace TwentyMinutes.Modernization;
 
+[HarmonyPatch(typeof(PowerupGenerator),"Awake")]
+class AndroidPowerupSingleton
+{
+ static bool Prefix(PowerupGenerator __instance)
+ {
+  if(PowerupGenerator.Instance!=__instance)UnityEngine.Object.Destroy(PowerupGenerator.Instance);
+  PowerupGenerator.Instance=__instance;PowerupGenerator.CanReroll=false;return false;
+ }
+}
+
 // Android retains the repeat dictionary after an entry leaves an offer list.
 // Native pool items mirror these counts for the existing Custom/Continue UI.
 public sealed class AndroidPowerupCounts:MonoBehaviour

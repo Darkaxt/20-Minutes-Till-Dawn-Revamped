@@ -130,6 +130,23 @@ class AndroidKillClip
  static bool Prefix(float ___bonusPerStack,ref int ____stacks)
  {PlayerController.Instance.stats[StatType.ReloadRate].AddMultiplierBonus(___bonusPerStack);____stacks++;return false;}
 }
+[HarmonyPatch]
+class AndroidDragonBondLifecycle
+{
+ static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(DragonBonusDamage),"Start"),AccessTools.Method(typeof(DragonBonusDamage),"OnDestroy")};
+ static bool Prefix(DragonBonusDamage __instance,ref ShootingSummon ____dragon,MethodBase __originalMethod)
+ {
+  var callback=(Action<object,object>)Delegate.CreateDelegate(typeof(Action<object,object>),__instance,AccessTools.Method(typeof(DragonBonusDamage),"OnImpact"));
+  if(__originalMethod.Name=="Start")
+  {
+   foreach(var summon in PlayerController.Instance.GetComponentsInChildren<ShootingSummon>(true))
+    if(summon.SummonTypeID=="Dragon"){____dragon=summon;break;}
+   __instance.AddObserver(callback,Projectile.ImpactEvent);
+  }
+  else __instance.RemoveObserver(callback,Projectile.ImpactEvent);
+  return false;
+ }
+}
 [HarmonyPatch(typeof(DragonBonusDamage),"OnImpact")]
 class AndroidDragonBond
 {

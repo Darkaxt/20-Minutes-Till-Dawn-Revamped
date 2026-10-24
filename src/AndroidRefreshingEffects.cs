@@ -26,7 +26,7 @@ class AndroidRefreshAttachment:flanne.PerkSystem.Action
   }
   else if(key=="anger_point_name")
   {
-   var buff=root.AddComponent<FireRateOnHurt>();Plugin.SetField(buff,"fireRateBoost",.7f);Plugin.SetField(buff,"duration",30f);
+   var buff=root.AddComponent<FireRateOnHurt>();Plugin.SetField(buff,"fireRateBoost",.7f);Plugin.SetField(buff,"reloadRateBoost",.7f);Plugin.SetField(buff,"duration",30f);
   }
   else
   {
@@ -54,10 +54,12 @@ class AndroidRefreshRecipes
 class AndroidAngerPointStats
 {
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(FireRateOnHurt),"AddBoost"),AccessTools.Method(typeof(FireRateOnHurt),"RemoveBoost")};
- static bool Prefix(FireRateOnHurt __instance,MethodBase __originalMethod)
+ static bool Prefix(float ___fireRateBoost,float ___reloadRateBoost,MethodBase __originalMethod)
  {
-  if(__instance.name!="Revamped_anger_point_name")return true;
-  float amount=__originalMethod.Name=="AddBoost"?.7f:-.7f;
-  PlayerController.Instance.stats[StatType.BulletDamage].AddMultiplierBonus(amount);PlayerController.Instance.stats[StatType.FireRate].AddMultiplierBonus(amount);return false;
+  float sign=__originalMethod.Name=="AddBoost"?1:-1;
+  // The source second operand is Bullet Damage despite the native field
+  // name. Preserve Fire Rate -> Bullet Damage notification order as well.
+  PlayerController.Instance.stats[StatType.FireRate].AddMultiplierBonus(sign*___fireRateBoost);
+  PlayerController.Instance.stats[StatType.BulletDamage].AddMultiplierBonus(sign*___reloadRateBoost);return false;
  }
 }

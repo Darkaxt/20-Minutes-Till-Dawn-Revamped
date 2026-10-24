@@ -141,7 +141,13 @@ public partial class RuntimeChecks
   {
    if(map=="Challenge_Forest"){SaveSystem.data.difficultyUnlocked=0;SaveSystem.data.characterHighestClear[0]=-1;SaveSystem.data.gunHighestClear[0]=-1;}
    yield return AchievementRun("Shana","RevolverData",map,map=="20M_Temple"?15:map=="Challenge_Forest"?2:0,()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
-   var game=Object.FindObjectOfType<GameController>();var run=Object.FindObjectOfType<AndroidEndlessRun>();Require(WorldMilliseconds>=ms,"source independent millisecond clock survives native scene changes");int originalDamage=Object.FindObjectOfType<HordeSpawner>().enemyDamage;yield return WorldOpening(game,run);yield return WorldEliteAndRound(run);Require(Object.FindObjectOfType<HordeSpawner>().enemyDamage==originalDamage,"elapsed schedule boundary does not invent the source-unreached late damage addition");
+   var game=Object.FindObjectOfType<GameController>();var run=Object.FindObjectOfType<AndroidEndlessRun>();Require(WorldMilliseconds>=ms,"source independent millisecond clock survives native scene changes");var horde=Object.FindObjectOfType<HordeSpawner>();int originalDamage=horde.enemyDamage;yield return WorldOpening(game,run);yield return WorldEliteAndRound(run);
+   if(map=="20M_Temple")
+   {
+    var late=horde.GetComponent<AndroidLateEnemyDamage>();Require(late!=null,"D15 scene owns the approved D10 late-damage clock rule");
+    while(!(bool)WindField(late,"applied"))yield return null;
+   }
+   Require(horde.enemyDamage==originalDamage+(map=="20M_Temple"?1:0),"elapsed schedule boundary applies the approved D10 +1 exactly once and leaves lower Darkness unchanged");
    if(map=="20M_Temple")CombatClose(Object.FindObjectOfType<BossSpawner>().cooldownRate,.55f,"actual D15 initializer assigns source boss cooldown0.55");
    if(map=="Endless_Forest")
    {

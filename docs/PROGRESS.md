@@ -1,5 +1,15 @@
 # Current Android gameplay completion
 
+2026-10-24: **P1 COMPLETE; P2 ACTIVE for final 1.1.2 delivery only.** Source reconciliation and all complete affected runtime criteria pass. No source/runtime blocker or tracked deferral remains; delivery is actionable, not externally blocked.
+
+| P2 criterion | Current evidence / remaining work |
+|---|---|
+| Retained gameplay and acquisition reconciliation | Original 798 types/4274 methods, observed production routes and exact source/owner/acquisition dispositions; no unresolved required entry. The inventory is not a body-equivalence claim. |
+| Anomaly classification | A129/A144/A150/A254/A266 and A281–A295 classified; changed source owners and approved defects integrated without extra guards or speculative balance edits. |
+| Complete affected Windows workflows | PASS, exact source/DLL/checkpoint-pinned. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Existing corrected status/Smite, barriers, rune/shield/Hina/Katana/AI/world, arrow/Cannon/Crossbow, legacy and Custom workflows also pass. |
+| Final release and delivery | Remaining: committed normal 1.1.2 package, installed-player roster/input, exact rollback, actual Steam/original/profile/config preservation, remote tag/assets and independent public download, transactional expendable cleanup. |
+| Blockers / deferrals | No source/runtime blocker, external impediment or tracked deferral. P2 remains ACTIVE until the final delivery row passes. |
+
 Version 1.1.1 delivered — 2026-10-24: **P1 COMPLETE; P2 ACTIVE for broader retained-body parity coverage**. M15's additional description and three lifecycle corrections are integrated and verified in their complete affected native workflows: descriptions 456, Hina 458/459, Katana/Thousand Blades 460/461, enemy/Rhogog 463/464. Fresh-process Continue inputs match their originating checkpoints byte-for-byte; ordinary restart and native input pass. [Acceptance mapping](BUGFIXES.md). Failed 454/455/457/462 are retained fixture diagnostics; they caused no production workaround.
 
 | Final 1.1.1 delivery item | Verified result |

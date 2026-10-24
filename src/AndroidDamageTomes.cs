@@ -75,6 +75,20 @@ class AndroidDamageTomeRecipe
  }
 }
 
+[HarmonyPatch(typeof(PowerupGenerator),nameof(PowerupGenerator.InitPowerupPool))]
+class RevampedTomeRunState
+{
+ // Profile assets can survive Save & return. Rebuild the run's Glass factor
+ // from its acquisitions instead of adding replay to the previous scene.
+ static void Prefix(PowerupPoolProfile ___devilDealProfile)
+ {
+  foreach(var powerup in ___devilDealProfile.powerupPool)
+   foreach(var effect in (PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(powerup))
+    if(AccessTools.Field(typeof(PerkEffect),"action").GetValue(effect) is AndroidDamageTomeApplication application)
+     application.Asset.Damage=0;
+ }
+}
+
 // Android checks delegate equality before copying an invoking observer list
 // or appending. Windows appends duplicates; repeated applications to one
 // source asset must not multiply the number of its damage callbacks.

@@ -13,7 +13,7 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
- internal static bool GapMode=>(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")??"").StartsWith("resume-retained-gaps-");
+ internal static bool GapMode=>(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")??"").StartsWith("resume-retained-gaps-")||ClosureMode;
  internal static bool GapCaptureShots;
  internal static int GapChargeTicks,GapAutoEvents,GapLaserContacts;
  internal static readonly List<Projectile> GapShots=new List<Projectile>();
@@ -29,7 +29,8 @@ public partial class RuntimeChecks
  {if(sender is ChargedShooter)GapAutoEvents++;}
  IEnumerator GapCamera(GameController game)
  {
-  var p=PlayerController.Instance;var rig=Object.FindObjectOfType<CameraRig>();var before=rig.transform.position-p.transform.position;
+  var p=PlayerController.Instance;var rig=Object.FindObjectOfType<CameraRig>();var parent=rig.transform.parent;var before=rig.transform.position-parent.position;
+  Require(parent==p.transform||parent.IsChildOf(p.transform),"source camera rig remains in the actual player hierarchy");
   var aim=(Vector2)Camera.main.WorldToScreenPoint(p.transform.position+Vector3.right*8);
   game.playerInput.SwitchCurrentControlScheme("Keyboard&Mouse",fixtureKeyboard,fixtureMouse);game.playerInput.neverAutoSwitchControlSchemes=true;
   InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});yield return null;yield return null;
@@ -37,7 +38,7 @@ public partial class RuntimeChecks
   var start=p.transform.position;InputSystem.QueueStateEvent(fixtureKeyboard,new KeyboardState(Key.W));
   while((p.transform.position-start).sqrMagnitude<.05f)yield return null;
   InputSystem.QueueStateEvent(fixtureKeyboard,new KeyboardState());yield return null;
-  CombatClose((rig.transform.position-p.transform.position-before).magnitude,0,"actual native keyboard movement retains inherited player-follow camera offset");
+  CombatClose((rig.transform.position-parent.position-before).magnitude,0,"actual native keyboard movement retains the rig offset from its authored player parent");
  }
  IEnumerator GapChargedInput(GameController game,bool physical,bool controller=false)
  {

@@ -9,6 +9,44 @@ using flanne;
 using flanne.Player;
 namespace TwentyMinutes.Modernization;
 
+// Source Gun.get_numOfProjectiles (0x1979914) returns the integer directly.
+// The receiving shooter owns its own <=1 branch; do not clamp at this boundary.
+[HarmonyPatch(typeof(Gun),"get_numOfProjectiles")]
+class AndroidProjectileCount
+{
+ static bool Prefix(Gun __instance,ref int __result)
+ {__result=(int)__instance.stats[StatType.Projectiles].Modify(__instance.gunData.numOfProjectiles);return false;}
+}
+
+// Source 0x1999150 owns the base shooter as well as the callers above it.
+// Android deliberately has neither the old recipe-tweak notification nor the
+// Windows five-degree minimum / inclusive end-point spread calculation.
+[HarmonyPatch(typeof(Shooter),nameof(Shooter.Shoot))]
+class AndroidBaseShooter
+{
+ static bool Prefix(Shooter __instance,ProjectileRecipe recipe,Vector2 pointDirection,int numProjectiles,float spread,float inaccuracy,
+  ProjectileFactory ___PF,GameObject ___muzzleFlashObject)
+ {
+  pointDirection=pointDirection.Rotate(UnityEngine.Random.Range(inaccuracy*.5f,inaccuracy*-.5f));
+  if(numProjectiles>1)
+  {
+   for(int i=0;i<numProjectiles;i++)
+   {
+    var direction=pointDirection.Rotate((float)i/numProjectiles*spread-spread*.5f);
+    var projectile=___PF.SpawnProjectile(recipe,direction,__instance.transform.position);
+    __instance.PostNotification(Shooter.BulletShotEvent,projectile);
+   }
+  }
+  else
+  {
+   var projectile=___PF.SpawnProjectile(recipe,pointDirection,__instance.transform.position);
+   __instance.PostNotification(Shooter.BulletShotEvent,projectile);
+  }
+  if(___muzzleFlashObject!=null)___muzzleFlashObject.SetActive(true);
+  __instance.onShoot?.Invoke();return false;
+ }
+}
+
 // Own the complete source firing/release flow. Existing Shooter subclasses,
 // recipes, ammo callbacks and desktop cursor projection remain its boundaries.
 public sealed class AndroidGunRuntime:MonoBehaviour
@@ -140,6 +178,16 @@ class AndroidShootingEnter
 [HarmonyPatch(typeof(ShootingState),nameof(ShootingState.Exit))]
 class AndroidShootingExit
 {static bool Prefix(ShootingState __instance,PlayerController ___owner){AndroidShootingRuntime.Get(__instance,___owner).Exit();return false;}}
+
+[HarmonyPatch(typeof(DisabledState),nameof(DisabledState.Enter))]
+class AndroidDisabledEntry
+{
+ static bool Prefix(DisabledState __instance,PlayerController ___owner)
+ {
+  var callback=(EventHandler<bool>)Delegate.CreateDelegate(typeof(EventHandler<bool>),__instance,AccessTools.Method(typeof(DisabledState),"OnDisableToggleChange"));
+  ___owner.disableAction.ToggleEvent+=callback;___owner.moveSpeedMultiplier=1;___owner.faceMouse=false;return false;
+ }
+}
 
 // Source release always chooses Reload when manual reload is available. Keep
 // the existing localized option truthful and read-only without overwriting the

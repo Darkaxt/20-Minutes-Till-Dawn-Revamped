@@ -192,6 +192,6 @@ class AndroidProjectileContact
 [HarmonyPatch]
 class AndroidProjectileNativeContacts
 {
- static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Knockback),"OnCollisionEnter2D"),AccessTools.Method(typeof(SpawnOnCollision),"OnCollisionEnter2D"),AccessTools.Method(typeof(BurnOnCollision),"OnCollisionEnter2D"),AccessTools.Method(typeof(HarmfulOnContact),"OnCollisionEnter2D"),AccessTools.Method(typeof(HarmfulOnContact),"OnTriggerEnter2D")};
+ static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(Knockback),"OnCollisionEnter2D"),AccessTools.Method(typeof(SpawnOnCollision),"OnCollisionEnter2D"),AccessTools.Method(typeof(HarmfulOnContact),"OnCollisionEnter2D"),AccessTools.Method(typeof(HarmfulOnContact),"OnTriggerEnter2D")};
  static bool Prefix(Component __instance)=>__instance.GetComponent<AndroidProjectile>()==null;
 }

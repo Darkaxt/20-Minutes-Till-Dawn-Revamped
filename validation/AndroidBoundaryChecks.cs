@@ -57,7 +57,15 @@ public partial class RuntimeChecks
    CombatClose(shape.transform.position.sqrMagnitude,0,"actual separate line quad is positioned at world origin");
   }
   Plugin.SetField(collider,"loop",false);yield return BoundaryLineFrame();Require(BoundarySegments(collider).Count==4&&shapes[3].gameObject.activeSelf,"source cached closing segment remains after the explicit loop=false operand");Plugin.SetField(collider,"loop",true);
-  var renderer=line.GetComponent<LineRenderer>();var frames=new HashSet<Texture>();while(frames.Count<6){frames.Add(renderer.material.mainTexture);yield return null;}
+  var renderer=line.GetComponent<LineRenderer>();var frames=new HashSet<Texture>();while(frames.Count<6)
+  {
+   // A persisted boss reward can physically reach the restored player after
+   // Continue's Combat transition. Its real menu pauses scaled animation.
+   var game=Object.FindObjectOfType<GameController>();
+   if(game.CurrentState is DevilDealState&&game.devilDealLeaveButton.IsInteractable())
+   {Log("fixture-restored-reward","Decline the actually collected saved devil reward through its native Leave button before observing scaled arena animation.");Click(game.devilDealLeaveButton);}
+   frames.Add(renderer.material.mainTexture);yield return null;
+  }
   Require(frames.Count==6,"actual native Start-owned arena animation plays all six original frames");
   Log("boundary-geometry","Actual scheduler arena has four full-width finite source quads, retained closing segment, cached positions and six native animation frames");
  }

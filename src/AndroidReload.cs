@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
@@ -8,6 +9,26 @@ using UnityEngine.InputSystem;
 using flanne;
 using flanne.Player;
 namespace TwentyMinutes.Modernization;
+
+// Complete source reload activation owner, shared by Courage and Death Spin.
+// The source callback has no sound call; native added one on Sword of Death.
+[HarmonyPatch]
+class AndroidReloadActivation
+{
+ static IEnumerable<MethodBase> TargetMethods()
+ {
+  foreach(string method in new[]{"Start","OnDestroy","OnReload"})
+   yield return AccessTools.Method(typeof(ActivateGameobjectOnReload),method);
+ }
+ static bool Prefix(ActivateGameobjectOnReload __instance,GameObject ___obj,MethodBase __originalMethod)
+ {
+  if(__originalMethod.Name=="OnReload"){___obj.SetActive(true);return false;}
+  var callback=(UnityEngine.Events.UnityAction)Delegate.CreateDelegate(typeof(UnityEngine.Events.UnityAction),__instance,AccessTools.Method(typeof(ActivateGameobjectOnReload),"OnReload"));
+  if(__originalMethod.Name=="Start")PlayerController.Instance.ammo.OnReload.AddListener(callback);
+  else PlayerController.Instance.ammo.OnReload.RemoveListener(callback);
+  return false;
+ }
+}
 
 // The native state keeps the Windows bindings/presentation. These are the two
 // source state fields missing from it, owned by the same player/state lifetime.

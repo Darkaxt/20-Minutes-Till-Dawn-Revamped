@@ -20,7 +20,9 @@ public partial class RuntimeChecks
  internal static int EnemyUnscopedShots,EnemyPlayerContacts,EnemyHomingSteps;
  internal static GameObject EnemyContactTarget;
  internal static GameObject EnemyRecontactRoot;
+ internal static EnemyLob EnemyContactLob;
  internal static readonly HashSet<GameObject> EnemyRhogogContacts=new HashSet<GameObject>();
+ internal static readonly HashSet<GameObject> EnemyRhogogConsumed=new HashSet<GameObject>();
  internal static readonly Dictionary<GameObject,int> EnemyRhogogContactCounts=new Dictionary<GameObject,int>();
  internal static bool EnemySuccessfulDodge,EnemyObserveHoming;
  internal sealed class EnemySpawnBatch{internal Spawner Owner;internal readonly List<GameObject> Children=new List<GameObject>();}
@@ -127,7 +129,7 @@ public partial class RuntimeChecks
   {
    WorldTime(12.34f);yield return DragonSuspend(game,"Actual AI/animation enemy attacks and active Rhogog51-flight scene exit; explicit elapsed12.34 checkpoint omits source-unsaved world actors/projectiles/tree phase");yield break;
   }
-  while(lobs.Any(l=>!l.Landed))yield return null;
+  EnemyContactLob=lobs[0];while(lobs.Any(l=>!l.Landed))yield return null;
   Require(lobs.All(l=>l.ReturnedProjectile&&l.ReturnedIndicator&&l.Explosion!=null),"real LeanTween landing returns every flight/indicator and acquires the source explosion");
   var explosions=ObjectPooler.SharedInstance.pooledObjectsDictionary["RhogogSporeExplosion"].Where(a=>a.activeSelf).ToArray();
   Require(explosions.Length>0,"actual Rhogog scatter has live source explosion roots");
@@ -136,7 +138,12 @@ public partial class RuntimeChecks
   CombatClose((float)WindField(explosion.GetComponent<TimeToLive>(),"lifetime"),.3f,"source explosion root lifetime");
   while(explosions.Any(e=>e.activeSelf))yield return null;
   var hitRoot=lobs[0].Explosion;var hitChild=hitRoot.transform.Find("Damage").gameObject;
-  Require(EnemyRhogogContacts.Contains(hitChild)&&!hitChild.activeSelf,"actual targeted Rhogog landing physically contacts the protected player and returns only its unregistered Damage child");
+  Require(EnemyRhogogContacts.Contains(hitChild)&&EnemyRhogogConsumed.Contains(hitChild),"actual targeted Rhogog landing physically contacts the protected player and returns only its unregistered Damage child");
+  EnemyContactLob=null;
+  // Other scatter landings can legitimately reuse/re-arm this root before
+  // the whole attack expires. Restore the actually observed consumed state
+  // for the directed next-acquisition regression, without a synthetic hit.
+  hitChild.SetActive(false);Log("fixture-pool-state","Restore the child state observed at actual protected contact; later scatter reuse is not assumed to leave it disabled.");
   int priorContacts=EnemyRhogogContactCounts[hitChild];
   // Isolate the already-contacted root at the top of the real returned stack.
   // These explicit pool-order operands do not claim a natural reuse frequency.
@@ -204,6 +211,12 @@ class EnemyReturnProbe
 [HarmonyPatch(typeof(AndroidPlayerCollision),"Enter")]
 class EnemyPlayerContactProbe
 {
+ static void Postfix(Collision2D collision)
+ {
+  var child=collision.gameObject;
+  if(RuntimeChecks.EnemyAttackMode&&collision.transform.parent!=null&&collision.transform.parent.name=="RhogogSporeExplosion"&&!child.activeSelf)
+   RuntimeChecks.EnemyRhogogConsumed.Add(child);
+ }
  [HarmonyPriority(Priority.First)]static void Prefix(Collision2D collision)
  {
   if(RuntimeChecks.EnemyAttackMode&&collision.transform.parent!=null&&collision.transform.parent.name=="RhogogSporeExplosion")
@@ -249,7 +262,7 @@ class EnemyPositionedPoolProbe
    // Pool order binds the root to the first landing, which may be a scatter
    // rather than the targeted arc. Place the real player at that exact landing
    // before physics; do not invoke/synthesize the contact callback.
-   if(__result==RuntimeChecks.EnemyRecontactRoot){PlayerController.Instance.SetPosition(__result.transform.position);Physics2D.SyncTransforms();}
+   if(__result==RuntimeChecks.EnemyRecontactRoot||ReferenceEquals(RuntimeChecks.EnemyLanding,RuntimeChecks.EnemyContactLob)){PlayerController.Instance.SetPosition(__result.transform.position);Physics2D.SyncTransforms();}
   }
  }
 }

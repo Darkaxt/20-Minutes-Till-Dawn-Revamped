@@ -2,9 +2,9 @@
 
 A community Windows mod for 20 Minutes Till Dawn by Flanne, maintained by Darkaxt.
 
-**Version 1.1.1 integrates the Android 8.6 differences confirmed by the recorded source audits and the approved bug corrections.** It adds Hina clone placement, Rhogog explosion reuse, Thousand Blades teardown and description corrections. The comparison has the coverage limits recorded below; exhaustive whole-game source equivalence is unproved.
+**Version 1.1.2 closes the Android 8.6 gameplay integration and retained-code ledger, including the approved bug corrections.** The final source pass imports the remaining shooting, Abby, observer, reload, physics, pickup and transition behavior, and fixes Glass multiplying again on Continue.
 
-[Download 1.1.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.1) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md) · [Bug corrections](docs/BUGFIXES.md)
+[Download 1.1.2](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.2) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md) · [Bug corrections](docs/BUGFIXES.md)
 
 The reference is the supplied **Android 8.6 / versionCode 1093** package. The supported Windows baseline is **Steam build 12679152, Unity 2019.4.40f1 Mono x64**. This comparison makes no claim about later Android versions. The target includes Android gameplay arithmetic, stacking, cooldowns, event ordering and quirks; monetization is excluded. The requested Windows controls, progression and interface changes are explicit overrides.
 
@@ -15,7 +15,7 @@ These features have implementation and recorded Windows gameplay/integration evi
 | Area | Delivered behavior / evidence |
 |---|---|
 | New weapon and characters | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades, effects and native selection. Cannon modes have actual projectile/contact and Continue/restart checks. |
-| Combat and upgrades | Reconstructed projectile/contact/pool, burn/freeze/curse/lightning, damage/stat composition, perk recipes/repeats and summon/character owners. Recorded acquisition, event/physics, repeat and Continue/restart checks cover the named workflows in the evidence ledger. This does not establish every retained Windows method as equivalent. |
+| Combat and upgrades | Reconstructed projectile/contact/pool, burn/freeze/curse/lightning, damage/stat composition, perk recipes/repeats and summon/character owners. Recorded acquisition, event/physics, repeat and Continue/restart checks cover the named workflows in the evidence ledger. The retained-entry audit below records reconstructed owners and native integration boundaries separately. |
 | Existing characters | Recorded native ability/upgrade/actor workflows include Shana's Specialize/Ascension/Halo, Hina, Scarlett, Yuki, Lilith, Abby, Diamond, Hastur, Katana, Raven, Luna and Dasher. |
 | Scenarios and modes | Source-linked Forest, Temple, Pumpkin Patch, Quickplay, Challenge and Endless scheduling/clock/encounter/affix behavior, with recorded native mode/Continue/restart checks. |
 | Save and Continue | Save & return and fresh-process reconstruction of current runs. Selected legacy saves rebuild Android state under the user's chosen policy; the historical schema-3 reader corpus is checked. Every old schema/build combination is not established. |
@@ -25,11 +25,27 @@ These features have implementation and recorded Windows gameplay/integration evi
 | HUD and artwork | Transparent icon-led attributes on the left and collected skills on the right, effective/base/bonus values, tiers/counts and paging. Optional reversible recolours; native pixel-art MAINTAINED BY DARKAXT credit preserving Flanne's credit; Emberpath panel/link removed. Recorded native UI checks cover 720p and 1080p. |
 | Windows delivery | The final package passes the installed isolated-player roster/input test covering 15 character entries and 12 base weapons, plus actual firing/reload and repeated scene exits. The actual Steam installation verifies 614 payload files; rollback preserves 142 original files and three real profile files. |
 
-**v1.1.1 is published and installed on the verified Windows target**, from source **856ee95c3e473e7ec4d48e0f43e9aa34c475d9fe**. Independent download matches the released archive and installed DLL; the installed-package roster/input test and exact rollback pass, with all 142 original files and three real profile files unchanged. [Delivery receipt](docs/PROGRESS.md). The archive contains the mod and extraction/installation recipes; **593 runtime assets are prepared locally from owned game inputs**, rather than redistributed in the download. Versions 1.0.1 and 1.1.0 remain historical releases; 1.1.1 includes the additional corrections below.
+The download contains the mod and extraction/installation recipes. **593 runtime assets are prepared locally from owned game inputs**, rather than redistributed. The installer owns 614 payload files, preserves the original game and user configuration, and supports exact rollback. [Current delivery receipt](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/blob/main/docs/PROGRESS.md).
 
 ## Android 8.6 parity ledger
 
-Audit and implementation, **2026-10-24**. These behaviors were absent from1.0.1 and are included in1.1.0. The complete reached methods/coroutines retain the original serialized weapon and AI owners.
+The retained-gameplay comparison and anomaly classification are closed. Every identified required Android 8.6 gameplay difference is implemented; no gameplay integration is parked for a later balance decision. Source quirks remain unless covered by the user's explicit bug-fix authorization.
+
+| ID | Integrated behavior | Native Windows acceptance |
+|---|---|---|
+| A129 | Rebuild Glass from acquisitions at each run boundary; three picks remain factor 6 across repeated warm and fresh Continue. | 480/481 |
+| A281 | Anger Point's separate Fire Rate/Bullet Damage operands apply, refresh and expire in source order. | 480/481 |
+| A282 | Complete Courage/Death Spin reload activation/lifetime with no extra Windows sound. | 482/484 |
+| A283–A284 | Null-before-roll on-hit dispatch; standalone fire uses NPC layers; sampled projectiles burn once. | 482/484 and 485/486 |
+| A285 | Android 0.03-second physics cadence, retaining the matching 0.1 maximum frame step. | Combined affected contact/movement/pool/AI/rune/weapon/Continue matrix below. |
+| A286–A287 | Global Dragon Bond/Spark observer lifetimes, first-Dragon selection and source target/RNG order. | 485/486: real non-player spore arc/landing/explosion, primary contact, teardown and Continue. |
+| A288 | Complete Abby spray/final-shot/lock-release flow; one gun event after sound for the whole shot. | 482/484: native skill input and single/multiple shooters. |
+| A289–A292/A295 | Source base/charged emission, raw projectile-count getter, powerup singleton replacement, disabled entry and gameplay transition ownership. | 482/484: native firing/reload, directed count/singleton/nested-transition edges and source Continue/restart. |
+| A293–A294 | XP body-contact exclusion while hearts remain collectible; functional native Hina/Shield/Glyph contacts retain the approved correction to Android's Default-layer exclusion defect. | 482/484 plus actual shield/Hina/Glyph workflows at 0.03. |
+
+The current runtime receipt pins the exact source and production DLL for every affected workflow and byte-binds fresh Continue inputs to successful saved checkpoints. No required source/runtime item remains unresolved. Final artifact publication and installation verification are recorded in [PROGRESS.md](docs/PROGRESS.md).
+
+Audit and implementation, **2026-10-24**. These behaviors were absent from 1.0.1 and are included in 1.1.0. The complete reached methods/coroutines retain the original serialized weapon and AI owners.
 
 | ID / feature | Android contract missing from 1.0.1 | 1.1.0 implementation / acceptance |
 |---|---|---|
@@ -41,18 +57,23 @@ Audit and implementation, **2026-10-24**. These behaviors were absent from1.0.1 
 
 Original Android entry points: ChargedShooter.Shoot0x197910c / OnStopShoot0x1978e40; laser iterator0x18b1410; spawn Use0x18b2b90 / iterator0x18b2d10; CameraRig.Update0x187c988; Blessing iterator0x184f8c4 / ReduceCD0x196229c. Original assets and Windows/current routes are pinned in the local audit. The parity ports preserve their source arithmetic; the separately approved correction contract governs the22 repaired bug families.
 
-## Audit coverage and unresolved evidence
+## Audit coverage and boundaries
 
-The first audit inventory-routed all **277 Android-only flanne types** and **1,072 serialized-change rows**. It independently compared **58 semantic bodies across27 types**; its109 exported ranges include boilerplate. Pass2 disposed all14 named retained-type candidates and34 exact method-name candidates with54 metadata-bounded ranges; it found the camera gap. Pass3 resolved the ShootDetector teardown thunk and traced the Blessing helper/state difference. These are bounded comparisons, not an exhaustive missing-feature count. The wider2,912-symbol capture corpus is available evidence, not2,912 reviewed behaviors.
+The final audit binds the original **798 Windows types / 4274 methods** to observed production routes, exact method/owner reviews, serialized acquisition roots and explicit native integration dispositions. Source-only gameplay additions and changed serialized identities are joined to the existing powerup/character/weapon/rune/scenario reviews. Captured ARM ranges and inventory membership are not counted as semantic reviews.
 
-| Remaining question | Current evidence / limit |
+| Boundary | Final disposition |
 |---|---|
-| Other retained Windows bodies | Broad retained-body coverage outside the explicit comparisons is not established. The14 previously named candidates now have dispositions; an empty candidate list does not prove whole-game equivalence. |
-| Smite targeting predicate | The bounded original target inventory has Enemy/EnemyChampion/EnemyPassive tags on the reached monster layers, satisfying the native predicate. No rejected-target/random-order counterexample was established. Arbitrary modded targets and unreviewed routes are not covered. |
-| Blessing recovery deadline | Raw source behavior is reconstructed, including deadline advancement. A naturally reached positive deadline before startup completion was not established; no invented gameplay reproduction is claimed. |
-| Combinations and old saves | Recorded checks cover bounded current-run, selected legacy and Custom workflows. Every character × weapon × evolution × perk combination, every historical save schema and natural full-run balance remain unproved. These limits are not confirmed missing features. |
+| Retained nontrivial gameplay entries | Exact source-linked method or reconstructed-owner disposition; no unresolved required entry remains in the finite checklist. |
+| Replaced native bodies and old action graphs | Complete Android owners or source-shaped acquisition recipes own the flow. Native signatures, serialized fields and still-rooted helpers remain necessary ABI. |
+| Constructors, accessors and generated methods | Actual gameplay scalars/defaults and coroutine owners were separated from storage, iterator scaffolding and serialized ABI. This does not claim all compiled bodies are identical. |
+| Global helpers and libraries | Source numeric/modifier/notification/state primitives are compared or replaced; Windows Unity/Mono, tween/audio/camera libraries, copying ABI and desktop presentation remain platform integration boundaries. |
+| Source quirks | A144's cleanup spelling, A150/A254's capped writer/retained-clock rule and A266's first-Start cadence have explicit source/lifetime conclusions. Unknown developer intent is not deferred implementation. |
+| Selected legacy formats | The native reader checks historical schema3 inputs and explicitly derived schema4–6 layouts for identical full source reconstruction and input preservation. Real legacy Continue/combat/save7/restart and current source Continue are checked separately. Unrecoverable history uses the user's Android-rebuild choice. |
+| Verification limits | The connected checks are deterministic Windows workflows with declared seeds/builds/geometry. They do not claim every character × weapon × perk combination, natural full-run balance, mathematical source equivalence or Android-device observation. These are verification limits, not known omitted gameplay features. |
 
-[PROGRESS.md](docs/PROGRESS.md) and [ANOMALIES.md](docs/ANOMALIES.md) retain dated implementation/acceptance history. Earlier COMPLETE labels do not prove global parity. A276–A280 were classified before affected builds/game checks; their source integration was introduced in4064e68. The further bounded discovery pass compared eight retained buff/action types, fifteen original owner recipes and26 distinct source/helper bodies and found no additional confirmed omission. The coverage table above records the limits of that comparison.
+Primary new-flow proof: Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. The combined matrix also covers corrected combat/status, barriers, runes/shields, Hina/Katana, AI/world, arrows/Cannon/Crossbow, legacy and Custom input/results. The immutable local evidence records source ranges, original asset identities, native routes, checkpoints and exact binaries; proprietary game code/assets are not published.
+
+[ANOMALIES.md](docs/ANOMALIES.md) keeps the current classification and dated original observations; [PROGRESS.md](docs/PROGRESS.md) keeps acceptance/delivery receipts. Older open/COMPLETE labels describe their recorded revisions and are superseded by the current reconciliation.
 
 ## Approved bug corrections and dead-code audit
 
@@ -65,7 +86,7 @@ The approved 23-family review produced **22 corrections and one verified absent 
 | A234 — Thousand Blades | Destroyed sword-spawn helpers unsubscribe; disabled live helpers still receive the upgrade. |
 | A19/A22/A61/A219 — Descriptions | Thunderspawns, Soul Knight, Cadence, Tenacity and Reckless text describes the existing mechanics without changing their values or achievement conditions. |
 
-Moth's first-Start cadence, Kunoichi's retained clock reachability, the original Glass asset state and Ammo's misspelled cleanup remain recorded uncertainties. This batch established no additional gameplay defect in those cases and made no speculative balance changes.
+Glass's demonstrated Windows warm-Continue multiplication is corrected in 1.1.2. Moth cadence, the capped Kunoichi writer and Ammo's source cleanup spelling retain their recovered behavior; no speculative balance changes were added.
 
 The requested [redirected-flow dead-code audit](docs/DEAD-CODE.md) found native bodies skipped by live Harmony replacements and per-owner recipes superseded by Android graphs. It established no definitely removable mod class/method. Native entry points, reused helpers and legacy readers remain rooted. No dead-code deletion was performed.
 

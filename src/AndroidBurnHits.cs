@@ -6,6 +6,21 @@ using UnityEngine;
 using flanne;
 namespace TwentyMinutes.Modernization;
 
+// Source collision dispatch is layer-based. Projectile samplers already call
+// BurnOnCollision in original component order; standalone fire effects enter
+// through this Unity callback instead.
+[HarmonyPatch(typeof(BurnOnCollision),"OnCollisionEnter2D")]
+class AndroidBurnCollision
+{
+ static bool Prefix(BurnOnCollision __instance,Collision2D __0,int ___burnDamage)
+ {
+  var target=__0.gameObject;
+  if(__instance.GetComponent<AndroidProjectile>()==null&&target.layer==(int)TagLayerUtil.Enemy)
+   BurnSystem.SharedInstance.Burn(target,___burnDamage);
+  return false;
+ }
+}
+
 internal static class AndroidBurnHitOwners
 {
  internal static string Model(BurnOnHit owner)=>owner.transform.parent?.name.Replace("(Clone)","");

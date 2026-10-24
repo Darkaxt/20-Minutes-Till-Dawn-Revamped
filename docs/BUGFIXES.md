@@ -1,6 +1,18 @@
+Current closure acceptance, 2026-10-24: A129 repeated Glass replay and A294 functional native contacts pass the affected complete Windows flows. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Source-only wording below is historical. No additional balance changes.
+
 # Revamped bug-correction contract
 
-## Additional ledger corrections — M15,2026-10-24
+## Retained-code closure corrections — 2026-10-24
+
+P2 is ACTIVE. A129 now has a demonstrated Windows lifecycle defect, independently of the unknown original Android asset-unloading schedule: actual same-process Save & return / Continue in run350 reuses one Glass asset and replays three acquisitions on top of its old factor 6, producing12. Fresh-process Continue reconstructs6 from the same acquisitions. The existing pool-initialization boundary now clears the retained profile-owned factor before acquisition replay or a fresh run. Within-run acquisitions still produce2/4/6; observer deduplication, other tome arithmetic and the saved input remain unchanged. Acceptance requires actual acquisition, repeated same-process and fresh-process Continue, a fresh run and native damage, plus checkpoint preservation. This corrects a reproduced continuation defect under the user's standing bug-fix authorization; it does not claim an observed Android device lifetime.
+
+A294 records another original collision-data contradiction: Default-layer Hina damage, Holy Shield knockback and Gun Glyph knockback exclude both source NPC layers. Their functioning native contact integration is retained under the existing authorization to fix established defects; no new damage/force/radius or global matrix mutation is introduced. Verify those actual contacts at the imported0.03 physics step. A293 is a separate required source import distinguishing XP/body collisions from red hearts; it is not a balance adjustment.
+
+A281 is an additional source integration difference: FireRateOnHurt.AddBoost/RemoveBoost apply the Fire Rate operand before the distinct Bullet Damage operand. The old Windows adapter reversed those notifications and hardcoded both to0.7 behind an object-name check. The actual Anger Point attachment now initializes both recovered operands and its shared stat entry applies/removes them in source order. The matching native refresh/coroutine lifecycle remains. Acceptance requires actual hurt/refresh/expiry, ordered stat notifications, Continue and restart after the whole retained-code implementation is complete. No gameplay magnitude changes.
+
+A282–A284 are source imports, not balance corrections: source Courage/Death Spin reload activation has no extra sound call; on-hit triggers reject a Unity-null target before chance RNG; standalone burn collision admits NPC layers rather than Enemy tag text. Their complete affected source contracts and acceptance requirements are recorded in [ANOMALIES.md](ANOMALIES.md). P2 remains ACTIVE until retained-code reconciliation, integrated acceptance and final delivery pass.
+
+## Additional ledger corrections — M15, 2026-10-24
 
 Already authorized by the user: "go ahead, fix these and any other that you are sure should be handled." P2 remains the sole ACTIVE stage. This batch corrects the following established contradictions/lifecycle defects while preserving gameplay values, original files/profile, earned ownership, native input and the completed1.1.0 corrections. It does not authorize speculative balance changes or dead-code deletion. The wider M5 source-comparison blocker remains separately recorded.
 

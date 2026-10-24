@@ -82,6 +82,12 @@ public partial class RuntimeChecks
  {
   var p=PlayerController.Instance;var owner=ArrowOwner();int before=ArrowReloads.Count;arrowDamage.Clear();arrowPreviousHP=ArrowTarget.HP;
   var expected=ArrowActivePoints().Select(point=>point.transform.position).ToArray();int raw=Mathf.FloorToInt(p.gun.damage*(float)WindField(owner,"damageMulti"));var prefab=(GameObject)WindField(owner,"retrieveArrowPrefab");bool stationary=(bool)WindField(owner,"dontRetrieve");
+  Log("arrow-return-fixture-before",new{target=ArrowTarget.transform.position,velocity=ArrowTarget.GetComponent<MoveComponent2D>().vector,ground=expected[0],stationary});
+  // Isolate actual return contact from primary knockback and a grazing first
+  // physics sample. This measures category/damage, not natural hit frequency.
+  ArrowTarget.GetComponent<MoveComponent2D>().enabled=false;
+  ArrowTarget.transform.position=stationary?expected[0]:Vector3.Lerp(expected[0],p.transform.position,.5f);
+  ArrowTarget.GetComponent<CircleCollider2D>().radius=1/Mathf.Abs(ArrowTarget.transform.lossyScale.x);Physics2D.SyncTransforms();
   var aim=(Vector2)Camera.main.WorldToScreenPoint(p.transform.position+Vector3.right*8);InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});p.gun.GetComponent<AndroidGunRuntime>().ShootEnable.UnFlip();
   while(ArrowReloads.Count==before)yield return null;var reload=ArrowReloads.Last();Require(reload.Owner==owner&&reload.Actors.Count==expected.Length&&reload.Active==expected.Length,"actual native release/reload traverses every registered active source point");
   Require(reload.Sound==1&&ArrowActivePoints().Length==0,"source reload returns the actual ground points and plays one source sound");
@@ -94,6 +100,7 @@ public partial class RuntimeChecks
   }
   while(reload.Actors.Any(a=>a.activeSelf))yield return null;
   int kind=prefab.name=="PF_MagicBowProjectileRetrieving"?13:(int)DamageType.Bullet;
+  Log("arrow-return-contact",new{recipe=prefab.name,raw,kind,target=ArrowTarget.transform.position,events=string.Join(";",arrowDamage.Select(d=>d.ToString()))});
   Require(arrowDamage.Any(d=>(int)d.x==kind&&(int)d.y==raw),"actual return/explosion physical contact preserves its source damage category and amount");
   if(!stationary)foreach(var actor in reload.Actors)CombatClose(Vector3.Distance(actor.transform.position,p.transform.position),0,"source return releases at current player world position without native final zero reset");
   Log("arrow-reload",p.gun.gunData.name+" recipe="+prefab.name+" damage="+raw+" kind="+kind+" stationary="+stationary);
