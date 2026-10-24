@@ -16,9 +16,19 @@
 | Copied rollback |614 exact owned files removed;142 stock originals verify afterward. |
 | Actual Steam update | Verified1.1.1 → stock → 1.1.2,614 owned files.142 originals, three real profile files and configuration remain unchanged; no validation DLL or user-game launch. |
 | Disposable output | Transaction 91da9f183e2d951a9c6d9f224be3fa8b applied all917 reviewed members/136845229 logical bytes. Both exact new task roots are absent; durable research/evidence/release/execution recipes remain. |
-| Blockers / deferrals | None for this Windows outcome. Separate DroidDeck delivery and the analysis-only native Android conversion are not claimed complete. |
+| Blockers / deferrals | None for this Windows outcome. Separate DroidDeck startup/reset delivery is now recorded below; native Android conversion remains deferred by the user. |
 
 These are finite source compatibility and connected native-workflow results, not mathematical equivalence, a natural full-run balance study or a test of every character × weapon × perk combination. Existing M1–M13 requirements and their unchanged UI/progression/720p/1080p evidence were reconciled explicitly in the final private receipt.
+
+## DroidDeck handover — 2026-10-25
+
+The connected Samsung's existing DroidDeck installation now contains the complete **1.1.2** payload from the same source and DLL pinned above. All 614 owned files and 142 originals verify. The actual game loads the production mod, receives focus in Steam Big Picture, shows the pixel-art maintenance credit with the promotion removed, and responds to controller A/B navigation between title and character selection.
+
+The user explicitly requested a clean reset: five old native/backup/disabled/companion files were deleted, followed by the three JSON files created during the menu smoke test. The exact Unity game PlayerPrefs section was also removed to clear the stale selected character. Every other post-launch registry byte, including the game-specific Wine loader override, is preserved. Mod setting values are unchanged; its generated version header alone changes. Steam Cloud was already off. The Windows profile and other games were not modified.
+
+Exact staging cleanup `2364f41fe1573b760560de52c26ae101` applied all 637 reviewed members, 6,460,739 logical bytes. The final independent read-back confirms the expected installed manifest/DLL/settings, no game-save JSON or live game PlayerPrefs, absent staging folder and IDLE session. This establishes phone startup/title/menu input and clean handover; full-run performance, balance and all feature combinations await user playtesting. [Phone launch and compatibility notes](DROIDDECK.md).
+
+The repository overview now uses unaltered Windows test screenshots, with [image provenance](images/SOURCES.md), an added/ported/fixed changelog and a linked [detailed parity ledger](PARITY.md). This documentation and phone delivery do not change the Windows runtime or the published 1.1.2 tag/package. No Reddit or Nexus promotional post has been made.
 
 ## Delivery history
 

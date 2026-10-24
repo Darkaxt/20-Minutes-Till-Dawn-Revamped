@@ -17,6 +17,7 @@
 | Preserved data | Every other byte of the post-launch Wine registry is retained, including the existing game-specific `winhttp=native,builtin` override. Mod setting values are unchanged; only BepInEx's generated version header changes. Other games and the Windows profile were not modified. |
 | Steam Cloud | Already disabled for this game on the phone; left disabled during the clean reset and first launch. |
 | Handover | The task-owned session is stopped, leaving a clean first launch for the user's playtest. |
+| Temporary files | The task's Download staging folder was removed through an exact reviewed cleanup. A final read-back confirms the installed manifest/DLL/settings, absent saves/preferences/staging and stopped session. |
 
 This is **startup, title and controller-menu acceptance**. Full-run performance, balance and every gameplay combination on the phone still need user playtesting. The broader Windows source/gameplay and delivery results are recorded in [the parity ledger](PARITY.md) and [PROGRESS.md](PROGRESS.md).
 

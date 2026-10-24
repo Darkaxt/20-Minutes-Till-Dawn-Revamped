@@ -12,16 +12,21 @@ A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt*
 
 ## What changes
 
-| Added for Revamped | Ported from Android 8.6 | Fixed after the anomaly review |
-|---|---|---|
-| Transparent icon HUD with effective, base and bonus attributes; collected skills and their tiers/counts. | Charge Cannon and its three evolutions; Gale and Bulwark, including their skills and exclusive upgrades. | Repeated Continue no longer multiplies Glass or grants Growth's level reward again. |
-| Thirty thematic unlocks tied to encounters, Darkness, scenarios and build conditions, with unlock notifications. | Combat, status effects, summons, upgrade recipes, stacking, cooldowns, shooting and event ordering. | Correct damage signs, frozen-only Shatter, balanced temporary buffs and reusable pooled effects. |
-| Rune prices scale by 20% per rank; multiple runes in a row can be enabled; lower tiers require fully upgraded ancestors in the same column. | Existing character abilities, Forest/Temple/Pumpkin Patch schedules, Challenge, Quickplay and Endless behavior. | Exhausted reward menus terminate correctly; encounter damage, contact layers and summon lifetimes are corrected. |
-| Save & return / Continue, native Custom settings and mode-default loading, optional artwork recolours. | Source-shaped acquisition and runtime reconstruction, including the selected rebuild policy for legacy saves. | Hina's first clone placement, Rhogog explosion reuse, Thousand Blades subscriptions and inaccurate descriptions. |
+- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; expanded rune progression; Save & return / Continue; native Custom settings and mode-default loading; optional artwork recolours.
+- **Ported from Android 8.6:** Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; existing character abilities, combat, status effects, summons, stacking, cooldowns, shooting, event ordering, scenario schedules and mode behavior.
+- **Fixed after the anomaly review:** repeated Continue bonuses, damage signs, frozen-only Shatter, temporary-buff accounting, pooled-effect reuse, exhausted reward menus, encounter/contact defects, character/summon lifetimes and inaccurate descriptions. The changelog below separates each release's ports and corrections.
 
 The gameplay reference is **Android 8.6 / versionCode 1093**. All identified required gameplay differences in the completed comparison are integrated. Ads, purchases and other monetization are excluded. Revamped's progression, HUD, Custom mode and desktop controls are intentional additions. [Exact parity scope and source quirks](docs/PARITY.md) · [Bug-correction contracts](docs/BUGFIXES.md).
 
 ## See it in game
+
+### Play the Android additions with desktop controls
+
+Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their character skills, animations and exclusive upgrades to the native Windows selection and combat flow.
+
+![Diamond - Bulwark in the native Windows character selector, with its dash skill and portrait](docs/images/android-bulwark.png)
+
+*Windows selection test using an unlocked test profile. The displayed Bulwark description and starting HP match the prepared v1.1.2 character data.*
 
 ### Read your build without a panel
 
@@ -61,7 +66,7 @@ You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) 
 
 The release contains the mod and installer recipes. It prepares the required artwork/data locally from your owned inputs; extracted game assets and validation assemblies are not bundled. Installation preserves the original game files, saves and configuration and supports exact owned-file rollback.
 
-**DroidDeck:** this is a Windows mod running inside DroidDeck's Windows environment, not a native Android APK. [Phone installation status and compatibility notes](docs/DROIDDECK.md).
+**DroidDeck:** v1.1.2 is installed on the tested phone; startup, the maintenance artwork and controller menus are verified. Old saves and this game's Unity preferences were cleared. Full runs await user playtesting. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
 
 ## Controls
 

@@ -9,5 +9,8 @@ These PNGs are byte-for-byte copies of existing Windows test captures, inspected
 | [unlock-diamond.png](unlock-diamond.png) | `evidence/S3/run-103/achievement-locked-character-v2.png` | `548319e914d13c9c73e44f0b5fd199695576581013c827ad134248c328ad08b4` |
 | [runes-progression.png](runes-progression.png) | `evidence/S3/run-98/rune-multiple-enabled-and-column-gates.png` | `972a6cb9ad145bcd298dfef579b74049b6aa8adb598716bc1bdea722450b3a56` |
 | [custom-mode-defaults.png](custom-mode-defaults.png) | `evidence/S4/run-523/custom-native-run-menu.png` | `862bfbfa0804efee2eb01ee9c94c53b9383befa4ccbf0a1424e81ff94a21eaf6` |
+| [android-bulwark.png](android-bulwark.png) | `evidence/S2/run-22/character-selection.png` | `0d90430cab1b15a52946e0f255556a4764e111ab710d492c6e413e1a9142f98f` |
 
 The title, rune and progression captures come from their completed UI workflows; HUD capture is the 1920×1080 integration workflow. The Custom capture is the later source-integrated run-523 workflow. Final v1.1.2 Windows delivery separately passed S6/run-17; unchanged UI contracts and earlier 720p/1080p evidence were reconciled at delivery. Source evidence is intentionally local; proprietary game inputs and the raw test profiles are not distributed.
+
+The Bulwark selection capture comes from S2/run-22. Its displayed description and starting HP were compared with the current installed 1.1.2 `Assets/characters/characters.json`; both match. Its unlocked roster is a test profile.
