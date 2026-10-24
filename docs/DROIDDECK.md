@@ -2,6 +2,14 @@
 
 ## Current phone delivery — 2026-10-25
 
+**Revamped1.1.3 is now installed through the native Android updater.** The user granted DroidDeck folder access once; the client automatically found the existing game through its Steam library catalogue, remembered the actual game folder, fetched the public GitHub release and upgraded1.1.2→1.1.3. The installed manifest identifies source `26cd69f5f131efb390270923f68aaed14d40aa90`; all614 owned files and142 stock originals verify. Current profile files, settings and all three Wine registry files match the immediate pre-update baseline. No saves or preferences were reset during this update.
+
+Use [Revamped Updater](../android-updater/README.md) for compatible code updates. The actual installed client was checked at the phone's unfolded width and a390dp native window, including persisted folder access, real GitHub package verification and interrupted-write recovery on isolated fixture documents. The APK does not contain the game or prepared artwork. Releases changing assets/loader files require Windows preparation before phone deployment.
+
+This installs the controller correction already verified in Windows; it does not claim a new full-run phone balance or performance study.
+
+## Previous clean installation — 1.1.2
+
 **Revamped 1.1.2 is installed and its startup and controller menus are verified on the connected Samsung SM-F966B**, using DroidDeck 0.6.0, build `22eac08`, runtime `r9`. It runs the Windows game inside DroidDeck; no native Android APK conversion is involved.
 
 | Check | Result |
@@ -33,7 +41,7 @@ Follow [INSTALL.md](../INSTALL.md) to prepare the exact release from owned Windo
 
 DroidDeck exposes its private Linux filesystem through its Android **Files** document provider. Its Steam library and `compatdata/1966900/pfx` identify the game and its separate prefix. Inspect the actual installed manifest before upgrading; preserve unrelated files and use the complete current owned payload. A native Windows BepInEx installation needs the game-specific `winhttp` override set to `native,builtin` in that prefix. The verified phone already has it.
 
-The deployment tooling used here is endpoint-bound private tooling, not a published universal APK patcher. Phone identifiers, registry content, game assets, saves and raw device logs remain private.
+Initial preparation uses endpoint-bound private tooling; the published Android updater handles compatible subsequent code updates. It is not a universal APK patcher. Phone identifiers, registry content, game assets, saves and raw device logs remain private.
 
 ## Earlier deployment history
 

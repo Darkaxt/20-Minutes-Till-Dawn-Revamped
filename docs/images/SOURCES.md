@@ -14,3 +14,6 @@ These PNGs are byte-for-byte copies of existing Windows test captures, inspected
 The title, rune and progression captures come from their completed UI workflows; HUD capture is the 1920×1080 integration workflow. The Custom capture is the later source-integrated run-523 workflow. Final v1.1.2 Windows delivery separately passed S6/run-17; unchanged UI contracts and earlier 720p/1080p evidence were reconciled at delivery. Source evidence is intentionally local; proprietary game inputs and the raw test profiles are not distributed.
 
 The Bulwark selection capture comes from S2/run-22. Its displayed description and starting HP were compared with the current installed 1.1.2 `Assets/characters/characters.json`; both match. Its unlocked roster is a test profile.
+# Android updater capture
+
+`updater-native.png` is an unaltered native Android window render from the installed updater0.1.0 on the connected test phone. The actual production UI fetched and verified public game release1.1.3; the separate `ui-deploy` receipt records1.1.2→1.1.3 deployment. `updater-compact.png` uses the same native client in its own390dp window. No global display configuration or game assets were changed to obtain these images. These updater images are Android evidence, distinct from the Windows gameplay gallery.

@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.3) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.3) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -66,7 +66,15 @@ You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) 
 
 The release contains the mod and installer recipes. It prepares the required artwork/data locally from your owned inputs; extracted game assets and validation assemblies are not bundled. Installation preserves the original game files, saves and configuration and supports exact owned-file rollback.
 
-**DroidDeck:** v1.1.2 is installed on the tested phone; startup, the maintenance artwork and controller menus are verified. Old saves and this game's Unity preferences were cleared. Full runs await user playtesting. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
+**DroidDeck:** v1.1.3 is installed on the tested phone. The Android updater found the existing game automatically and installed the public release while preserving current progress and settings. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
+
+### Update directly on Android
+
+Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
+
+![Revamped Updater native Android interface showing installed and latest game versions, release notes and DroidDeck folder](docs/images/updater-native.png)
+
+*Actual native Android view capture. The updater verified the real GitHub package and upgraded the tested phone from1.1.2 to1.1.3. Existing artwork and loader files must already match the release; incompatible changes report that Windows preparation is required before writing. [Updater instructions and limits](android-updater/README.md).*
 
 ## Controls
 
@@ -83,6 +91,10 @@ The release contains the mod and installer recipes. It prepares the required art
 The HUD uses T1/T2/T3 for upgrade-tree tiers, S for a special upgrade and ×N for acquisition count. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### Android updater 0.1.0
+
+**Added:** automatic DroidDeck Steam-library detection after one folder grant, remembered installation, public GitHub release notes/download verification, compatible code deployment, installed-file read-back and interrupted-update recovery. Native Android UI follows the selected utility layout with Revamped colors. This is a separate APK; game release numbering remains1.1.3.
 
 ### v1.1.3 — Controller roster fixes
 
@@ -120,11 +132,11 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.2** is published and verified on the supported Windows target. The delivered package was checked through the native 15-character / 12-base-weapon roster, mouse/controller fire and reload, scene exits, exact rollback, preserved originals/profile/configuration and an independent public download. Changed gameplay owners also have recorded acquisition, contact, lifecycle, Continue, restart, legacy and Custom integration checks.
+Version **1.1.3** is published and verified on the supported Windows target, with complete controller/pointer roster checks at720p and1080p, installed-package acceptance, exact rollback and preservation of originals/profile/configuration. The unchanged1.1.2 gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater additionally verifies a real GitHub download and phone installation; all614 delivered mod files and142 originals verify, and current progress/settings/registry are preserved.
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 
-The images above are unaltered Windows test screenshots, including earlier UI runs whose behavior remains in the release. They show test builds rather than claiming natural unlocks or full-run balance. [Screenshot provenance](docs/images/SOURCES.md).
+The gameplay images above are unaltered Windows test screenshots, including earlier UI runs whose behavior remains in the release. They show test builds rather than claiming natural unlocks or full-run balance. The updater image is explicitly labelled as a native Android capture. [Screenshot provenance](docs/images/SOURCES.md).
 
 ## Development and credits
 

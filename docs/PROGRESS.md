@@ -1,5 +1,17 @@
 # Current Android gameplay completion
 
+## Android updater acceptance — 2026-10-25
+
+Native updater0.1.0 automatically found the existing DroidDeck game after one real Android folder grant, retained access across process restart, downloaded/verified public GitHub1.1.3 and completed the real phone1.1.2→1.1.3 update through its normal UI listeners. Independent native read-back verifies614 owned files,142 stock originals and byte-identical current profile/settings/three Wine registry files. No reset or debugging enablement. The actual package was reviewed at unfolded and390dp widths, with measured native controls and original opaque Revamped colors.
+
+Isolated DocumentsProvider fixtures verify recovery after a partial staged write and after plugin activation, direct game-folder detection, rejection of unsupported prepared assets before mutation, and preservation of unowned files. These are labelled synthetic interruption tests; the public GitHub/phone update is a separate real integration result. A transaction-local directory cache fixed stale staging observations between successive updates. Restored native status now describes the remembered connection correctly. The final UI-only correction leaves the previously verified deployment engine unchanged.
+
+The final delivery gate is the signed updater APK, source/tag/asset read-back, independent public download, installed signature/hash verification and exact test-artifact cleanup. Game release1.1.3 remains separate and already published; the updater release does not replace the game release as GitHub's latest game download.
+
+## Controller correction delivery — 2026-10-25
+
+Normal [v1.1.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.3), source `26cd69f5f131efb390270923f68aaed14d40aa90`, is published, independently retrieved and installed on Windows. A296/A297 initial preview and appended controller links pass the complete roster/locked/remembered/pointer flows at720p/1080p (S1/run-28/30); actual packaged runtime S6/run-18 also passes. The614-file installed payload,142 original files, existing profile/configuration and copied rollback are verified. ZIP SHA-256 `ec80d9a21b5656b3db3e5ad042ffbebf3bed00cd1c2c43d398c3032404ff3094`. The correction's exact temporary outputs were removed through reviewed cleanup. The separate Android GitHub updater request is now active; this game release does not claim that client delivered or the phone upgraded.
+
 2026-10-24: **P1 COMPLETE; P2 COMPLETE.** Android 8.6 gameplay integration, retained-code/acquisition comparison, anomaly dispositions, affected Windows acceptance and final delivery are closed. No required gameplay entry, blocker or tracked deferral remains for this Windows port.
 
 | P2 criterion | Verified result |
