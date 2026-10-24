@@ -82,7 +82,12 @@ public partial class RuntimeChecks
  IEnumerator AchievementRun(string character,string weapon,string map,int darkness=0,System.Action prepareRun=null)
  {
   TitleScreenController title;while((title=Object.FindObjectOfType<TitleScreenController>())==null||!Active(title.mainMenu))yield return null;
-  Click(Entries(title.mainMenu)[0].button);while(!Active(title.characterMenu)||title.characterMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
+  Click(Entries(title.mainMenu)[0].button);
+  while(!Active(title.characterMenu)||title.characterMenu.GetComponent<CanvasGroup>().alpha<.999f)
+  {
+   var fresh=Resources.FindObjectsOfTypeAll<Button>().SingleOrDefault(b=>b.name=="ResumeNewRun"&&b.gameObject.activeInHierarchy);
+   if(fresh!=null&&fresh.IsInteractable())Click(fresh);yield return null;
+  }
   int c=Characters.Items(title.characterMenu).FindIndex(x=>x.data.name==character);Require(c>=0&&Progression.Allowed(title.characterMenu[c]),"earned native character for next run: "+character);Click(Entries(title.characterMenu)[c].button);
   while(!Active(title.gunMenu)||title.gunMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
   int w=NativeSelection.GunItems(title.gunMenu).FindIndex(x=>x.data.name==weapon);Require(w>=0&&Progression.Allowed(title.gunMenu[w]),"earned native weapon for next run: "+weapon);Click(Entries(title.gunMenu)[w].button);
