@@ -84,7 +84,12 @@ public partial class RuntimeChecks
    Require(state.Counter==before+1&&NamedSeekers("MagicSword").Length==(before==0?0:1),"actual first manual reload follows source post-increment/first-callback skip");
    if(before==0){p.ammo.UseAmmo(1);p.ammo.Reload();}
    var initial=NamedSeekers("MagicSword").Single();CombatClose(Vector3.Distance(initial.transform.position,p.transform.position),.5f,"native reload spawns the original sword half a unit from player");NamedTarget();yield return NamedSeekerContact(initial,22,true);NamedReturnTarget();
-   foreach(string key in new[]{"katana_perk_fire_edge_name","katana_perk_sword_mastery_name","katana_perk_thousand_blades_name"})yield return AndroidWhirlwindChest(game,key);
+   foreach(string key in new[]{"katana_perk_fire_edge_name","katana_perk_sword_mastery_name"})yield return AndroidWhirlwindChest(game,key);
+   var disabledObject=new GameObject("LedgerDisabledSwordObserver");var disabled=disabledObject.AddComponent<AndroidReloadSwords>();BugCall(disabled,"Listen");disabled.enabled=false;
+   var destroyedObject=new GameObject("LedgerDestroyedSwordObserver");var destroyed=destroyedObject.AddComponent<AndroidReloadSwords>();BugCall(destroyed,"Listen");Object.Destroy(destroyedObject);yield return null;
+   yield return AndroidWhirlwindChest(game,"katana_perk_thousand_blades_name");
+   Require(disabled.Amount==2&&destroyed.Amount==1,"M15 A234 native Thousand Blades upgrades a disabled live helper once without retaining or mutating its destroyed peer");
+   Object.Destroy(disabledObject);yield return null;
   }
   Require(state.Amount==2,"native Thousand Blades event/source replay reaches the existing Start-registered spawner");
   CombatClose(Bonus(p.stats[StatType.BulletDamage]),.4f,"actual Sword Mastery/source replay adds forty-percent bullet damage once");Require(p.GetComponent<AndroidWeaponRules>().Bullet.SetEquals(new[]{"MagicSword"}),"source Sword Mastery uses one named multiplicative membership");

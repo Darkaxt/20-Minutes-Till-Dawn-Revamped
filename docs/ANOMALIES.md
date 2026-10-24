@@ -1,5 +1,16 @@
 # Android gameplay anomaly ledger
 
+**Additional approved corrections — M15, 2026-10-24:** the subsequent instruction "go ahead, fix these and any other that you are sure should be handled" authorizes the following dispositions. They supersede older preserve-source wording for these findings only. [Exact contracts and native acceptance](BUGFIXES.md).
+
+| Finding | Current disposition |
+|---|---|
+| A19/A22/A61/A219 | Descriptions corrected to the unchanged Thunderspawns, Soul Knight, Cadence, Tenacity and Reckless mechanics. Rendered native menus/input/exit pass S4/run-456. |
+| A136 | First Hina clone preserves its actual skill-origin world position; native repeat/contact/Continue/restart pass 458/459. |
+| A234 | Thousand Blades helpers unsubscribe on destruction; disabled live helpers still receive upgrades. Native acquisition/sword/contact/Continue/restart pass 460/461. |
+| A242 | Rhogog's reused explosion re-arms its existing Damage child. Actual repeated AI/physical contact/victory/active-flight save/Continue/restart pass 463/464. |
+
+All M15 code and affected native acceptance are complete; normal 1.1.1 delivery verification remains pending at this checkpoint. Wider retained-body parity coverage remains open. The bounded follow-through established no new failure for A266 moth cadence, A254/A150 Kunoichi clock reachability, A129 original Glass state or A144 Ammo's misspelled cleanup; those are unchanged uncertainties, not newly approved corrections.
+
 This is the maintained anomaly ledger for Android **8.6 / versionCode 1093**, compared with Windows Steam build **12679152**. Stable A-numbers below identify findings across the README, source research and implementation records. Recording an anomaly does not defer its implementation: reachable Android gameplay behavior remains the parity target, including apparent bugs. Independent balance corrections require a separate user instruction.
 
 Each finding records the observed behavior and gameplay consequence, source evidence and its limits, and current implementation/verification disposition. Static decoding is distinguished from runtime reproduction. An unresolved consumer or reachability question remains open; an implemented-but-unverified change is not completed parity. New findings belong here as they are detected, using a new stable ID or an explicit correction to an existing one.

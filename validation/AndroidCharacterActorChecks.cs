@@ -54,7 +54,9 @@ public partial class RuntimeChecks
   CharacterBladeKnockbackTarget=characterActorTarget;CharacterBladeKnockbacks=0;
   game.playerInput.SwitchCurrentControlScheme("Keyboard&Mouse",fixtureKeyboard,fixtureMouse);game.playerInput.neverAutoSwitchControlSchemes=true;
   var aim=(Vector2)Camera.main.WorldToScreenPoint(p.transform.position+Vector3.right*8);
+  Vector3 firstOrigin=Vector3.zero;bool firstPlaced=false;UnityEngine.Events.UnityAction placed=()=>{firstOrigin=clone.transform.position;firstPlaced=Vector3.Distance(firstOrigin,p.transform.position)<.02f;};passive.onUse.AddListener(placed);
   InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim}.WithButton(MouseButton.Right));while(!p.disableAction.value)yield return null;
+  passive.onUse.RemoveListener(placed);Require(firstPlaced,"first native onUse places the clone at the player's actual activation position: "+firstOrigin);
   summon.enabled=false;InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});
   Require(clone.activeSelf&&p.movementSpeed==18&&p.playerHealth.isInvincible.value,"native skill input creates the clone and starts source six-times movement/invulnerability");Require(p.ammo.amount==6,"actual native onUse invokes Maneuver's immediate source reload");Require(harm.damageAmount==20,"Hidden Blade uses live gun damage without the old triple multiplier or summon scaling");
   while(p.disableAction.value)yield return null;float ended=Time.time;Require(p.movementSpeed==3&&knockback.activeSelf,"native dash completion restores movement and activates the original end knockback");
@@ -70,7 +72,7 @@ public partial class RuntimeChecks
   Log("hina-lifetimes-before","harm="+harm.gameObject.activeSelf+" ttl="+harm.GetComponent<TimeToLive>().enabled+" lifetime="+WindField(harm.GetComponent<TimeToLive>(),"lifetime")+" knockback="+knockback.activeSelf+" clone="+clone.activeSelf+" position="+clone.transform.position+" started="+SummonStarted(summon));
   while(harm.gameObject.activeSelf||knockback.activeSelf)yield return null;
   Log("hina-lifetimes-after","clone="+clone.activeSelf+" position="+clone.transform.position+" started="+SummonStarted(summon));
-  Require(SummonStarted(summon)&&clone.transform.parent==null&&clone.transform.position==Vector3.zero,"A136 preserves first-Start detachment at the original clone local origin");
+  Require(SummonStarted(summon)&&clone.transform.parent==null&&Vector3.Distance(clone.transform.position,firstOrigin)<.02f,"M15 A136 first clone preserves its actual skill-origin world pose after Start while the player dashes away");
   while((float)WindField(passive,"_timer")>0)yield return null;int uses=0;UnityEngine.Events.UnityAction used=()=>uses++;passive.onUse.AddListener(used);
   InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim}.WithButton(MouseButton.Right));while(uses==0)yield return null;InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=aim});passive.onUse.RemoveListener(used);
   Require(clone.activeSelf&&Vector3.Distance(clone.transform.position,p.transform.position)<.02f,"second actual native skill repositions and refreshes the already-detached source clone");

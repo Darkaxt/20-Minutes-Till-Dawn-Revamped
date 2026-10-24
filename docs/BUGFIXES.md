@@ -1,5 +1,31 @@
 # Revamped bug-correction contract
 
+## Additional ledger corrections — M15,2026-10-24
+
+Already authorized by the user: "go ahead, fix these and any other that you are sure should be handled." P2 remains the sole ACTIVE stage. This batch corrects the following established contradictions/lifecycle defects while preserving gameplay values, original files/profile, earned ownership, native input and the completed1.1.0 corrections. It does not authorize speculative balance changes or dead-code deletion. The wider M5 source-comparison blocker remains separately recorded.
+
+| Existing finding | Required correction / acceptance |
+|---|---|
+| A19/A22/A61/A219 descriptions | Native/local achievement descriptions match the unchanged mechanics: Thunderspawns15%/22 damage; Soul Knight+15 per currently held soul heart; Cadence every-third-shot+20% size/damage per rank and99 additional piercing; Tenacity3% Fire Rate/5% Knockback per rank at half HP; Reckless requires an accepted Abby skill use with Grenade Launcher and survival, allowing manual fire. Verify rendered native powerup/rune and local achievement menus plus unchanged consumer values. Gale's existing8-second description is already corrected. |
+| A136 Hina clone placement | Preserve the first clone's actual skill-origin world pose across its first Start/detachment. Subsequent skill placement, general summon parenting, exclusive upgrades, native dash/clone attack and source-unsaved actor reconstruction remain. Verify native first/repeated input, damage/knockback, current Continue and ordinary restart. |
+| A242 Rhogog reused explosion | Re-arm only the explosion's existing Damage child when its root activates again. Contact may still consume that child for the current activation. Preserve the root0.3-second lifetime, radius/damage/physics/source pool/arc and normal attack scheduling. Verify actual first contact, same-root acquisition/arming and subsequent physical contact through the native boss attack, Continue and restart. |
+| A234 Thousand Blades observer | Destruction removes the exact AddSpawn observer that Start registered. Live and disabled helpers still receive upgrades once; destroyed helpers do not retain callbacks or mutate counters. Preserve ammo listener ownership, acquisition/repeat and Continue reconstruction; verify native acquisition, source save/Continue and ordinary restart. |
+
+Execution inside existing P2: complete the connected text/lifecycle changes, then focused native acceptance and final reconciliation; commit/synchronize and deliver one normal1.1.1 release with installed-package/rollback/preservation/public-download checks. No per-edit validation/release or new stage. Existing native failures/observations for A136 and A242 are retained as root-cause evidence; focused regression assertions are written before their correction. Additional quirks are changed only with an equally concrete demonstrated defect; unknown reachability/intent and balance complaints are not sufficient.
+
+Current M15 acceptance: all required code is integrated and the affected native workflows pass. Normal 1.1.1 package/install/rollback/preservation/public delivery and cleanup remain required. No external impediment or tracked deferral; P2 remains ACTIVE.
+
+| M15 contract | Native acceptance |
+|---|---|
+| Descriptions | S4/run-456: real rune and achievement menu navigation, native powerup bindings, screenshot inspection, original firing/reload and scene exit. Text fits at 1280×720. Mechanics/achievement consumers are unchanged. |
+| Hina | 458/459: first activation records the actual skill origin, which survives Start while the player dashes; repeated native input, Hidden Blade contact/force4, clone projectile25, exact-input Continue and ordinary restart pass. |
+| Thousand Blades | 460/461: native chest acquisition updates a disabled live helper once and leaves the destroyed peer unchanged; actual reload/swords/seeking/Fire Edge, exact-input Continue and ordinary restart pass. |
+| Rhogog | 463/464: actual AI attacks, same-root rearming and another physical player contact, source root lifetime/landing/pools, boss victory, active-flight save, exact-input Continue and ordinary restart pass. Pool order and player placement isolate reuse/contact; no natural frequency claim. |
+
+454/455/457/462 retain fixture navigation/origin/contact-placement diagnostics, with no production changes to satisfy those errors. Moth cadence (A266), Kunoichi retained-clock reachability (A254/A150), original Glass state (A129) and Ammo's `OnDestory` typo (A144) gained no additional demonstrated gameplay failure in this bounded review and remain unchanged. No extra balance changes or dead-code removal.
+
+## Version1.1.0 correction batch
+
 User authorization: on2026-10-24, after review of the23 likely Android bug mechanisms, the user instructed: "ok, then fix the bugs." This explicitly overrides exact Android-bug parity for the families below. Other Android gameplay changes, controls/progression/HUD/Custom overrides and original/profile preservation remain required. No unrelated balance changes, speculative framework or monetization is authorized.
 
 This correction batch is verified and delivered in **v1.1.0**. The existing broader P2 parity audit remains the single **ACTIVE** stage because retained-body coverage outside the bounded comparisons is still unproved. This document is the authoritative correction/acceptance contract for this batch, linked from SPEC.md. The anomaly ledger remains evidence of original Android behavior; later correction dispositions supersede its old preserve-the-bug instructions for these families only.

@@ -17,8 +17,7 @@ public sealed class AndroidReloadSwords:MonoBehaviour
  public int Amount=1,Counter;
  internal void Listen()=>this.AddObserver(AddSpawn,AddSpawnEvent);
  void AddSpawn(object sender,object args)=>Amount++;
- // Source OnDestroy only removes the Ammo.OnReload listener. Its separate
- // AddSpawn observer is retained until the source notification clear.
+ void OnDestroy()=>this.RemoveObserver(AddSpawn,AddSpawnEvent);
 }
 [HarmonyPatch(typeof(SpawnSummonOnReload),"Start")]
 class AndroidSwordReloadOwner

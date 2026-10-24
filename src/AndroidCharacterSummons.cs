@@ -10,6 +10,15 @@ using flanne.PerkSystem;
 using flanne.PerkSystem.Triggers;
 namespace TwentyMinutes.Modernization;
 
+[HarmonyPatch(typeof(ShadowClonePassive),"PerformSkill")]
+class RevampedFirstClonePlacement
+{
+ // Detach the exact skill actor before activation. Its later source Start
+ // keeps the same world pose because its local and world poses now coincide.
+ // Other summons retain their original source parenting rules.
+ static void Prefix(GameObject ___shadowClone)=>___shadowClone.transform.SetParent(null,true);
+}
+
 // Source StatsHolder.AddPower replaces the provider at the same key. Smash
 // does not accumulate modifiers into every currently pooled tentacle.
 public sealed class AndroidHasturProviders:MonoBehaviour

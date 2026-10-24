@@ -17,9 +17,14 @@ internal static class AndroidLobbedProjectiles
   if(!OwnsTemplate(owned))return;
   Plugin.SetField(owned.GetComponent<TimeToLive>(),"lifetime",.3f);
   UnityEngine.Object.DestroyImmediate(owned.transform.Find("Damage").GetComponent<TimeToLive>());
-  // No enable-time reset: the source child has no script to reactivate it
-  // after PlayerCollider's name-based release of the collision child.
+  owned.AddComponent<RevampedRhogogExplosion>();
  }
+}
+public sealed class RevampedRhogogExplosion:MonoBehaviour
+{
+ Transform damage;
+ void Awake()=>damage=transform.Find("Damage");
+ void OnEnable()=>damage.gameObject.SetActive(true);
 }
 [HarmonyPatch(typeof(AIRandomAreaProjectileSpecial),"InitProjectile")]
 class AndroidLobbedEnemyProducer

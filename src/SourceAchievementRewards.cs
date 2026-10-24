@@ -29,6 +29,7 @@ public static class SourceAchievementRewards
   if(Data!=null)return;
   string root=Path.Combine(Plugin.AssetRoot,"achievements");
   using(var stream=File.OpenRead(Path.Combine(root,"manifest.json")))Data=(Manifest)new DataContractJsonSerializer(typeof(Manifest)).ReadObject(stream);
+  Data.entries.Single(entry=>entry.steamId=="ACH_RECKLESS").description="Survive as Abby with the Grenade Launcher. Use her skill at least once; manual fire is allowed.";
   Sprite Read(string file)
   {
    if(file==null)return null;

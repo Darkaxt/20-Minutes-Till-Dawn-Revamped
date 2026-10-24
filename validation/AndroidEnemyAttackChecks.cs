@@ -19,13 +19,15 @@ public partial class RuntimeChecks
  internal static EnemyShot EnemyShooting;
  internal static int EnemyUnscopedShots,EnemyPlayerContacts,EnemyHomingSteps;
  internal static GameObject EnemyContactTarget;
+ internal static GameObject EnemyRecontactRoot;
  internal static readonly HashSet<GameObject> EnemyRhogogContacts=new HashSet<GameObject>();
+ internal static readonly Dictionary<GameObject,int> EnemyRhogogContactCounts=new Dictionary<GameObject,int>();
  internal static bool EnemySuccessfulDodge,EnemyObserveHoming;
  internal sealed class EnemySpawnBatch{internal Spawner Owner;internal readonly List<GameObject> Children=new List<GameObject>();}
  internal static EnemySpawnBatch EnemySpawning;
  internal static readonly List<EnemySpawnBatch> EnemyBatches=new List<EnemySpawnBatch>();
  internal sealed class EnemyLob
- {internal EnemyAreaProjectile Projectile;internal GameObject Indicator,Explosion;internal Vector2 Target;internal Vector3 Start;internal float Duration;internal bool Landed,ReturnedProjectile,ReturnedIndicator;}
+ {internal EnemyAreaProjectile Projectile;internal GameObject Indicator,Explosion;internal Vector2 Target;internal Vector3 Start;internal float Duration;internal bool Landed,ReturnedProjectile,ReturnedIndicator,ExplosionArmed;}
  internal static readonly List<EnemyLob> EnemyLobs=new List<EnemyLob>();
  internal static EnemyLob EnemyLanding;
  internal static void EnemyCheck(bool condition,string criterion)=>Require(condition,criterion);
@@ -135,19 +137,22 @@ public partial class RuntimeChecks
   while(explosions.Any(e=>e.activeSelf))yield return null;
   var hitRoot=lobs[0].Explosion;var hitChild=hitRoot.transform.Find("Damage").gameObject;
   Require(EnemyRhogogContacts.Contains(hitChild)&&!hitChild.activeSelf,"actual targeted Rhogog landing physically contacts the protected player and returns only its unregistered Damage child");
+  int priorContacts=EnemyRhogogContactCounts[hitChild];
   // Isolate the already-contacted root at the top of the real returned stack.
   // These explicit pool-order operands do not claim a natural reuse frequency.
   var ordered=new List<GameObject>();int allocated=ObjectPooler.SharedInstance.pooledObjectsDictionary["RhogogSporeExplosion"].Count;
   for(int i=0;i<allocated;i++){var value=ObjectPooler.SharedInstance.GetPooledObject("RhogogSporeExplosion");ordered.Add(value);if(value==hitRoot)break;}
   Require(ordered.Last()==hitRoot,"actual source pool still owns the contacted explosion root");
   foreach(var value in ordered.Where(v=>v!=hitRoot))ReturnFixtureActor(value);ReturnFixtureActor(hitRoot);
-  int second=EnemyLobs.Count;ai.specialTimer=0;ai.frozen=false;
+  EnemyRecontactRoot=hitRoot;int second=EnemyLobs.Count;ai.specialTimer=0;ai.frozen=false;
   while(EnemyLobs.Count==second)yield return null;ai.frozen=true;ai.moveComponent.vector=Vector2.zero;
   var reused=EnemyLobs.Skip(second).ToArray();Require(reused.Length==51,"real Rhogog AI starts a second complete source attack");
   while(reused.Any(l=>!l.Landed))yield return null;
-  Require(reused.Any(l=>l.Explosion==hitRoot)&&!hitChild.activeSelf,"actual second AI attack reuses the contacted root without reactivating its source-retained Damage child");
-  Log("enemy-explosion-reuse","Protected physical contact disables child; explicit real pool order exposes the same inactive child on the next native AI attack");
+  Require(reused.Any(l=>l.Explosion==hitRoot&&l.ExplosionArmed),"M15 A242 actual second AI attack re-arms the contacted root's existing Damage child before physics");
+  Log("enemy-explosion-reuse","Protected contact consumes the current child; the next native AI attack re-arms that same pooled root");
   while(ObjectPooler.SharedInstance.pooledObjectsDictionary["RhogogSporeExplosion"].Any(a=>a.activeSelf))yield return null;
+  EnemyRecontactRoot=null;
+  Require(EnemyRhogogContactCounts[hitChild]>priorContacts,"M15 A242 re-armed reused explosion makes another actual player physics contact");
   var health=boss.GetComponent<Health>();while(health.isInvincible.value)yield return null;health.TakeDamage(DamageType.Bullet,health.maxHP);
   while(!(game.CurrentState is PlayerSurvivedState))yield return null;yield return AchievementExit(game,true);
   Log("enemy-forest-victory","Actual tree death -> walking pools -> warning/independent clock -> Rhogog AI51 arcs -> source landing/explosion expiry -> real boss death/native victory");
@@ -201,7 +206,8 @@ class EnemyPlayerContactProbe
 {
  [HarmonyPriority(Priority.First)]static void Prefix(Collision2D collision)
  {
-  if(RuntimeChecks.EnemyAttackMode&&collision.transform.parent!=null&&collision.transform.parent.name=="RhogogSporeExplosion")RuntimeChecks.EnemyRhogogContacts.Add(collision.gameObject);
+  if(RuntimeChecks.EnemyAttackMode&&collision.transform.parent!=null&&collision.transform.parent.name=="RhogogSporeExplosion")
+  {var child=collision.gameObject;RuntimeChecks.EnemyRhogogContacts.Add(child);RuntimeChecks.EnemyRhogogContactCounts.TryGetValue(child,out int count);RuntimeChecks.EnemyRhogogContactCounts[child]=count+1;}
   if(collision.gameObject!=RuntimeChecks.EnemyContactTarget)return;RuntimeChecks.SeedFirstRoll(RuntimeChecks.EnemySuccessfulDodge?0:.99f,RuntimeChecks.EnemySuccessfulDodge?.01f:1);RuntimeChecks.EnemyPlayerContacts++;
  }
 }
@@ -237,7 +243,14 @@ class EnemyPositionedPoolProbe
   if(!RuntimeChecks.EnemyAttackMode||__result==null)return;
   var batch=RuntimeChecks.EnemySpawning;if(batch!=null)
   {var points=(Transform[])RuntimeChecks.EnemyField(batch.Owner,"spawnPoints");RuntimeChecks.EnemyClose(Vector3.Distance(__result.transform.position,points[batch.Children.Count].position),0,"actual secondary acquisition is positioned before velocity assignment");batch.Children.Add(__result);}
-  if(RuntimeChecks.EnemyLanding!=null&&__result.name=="RhogogSporeExplosion")RuntimeChecks.EnemyLanding.Explosion=__result;
+  if(RuntimeChecks.EnemyLanding!=null&&__result.name=="RhogogSporeExplosion")
+  {
+   RuntimeChecks.EnemyLanding.Explosion=__result;RuntimeChecks.EnemyLanding.ExplosionArmed=__result.transform.Find("Damage").gameObject.activeSelf;
+   // Pool order binds the root to the first landing, which may be a scatter
+   // rather than the targeted arc. Place the real player at that exact landing
+   // before physics; do not invoke/synthesize the contact callback.
+   if(__result==RuntimeChecks.EnemyRecontactRoot){PlayerController.Instance.SetPosition(__result.transform.position);Physics2D.SyncTransforms();}
+  }
  }
 }
 [HarmonyPatch(typeof(EnemyAreaProjectile),nameof(EnemyAreaProjectile.TargetPos))]

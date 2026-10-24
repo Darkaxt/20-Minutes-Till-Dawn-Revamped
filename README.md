@@ -2,9 +2,9 @@
 
 A community Windows mod for 20 Minutes Till Dawn by Flanne, maintained by Darkaxt.
 
-**Version1.1.0 integrates the Android8.6 differences confirmed by the recorded source audits and the approved bug corrections.** The comparison has the coverage limits recorded below; exhaustive whole-game source equivalence is unproved.
+**Version 1.1.1 integrates the Android 8.6 differences confirmed by the recorded source audits and the approved bug corrections.** It adds Hina clone placement, Rhogog explosion reuse, Thousand Blades teardown and description corrections. The comparison has the coverage limits recorded below; exhaustive whole-game source equivalence is unproved.
 
-[Download 1.1.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.0) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md) · [Bug corrections](docs/BUGFIXES.md)
+[Download 1.1.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.1) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md) · [Bug corrections](docs/BUGFIXES.md)
 
 The reference is the supplied **Android 8.6 / versionCode 1093** package. The supported Windows baseline is **Steam build 12679152, Unity 2019.4.40f1 Mono x64**. This comparison makes no claim about later Android versions. The target includes Android gameplay arithmetic, stacking, cooldowns, event ordering and quirks; monetization is excluded. The requested Windows controls, progression and interface changes are explicit overrides.
 
@@ -56,7 +56,16 @@ The first audit inventory-routed all **277 Android-only flanne types** and **1,0
 
 ## Approved bug corrections and dead-code audit
 
-The approved23-family review produced **22 corrections and one verified absent Windows equivalent**. [The correction ledger](docs/BUGFIXES.md) maps their exact behavior to Windows, current/repeated Continue, restart, selected legacy and Custom acceptance. This explicitly overrides Android-bug parity for those families; other gameplay refinements remain required. Version1.1.0 includes the corrections;1.0.1 does not.
+The approved 23-family review produced **22 corrections and one verified absent Windows equivalent** in 1.1.0. Version 1.1.1 adds three demonstrated lifecycle corrections and truthful descriptions, under the user's subsequent authorization. [The correction ledger](docs/BUGFIXES.md) maps the exact contracts and native evidence. These approvals override Android-bug parity for the named findings; other gameplay refinements remain required.
+
+| 1.1.1 finding | Correction |
+|---|---|
+| A136 — Hina | The first Shadow Clone retains its actual skill activation position when it detaches, rather than jumping to the world origin. |
+| A242 — Rhogog | A reused explosion reactivates its existing damage child; contact still consumes that child for the current activation. |
+| A234 — Thousand Blades | Destroyed sword-spawn helpers unsubscribe; disabled live helpers still receive the upgrade. |
+| A19/A22/A61/A219 — Descriptions | Thunderspawns, Soul Knight, Cadence, Tenacity and Reckless text describes the existing mechanics without changing their values or achievement conditions. |
+
+Moth's first-Start cadence, Kunoichi's retained clock reachability, the original Glass asset state and Ammo's misspelled cleanup remain recorded uncertainties. This batch established no additional gameplay defect in those cases and made no speculative balance changes.
 
 The requested [redirected-flow dead-code audit](docs/DEAD-CODE.md) found native bodies skipped by live Harmony replacements and per-owner recipes superseded by Android graphs. It established no definitely removable mod class/method. Native entry points, reused helpers and legacy readers remain rooted. No dead-code deletion was performed.
 

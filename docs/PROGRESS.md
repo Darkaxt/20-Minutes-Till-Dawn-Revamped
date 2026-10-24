@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+M15 checkpoint — 2026-10-24: **P1 COMPLETE; P2 ACTIVE**. The additional description and three lifecycle corrections are integrated and pass their complete affected native workflows: descriptions 456, Hina 458/459, Katana/Thousand Blades 460/461, enemy/Rhogog 463/464. Fresh-process Continue inputs match their originating checkpoints byte-for-byte; ordinary restart and native input remain verified. [Acceptance mapping](BUGFIXES.md). Failed 454/455/457/462 are retained fixture diagnostics; they caused no production workaround.
+
+Remaining M15 delivery criteria: normal 1.1.1 package, installed isolated-player roster/input, exact rollback, real Steam update with originals/profile/config preserved, normal public release/source/tag, independent download and reviewed disposable-output cleanup. These remain internal acceptance work, with no external impediment or tracked deferral. The wider M5 retained-body source comparison remains a separate P2 blocker to exhaustive parity; no completion claim is made for it.
+
 Version1.1.0 delivered —2026-10-24: P1 COMPLETE; **P2 ACTIVE for the broader retained-body parity audit**. The confirmed minimum and approved bug-correction batch are verified and released:22 corrected families plus A221's verified absent Windows equivalent. The full corrected contracts and native evidence are mapped in [BUGFIXES.md](BUGFIXES.md). Runtime source is pinned before version metadata changes; changing1.0.1→1.1.0 does not change those accepted method bodies.
 
 | Final1.1.0 delivery item | Verified result |

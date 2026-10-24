@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.1.0")]
+[BepInPlugin(Id,"20MTD Modernization","1.1.1")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -43,6 +43,10 @@ public class Plugin:BaseUnityPlugin
     {
         Instance=this;
         Text["rune_menu_instructions"]="Select to toggle · Hold to upgrade";
+        Text["thunderspawns_description"]="Your summons have a <color=#f5d6c1>15%</color> chance on hit to call down <color=#f5d6c1>Lightning</color> for <color=#f5d6c1>22</color> damage.";
+        Text["soul_knight_description"]="<color=#f5d6c1>Magic Spear</color> gains <color=#f5d6c1>+15</color> damage per <color=#f5d6c1>Soul Heart</color> you currently hold.";
+        Text["rune_description_cadence"]="Every 3rd shot gains +99 Piercing, +20% Bullet Size per rank and +20% Bullet Damage per rank.";
+        Text["rune_description_tenacity"]="When your HP is at or below half of your Max HP, gain +3% Fire Rate and +5% Knockback per rank.";
         StatsEnabled=Config.Bind("Enhancements","StatsOverlay",true,"F2 toggles native icon/value stats. Effective (base + bonus), before charge/conditional effects; PgUp/PgDn scroll collected skill icons. Stored in the mod configuration.");
         ColorfulEnabled=Config.Bind("Enhancements","ColorfulStyle",false,"Optional compatible Sprites Reborn art (Law / Daramos / Darkly77). Original is default. Selected over older Colorful Overhaul by measured current-build coverage.");
         new Harmony(Id).PatchAll(typeof(Plugin).Assembly);

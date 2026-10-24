@@ -133,6 +133,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-combat-buffs-")){yield return CheckAndroidCombatBuffs(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-counted-buffs-")){yield return CheckAndroidCountedBuff(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-character-buffs-")){yield return CheckAndroidCharacterBuffs(testMode.EndsWith("continue"));yield break;}
+        if(testMode=="resume-ledger-descriptions"){yield return CheckLedgerDescriptions(title);yield break;}
         if(testMode.StartsWith("resume-bugfix-")){yield return CheckBugCorrections(testMode);yield break;}
         if(testMode.StartsWith("resume-growth-rune-")){yield return CheckAndroidGrowthRune(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-combat-runes-")){yield return CheckAndroidCombatRunes(testMode.EndsWith("continue"));yield break;}
