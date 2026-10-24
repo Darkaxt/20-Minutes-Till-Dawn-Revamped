@@ -41,6 +41,13 @@ public sealed class AndroidElementStats:flanne.PerkSystem.Action
  }
 }
 [Serializable]
+public sealed class AndroidBurnDamageUp:flanne.PerkSystem.Action
+{
+ // Complete BurnDamageUp.Apply (0x1899310): the source owns one global
+ // StatMod contribution per application, before BurnBuff floors each tick.
+ public override void Activate(GameObject target)=>BurnSystem.SharedInstance.burnDamageMultiplier.AddMultiplierBonus(.35f);
+}
+[Serializable]
 public sealed class AndroidMightDamage:IDamageModifier
 {
  // Android adds +2 to a signed negative HP change. Windows passes positive
@@ -58,6 +65,7 @@ class AndroidHealthPerkRecipes
   {
    case "soul_expand_name":trigger=new InstantTrigger();action=new AndroidGrantHeart{Soul=true,Capacity=2};break;
    case "tome_of_elements_name":trigger=new InstantTrigger();action=new AndroidElementStats();break;
+   case "intense_burn_name":trigger=new InstantTrigger();action=new AndroidBurnDamageUp();break;
    case "electro_mastery_name":trigger=new InstantTrigger();action=new AndroidElectroMastery();break;
    case "death_rounds_name":Plugin.SetField(__instance,"effects",new PerkEffect[0]);Plugin.SetField(__instance,"stackedEffects",new PerkEffect[0]);return;
    default:return;
