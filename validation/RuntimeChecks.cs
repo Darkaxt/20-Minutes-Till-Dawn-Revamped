@@ -163,7 +163,8 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
         if(testMode.StartsWith("integrated-hud")){yield return CheckIntegratedHud(title);yield break;}
-        if(testMode=="custom-native"){yield return CheckCustom();yield break;}
+        if(testMode.StartsWith("custom-native")){yield return CheckCustom();yield break;}
+        if(testMode=="resume-custom-source-continue"){yield return CheckCustomSourceContinue();yield break;}
         if(testMode=="custom-fresh"){yield return CheckFreshCustom();yield break;}
         if(testMode=="custom-challenge"){yield return CheckCustomChallenge();yield break;}
         if(testMode=="custom-presets"){yield return CheckCustomPresets();yield break;}

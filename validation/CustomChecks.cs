@@ -39,17 +39,17 @@ public partial class RuntimeChecks
  {
   yield return OpenCustomConfiguration();float originalDamage=float.Parse(File.ReadAllText(Path.Combine(ResultDir,"custom-basegun.txt")),System.Globalization.CultureInfo.InvariantCulture);
   Click(CustomButton("CustomTab1"));CustomValue(0,"33");yield return Capture("custom-native-weapon-menu.png");
+  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("custom-native"))CustomValue(1,"2");
   Click(CustomButton("CustomTab2"));CustomValue(3,"2");
   Click(CustomButton("CustomTab3"));CustomValue(1,"2");CustomValue(2,"2");CustomValue(7,"2");
+  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("custom-native"))
+  {CustomValue(0,"2");CustomValue(3,"1.5");CustomValue(4,"1.75");CustomValue(5,"3");CustomValue(6,"4");Click(CustomButton("CustomNext"));CustomValue(8,"3");CustomValue(9,"0.5");}
   Click(CustomButton("CustomTab0"));CustomValue(1,SaveSystem.data.difficultyUnlocked.ToString());CustomValue(2,"2");
-  Click(CustomButton("CustomStart"));GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
+  Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>();Click(CustomButton("CustomStart"));GameController game;while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
   GameTimer.SharedInstance.Stop();PlayerController.Instance.playerHealth.isInvincible.Flip();
   Require(CustomMode.Active&&SelectedMap.MapData.achievementsDisabled&&PlayerController.Instance.gun.gunData.damage==33,"native Custom start uses its isolated recipe and disables normal progression");
   Require(Loadout.GunSelection.damage==originalDamage,"the selected original weapon asset remains unchanged: "+originalDamage);
-  var ordinary=SelectedMap.MapData.spawnSessions.First(w=>!w.isElite);var horde=Object.FindObjectOfType<HordeSpawner>();float nativeHealth=horde.healthMultiplier;
-  var existing=Object.FindObjectsOfType<Health>().Select(h=>h.GetInstanceID()).ToArray();AccessTools.Method(typeof(HordeSpawner),"Spawn").Invoke(horde,new object[]{ordinary.monsterPrefab.name,ordinary.HP,false});
-  var target=Object.FindObjectsOfType<Health>().Single(h=>!existing.Contains(h.GetInstanceID())&&h.name==ordinary.monsterPrefab.name+"(Clone)");
-  Require(target.maxHP==Mathf.FloorToInt(ordinary.HP*nativeHealth*2)&&horde.healthMultiplier==nativeHealth,"actual native spawn receives Custom health while its native spawner multiplier is restored");target.TakeDamage(DamageType.Bullet,100000);
+  yield return CustomSourceSpawns(game);
   Require(!(bool)AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.CustomNoSteamAchievement"),"Prefix").Invoke(null,null)&&!(bool)AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.CustomNoLeaderboard"),"Prefix").Invoke(null,null),"both production Steam guards deny Custom publication at the isolated offline boundary");
   float before=(float)AccessTools.Field(typeof(flanne.Player.PlayerXP),"xp").GetValue(game.playerXP);var originalXP=ResumeRuntime.Capture(game.playerXP.xpMultiplier);game.playerXP.GainXP(1);float after=(float)AccessTools.Field(typeof(flanne.Player.PlayerXP),"xp").GetValue(game.playerXP);
   Require(Mathf.Abs(after-before-2*(1+originalXP.flat)*(1+originalXP.bonus)*originalXP.reduction)<.01f,"native XP gain uses twice the underlying native experience value");
@@ -94,14 +94,17 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckCustom()
  {
-  RunResume.Invalidate();string locked="scenario:Challenge_Forest";bool previouslyOwned=Progression.State.earned.Remove(locked);Progression.Save();Progression.Refresh();
+  RunResume.Invalidate();string locked="scenario:Challenge_Forest";int previousCount=Progression.State.earned.RemoveAll(id=>id==locked);Progression.Save();Progression.Refresh();
   Log("fixture-precondition","The isolated journal's Challenge scenario is explicitly locked to test Custom ownership and unlock suppression; the original profile is restored afterward.");
   yield return StartCustomRun();var game=Object.FindObjectOfType<GameController>();
+  yield return CustomNativeInput(game);
   yield return Picks(game,"PowerShot","BigShot","Haste","DragonEgg");yield return CheckCustomLive(game);
   yield return CheckRevolver(game,PlayerController.Instance,"custom-native-shooting.png");
+  if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").EndsWith("-save"))
+  {if(previousCount>0){Progression.State.earned.AddRange(Enumerable.Repeat(locked,previousCount));Progression.Save();Progression.Refresh();}yield return CustomSourceSuspend(game);yield break;}
   int credits=PointsTracker.pts;yield return AchievementWin(game);VerifyCustomResult(ResultDir,credits);
   Require(!Progression.State.earned.Contains(locked),"Custom Forest clear at the maximum earned Darkness does not award its otherwise eligible Challenge scenario");
-  if(previouslyOwned){Progression.State.earned.Add(locked);Progression.Save();Progression.Refresh();}
+  if(previousCount>0){Progression.State.earned.AddRange(Enumerable.Repeat(locked,previousCount));Progression.Save();Progression.Refresh();}
   yield return AchievementRun("Shana","RevolverData","20M_Forest");game=Object.FindObjectOfType<GameController>();
   float originalDamage=float.Parse(File.ReadAllText(Path.Combine(ResultDir,"custom-basegun.txt")),System.Globalization.CultureInfo.InvariantCulture);
   Require(!CustomMode.Active&&PlayerController.Instance.gun.gunData.damage==originalDamage&&!SelectedMap.MapData.achievementsDisabled,"ordinary Forest restart uses the original gun and progression rules");
