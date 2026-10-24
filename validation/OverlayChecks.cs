@@ -41,7 +41,9 @@ public partial class RuntimeChecks
   Require(overlay.Panel.GetComponentInParent<UnityEngine.UI.GraphicRaycaster>()==null,"overlay cannot intercept gameplay pointer input");
   if(player.gun.shooters[0] is PortedShooter)yield return Shot(mouse,.1f,Evolution.None,38,1,null);else yield return CheckRevolver(game,player);
   yield return Capture("overlay-after-shot.png");
-  var extra=Resources.FindObjectsOfTypeAll<Powerup>().Where(x=>x.name!="BigShot" && x.name!="Haste" && ((flanne.PerkSystem.PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(x)).Length==0 && ((StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(x)).Length>0 && ((StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(x)).All(s=>s.isFlatMod?s.flatValue>=0:s.value>=0)).GroupBy(x=>x.name).Select(x=>x.First()).Take(14).ToArray();
+  // Use this run's ordinary pool. Global Resources also contains exclusive
+  // character recipes whose source actions are installed lazily on Apply.
+  var extra=FallbackPool(game.powerupGenerator).Select(item=>item.powerup).Where(x=>x.powerupTreeUIData!=null && x.name!="BigShot" && x.name!="Haste" && ((flanne.PerkSystem.PerkEffect[])AccessTools.Field(typeof(Powerup),"effects").GetValue(x)).Length==0 && ((StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(x)).Length>0 && ((StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(x)).All(s=>s.isFlatMod?s.flatValue>=0:s.value>=0)).GroupBy(x=>x.name).Select(x=>x.First()).Take(14).ToArray();
   Require(extra.Length==14,"long-list fixture has fourteen real nonnegative stat-only powerups");
   foreach(var powerup in extra)player.playerPerks.Equip(powerup);
   overlay.Refresh();yield return null;
@@ -67,14 +69,27 @@ public partial class RuntimeChecks
   title.ChangeState<flanne.TitleScreen.OptionsMenuState>();while(!Active(title.optionsMenu))yield return null;
   var overlay=StatsOverlay.Instance;while(overlay.SettingButton==null||!overlay.SettingButton.gameObject.activeInHierarchy||!overlay.SettingButton.IsInteractable())yield return null;
   if(!StatsOverlay.Enabled)Click(overlay.SettingButton);Click(overlay.SettingButton);Require(!StatsOverlay.Enabled,"native Options disables icon HUD");Click(overlay.SettingButton);Require(StatsOverlay.Enabled,"native Options enables icon HUD");
+  var style=ColorfulStyle.Instance;
+  if(style.Enabled)Click(style.SettingButton);
+  Click(style.SettingButton);Require(style.Enabled&&style.AppliedCount>0,"native title Options enables the selected compatible artwork");
+  Click(style.SettingButton);Require(!style.Enabled&&style.LastRestored>0&&style.LastRestoreFailures==0,"native title Options restores original artwork exactly");
+  yield return Capture("integrated-title-options.png");
   title.ChangeState<flanne.TitleScreen.TitleMainMenuState>();while(!Active(title.mainMenu))yield return null;
   RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new System.Collections.Generic.List<RuneData>());
-  var game=UnityEngine.Object.FindObjectOfType<GameController>();var player=PlayerController.Instance;UnityEngine.Object.FindObjectOfType<HordeSpawner>().enabled=false;
+  var game=UnityEngine.Object.FindObjectOfType<GameController>();var player=PlayerController.Instance;StopFixtureSpawning();
   yield return CheckOverlay(game,player,fixtureMouse,fixtureKeyboard);
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();yield return null;Require(!overlay.Panel.activeSelf,"native pause hides floating HUD");
   yield return Capture("integrated-pause.png");
+  Click(game.optionsButton);while(!(game.CurrentState is OptionsState)||!Active(game.optionsMenu))yield return null;
+  while(style.SettingButton==null||!style.SettingButton.gameObject.activeInHierarchy||!style.SettingButton.IsInteractable())yield return null;
+  Click(style.SettingButton);Require(style.Enabled&&style.AppliedCount>0,"native combat Options enables compatible artwork without replacing gameplay objects");
+  yield return Capture("integrated-combat-options.png");
+  Click(Entries(game.optionsMenu)[0].button);while(!(game.CurrentState is PauseState))yield return null;
   Click(game.pauseResumeButton);while(!(game.CurrentState is CombatState)||PauseController.isPaused)yield return null;
+  yield return Capture("integrated-colorful-hud.png");
   yield return AchievementExit(game,false);Require(overlay.Collected.Count==0,"native scene exit clears collected HUD ownership");
+  Require(StatsOverlay.Enabled&&style.Enabled,"both enhancement settings remain enabled for the separate fresh-process persistence check");
+  Plugin.Instance.Config.Save();File.Copy(Plugin.Instance.Config.ConfigFilePath,Path.Combine(ResultDir,"saved-enhancements.cfg"));
   SetPhase("PASS");Log("complete","Native icon HUD/title, actual modifiers, counts/tiers, clipping, Options/F2/PgUp/PgDn, shooting and scene cleanup verified");Application.Quit(0);
  }
 }

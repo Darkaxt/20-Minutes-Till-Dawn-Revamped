@@ -18,8 +18,7 @@ public class UnlockNotifications:MonoBehaviour
  public GameObject Root;public Image Icon;public TMP_Text Label;
  public string Showing{get;private set;}
  float visibleSeconds;
- void Awake(){Instance=this;this.AddObserver(Progression.EnemyDeath,Health.DeathEvent);}
- void OnDestroy(){this.RemoveObserver(Progression.EnemyDeath,Health.DeathEvent);}
+ void Awake(){Instance=this;}
  void OnApplicationQuit(){Progression.Save();}
  bool CanShow()
  {

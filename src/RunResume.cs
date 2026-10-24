@@ -225,7 +225,13 @@ class RunRecorder:MonoBehaviour
  void Awake(){Instance=this;customMap=CustomMode.Active?CustomMode.RunMap:null;this.AddObserver(OnDeath,Health.DeathEvent);}
  void OnDestroy(){this.RemoveObserver(OnDeath,Health.DeathEvent);ResumeRuntime.ForgetRuntime();RunResume.ReleaseRunAssets();if(customMap!=null)CustomMode.End(customMap);if(Instance==this)Instance=null;}
  void OnDeath(object sender,object args)
- {if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);}}
+ {
+  // Android clears notifications at scene transitions. The persistent toast
+  // canvas cannot own this battle subscription; the run recorder is created
+  // after that clear and removed with the actual battle scene.
+  Progression.EnemyDeath(sender,args);
+  if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);}
+ }
  void Update()
  {if(RunResume.CanSave()){int minute=Mathf.FloorToInt(GameTimer.SharedInstance.timer/60);if(minute!=LastSaveMinute){RunResume.Save();LastSaveMinute=minute;}}}
  void OnApplicationQuit(){RunResume.Save();}

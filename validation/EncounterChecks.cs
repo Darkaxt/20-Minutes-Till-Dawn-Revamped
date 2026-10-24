@@ -15,6 +15,7 @@ public partial class RuntimeChecks
 {
  Progression.Gate Gate(string name)=>Progression.Gates.Single(g=>g.Data.name==name);
  void Earned(string name,bool expected=true)=>Require(Progression.Allowed(Gate(name).Data)==expected,"encounter eligibility "+name+" = "+expected);
+ bool EncounterHitless()=>(bool)WindField(AccessTools.Field(AccessTools.TypeByName("TwentyMinutes.Modernization.RunRecorder"),"Instance").GetValue(null),"UnlockHitless");
  IEnumerator Mini(GameController game)
  {
   var source=SelectedMap.MapData.spawnSessions.First(s=>s.isElite);
@@ -70,8 +71,13 @@ public partial class RuntimeChecks
    AccessTools.Field(typeof(GameTimer),"<timer>k__BackingField").SetValue(GameTimer.SharedInstance,120f);yield return null;
    Require(!Progression.State.earned.Any(),"two minutes alone earns nothing");
    yield return Mini(game);Earned("Diamond",false);Earned("Scarlett",false);Earned("ShotgunData",false);
-   AccessTools.Method(typeof(PlayerHealth),"TakeDamage").Invoke(PlayerController.Instance.playerHealth,new object[]{1});PlayerController.Instance.playerHealth.Heal(1);
-   Require(!game.hitlessDetector.hitless,"native healing does not erase prior damage");
+   var health=PlayerController.Instance.playerHealth;int before=health.hp;
+   // AchievementRun owns one invulnerability contribution. Remove only it
+   // while exercising real damage, as in the source health workflow.
+   health.isInvincible.UnFlip();
+   try{Require(!health.isInvincible.value,"encounter damage precondition has no invulnerability owner");AccessTools.Method(typeof(PlayerHealth),"TakeDamage").Invoke(health,new object[]{1});Require(health.hp==before-1,"encounter precondition actually takes one red heart");health.Heal(1);}
+   finally{health.isInvincible.Flip();}
+   Require(!EncounterHitless()&&health.hp==before,"healing does not erase actual damage from progression's run history");
    yield return AchievementBoss(game,0);Earned("ShotgunData");Earned("10M_Forest");Earned("CrossbowData",false);
    yield return Picks(game,"PyroMage","FireStarter");yield return Mini(game);Earned("Scarlett",false);
    while(UnlockNotifications.Instance.Showing!="weapon:ShotgunData")yield return null;
@@ -85,7 +91,7 @@ public partial class RuntimeChecks
   while(UnlockNotifications.Instance.Showing!="scenario:10M_Forest")yield return null;
   Require(Progression.State.notified.Count(x=>x=="weapon:ShotgunData")==1&&!Progression.State.pending.Any(),"interrupted award deduplicated, remaining scenario notice delivered");
   yield return AchievementRun("Shana","RevolverData","20M_Forest");var g=Object.FindObjectOfType<GameController>();var p=PlayerController.Instance;
-  Require(g.hitlessDetector.hitless,"new native run resets hitless history");yield return AchievementBoss(g,0);Earned("CrossbowData");
+  Require(EncounterHitless(),"new native run resets progression's hitless history");yield return AchievementBoss(g,0);Earned("CrossbowData");
   yield return Picks(g,"Vitality");Require(p.playerHealth.maxHP==5,"Vitality produces five native max red hearts");yield return Mini(g);Earned("Diamond",false);
   yield return Picks(g,"Giant");yield return Mini(g);Earned("Diamond");
   yield return Picks(g,"PyroMage","IntenseFlame","SoothingWarmth");yield return Mini(g);Earned("Scarlett",false);
@@ -95,7 +101,7 @@ public partial class RuntimeChecks
   Require(UnlockNotifications.Instance.Label.text.Contains(Gate("Scarlett").Goal),"fire mastery notice includes actual completed requirement");yield return Capture("achievement-fire-mastery.png");
   yield return Picks(g,"Haste","RunAndGun","InTheWind");Attribute(StatType.MoveSpeed,3.99f);yield return Mini(g);Earned("Hina",false);Attribute(StatType.MoveSpeed,4);yield return Mini(g);Earned("Hina");
   yield return Picks(g,"ElectroMage","Energized");yield return Mini(g);Earned("Spark");
-  p.playerHealth.shp=1;yield return Mini(g);Earned("Lilith",false);p.playerHealth.shp=2;yield return Mini(g);Earned("Lilith");
+  p.playerHealth.maxSHP=3;Log("fixture-precondition","Explicit soul capacity3 and current hearts1/2 isolate unlock thresholds; no soul-heart acquisition claim.");p.playerHealth.shp=1;yield return Mini(g);Earned("Lilith",false);p.playerHealth.shp=2;yield return Mini(g);Earned("Lilith");
   Attribute(StatType.BulletDamage,34.99f);Attribute(StatType.FireRate,5.99f);yield return AchievementBoss(g,0);Earned("GrenadeLauncherData",false);Earned("DualSMGsData",false);Earned("FlameCannon");
   Attribute(StatType.BulletDamage,35);Attribute(StatType.FireRate,6);yield return AchievementBoss(g,0);Earned("GrenadeLauncherData");Earned("DualSMGsData");yield return AchievementWin(g);
   yield return AchievementRun("Hina","CrossbowData","20M_Forest",1);g=Object.FindObjectOfType<GameController>();
@@ -108,7 +114,7 @@ public partial class RuntimeChecks
   Attribute(StatType.MoveSpeed,4.99f);yield return Mini(g);Earned("Dasher",false);Attribute(StatType.MoveSpeed,5);yield return Mini(g);Earned("Dasher");
   yield return AchievementBoss(g,0);Earned("ModernizationChargeCannon_None",false);yield return AchievementBoss(g,1);Earned("ModernizationChargeCannon_None");yield return AchievementWin(g);
   yield return AchievementRun("Diamond","MagicBowData","20M_Temple",2);g=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
-  p.playerHealth.shp=2;yield return Mini(g);Earned("Luna");Earned("Hastur",false);Earned("Revamped_Dimond_Portrait",false);
+  p.playerHealth.maxSHP=3;Log("fixture-precondition","Explicit soul capacity3 and current hearts2/3 isolate Temple unlock thresholds; no soul-heart acquisition claim.");p.playerHealth.shp=2;yield return Mini(g);Earned("Luna");Earned("Hastur",false);Earned("Revamped_Dimond_Portrait",false);
   p.playerHealth.shp=3;yield return Mini(g);Earned("Hastur");Earned("Revamped_Dimond_Portrait");
   Attribute(StatType.BulletDamage,59.99f);yield return Mini(g);Earned("Katana",false);Attribute(StatType.BulletDamage,60);yield return Mini(g);Earned("Katana");
   yield return AchievementWin(g);Earned("20M_PumpkinPatch");Earned("Endless_Forest",false);

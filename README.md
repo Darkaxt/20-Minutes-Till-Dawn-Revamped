@@ -18,6 +18,8 @@ Custom runs use obtained content and award credits while disabling unlocks, achi
 
 Android gameplay parity, excluding monetization and preserving the requested progression/UI changes, is the target. The current integration is incomplete. The versioned installer prepares owned-input assets locally and verifies the supported game and owned installation files. The delivery ledger distinguishes verified releases from work still in progress.
 
+**Current Windows checkpoint (2026-10-24):** integrated HUD/settings/runes and all30 encounter unlock gates pass their recorded copied-player workflows, including notice persistence and Custom no-award behavior. A275 fixes the progression listener lost by Android scene clears without altering the clears. Final installed-package roster/input/rollback, authorized phone acceptance and publication remain open; the original phone is currently disconnected. [Current acceptance ledger](docs/PROGRESS.md).
+
 ## Controls and behavior
 
 F2 or Options toggles the transparent stats HUD. Numbers show effective values followed by base and net bonus, before charge/conditional effects. Page Up/Page Down scroll the right-hand collected skill icons; T1/T2/T3 indicate tree tiers, S indicates a special upgrade, and ×N is its acquired count. Native movement, shooting, auto-targeting and controller bindings remain.
@@ -231,7 +233,7 @@ There is **no validated exact total of remaining unique gameplay changes**. The 
 
 **Excluded:** mobile commerce, ads/reward systems, GamePass/account services, promotional rentals/coupons and unused placeholder content. These exclusions are not missing gameplay integrations. Third-party mod binaries/artwork are not bundled.
 
-Culling, Mini Clip, Giant/Tomes, shared burn/area targeting, health/vision, base weapon/character tuning, direct heart grants and damage composition have passed their recorded native checks. Stalwart and refreshing effects, plus heart counters and elemental modifiers, also pass fresh-process Continue. The remaining reachable Android gameplay changes are required work and do not await a separate balance decision. No gameplay-completion release or deployment has occurred.
+Culling, Mini Clip, Giant/Tomes, shared burn/area targeting, health/vision, base weapon/character tuning, direct heart grants and damage composition have passed their recorded native checks. Stalwart and refreshing effects, plus heart counters and elemental modifiers, also pass fresh-process Continue. Recorded source/actor/mode/current-legacy/Custom gameplay workflows now include the integrated progression/rune/HUD/settings acceptance above. Final delivered-package/cross-device verification remains required; no gameplay-completion release or deployment has occurred.
 
 ## Development
 
