@@ -24,13 +24,18 @@ if args.action=='prepare':
     assert args.build and not args.package.exists(),'Select a build and a new versioned output folder'
     build=json.loads((args.build/'BUILD.json').read_text());assert build['version']==VERSION and build['signing_verified']
     commit=git('rev-parse','HEAD')
+    repository_files={}
     for name,expected in build['source_files'].items():
         assert sha(ROOT/name)==expected,'Changed build source: '+name
-        assert hashlib.sha256(subprocess.check_output(['git','show',commit+':'+name],cwd=ROOT)).hexdigest()==expected,'Uncommitted build source: '+name
+        committed=subprocess.check_output(['git','show',commit+':'+name],cwd=ROOT)
+        # Git's text attributes normalize the existing Windows stock contract.
+        # Record both real compiler inputs and canonical repository bytes.
+        assert (ROOT/name).read_bytes().replace(b'\r\n',b'\n')==committed.replace(b'\r\n',b'\n'),'Uncommitted build source: '+name
+        repository_files[name]=hashlib.sha256(committed).hexdigest()
     assert sha(args.build/APK)==build['artifacts'][APK]
     certificate=re.search(r'Signer #1 certificate SHA-256 digest: ([a-f0-9]{64})',(args.build/(APK.removesuffix('.apk')+'-signature.txt')).read_text()).group(1)
     args.package.mkdir(parents=True);shutil.copyfile(args.build/APK,args.package/APK)
-    metadata={'product':'Revamped-Updater','version':VERSION,'version_code':1,'package':'org.darkaxt.revamped.updater','source_commit':commit,'apk_sha256':sha(args.package/APK),'certificate_sha256':certificate,'source_files':build['source_files'],'min_sdk':26,'target_sdk':36}
+    metadata={'product':'Revamped-Updater','version':VERSION,'version_code':1,'package':'org.darkaxt.revamped.updater','source_commit':commit,'apk_sha256':sha(args.package/APK),'certificate_sha256':certificate,'source_files':repository_files,'build_input_files':build['source_files'],'source_comparison':'Text line endings normalized; compiler input digests retained separately','min_sdk':26,'target_sdk':36}
     (args.package/'UPDATER.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf8')
     (args.package/'SHA256SUMS.txt').write_text(''.join(sha(args.package/name)+'  '+name+'\n' for name in [APK,'UPDATER.json']),encoding='utf8')
     print(json.dumps(metadata,indent=2))
