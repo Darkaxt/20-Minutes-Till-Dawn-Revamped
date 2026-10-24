@@ -15,9 +15,9 @@ Start the game normally through Steam. The installer checks all 142 original gam
 
 F2/Options toggles the icon HUD; Page Up/Page Down scroll skills. Original artwork is the default; Options can enable the compatible Sprites Reborn treatment and its palette extension. Pause → Save & return suspends a supported run. Custom runs award credits only and use obtained content. See [controls and limits](docs/CUSTOM.md) and [migration decisions](docs/MIGRATION.md).
 
-## Upgrade from 1.0.0
+## Upgrade from an earlier Revamped installation
 
-Close the game. Use the old extracted release installer to uninstall its unchanged owned files, then run the new release installation command above. Keep your existing profile and mod configuration. The installer deliberately rejects overwriting a different installed release; it does not silently replace shared or modified loader files.
+Close the game. Use the old extracted release installer to uninstall its unchanged owned files, then run the new release installation command above. This also applies to earlier unpublished 1.0.1 checkpoints: matching version labels do not mean their source revision and payload match. Keep your existing profile and mod configuration. The installer deliberately rejects overwriting a different installed release; it does not silently replace shared or modified loader files.
 
 ## Uninstall / rollback
 
