@@ -145,6 +145,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-transform-")){yield return CheckAndroidTransforms(testMode);yield break;}
         if(testMode.StartsWith("resume-status-tree-")){yield return CheckAndroidStatusTree(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-recovery-")){yield return CheckAndroidRecovery(testMode.EndsWith("continue"));yield break;}
+        if(testMode.StartsWith("resume-mixed-tomes-")){yield return CheckAndroidMixedTomes(testMode);yield break;}
         if(testMode.StartsWith("resume-shooting-exit-")){yield return CheckShootingExit(testMode.EndsWith("baseline"));yield break;}
         if(testMode.StartsWith("resume-shooting-")){yield return CheckAndroidShooting(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("resume-ghost-upgrades-")){yield return CheckAndroidGhostUpgrades(testMode.EndsWith("continue"));yield break;}
