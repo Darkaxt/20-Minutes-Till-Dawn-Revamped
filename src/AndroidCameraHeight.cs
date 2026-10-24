@@ -35,3 +35,11 @@ public static class AndroidCameraHeight
 [HarmonyPatch(typeof(GameController),"Awake")]
 class AndroidCameraHeightOwner
 {static void Postfix(GameController __instance)=>AndroidCameraHeight.Configure(__instance);}
+
+// Source CameraRig.Update is empty. The unchanged Awake/Start and zero-offset
+// child hierarchy already provide player follow/shake; ShootingCursor and the
+// native mouse/controller actions independently own aiming. Windows' additional
+// cursor-driven camera offset is not part of that source view behavior.
+[HarmonyPatch(typeof(CameraRig),"Update")]
+class AndroidCameraFollow
+{static bool Prefix()=>false;}

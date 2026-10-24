@@ -39,6 +39,16 @@ public partial class RuntimeChecks
    Require(shield.isActive&&(bool)WindField(owner,"Contributes")&&(int)WindField(owner,"Count")==1&&(float)WindField(owner,"ApplyAt")==-1&&PlayerController.Instance.playerHealth.isProtected,"the resumed native Blessing grants one initialized source shield and its actual protection contribution");
    Require(restored.runtime.shields.Count==0&&!restored.runtime.protectionFlips.HasValue,"source schema7 does not serialize the shield's unsaved active phase");
   }
+  if(expected.runes.Any(r=>r.name=="BlessingRuneData"&&r.rank==1)&&expected.acquired.All(a=>a.key=="holy_shield_name"))
+  {
+  var sourceShield=PlayerController.Instance.GetComponentInChildren<PreventDamage>();
+  while(sourceShield==null||sourceShield.cooldownRate==null){yield return null;sourceShield=PlayerController.Instance.GetComponentInChildren<PreventDamage>();}
+  var sourceOwner=ShieldOwner(sourceShield);
+  CombatClose(sourceShield.cooldownTime,120,"selected Blessing preserves the original source base shield cooldown");
+  CombatClose((float)WindField(sourceOwner,"Reduction"),5,"selected rank-one Blessing uses the source reduction owner after its actual bootstrap");
+  CombatClose(sourceShield.finalCooldown,115,"selected Blessing exposes the source effective cooldown");
+  RunResume.Save();File.Copy(RunCheckpoint,Path.Combine(ResultDir,"preset-saved-run.json"));
+  }
   yield return CheckCustomNavigation(game);
   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Fresh-process imported preset continuation and native exit verified");Application.Quit(0);
  }
