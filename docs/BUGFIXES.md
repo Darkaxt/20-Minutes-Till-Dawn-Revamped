@@ -13,7 +13,7 @@ Already authorized by the user: "go ahead, fix these and any other that you are 
 
 Execution inside existing P2: complete the connected text/lifecycle changes, then focused native acceptance and final reconciliation; commit/synchronize and deliver one normal1.1.1 release with installed-package/rollback/preservation/public-download checks. No per-edit validation/release or new stage. Existing native failures/observations for A136 and A242 are retained as root-cause evidence; focused regression assertions are written before their correction. Additional quirks are changed only with an equally concrete demonstrated defect; unknown reachability/intent and balance complaints are not sufficient.
 
-Current M15 acceptance: all required code is integrated and the affected native workflows pass. Normal 1.1.1 package/install/rollback/preservation/public delivery and cleanup remain required. No external impediment or tracked deferral; P2 remains ACTIVE.
+Current M15 acceptance: all required code, affected native workflows and final delivery are verified. Normal **v1.1.1** is published, independently downloaded and verified, and installed on Steam; S6/run-16 passes the delivered roster/input workflow and exact rollback preserves stock files. All 142 originals, three real profile files and configuration remain unchanged. Reviewed cleanup removed both disposable task roots. [Version/source/digest receipt](PROGRESS.md). No M15 blocker or tracked deferral remains; P2 remains ACTIVE for broader M5 source coverage.
 
 | M15 contract | Native acceptance |
 |---|---|

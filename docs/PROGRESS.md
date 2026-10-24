@@ -1,8 +1,20 @@
 # Current Android gameplay completion
 
-M15 checkpoint — 2026-10-24: **P1 COMPLETE; P2 ACTIVE**. The additional description and three lifecycle corrections are integrated and pass their complete affected native workflows: descriptions 456, Hina 458/459, Katana/Thousand Blades 460/461, enemy/Rhogog 463/464. Fresh-process Continue inputs match their originating checkpoints byte-for-byte; ordinary restart and native input remain verified. [Acceptance mapping](BUGFIXES.md). Failed 454/455/457/462 are retained fixture diagnostics; they caused no production workaround.
+Version 1.1.1 delivered — 2026-10-24: **P1 COMPLETE; P2 ACTIVE for broader retained-body parity coverage**. M15's additional description and three lifecycle corrections are integrated and verified in their complete affected native workflows: descriptions 456, Hina 458/459, Katana/Thousand Blades 460/461, enemy/Rhogog 463/464. Fresh-process Continue inputs match their originating checkpoints byte-for-byte; ordinary restart and native input pass. [Acceptance mapping](BUGFIXES.md). Failed 454/455/457/462 are retained fixture diagnostics; they caused no production workaround.
 
-Remaining M15 delivery criteria: normal 1.1.1 package, installed isolated-player roster/input, exact rollback, real Steam update with originals/profile/config preserved, normal public release/source/tag, independent download and reviewed disposable-output cleanup. These remain internal acceptance work, with no external impediment or tracked deferral. The wider M5 retained-body source comparison remains a separate P2 blocker to exhaustive parity; no completion claim is made for it.
+| Final 1.1.1 delivery item | Verified result |
+|---|---|
+| Normal public release | [v1.1.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.1), published 2026-10-24; neither draft nor prerelease; ZIP and SHA256SUMS.txt present. |
+| Source revision | 856ee95c3e473e7ec4d48e0f43e9aa34c475d9fe; release tag and main verified. Later documentation receipts do not move the tag. |
+| Archive SHA256 | ad07b44ef096d9d4cb857196b83d44aa9e0f7beacd0bff19702e2563452f94d4 |
+| Production DLL SHA256 | d9abc2c9269b23bf09d96504e48a0017013b34c79140c0ab0b2b9c3b32db73ef |
+| Independent public download | All 20 package members, version/source/candidate=false, DLL and installer verified; no extracted assets or validation DLL distributed. |
+| Installed isolated Windows player | S6/run-16 PASS/exit0: all 15 character entries and 12 base guns, native mouse/controller fire/release/reload and repeated scene exits; actual package DLL retained. |
+| Copied rollback | Normal installer removes 614 exact owned files; all 142 stock originals verify afterward. |
+| Actual Steam update | Verified 1.1.0 uninstall → stock verification → 1.1.1 install and 614-file verification. All 142 originals, three real profile files and configuration unchanged; no validation DLL or user game launch. |
+| Disposable output | Transaction e24f2bd4573281a52f6e2d467e4f6431 applied all 203 reviewed members / 135120159 logical bytes. Both exact disposable roots are absent; durable evidence, release and development inputs retained. |
+
+No M15 correction, acceptance or delivery criterion remains pending; no external impediment or tracked deferral. The wider M5 retained-body source comparison remains a P2 blocker to exhaustive parity. Phone delivery remains separately unfinished. The native Android extension discussion targets one screen only, with no bottom-screen support; no native Android build is implemented by this Windows release.
 
 Version1.1.0 delivered —2026-10-24: P1 COMPLETE; **P2 ACTIVE for the broader retained-body parity audit**. The confirmed minimum and approved bug-correction batch are verified and released:22 corrected families plus A221's verified absent Windows equivalent. The full corrected contracts and native evidence are mapped in [BUGFIXES.md](BUGFIXES.md). Runtime source is pinned before version metadata changes; changing1.0.1→1.1.0 does not change those accepted method bodies.
 

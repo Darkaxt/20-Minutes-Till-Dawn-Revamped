@@ -9,7 +9,7 @@
 | A234 | Thousand Blades helpers unsubscribe on destruction; disabled live helpers still receive upgrades. Native acquisition/sword/contact/Continue/restart pass 460/461. |
 | A242 | Rhogog's reused explosion re-arms its existing Damage child. Actual repeated AI/physical contact/victory/active-flight save/Continue/restart pass 463/464. |
 
-All M15 code and affected native acceptance are complete; normal 1.1.1 delivery verification remains pending at this checkpoint. Wider retained-body parity coverage remains open. The bounded follow-through established no new failure for A266 moth cadence, A254/A150 Kunoichi clock reachability, A129 original Glass state or A144 Ammo's misspelled cleanup; those are unchanged uncertainties, not newly approved corrections.
+M15 is verified and delivered in normal **v1.1.1**, source 856ee95. Installed-player S6/run-16, exact rollback, actual Steam update, independent public download and reviewed cleanup pass, with originals/profile/config preserved. [Delivery receipt](PROGRESS.md). Wider retained-body parity coverage remains open. The bounded follow-through established no new failure for A266 moth cadence, A254/A150 Kunoichi clock reachability, A129 original Glass state or A144 Ammo's misspelled cleanup; those are unchanged uncertainties, not newly approved corrections.
 
 This is the maintained anomaly ledger for Android **8.6 / versionCode 1093**, compared with Windows Steam build **12679152**. Stable A-numbers below identify findings across the README, source research and implementation records. Recording an anomaly does not defer its implementation: reachable Android gameplay behavior remains the parity target, including apparent bugs. Independent balance corrections require a separate user instruction.
 
