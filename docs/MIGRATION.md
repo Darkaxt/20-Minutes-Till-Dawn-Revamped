@@ -1,5 +1,7 @@
 # Gameplay migration mapping
 
+Current status, 2026-10-24: Android 8.6 gameplay integration and the approved bug corrections are verified and delivered in v1.1.2. [Current parity ledger](PARITY.md) and [delivery receipt](PROGRESS.md) supersede the dated source-only and pending-verification notes below. Those notes are retained as migration history, not current missing features.
+
 Current A258 follow-through: projectile damage now shares the source Moth's live child Harmful across spawn and later Lens/modifier writes. Source size-operation order is retained; existing summoned-weapon/lifecycle adapters remain authoritative. This is source-only, uncompiled/unverified; no child/projectile phase snapshots or independent balance correction are added.
 
 Current A257 follow-through: Lilith's actual death-summon callback follows Android Health-death scope and pool/placement/parenting ownership. Full stated Hastur/Hina/Luna helper paths match or use existing source adapters; their distinct acquisition orders and unsaved phases remain. Source-only, uncompiled/unverified.
