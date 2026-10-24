@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Events;
 using flanne;
 namespace TwentyMinutes.Modernization;
 
@@ -104,21 +105,40 @@ class AndroidSpawnBounce
  static bool Prefix()=>false;
 }
 
+[HarmonyPatch(typeof(ArrowRetrieveOnReload))]
+class AndroidArrowReloadOwner
+{
+ static UnityAction Handler(ArrowRetrieveOnReload owner)=>(UnityAction)System.Delegate.CreateDelegate(typeof(UnityAction),owner,AccessTools.Method(typeof(ArrowRetrieveOnReload),"OnReload"));
+ [HarmonyPrefix,HarmonyPatch("Start")]
+ static bool Start(ArrowRetrieveOnReload __instance,GameObject ___retrieveArrowPrefab,ref ObjectPooler ___OP)
+ {
+  ___OP=ObjectPooler.SharedInstance;
+  ___OP.GetComponent<AndroidPools>().Register(___retrieveArrowPrefab.name,___retrieveArrowPrefab);
+  PlayerController.Instance.ammo.OnReload.AddListener(Handler(__instance));return false;
+ }
+ [HarmonyPrefix,HarmonyPatch("OnDestroy")]
+ static bool Destroy(ArrowRetrieveOnReload __instance)
+ {PlayerController.Instance.ammo.OnReload.RemoveListener(Handler(__instance));return false;}
+}
 [HarmonyPatch(typeof(ArrowRetrieveOnReload),"OnReload")]
 class AndroidArrowReload
 {
  static readonly FieldInfo Points=AccessTools.Field(typeof(ArrowRetrieveOnReload),"retrievalPoints");
  static readonly MethodInfo Retrieve=AccessTools.Method(typeof(ArrowRetrieveOnReload),"RetrieveCR");
- static bool Prefix(ArrowRetrieveOnReload __instance,GameObject ___retrieveArrowPrefab,float ___damageMulti,bool ___dontRetrieve,SoundEffectSO ___retrieveSFX)
+ static bool Prefix(ArrowRetrieveOnReload __instance,GameObject ___retrieveArrowPrefab,float ___damageMulti,bool ___dontRetrieve,SoundEffectSO ___retrieveSFX,ObjectPooler ___OP)
  {
-  var points=(System.Collections.Generic.List<ArrowRetrievalPoint>)Points.GetValue(null);var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();
+  var points=(System.Collections.Generic.List<ArrowRetrievalPoint>)Points.GetValue(null);
+  // Source 0x1982f9c returns before traversal AND sound when the list has
+  // never been registered. A non-null empty list still plays the sound.
+  if(points==null)return false;
   for(int i=0;i<points.Count;i++)
   {
    if(!points[i].gameObject.activeSelf)continue;
+   var pool=___OP.GetComponent<AndroidPools>();
    var arrow=pool.Get(___retrieveArrowPrefab.name,points[i].transform.position);
    var harm=arrow.GetComponent<Harmful>();harm.damageAmount=Mathf.FloorToInt(PlayerController.Instance.gun.damage*___damageMulti);
    if(!___dontRetrieve)harm.StartCoroutine((IEnumerator)Retrieve.Invoke(__instance,new object[]{arrow}));
-   AndroidPools.Return(points[i].gameObject);
+   pool.Release(points[i].gameObject);
   }
   ___retrieveSFX?.Play();return false;
  }
@@ -127,6 +147,7 @@ class AndroidArrowReload
 class AndroidArrowRetrieval
 {
  static readonly FieldInfo Speed=AccessTools.Field(typeof(ArrowRetrieveOnReload),"retrieveSpeed");
+ static readonly FieldInfo Pool=AccessTools.Field(typeof(ArrowRetrieveOnReload),"OP");
  static bool Prefix(ArrowRetrieveOnReload __instance,GameObject obj,ref IEnumerator __result)
  {__result=Retrieve(__instance,obj);return false;}
  static IEnumerator Retrieve(ArrowRetrieveOnReload owner,GameObject arrow)
@@ -134,6 +155,6 @@ class AndroidArrowRetrieval
   arrow.transform.SetParent(PlayerController.Instance.transform);
   while(arrow.transform.localPosition!=Vector3.zero)
   {yield return null;arrow.transform.localPosition=Vector3.MoveTowards(arrow.transform.localPosition,Vector3.zero,(float)Speed.GetValue(owner)*Time.deltaTime);}
-  AndroidPools.Return(arrow);
+  ((ObjectPooler)Pool.GetValue(owner)).GetComponent<AndroidPools>().Release(arrow);
  }
 }
