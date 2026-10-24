@@ -78,6 +78,11 @@ public sealed class AndroidCharacterUpgrade:flanne.PerkSystem.Action
    var prefab=(GameObject)AccessTools.Field(typeof(AttachPrefabToPlayerAction),"prefab").GetValue(Attachment);
    Plugin.SetField(prefab.GetComponent<SpawnObjectTowardsCursorOnReload>(),"distanceFromPlayerToSpawn",-4f);
   }
+  if(Key=="dasher_perk_deer_friend_name")
+  {
+   var prefab=(GameObject)AccessTools.Field(typeof(AttachPrefabToPlayerAction),"prefab").GetValue(Attachment);
+   prefab.GetComponent<SeekerWeapon>().baseDamage=20;
+  }
   Attachment?.Activate(target);
   switch(Key)
   {

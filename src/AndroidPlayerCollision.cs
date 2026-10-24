@@ -192,12 +192,17 @@ class AndroidPlayerMovement
 {
  static bool Prefix(PlayerController __instance)
  {
-  var move=__instance.moveVec;if(move==Vector3.zero||__instance.disableMove.value)return false;
-  Vector2 realMove=(Vector2)move*__instance.moveSpeedMultiplier*__instance.finalMoveSpeed;
-  float distance=(realMove*Time.deltaTime).magnitude;
-  var hit=Physics2D.Raycast(__instance.transform.position,move,distance+.35f,AndroidPlayerCollision.BoundaryMask);
+  Move(__instance,Time.deltaTime,(Vector2)__instance.moveVec*__instance.moveSpeedMultiplier*__instance.finalMoveSpeed,false);return false;
+ }
+ // Source MovePlayer(dt, velocity, forced) is also called by Dasher. Both
+ // paths use the same source Rectify/native boundary-layer mapping.
+ internal static void Move(PlayerController player,float dt,Vector2 realMove,bool forced)
+ {
+  var move=player.moveVec;if(move==Vector3.zero||(!forced&&player.disableMove.value))return;
+  float distance=(realMove*dt).magnitude;
+  var hit=Physics2D.Raycast(player.transform.position,move,distance+.35f,AndroidPlayerCollision.BoundaryMask);
   Vector2 delta=hit.collider!=null&&AndroidPlayerCollision.IsBoundary(hit.collider)?
-   (Vector2)move.normalized*(Vector3.Distance(__instance.transform.position,hit.point)-.35f):realMove*Time.deltaTime;
-  __instance.transform.Translate(delta);return false;
+   (Vector2)move.normalized*(Vector3.Distance(player.transform.position,hit.point)-.35f):realMove*dt;
+  player.transform.Translate(delta);
  }
 }

@@ -90,6 +90,9 @@ class SuspendToTitleState:GameState
   // The original TransitionToTitleState deposits the run score. A suspended run
   // must not receive that reward, so use only the normal Unity scene boundary.
   AndroidNotifications.Clear();
+  AndroidBurnState.Clear();
+  AndroidPools.Clear();
+  AndroidCrowCollision.Clear();
   AndroidSummonPulse.Clear();
   SceneManager.LoadSceneAsync("TitleScreen",LoadSceneMode.Single);
  }
