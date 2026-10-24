@@ -22,8 +22,7 @@ public sealed class AndroidBurnStatus
  internal void Tick(float dt)
  {
   if(health!=null&&health.isDead){Release();return;}
-  // Source leaves a zero-count entry registered instead of releasing it here.
-  if(remaining<1)return;
+  if(remaining<1){Release();return;}
   if(Effect!=null)Effect.transform.position=Target.transform.position;
   elapsed+=dt;if(elapsed<interval)return;
   elapsed=0;remaining--;
@@ -39,9 +38,7 @@ public sealed class AndroidBurnStatus
  internal void Release()
  {
   AndroidBurnState.Get(BurnSystem.SharedInstance).Release(this);
-  damage=0;remaining=0;health=null;Target=null;
-  // Neither source Release nor Affect clears elapsed/interval. A reused buff
-  // can inherit the partial phase of a different, already-dead target.
+  damage=0;remaining=0;elapsed=0;interval=0;health=null;Target=null;
   if(Effect!=null){AndroidPools.Return(Effect);Effect=null;}
  }
 }
@@ -69,16 +66,18 @@ public sealed class AndroidBurnState:MonoBehaviour
  {
   if(target==null||!target.activeSelf||target.layer==(int)TagLayerUtil.Player)return;
   if(AndroidAffixes.Has(target,0))return;
+  int count=Mathf.FloorToInt(Owner.burnDurationMultiplier.Modify(AndroidBurnStatus.BaseDuration)+.1f);
+  if(count<1||target.GetComponent<Health>()==null)return;
   int index=Index(target);AndroidBurnStatus buff;
   if(index>=0)buff=active[index];
   else
   {
-   var effect=ObjectPooler.SharedInstance.GetPooledObject(Tag);
-   buff=free.Count>0?free.Pop():new AndroidBurnStatus();buff.Effect=effect;active.Add(buff);
+   buff=free.Count>0?free.Pop():new AndroidBurnStatus();
+   if(!buff.Affect(target,1,amount,count)){free.Push(buff);return;}
+   buff.Effect=ObjectPooler.SharedInstance.GetPooledObject(Tag);active.Add(buff);
   }
-  // Source sends no target payload, before the amount/target/count assignment.
+  if(index>=0&&!buff.Affect(target,1,amount,count))return;
   Owner.PostNotification(BurnSystem.InflictBurnEvent,null);
-  buff.Affect(target,1,amount,Mathf.FloorToInt(Owner.burnDurationMultiplier.Modify(AndroidBurnStatus.BaseDuration)+.1f));
  }
  void FixedUpdate()
  {

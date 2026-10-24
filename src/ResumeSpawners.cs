@@ -75,6 +75,7 @@ static partial class RunResume
   var r=RunRecorder.Instance;r.RoundStart=saved.roundStart;r.RoundClock=Time.time-saved.roundElapsed;r.EndlessCycle=saved.endlessCycle;r.KilledBosses.UnionWith(saved.killedBosses);r.KilledElites.UnionWith(saved.killedElites);
   var horde=Object.FindObjectOfType<HordeSpawner>();var boss=Object.FindObjectOfType<BossSpawner>();
   var source=Object.FindObjectOfType<AndroidEndlessRun>();
+  if(!SelectedMap.MapData.darknessDisabled&&!ChallengeMode.Active&&saved.darkness>=10)AndroidTimedEnemyDamage.RestoreOwner(horde);
   var hordeValues=(float[])saved.hordeModifiers.Clone();var bossValues=(float[])saved.bossModifiers.Clone();
   int previousCycle=source?.PreviousWindowsCycle??saved.endlessCycle;
   if(saved.version==3&&SelectedMap.MapData.endless&&previousCycle>0)
@@ -86,7 +87,7 @@ static partial class RunResume
    bossValues[0]-=3*previousCycle;bossValues[2]-=.25f*previousCycle;
   }
   // Legacy Windows D10 may have saved its one-shot late enemy-damage
-  // addition. The source's asset Update has no reached producer. These map
+  // addition. These map
   // owners have not loaded saved modifiers before this post-Start boundary;
   // use their actual fresh damage, without guessing the old timer history.
   // Custom spawn factors remain separately owned and applied at spawn time.
@@ -97,6 +98,7 @@ static partial class RunResume
   if(!SelectedMap.MapData.endless&&!ChallengeMode.Active&&saved.darkness==15)
    bossValues[2]=AndroidDarknessBossCooldown.SourceReduction;
   RestoreValues(horde,HordeFields,hordeValues);RestoreValues(boss,BossFields,bossValues);
+  horde.GetComponent<AndroidLateEnemyDamage>()?.Sync();
   if(source!=null)source.RestoreEncounters(saved);
   ChallengeRun.Instance?.RestoreKills(saved.challengeEnemies,saved.challengeBosses);
  }

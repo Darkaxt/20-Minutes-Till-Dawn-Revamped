@@ -18,6 +18,7 @@ public sealed class AndroidPools:MonoBehaviour
   internal GameObject Prefab;internal Transform Parent;internal int Maximum,Visible;
   internal readonly Stack<GameObject> Returned=new Stack<GameObject>();
   internal readonly List<GameObject> All=new List<GameObject>(),Active=new List<GameObject>(),Hidden=new List<GameObject>();
+  internal readonly Dictionary<GameObject,SpriteRenderer> EvictedRenderers=new Dictionary<GameObject,SpriteRenderer>();
   internal int Count=>All.Count-Returned.Count;
  }
  readonly Dictionary<string,Pool> pools=new Dictionary<string,Pool>();
@@ -116,7 +117,7 @@ public sealed class AndroidPools:MonoBehaviour
  }
  internal GameObject Get(string tag)
  {
-  if(!pools.TryGetValue(tag,out var pool)||pool.Count>pool.Maximum)return null;
+  if(!pools.TryGetValue(tag,out var pool)||pool.Count>=pool.Maximum)return null;
   var value=Acquire(pool,Vector3.zero,pool.Parent);value.name=tag;return value;
  }
  internal void TimeOutRelease(Transform target,int duration)
@@ -137,12 +138,12 @@ public sealed class AndroidPools:MonoBehaviour
  }
  internal GameObject Get(string tag,Vector3 position,Transform parent)
  {
-  if(!pools.TryGetValue(tag,out var pool)||pool.Count>pool.Maximum)return null;
+  if(!pools.TryGetValue(tag,out var pool)||pool.Count>=pool.Maximum)return null;
   var value=Acquire(pool,position,parent);value.name=tag;return value;
  }
  internal GameObject Get(string tag,Vector3 position)
  {
-  if(!pools.TryGetValue(tag,out var pool)||pool.Count>pool.Maximum)return null;
+  if(!pools.TryGetValue(tag,out var pool)||pool.Count>=pool.Maximum)return null;
   var value=Acquire(pool,position,pool.Parent);value.name=tag;return value;
  }
  GameObject Acquire(Pool pool,Vector3 position,Transform parent)
@@ -152,10 +153,11 @@ public sealed class AndroidPools:MonoBehaviour
   {value=pool.Returned.Pop();value.transform.position=position;var trail=value.GetComponentInChildren<TrailRenderer>();if(trail!=null)trail.Clear();}
   else
   {value=Object.Instantiate(pool.Prefab,parent);AndroidPickup.Attach(value);value.name=pool.Prefab.name;value.transform.position=position;value.transform.localRotation=Quaternion.identity;pool.All.Add(value);}
+  if(pool.EvictedRenderers.TryGetValue(value,out var evicted)){evicted.enabled=true;pool.EvictedRenderers.Remove(value);}
   value.SetActive(true);
   if(value.transform.parent!=parent)value.transform.SetParent(parent);
   if(pool.Visible>0&&pool.Active.Count>=pool.Visible)
-  {var oldest=pool.Active[0];var renderer=oldest.GetComponentInChildren<SpriteRenderer>();if(renderer!=null)renderer.enabled=false;pool.Hidden.Add(oldest);pool.Active.RemoveAt(0);}
+  {var oldest=pool.Active[0];var renderer=oldest.GetComponentInChildren<SpriteRenderer>();if(renderer!=null&&renderer.enabled){renderer.enabled=false;pool.EvictedRenderers[oldest]=renderer;}pool.Hidden.Add(oldest);pool.Active.RemoveAt(0);}
   pool.Active.Add(value);byID[value.GetInstanceID()]=value;return value;
  }
  internal void Release(GameObject value)

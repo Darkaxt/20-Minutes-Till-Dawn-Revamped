@@ -2,13 +2,13 @@
 
 A community Windows mod for 20 Minutes Till Dawn by Flanne, maintained by Darkaxt.
 
-**Windows 1.0.1 is released and installed, but Android 8.6 gameplay parity is incomplete.** The post-release source audit below found concrete behavior missing from the retained Windows routines. Earlier completion claims overstated the port's coverage.
+**Version1.1.0 integrates the Android8.6 differences confirmed by the recorded source audits and the approved bug corrections.** The comparison has the coverage limits recorded below; exhaustive whole-game source equivalence is unproved.
 
-[Download 1.0.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.0.1) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md)
+[Download 1.1.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.0) · [Install / upgrade / uninstall](INSTALL.md) · [Anomaly ledger](docs/ANOMALIES.md) · [Bug corrections](docs/BUGFIXES.md)
 
 The reference is the supplied **Android 8.6 / versionCode 1093** package. The supported Windows baseline is **Steam build 12679152, Unity 2019.4.40f1 Mono x64**. This comparison makes no claim about later Android versions. The target includes Android gameplay arithmetic, stacking, cooldowns, event ordering and quirks; monetization is excluded. The requested Windows controls, progression and interface changes are explicit overrides.
 
-## What is delivered in 1.0.1
+## Features
 
 These features have implementation and recorded Windows gameplay/integration evidence. The checks establish the workflows described, rather than every possible build or full source equivalence.
 
@@ -25,13 +25,13 @@ These features have implementation and recorded Windows gameplay/integration evi
 | HUD and artwork | Transparent icon-led attributes on the left and collected skills on the right, effective/base/bonus values, tiers/counts and paging. Optional reversible recolours; native pixel-art MAINTAINED BY DARKAXT credit preserving Flanne's credit; Emberpath panel/link removed. Recorded native UI checks cover 720p and 1080p. |
 | Windows delivery | The final package passes the installed isolated-player roster/input test covering 15 character entries and 12 base weapons, plus actual firing/reload and repeated scene exits. The actual Steam installation verifies 614 payload files; rollback preserves 142 original files and three real profile files. |
 
-The public release is tagged **v1.0.1**, built from **2df4458f72fe5b3199053abe832762c5459796ea**. Its ZIP was independently downloaded and checked against the packaged file manifest, DLL, version, source revision and installed payload. The archive contains the mod and extraction/installation recipes; **593 runtime assets are prepared locally from owned game inputs**, rather than redistributed in the download.
+The previous **v1.0.1** release was built from **2df4458f72fe5b3199053abe832762c5459796ea**, with independent download, installed payload and rollback verification. Version1.1.0 adds the parity and correction batches below. Its release record identifies the exact source revision, archive and delivery receipt. The archive contains the mod and extraction/installation recipes; **593 runtime assets are prepared locally from owned game inputs**, rather than redistributed in the download.
 
 ## Android 8.6 parity ledger
 
-Post-release audit and implementation, **2026-10-24**. Released **1.0.1 still contains the gaps below**. The working source reconstructs their complete reached methods/coroutines, keeping the original serialized weapon and AI owners. Source changes are not a delivered update until their affected acceptance and final delivery gates pass.
+Audit and implementation, **2026-10-24**. These behaviors were absent from1.0.1 and are included in1.1.0. The complete reached methods/coroutines retain the original serialized weapon and AI owners.
 
-| ID / feature | Android contract missing from 1.0.1 | Working source / acceptance |
+| ID / feature | Android contract missing from 1.0.1 | 1.1.0 implementation / acceptance |
 |---|---|---|
 | GAP-01 / A276 — Crossbow family | The next full-charge tick posts the shooter-owned shot event and releases automatically. Release returns on empty ammo and clamps negative charge before recipe arithmetic. Applies to Crossbow, Quantum Bolt, Quick Load and Wind Bolt. | [Complete charge/release owner](src/AndroidChargedShooting.cs). S4/run-400 passes all four native recipes/evolution selection, held auto-fire, release/reload, real projectile damage and directed empty/negative-charge edges. Run-402 passes exact-save Continue, controller Aim/Fire/release and an obtained, edited Custom Crossbow with real damage and no achievement leakage. |
 | GAP-02 / A277 — Laser arming/rearming | Activate direct beam children with colliders disabled, wait0.1 seconds, then enable colliders. Repeat attacks restore colliders disabled by previous player contact. Shoggoth and the original tentacle attack use this coroutine. | [Complete laser coroutine](src/AndroidAISpecials.cs). Run-400 passes actual Shoggoth AI, both collider phases and repeated physical contact on the same beam. Run-402 also passes both arming phases on two original tentacle AI attacks and repeats Shoggoth physical contact after exact Continue. |
@@ -39,7 +39,7 @@ Post-release audit and implementation, **2026-10-24**. Released **1.0.1 still co
 | GAP-04 / A279 — Camera follow | Source CameraRig.Update is empty. Matching zero-offset hierarchy follows the player; Windows adds mouse-driven camera pan. Aiming is owned separately by the native input/cursor. | [Source camera Update](src/AndroidCameraHeight.cs). Run-400 passes far-cursor input and actual movement/follow for all four Crossbow recipes. Run-402 passes the affected native mouse/controller, exact Continue and Custom workflows. |
 | A280 — Blessing source state arithmetic | Source startup waits0.1 seconds, equips/removes the Holy Shield offer and calls ReduceCD, updating its reduction/deadline owner. Native changes the base cooldown field. Fresh effective cooldown previously matched; no normal positive-deadline counterexample was established. | [Complete source iterator](src/AndroidBlessingRune.cs) now uses the existing source shield owner while preserving the bootstrap/Continue observer. Run-403 saves a genuinely pending Custom startup;404 completes it once after exact Continue, preserves base120/reduction5/effective115 and removes the finite offer;405 repeats exact completed-bootstrap Continue and native navigation/exit. This source-contract difference is ported without claiming an unproved visible symptom. |
 
-Original Android entry points: ChargedShooter.Shoot0x197910c / OnStopShoot0x1978e40; laser iterator0x18b1410; spawn Use0x18b2b90 / iterator0x18b2d10; CameraRig.Update0x187c988; Blessing iterator0x184f8c4 / ReduceCD0x196229c. Original assets and Windows/current routes are pinned in the local audit. Android quirks are preserved; these changes introduce no independent balance corrections.
+Original Android entry points: ChargedShooter.Shoot0x197910c / OnStopShoot0x1978e40; laser iterator0x18b1410; spawn Use0x18b2b90 / iterator0x18b2d10; CameraRig.Update0x187c988; Blessing iterator0x184f8c4 / ReduceCD0x196229c. Original assets and Windows/current routes are pinned in the local audit. The parity ports preserve their source arithmetic; the separately approved correction contract governs the22 repaired bug families.
 
 ## Audit coverage and unresolved evidence
 
@@ -52,7 +52,13 @@ The first audit inventory-routed all **277 Android-only flanne types** and **1,0
 | Blessing recovery deadline | Raw source behavior is reconstructed, including deadline advancement. A naturally reached positive deadline before startup completion was not established; no invented gameplay reproduction is claimed. |
 | Combinations and old saves | Recorded checks cover bounded current-run, selected legacy and Custom workflows. Every character × weapon × evolution × perk combination, every historical save schema and natural full-run balance remain unproved. These limits are not confirmed missing features. |
 
-[PROGRESS.md](docs/PROGRESS.md) and [ANOMALIES.md](docs/ANOMALIES.md) retain dated implementation/acceptance history. P2 remains **ACTIVE**. Earlier COMPLETE labels describe historical checkpoints and do not prove global parity. A276–A280 were classified before affected builds/game checks. The confirmed minimum is source-integrated and verified. The further bounded discovery pass is complete: eight retained buff/action types, fifteen original owner recipes and26 distinct source/helper bodies found no additional confirmed omission. The current minimum is committed as4064e68; broader retained-body review, final source reconciliation and delivery remain. No intermediate software release has been published.
+[PROGRESS.md](docs/PROGRESS.md) and [ANOMALIES.md](docs/ANOMALIES.md) retain dated implementation/acceptance history. Earlier COMPLETE labels do not prove global parity. A276–A280 were classified before affected builds/game checks; their source integration was introduced in4064e68. The further bounded discovery pass compared eight retained buff/action types, fifteen original owner recipes and26 distinct source/helper bodies and found no additional confirmed omission. The coverage table above records the limits of that comparison.
+
+## Approved bug corrections and dead-code audit
+
+The approved23-family review produced **22 corrections and one verified absent Windows equivalent**. [The correction ledger](docs/BUGFIXES.md) maps their exact behavior to Windows, current/repeated Continue, restart, selected legacy and Custom acceptance. This explicitly overrides Android-bug parity for those families; other gameplay refinements remain required. Version1.1.0 includes the corrections;1.0.1 does not.
+
+The requested [redirected-flow dead-code audit](docs/DEAD-CODE.md) found native bodies skipped by live Harmony replacements and per-owner recipes superseded by Android graphs. It established no definitely removable mod class/method. Native entry points, reused helpers and legacy readers remain rooted. No dead-code deletion was performed.
 
 ## Controls and intentional differences
 
@@ -70,6 +76,6 @@ You must own the supported Windows game and exact Android package described in [
 
 For an already prepared development player, set `MODERNIZATION_SCRATCH` to its root, containing `game/MinutesTillDawn_Data/Managed` and `game/BepInEx/core`. Build `validation/Validation.csproj` with a .NET SDK supporting netstandard2.0; outputs stay under that scratch root. Optional local paths belong in ignored `Directory.Build.local.props`.
 
-The validation assembly is separate from production and must not be installed in a normal player. Tests use an isolated profile, in-process synthetic input and windowless offscreen rendering. Seeded clocks/builds establish the declared integration behavior, not natural balance or universal parity. The installed release remains1.0.1 while the current parity batch is implemented and verified.
+The validation assembly is separate from production and must not be installed in a normal player. Tests use an isolated profile, in-process synthetic input and windowless offscreen rendering. Seeded clocks/builds establish the declared integration behavior; natural balance and universal parity are not established by those fixtures. Publication and installed-package verification are recorded against the exact release artifact.
 
 Original repository code is MIT licensed. Game assets and dependencies retain their owners and licenses. [Third-party notices](docs/THIRD-PARTY.md).

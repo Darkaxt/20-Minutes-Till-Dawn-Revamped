@@ -23,9 +23,8 @@ public sealed class AndroidSummonPulse:MonoBehaviour
  internal static void Activate(object sender)
  {
   DurationDamage=true;
-  // Apply does not store this payload. Only a registered summon receiving it
-  // updates the static data, so no-listener acquisition retains empty values.
-  sender.PostNotification(UpdateEvent,string.Concat(50f.ToString(),",",2f.ToString(),",",3f.ToString()));
+  DurationData="50,2,3";
+  sender.PostNotification(UpdateEvent,DurationData);
  }
  void UpdateData(object sender,object args)
  {

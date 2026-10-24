@@ -28,7 +28,7 @@ public partial class RuntimeChecks
  static ShanasHalo ShanaHalo()=>PlayerController.Instance.GetComponentInChildren<ShanasHalo>();
  static bool ShanaSprite()=>((GameObject)WindField(ShanaHalo(),"haloSpriteObj")).activeSelf;
  static bool ShanaMeets(GameController game,Powerup power)=>(bool)AccessTools.Method(typeof(PowerupGenerator),"PrereqsMet").Invoke(game.powerupGenerator,new object[]{power});
- static int ShanaCount=>(int)AccessTools.Field(AccessTools.TypeByName("TwentyMinutes.Modernization.AndroidSpecialize"),"Count").GetValue(null);
+ static int ShanaCount=>(int)AccessTools.Property(AccessTools.TypeByName("TwentyMinutes.Modernization.AndroidSpecialize"),"Count").GetValue(null);
  static bool ShanaSpent(TripleNextPowerup owner)=>(bool)WindField(owner,"used");
  static List<PowerupPoolItem> ShanaPool(GameController game)=>(List<PowerupPoolItem>)WindField(game.powerupGenerator,"powerupPool");
  static int ShanaApplications(string key)=>((List<RunResume.Acquisition>)WindField(AccessTools.Field(AccessTools.TypeByName("TwentyMinutes.Modernization.RunRecorder"),"Instance").GetValue(null),"Acquired")).Count(a=>a.key==key);
@@ -36,7 +36,7 @@ public partial class RuntimeChecks
  static void ShanaUsed(params bool[] used)
  {
   var providers=ShanaSpecializes();Require(providers.Length==used.Length&&providers.Select(t=>ShanaSpent(t)).SequenceEqual(used),"source Specialize retained used flags: "+string.Join(",",used));
-  Require(ShanaCount==used.Length,"source global count includes spent Specialize helpers after Start");
+  Require(ShanaCount==used.Count(value=>!value),"Specialize exclusion counts only pending unused helpers after Start and consumption");
   Require(CombatValues("shana_perk_specialize_name").Select(v=>v.count).SequenceEqual(used.Select(b=>b?0:1)),"source attachment writer captures independent Specialize used values");
  }
  IEnumerator ShanaPick(GameController game,string key,bool reroll=false)
@@ -76,7 +76,7 @@ public partial class RuntimeChecks
    foreach(var prerequisite in assassin.prereqs)if(!((List<Powerup>)WindField(game.powerupGenerator,"takenPowerups")).Contains(prerequisite))yield return AndroidPick(game,prerequisite.name,game.playerXP.level);
    Require(ShanaMeets(game,assassin),"Assassin's actual prerequisites are satisfied before Specialize");
    yield return AndroidWhirlwindChest(game,"shana_perk_specialize_name");ShanaUsed(false);yield return ShanaPick(game,"split_fire_name",true);ShanaUsed(true);Require(ShanaApplications("split_fire_name")==1,"Specialize modifies the already-created Split Fire instead of journaling two extra Equip calls");yield return ShanaRear(game,3,60);
-   Require(!ShanaMeets(game,assassin),"spent retained Specialize still excludes Assassin");
+   Require(ShanaMeets(game,assassin),"consumed Specialize releases Assassin exclusion");
    yield return AndroidWhirlwindChest(game,"shana_perk_specialize_name");ShanaUsed(true,false);int applications=ShanaApplications("vitality_name");yield return ShanaPick(game,"vitality_name",true);ShanaUsed(true,true);
    Require(ShanaApplications("vitality_name")==applications+3&&p.playerHealth.maxHP==7,"ordinary next upgrade applies three times through actual native Equip, reaching seven hearts");
    yield return AndroidWhirlwindChest(game,"shana_perk_ascension_name");var pool=ShanaPool(game);var pieces=pool.Where(i=>RunResume.Key(i.powerup).StartsWith("shana_halo_piece_")).ToArray();
@@ -96,7 +96,7 @@ public partial class RuntimeChecks
   }
   ShanaUsed(true,true,false);Require(ShanaSprite(),"completed Halo source replay activates the actual sprite");CombatClose(Bonus(p.stats[StatType.FireRate]),.5f,"completed Halo source replay applies stats once");
   int old=ShanaApplications("vitality_name");yield return ShanaPick(game,"vitality_name",true);ShanaUsed(true,true,true);Require(p.playerHealth.maxHP==10&&ShanaApplications("vitality_name")==old+3,"restored unused Specialize consumes exactly one real upgrade with three applications");
-  var blocked=Resources.FindObjectsOfTypeAll<Powerup>().First(i=>i.name=="Assassin");Require(!ShanaMeets(game,blocked),"all three spent source helpers retain Assassin exclusion after Continue");
+  var blocked=Resources.FindObjectsOfTypeAll<Powerup>().First(i=>i.name=="Assassin");Require(ShanaMeets(game,blocked),"all three consumed helpers release Assassin exclusion after Continue");
   yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;StopFixtureSpawning();
   Require(ShanaSpecializes().Length==0&&ShanaCount==0&&ShanaHalo()==null&&p.GetComponentInChildren<ShootBulletsBehind>()==null&&p.playerHealth.maxHP==4,"ordinary restart tears down all source Shana run state");CombatClose(game.playerXP.xpMultiplier.Modify(1),1,"restart clears Quick Learner");CombatClose(Bonus(p.stats[StatType.FireRate]),0,"restart clears Halo stats");yield return CheckRevolver(game,p,"android-shana-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Full Shana offer/reroll/Quick Learner/Specialize/Ascension/physical Halo/source Continue/pending provider/restart workflow");Application.Quit(0);
  }

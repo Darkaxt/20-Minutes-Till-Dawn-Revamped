@@ -64,7 +64,7 @@ public sealed class AndroidHiddenBlade:MonoBehaviour
  GameObject knockback;
  internal void Connect(ShadowClonePassive owner)
  {
-  passive=owner;knockback=new GameObject("Knockback");knockback.SetActive(false);knockback.layer=9;knockback.transform.SetParent(transform,false);
+  passive=owner;knockback=new GameObject("Knockback");knockback.SetActive(false);knockback.layer=(int)TagLayerUtil.PlayerProjectile;knockback.transform.SetParent(transform,false);
   var body=knockback.AddComponent<Rigidbody2D>();body.bodyType=RigidbodyType2D.Kinematic;body.useFullKinematicContacts=true;body.gravityScale=0;
   knockback.AddComponent<CircleCollider2D>().radius=1.7f;
   knockback.AddComponent<Knockback>().knockbackForce=4;

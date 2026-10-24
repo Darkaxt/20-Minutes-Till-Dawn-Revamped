@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -38,13 +39,29 @@ class AndroidHolyArtsRecipe
 [HarmonyPatch]
 class AndroidSmiteDamage
 {
- static MethodBase TargetMethod()=>AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(SmitePassive),"SmiteCR"));
- static void ChangeHealth(Health health,int change)=>AndroidDamageRounding.ChangeHealth(health,change,DamageType.Smite);
- static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+ static MethodBase TargetMethod()=>AccessTools.Method(typeof(SmitePassive),"SmiteCR");
+ static bool Prefix(SmitePassive __instance,GameObject ___smiteFXPrefab,float ___range,int ___baseDamage,SoundEffectSO ___soundFX,ObjectPooler ___OP,ref IEnumerator __result)
+ {__result=Smite(__instance,___smiteFXPrefab,___range,___baseDamage,___soundFX,___OP);return false;}
+ static IEnumerator Smite(SmitePassive owner,GameObject prefab,float range,int baseDamage,SoundEffectSO sound,ObjectPooler pool)
  {
-  int calls=0;var native=AccessTools.Method(typeof(Health),nameof(Health.HPChange));
-  foreach(var instruction in instructions)
-  {if(instruction.Calls(native)){instruction.opcode=OpCodes.Call;instruction.operand=AccessTools.Method(typeof(AndroidSmiteDamage),nameof(ChangeHealth));calls++;}yield return instruction;}
-  if(calls!=1)throw new InvalidOperationException("Unsupported native Smite health boundary");
+  yield return new WaitForSeconds(.1f);
+  var enemies=Physics2D.OverlapCircleAll(owner.transform.position,range,1<<(int)TagLayerUtil.Enemy);sound?.Play();
+  foreach(var enemy in enemies)
+  {
+   var effect=pool.GetPooledObject(prefab.name);
+   var offset=new Vector3(UnityEngine.Random.Range(-.05f,.05f),UnityEngine.Random.Range(-.05f,.05f),0);
+   float angle=UnityEngine.Random.Range(-45f,45f);
+   if(effect==null)continue;
+   effect.transform.position=enemy.transform.position+offset;effect.transform.eulerAngles=new Vector3(0,0,angle);
+   effect.transform.position=enemy.transform.position;effect.SetActive(true);
+  }
+  yield return new WaitForSeconds(.1f);
+  foreach(var enemy in enemies)
+  {
+   var health=enemy.GetComponent<Health>();bool alive=health.HP>0&&!health.isDead;
+   int damage=baseDamage.NotifyModifiers(SmitePassive.SmiteTweakDamageNotification,owner);
+   AndroidDamageRounding.ChangeHealth(health,-damage,DamageType.Smite);
+   if(alive&&health.isDead)owner.PostNotification(SmitePassive.SmiteKillNotification);
+  }
  }
 }

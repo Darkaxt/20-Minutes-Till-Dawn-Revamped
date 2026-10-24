@@ -29,6 +29,7 @@ public static partial class ResumeRuntime
   ["generator_name"]="PF_FireRateBuffOnAmmoGain",["diamond_perk_berserk_name"]="PF_BuffOnHurt",["diamond_perk_bulk_up_name"]="PF_BuffOnHeal",["scarlett_perk_pyromaniac_name"]="BuffOnBurn",
   ["diamond_perk_strong_will_name"]="PF_BuffOnBelowHalfHP",["abby_perk_whirlwind_name"]="PF_BuffOnReload",["lilith_perk_necrophile_name"]="PF_BuffOnDeath"
  };
+ static bool PermanentBuff(string key)=>key=="diamond_perk_berserk_name"||key=="diamond_perk_bulk_up_name";
  static MonoBehaviour[] SourceHelpers(PlayerController player,string key)
  {
   if(!SourceOwners.TryGetValue(key,out var type))return new MonoBehaviour[0];
@@ -56,7 +57,7 @@ public static partial class ResumeRuntime
     else if(owner is GainMaxHPOnSmiteKill justice)value=new SourceValue{kind="justice",count=AndroidAccumulatedBonuses.GainedHealth(justice)};
     else if(owner is TripleNextPowerup triple)value=new SourceValue{kind="specialize",count=(bool)AndroidSpecialize.Used.GetValue(triple)?0:1};
     else
-    {int count=AndroidPlayerBuffCounters.Count((BuffPlayerStats)owner);if(count<=0)continue;value=new SourceValue{kind="buff",count=count};}
+    {if(!PermanentBuff(key))continue;int count=AndroidPlayerBuffCounters.Count((BuffPlayerStats)owner);if(count<=0)continue;value=new SourceValue{kind="buff",count=count};}
     saved.values.Add(value);
    }
    if(key=="feed_the_beasts_name")
@@ -88,6 +89,10 @@ public static partial class ResumeRuntime
   var owners=SourceHelpers(player,key);int index=0;
   foreach(var value in saved.values)
   {
+   // Old snapshots contain active temporary/conditional phases with no
+   // remaining duration. Reconstruct those from live conditions, never replay
+   // them as permanent earned stacks or rewrite the original save on read.
+   if(value.kind=="buff"&&!PermanentBuff(key))continue;
    if(value.kind=="feed")
    {var feed=AndroidKillEffectRecipes.Existing(key);feed.Accumulated=value.a;if(!Mathf.Approximately(value.a,0))player.stats[StatType.SummonDamage].AddMultiplierBonus(value.a);continue;}
    var owner=owners[index++];
@@ -107,7 +112,7 @@ public static partial class ResumeRuntime
    else if(value.kind=="justice")
    {var justice=(GainMaxHPOnSmiteKill)owner;AndroidAccumulatedBonuses.SmiteKills(justice)=0;AndroidAccumulatedBonuses.GainedHealth(justice)=Mathf.Clamp(value.count,0,(int)AccessTools.Field(typeof(GainMaxHPOnSmiteKill),"mhpGainCap").GetValue(justice));}
    else if(value.kind=="specialize")
-   {AndroidSpecialize.Used.SetValue(owner,value.count<=0);if(value.count<=0)AndroidSpecialize.Count=0;}
+   {AndroidSpecialize.Used.SetValue(owner,value.count<=0);AndroidSpecialize.Restored((TripleNextPowerup)owner);}
    else AndroidPlayerBuffCounters.Restore((BuffPlayerStats)owner,value.count);
   }
  }

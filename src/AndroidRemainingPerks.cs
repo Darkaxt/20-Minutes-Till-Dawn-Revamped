@@ -174,9 +174,7 @@ public sealed class AndroidSoulPowered:ScriptableObject
  public float Granted;float effectValue;
  internal void Apply()
  {
-  // Source resets this field without reverting its previous contribution.
-  // The zero-heart assignment can notify its existing callback on repeat.
-  Granted=0;effectValue=.1f;
+  Revert();Granted=0;effectValue=.1f;
   PlayerController.Instance.playerHealth.shp+=0;
   this.AddObserver(Changed,AndroidSoulHealth.ChangeEvent);Changed(null,null);
  }

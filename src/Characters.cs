@@ -40,11 +40,7 @@ public static class Characters
  public static readonly Dictionary<string,CharacterData> Data=new Dictionary<string,CharacterData>();
  public static readonly Dictionary<string,int> Slots=new Dictionary<string,int>(),UnlockSlots=new Dictionary<string,int>();
  public static readonly Dictionary<string,Powerup> Powers=new Dictionary<string,Powerup>();
- // Android stores these on its two original ScriptableObject assets, not on
- // HammerChargePassive. ClearData resets the base acquisition count only;
- // destroying the passive clears its static bonuses but leaves these fields.
- // Keep their mirror next to the canonical ported assets, rather than reset
- // it when a newly instantiated passive starts.
+ // Run-local mirrors of the original exclusive upgrade state.
  internal static float PerpetualMaximum;
  internal static bool SteelSpeedApplied;
  public static InputActionAsset Inputs;
@@ -146,6 +142,7 @@ class InitializePortedCharacter
 {
  static void Postfix()
  {
+  Characters.PerpetualMaximum=0;Characters.SteelSpeedApplied=false;
   var player=PlayerController.Instance;if(!Characters.TryContract(player.loadedCharacter,out var c))return;
   player.movementSpeed=c.moveSpeed;
   var obj=new GameObject("RevampedSkill_"+c.key);obj.SetActive(false);obj.transform.SetParent(player.transform,false);
@@ -205,7 +202,7 @@ public class PortedCharacterSkill:SkillPassive
  void Awake(){if(Contract.key=="Haruka")this.AddObserver(UpdateWhirlwind,"WhirlwindSlash_Update");}
  void UpdateWhirlwind(object sender,object args)=>AndroidSpriteFX.SetSprites(galeFX,Contract.effects.Single().alternateFrames.Select(x=>Characters.Sprites[x]).ToArray());
  internal void DestroyWhirlwind()
- {if(Contract.key=="Haruka"){Hurricane=false;Neural=false;Ultimate=false;BaseRange=1.4f;}}
+ {if(Contract.key=="Haruka"){Hurricane=false;Neural=false;Ultimate=false;BaseRange=1.960000038f;}}
  protected override void Init()
  {if(Contract.key=="Haruka")player=transform.root.GetComponent<PlayerController>();else PrepareActors();}
  internal void PrepareActors()

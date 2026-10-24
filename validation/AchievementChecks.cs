@@ -117,7 +117,7 @@ public partial class RuntimeChecks
   var xp=game.playerXP;AccessTools.Field(typeof(PlayerXP),"<level>k__BackingField").SetValue(xp,seedLevel);xp.GainXP((float)AccessTools.Property(typeof(PlayerXP),"xpToLevel").GetValue(xp)+1f);
   while(!(game.CurrentState is PowerupMenuState)||AccessTools.Field(typeof(ToggleGroupMenu<Powerup>),"ConfirmEvent").GetValue(game.powerupMenu)==null)
   {
-   if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("resume-combat-buffs-")&&game.CurrentState is GunEvoMenuState&&AccessTools.Field(typeof(flanne.UI.Menu),"ClickEvent").GetValue(game.gunEvoMenu)!=null&&game.gunEvoMenu.GetEntry(0).IsInteractable())
+   if((Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("resume-combat-buffs-")||Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("resume-bugfix-"))&&game.CurrentState is GunEvoMenuState&&AccessTools.Field(typeof(flanne.UI.Menu),"ClickEvent").GetValue(game.gunEvoMenu)!=null&&game.gunEvoMenu.GetEntry(0).IsInteractable())
    {
     Log("fixture-evolution","Select the actual native level20 evolution, then earn the next level for the pending perk; later baseline includes this evolution.");Click(game.gunEvoMenu.GetEntry(0));
     while(!(game.CurrentState is CombatState))yield return null;

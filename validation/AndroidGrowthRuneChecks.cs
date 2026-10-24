@@ -53,8 +53,7 @@ public partial class RuntimeChecks
    var runtime=ResumeRuntime.Capture(p);Require(runtime.stats.Count==0&&runtime.timed.Count==0&&runtime.providers.Count==0&&runtime.summons.Count==0&&runtime.sourceHealing==null&&runtime.sourceBodySoul==null,"source checkpoint omits Growth earned-level guards and generic ward/rune phases");
    yield return DragonSuspend(game,"Actual rank-three Growth XP/level-five heart award with partial Seismic clocks and source checkpoint");yield break;
   }
-  while(GrowthProducedHearts==0)yield return null;
-  Require(game.playerXP.level==5&&GrowthProducedHearts==1&&GrowthLevelCallbacks.Count(l=>l==5)==1,"actual source Continue republishes saved level five and creates another Growth heart without a newly earned level");
+  Require(game.playerXP.level==5&&GrowthProducedHearts==0&&GrowthLevelCallbacks.Count(l=>l==5)==1,"Continue republishes saved level five without awarding a duplicate Growth heart");
   var input=RunResume.Read();Require(input.level==5&&input.runes.Count==2&&input.runes.All(r=>r.rank==3),"actual checkpoint retains level five and both selected rank-three rune identities");
   var pulse=(GameObject)WindField(wards[0],"attackObj");var times=new List<float>();bool previous=pulse.activeSelf;float largestDelta=0;Time.timeScale=4;
   while(times.Count<2)
@@ -63,11 +62,14 @@ public partial class RuntimeChecks
    if(active&&!previous){times.Add(Time.time);Log("growth-continued-ward-pulse",Time.time);}previous=active;yield return null;
   }
   Time.timeScale=1;Require(Mathf.Abs(times[1]-times[0]-7)<=largestDelta+.01f,"actual continued ward pulse spacing follows its rebuilt seven-second source cooldown within measured frame quantization");
-  if(!repeated){yield return DragonSuspend(game,"Source level-five Growth replay award, pristine ward clock/actual pulse spacing and same-level resave for repeated Continue");yield break;}
-  Require(GrowthLevelCallbacks.All(l=>l==1||l==5),"repeated fresh-process Continue awards its Growth heart without intermediate earned levels");
+  Require(GrowthProducedHearts==0,"real continued ward pulses and elapsed frames do not create a delayed restore-only Growth heart");
+  if(!repeated){yield return DragonSuspend(game,"Corrected level-five Growth restore without award, pristine ward clock/actual pulse spacing and same-level resave for repeated Continue");yield break;}
+  Require(GrowthLevelCallbacks.All(l=>l==1||l==5),"repeated Continue did not fabricate newly earned levels");
+  foreach(string name in new[]{"Vitality","Haste","FrostMage","ElectroMage","TakeAim"})yield return AndroidPick(game,name,game.playerXP.level);
+  while(GrowthProducedHearts==0)yield return null;Require(game.playerXP.level==10&&GrowthProducedHearts==1,"five genuinely earned new levels still produce the qualifying level-ten Growth heart once");
   yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<RuneData>());game=Object.FindObjectOfType<GameController>();p=PlayerController.Instance;
   Require(p.GetComponentInChildren<GrowthRune>()==null&&p.GetComponentsInChildren<SetGameObjectActiveSummon>().All(s=>s.SummonTypeID!="SeismicWard"),"ordinary restart removes both rune families");CombatClose(Bonus(game.playerXP.xpMultiplier),0,"ordinary restart clears Growth XP contribution");
-  yield return CheckRevolver(game,p,"android-growth-rune-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Repeated source same-level Growth Continue heart award, rebuilt XP/ward phases and actual pulses, native original restart");Application.Quit(0);
+  yield return CheckRevolver(game,p,"android-growth-rune-original-restart.png");yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Repeated Growth Continue suppresses duplicate reward, earned level-ten reward remains, rebuilt XP/ward phases and native original restart");Application.Quit(0);
  }
 }
 [HarmonyPatch(typeof(GrowthRune),"OnLevelChanged")]

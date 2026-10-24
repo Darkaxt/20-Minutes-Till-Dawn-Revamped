@@ -60,7 +60,6 @@ public sealed class AndroidShatterPool:MonoBehaviour
  }
  internal void Cast(Health victim,SoundEffectSO sound)
  {
-  // Source IsMax uses strictly greater-than, allowing the51st active actor.
   var visual=pool.GetPooledObject(Tag);if(visual==null)return;
   visual.transform.position=victim.transform.position;visual.GetComponent<AndroidShatterContact>().Damage=Mathf.FloorToInt(victim.maxHP*.07f);visual.SetActive(true);sound?.Play();
  }
@@ -74,7 +73,8 @@ public sealed class AndroidShatter:MonoBehaviour
   this.AddObserver(OnDeath,Health.DeathEvent);
  }
  void OnDestroy()=>this.RemoveObserver(OnDeath,Health.DeathEvent);
- void OnDeath(object sender,object args)=>pool.Cast((Health)sender,Sound);
+ void OnDeath(object sender,object args)
+ {var victim=(Health)sender;if(FreezeSystem.SharedInstance.IsFrozen(victim.gameObject))pool.Cast(victim,Sound);}
 }
 [Serializable]
 public sealed class AndroidColdAcquire:flanne.PerkSystem.Action

@@ -126,6 +126,7 @@ public sealed class AndroidEndlessRun:MonoBehaviour
  void Update()
  {
   if(RunResume.Restoring)return;
+  horde.GetComponent<AndroidLateEnemyDamage>()?.Sync();
   float now=GameTimer.SharedInstance.timer,relative=now-roundStart,level=Mathf.Floor(now/AndroidEndlessTables.LevelSeconds);
   for(int n=pending.Count-1;n>=0;n--)
   {int i=pending[n];if(relative<waves[i].Session.startTime)continue;active.Add(i);waves[i].Session.timer=0;pending.RemoveAt(n);}

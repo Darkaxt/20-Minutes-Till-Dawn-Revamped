@@ -21,9 +21,7 @@ public sealed class AndroidPickup:MonoBehaviour
  void Awake()
  {
   pickup=GetComponent<Pickup>();circle=GetComponent<CircleCollider2D>();trail=GetComponentInChildren<TrailRenderer>();
-  // Original source SmallXP explicitly binds Bounce's renderer. LargeXP's
-  // serialized spt pointer is null; do not invent a replacement for that asset.
-  if(pickup is XPPickup&&name.Replace("(Clone)","")=="PF_SmallXPPickup")xpSprite=transform.Find("Bounce").GetComponent<SpriteRenderer>();
+  if(pickup is XPPickup)xpSprite=transform.Find("Bounce").GetComponent<SpriteRenderer>();
  }
  void OnEnable()
  {

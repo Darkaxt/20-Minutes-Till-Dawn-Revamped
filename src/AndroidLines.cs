@@ -41,7 +41,7 @@ public sealed class AndroidLineSegments:MonoBehaviour
   float angle=Mathf.Atan2(second.y-first.y,second.x-first.x);
   Vector2 offset=new Vector2(-width*Mathf.Sin(angle),width*Mathf.Cos(angle));
   var path=paths[index];path[0]=first+offset;path[1]=first-offset;path[2]=second-offset;path[3]=second+offset;
-  shape.transform.position=Vector3.zero;shape.SetPath(0,path);
+  shape.gameObject.SetActive(true);shape.enabled=true;shape.transform.position=Vector3.zero;shape.SetPath(0,path);
   // Source keeps previously allocated segments when the point count shrinks
   // or loop is switched off. Do not prune or disable those cached colliders.
  }

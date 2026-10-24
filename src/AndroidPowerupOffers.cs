@@ -126,45 +126,42 @@ class AndroidOfferSelection
  static bool Meets(PowerupGenerator owner,Powerup powerup)=>(bool)Prerequisite.Invoke(owner,new object[]{powerup});
  static bool Prefix(PowerupGenerator __instance,int num,List<PowerupPoolItem> pool,ref List<Powerup> __result)
  {
-  int ordinary=FallbackPowerups.Pool(__instance).Count(p=>!FallbackPowerups.IsFallback(p.powerup)&&Meets(__instance,p.powerup));
+  int ordinary=FallbackPowerups.Pool(__instance).Select(p=>p.powerup).Where(p=>!FallbackPowerups.IsFallback(p)&&Meets(__instance,p)).Distinct().Count();
+  var candidates=pool.Select(p=>p.powerup).Where(p=>p!=null&&Meets(__instance,p)&&(!FallbackPowerups.IsFallback(p)||ordinary<num)).ToList();
   var result=new List<Powerup>();
-  for(int i=0;i<num;i++)
+  for(int i=0;i<num&&candidates.Count>0;i++)
   {
-   Powerup selected=null;
-   while(selected==null)
-   {
-    var candidate=pool[UnityEngine.Random.Range(0,pool.Count)].powerup;
-    if(!result.Contains(candidate)&&candidate!=null&&Meets(__instance,candidate)&&(!FallbackPowerups.IsFallback(candidate)||ordinary<num))selected=candidate;
-   }
-   result.Add(selected);
+   var selected=candidates[UnityEngine.Random.Range(0,candidates.Count)];result.Add(selected);candidates.RemoveAll(p=>p==selected);
   }
   __result=result;return false;
  }
 }
 
-// Source's count persists after use; OnDestroy resets it rather than decrementing.
 static class AndroidSpecialize
 {
- internal static int Count;
+ static readonly HashSet<TripleNextPowerup> Pending=new HashSet<TripleNextPowerup>();
+ internal static int Count=>Pending.Count;
  internal static readonly FieldInfo Used=AccessTools.Field(typeof(TripleNextPowerup),"used");
  internal static Action<object,object> Handler(TripleNextPowerup owner)=>(Action<object,object>)Delegate.CreateDelegate(typeof(Action<object,object>),owner,AccessTools.Method(typeof(TripleNextPowerup),"OnPowerupApplied"));
- internal static void Restored(TripleNextPowerup owner){if((bool)Used.GetValue(owner))Count=0;}
+ internal static void Started(TripleNextPowerup owner){if(!(bool)Used.GetValue(owner))Pending.Add(owner);}
+ internal static void Finished(TripleNextPowerup owner)=>Pending.Remove(owner);
+ internal static void Restored(TripleNextPowerup owner){if((bool)Used.GetValue(owner))Finished(owner);}
 }
 [HarmonyPatch(typeof(TripleNextPowerup),"Start")]
 class AndroidSpecializeStart
-{static bool Prefix(TripleNextPowerup __instance){AndroidSpecialize.Count++;__instance.AddObserver(AndroidSpecialize.Handler(__instance),Powerup.AppliedNotifcation);return false;}}
+{static bool Prefix(TripleNextPowerup __instance){AndroidSpecialize.Started(__instance);__instance.AddObserver(AndroidSpecialize.Handler(__instance),Powerup.AppliedNotifcation);return false;}}
 [HarmonyPatch(typeof(TripleNextPowerup),"OnDestroy")]
 class AndroidSpecializeDestroy
-{static bool Prefix(TripleNextPowerup __instance){AndroidSpecialize.Count=0;__instance.RemoveObserver(AndroidSpecialize.Handler(__instance),Powerup.AppliedNotifcation);return false;}}
+{static bool Prefix(TripleNextPowerup __instance){AndroidSpecialize.Finished(__instance);__instance.RemoveObserver(AndroidSpecialize.Handler(__instance),Powerup.AppliedNotifcation);return false;}}
 [HarmonyPatch(typeof(TripleNextPowerup),"OnPowerupApplied")]
 class AndroidSpecializeApply
 {
- static bool Prefix(object sender,ref bool ___used)
+ static bool Prefix(TripleNextPowerup __instance,object sender,ref bool ___used)
  {
   // Continue replays the already recorded applications, including any extra
   // Specialize applications. Do not produce them a second time during replay.
   if(RunRecorder.Instance?.Rebuilding==true)return false;
-  if(___used)return false;___used=true;var powerup=(Powerup)sender;var player=PlayerController.Instance;
+  if(___used)return false;___used=true;AndroidSpecialize.Finished(__instance);var powerup=(Powerup)sender;var player=PlayerController.Instance;
   if(RunResume.Key(powerup)=="split_fire_name")
   {
    var rear=player.GetComponentInChildren<ShootBulletsBehind>();

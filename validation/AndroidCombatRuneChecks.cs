@@ -56,7 +56,7 @@ public partial class RuntimeChecks
   for(int i=0;i<49;i++)BurnSystem.SharedInstance.Burn(target.gameObject,1);
   Require(BarrageCount(rune)==49&&!BarrageBlocked(rune),"49 real repeated burns advance the original source elemental threshold without activation");CombatClose(Bonus(PlayerController.Instance.stats[StatType.FireRate]),fireBaseline,"Barrage does not activate below fifty source inflicts");
   FreezeSystem.SharedInstance.Freeze(target.gameObject);Require(BarrageCount(rune)==0&&BarrageBlocked(rune),"actual Freeze event completes the shared fifty-inflict threshold and blocks new gain");
-  CombatClose(Bonus(PlayerController.Instance.stats[StatType.FireRate]),fireBaseline+1,"source Barrage applies both50-percent contributions to Fire Rate");CombatClose(Bonus(PlayerController.Instance.stats[StatType.ReloadRate]),0,"source Barrage retains the shared missing Reload Rate bonus");
+  CombatClose(Bonus(PlayerController.Instance.stats[StatType.FireRate]),fireBaseline+.5f,"corrected Barrage applies one50-percent Fire Rate contribution");CombatClose(Bonus(PlayerController.Instance.stats[StatType.ReloadRate]),.5f,"corrected Barrage applies one50-percent Reload Rate contribution");
  }
  IEnumerator CombatRuneBarrageExpire(ElementalBarrageRune rune,float baseline,bool cooldown)
  {
@@ -64,7 +64,7 @@ public partial class RuntimeChecks
   while(Bonus(PlayerController.Instance.stats[StatType.FireRate])>baseline+.01f){largestDelta=Mathf.Max(largestDelta,Time.deltaTime);yield return null;}
   float expired=Time.time;Time.timeScale=1;
   Require(expired-started>=3-.02f&&expired-started<=3+largestDelta*2+.02f,"rank-three Barrage's real bonus phase lasts three Unity seconds within measured frame quantization");
-  Require(BarrageBlocked(rune),"actual Barrage expiry retains the subsequent cooldown block");CombatClose(Bonus(PlayerController.Instance.stats[StatType.FireRate]),baseline,"Barrage expiry removes both Fire Rate contributions exactly");
+  Require(BarrageBlocked(rune),"actual Barrage expiry retains the subsequent cooldown block");CombatClose(Bonus(PlayerController.Instance.stats[StatType.FireRate]),baseline,"Barrage expiry removes its Fire Rate contribution exactly");CombatClose(Bonus(PlayerController.Instance.stats[StatType.ReloadRate]),0,"Barrage expiry removes its Reload Rate contribution exactly");
   if(!cooldown)yield break;
   Time.timeScale=4;while(BarrageBlocked(rune)){largestDelta=Mathf.Max(largestDelta,Time.deltaTime);yield return null;}Time.timeScale=1;
   Require(Time.time-expired>=10-.02f&&Time.time-expired<=10+largestDelta*2+.02f,"actual Barrage cooldown waits ten further Unity seconds after bonus expiry");

@@ -38,8 +38,7 @@ class AndroidSwordReload
 public sealed class AndroidFireEdge:ScriptableObject
 {
  internal void Apply(){this.AddObserver(OnImpact,Projectile.ImpactEvent);this.AddObserver(OnSummon,AndroidSummonCollisionData.Event);}
- // Source removes the projectile callback but ADDS the summon callback here.
- void OnDestroy(){this.RemoveObserver(OnImpact,Projectile.ImpactEvent);this.AddObserver(OnSummon,AndroidSummonCollisionData.Event);}
+ void OnDestroy(){this.RemoveObserver(OnImpact,Projectile.ImpactEvent);this.RemoveObserver(OnSummon,AndroidSummonCollisionData.Event);}
  void OnImpact(object sender,object args)=>Impact(((GameObject)args).GetInstanceID());
  void Impact(int id)
  {

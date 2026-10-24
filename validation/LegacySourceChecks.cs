@@ -29,8 +29,8 @@ public partial class RuntimeChecks
   {
    Require(p.GetComponentsInChildren<DamageUpOnReload>().Length==1&&p.GetComponentsInChildren<FireRateOnHurt>().Length==1&&p.GetComponentsInChildren<TemporaryRefreshingBuff>().Length==1,"legacy build reconstructs exactly one source owner for each recorded refreshing attachment");
    CombatClose(Bonus(p.stats[StatType.BulletDamage]),0,"legacy active damage boosts are omitted instead of importing their old aggregate/phase");
-   var owner=p.GetComponentInChildren<TemporaryRefreshingBuff>();var saved=expected.runtime.sourcePowerups.SingleOrDefault(v=>v.key=="abby_perk_whirlwind_name");int count=saved==null?0:saved.values.Sum(v=>v.count);
-   Require((int)WindField(owner,"_stacks")==count,"legacy/current reader uses only the source Whirlwind counter, without importing its old timer");
+   var owner=p.GetComponentInChildren<TemporaryRefreshingBuff>();
+   Require((int)WindField(owner,"_stacks")==0,"legacy/current reconstruction omits Whirlwind's transient application count and old timer");CombatClose(Bonus(p.stats[StatType.MoveSpeed]),0,"legacy temporary Whirlwind cannot become a permanent movement contribution");
    var shields=p.GetComponentsInChildren<PreventDamage>();Require(shields.Length==1&&shields[0].isActive,"source shield restarts active rather than restoring the old recovering phase");CombatClose(shields[0].finalCooldown,10,"source repeated Stalwart arithmetic reconstructs the shield cooldown");
   }
   if(family=="soul")

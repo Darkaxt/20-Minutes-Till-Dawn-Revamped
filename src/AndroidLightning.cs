@@ -55,7 +55,7 @@ public static class AndroidLightning
   {
    var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(id);if(target==null)continue;
    if(AndroidAffixes.Has(target,1))continue;
-   var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,damage,DamageType.Thunder);
+   var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-damage,DamageType.Thunder);
    owner.PostNotification(ThunderGenerator.ThunderHitEvent,target);
   }
  }

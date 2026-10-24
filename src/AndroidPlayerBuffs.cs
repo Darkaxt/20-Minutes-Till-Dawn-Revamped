@@ -12,14 +12,12 @@ internal static class AndroidPlayerBuffCounters
  internal static int Count(BuffPlayerStats buff)=>Stacks(buff);
  internal static void Restore(BuffPlayerStats buff,int requested)
  {
-  // Source compares the nonnegative request first, including its equal-count
-  // no-op. It clears only a positive old count before replaying applications.
   int target=Math.Max(0,requested);
   if(target==Stacks(buff))return;
-  if(Stacks(buff)>0)
-  {for(int i=0;i<Stacks(buff);i++)buff.RemoveBuff();Stacks(buff)=0;}
-  for(int i=0;i<requested;i++)buff.ApplyBuff();
+  Clear(buff);
+  for(int i=0;i<target;i++)buff.ApplyBuff();
  }
+ internal static void Clear(BuffPlayerStats buff){while(Stacks(buff)>0)buff.RemoveBuff();}
 }
 
 [HarmonyPatch(typeof(BuffPlayerStats),"Start")]
@@ -28,10 +26,14 @@ class AndroidPlayerBuffInitialization
 [HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.ApplyBuff))]
 class AndroidPlayerBuffApplication
 {
- // Source ApplyBuff increments this counter itself. RemoveBuff does not
- // decrement it, including Generator's remove/reapply refresh sequence.
  static void Prefix(ref int ____stacks)=>____stacks++;
 }
+[HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.RemoveBuff))]
+class AndroidPlayerBuffRemoval
+{static bool Prefix(ref int ____stacks){if(____stacks<=0)return false;____stacks--;return true;}}
+[HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.RemoveStacks))]
+class AndroidPlayerBuffClear
+{static bool Prefix(BuffPlayerStats __instance){AndroidPlayerBuffCounters.Clear(__instance);return false;}}
 [HarmonyPatch(typeof(BuffPlayerStats),nameof(BuffPlayerStats.AddStack))]
 class AndroidPlayerBuffAddStack
 {static bool Prefix(BuffPlayerStats __instance){__instance.ApplyBuff();return false;}}

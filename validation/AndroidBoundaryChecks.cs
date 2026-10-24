@@ -98,25 +98,25 @@ public partial class RuntimeChecks
   var p=PlayerController.Instance;var center=p.transform.position;var edge=BoundarySegments(line.GetComponent<LineCollider>())[3];var points=line.GetPositions();Vector3 middle=(points[3]+points[0])*.5f;
   var shield=BoundaryShield();var hitbox=shield.GetComponent<Collider2D>();int contacts=BoundaryShieldContacts;BoundaryCollisionToggle.Flip();hitbox.enabled=true;
   p.SetPosition(middle);Physics2D.SyncTransforms();while(BoundaryShieldContacts==contacts)yield return null;
-  Require(!edge.gameObject.activeSelf&&!hitbox.enabled,"actual native Wind Shield contact releases a source electric edge and enters its native cooldown");
+  Require(!hitbox.enabled,"actual native Wind Shield contact releases an electric edge and enters its native cooldown");
   p.SetPosition(center);Physics2D.SyncTransforms();BoundaryCollisionToggle.UnFlip();yield return BoundaryLineFrame();yield return BoundaryLineFrame();
-  Require(!edge.gameObject.activeSelf,"real subsequent geometry updates do not reactivate the cached edge released by Wind Shield");
+  Require(edge.gameObject.activeSelf&&edge.enabled,"real subsequent geometry updates reactivate the cached edge released by Wind Shield");
   while(!hitbox.enabled)yield return null;
   Require(((SpriteRenderer)WindField(shield,"sprite")).enabled,"actual rank-three Wind Shield cooldown restores its collider and sprite");
-  Log("boundary-wind-shield","Actual layer-filtered collision preserves A122: deactivated cached electron stays inactive; native cooldown completes");
+  Log("boundary-wind-shield","Actual Wind Shield releases the edge; the next geometry rebuild reactivates it and native cooldown completes");
  }
  IEnumerator BoundaryArenaReuse(BossArenaLifetime arena)
  {
   SetPhase("boundary-owned-arena-reuse");
-  var line=arena.GetComponentInChildren<LineController>();var oldShapes=BoundarySegments(line.GetComponent<LineCollider>()).ToArray();var inactive=oldShapes.Single(s=>!s.gameObject.activeSelf);var renderer=line.GetComponent<LineRenderer>();
+  var line=arena.GetComponentInChildren<LineController>();var oldShapes=BoundarySegments(line.GetComponent<LineCollider>()).ToArray();var renderer=line.GetComponent<LineRenderer>();
   var boss=arena.owner;while(boss.isInvincible.value)yield return null;boss.TakeDamage(DamageType.Bullet,boss.maxHP);while(arena.gameObject.activeSelf)yield return null;
   var texture=renderer.material.mainTexture;
   Require(boss.isDead,"real boss death releases its owned arena through source Update polling");
   yield return BoundarySpawnBoss(1);var restored=BoundaryArenas().Single();Require(restored==arena&&restored.owner!=boss,"actual later scheduler boss reuses the source arena and assigns its exact new owner");
-  Require(!inactive.gameObject.activeSelf&&BoundarySegments(line.GetComponent<LineCollider>()).SequenceEqual(oldShapes),"actual arena pool reuse retains the same cached segments and Wind Shield's inactive edge");
+  yield return BoundaryLineFrame();Require(oldShapes.All(s=>s.gameObject.activeSelf&&s.enabled)&&BoundarySegments(line.GetComponent<LineCollider>()).SequenceEqual(oldShapes),"actual arena pool reuse rebuilds the same cached segments with every collider active");
   var animator=line.GetComponent<LineAnimator>();float interval=(float)WindField(animator,"secPerFrame");var textures=(Texture[])WindField(animator,"textures");float until=Time.time+interval*textures.Length;
   while(Time.time<until){Require(renderer.material.mainTexture==texture,"pooled arena does not invent a restart for native Start-only animation");yield return null;}
-  Log("boundary-arena-reuse","Source owner polling/pool reuse/new owner, retained inactive cached segment and stopped Start-only animation all observed");
+  Log("boundary-arena-reuse","Source owner polling/pool reuse/new owner, corrected cached collider activation and stopped Start-only animation all observed");
  }
  IEnumerator BoundaryLaser(GameController game)
  {

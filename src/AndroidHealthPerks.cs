@@ -50,9 +50,13 @@ public sealed class AndroidBurnDamageUp:flanne.PerkSystem.Action
 [Serializable]
 public sealed class AndroidMightDamage:IDamageModifier
 {
- // Android adds +2 to a signed negative HP change. Windows passes positive
- // damage to modifiers, so the equivalent operation subtracts two damage.
- public ValueModifier GetMod()=>new AddValueModifier(0,AndroidDamageRounding.PositiveDamageStage?-2:2);
+ public ValueModifier GetMod()=>new DamageBonus(AndroidDamageRounding.PositiveDamageStage);
+ sealed class DamageBonus:ValueModifier
+ {
+  readonly bool positive;
+  internal DamageBonus(bool positiveDamage):base(0){positive=positiveDamage;}
+  public override float Modify(float fromValue,float toValue)=>positive?(fromValue>0?toValue+2:toValue):fromValue<0?toValue-2:toValue;
+ }
 }
 [HarmonyPatch]
 class AndroidHealthPerkRecipes
