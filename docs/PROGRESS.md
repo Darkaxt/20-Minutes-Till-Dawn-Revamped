@@ -1,14 +1,28 @@
 # Current Android gameplay completion
 
-2026-10-24: **P1 COMPLETE; P2 ACTIVE for final 1.1.2 delivery only.** Source reconciliation and all complete affected runtime criteria pass. No source/runtime blocker or tracked deferral remains; delivery is actionable, not externally blocked.
+2026-10-24: **P1 COMPLETE; P2 COMPLETE.** Android 8.6 gameplay integration, retained-code/acquisition comparison, anomaly dispositions, affected Windows acceptance and final delivery are closed. No required gameplay entry, blocker or tracked deferral remains for this Windows port.
 
-| P2 criterion | Current evidence / remaining work |
+| P2 criterion | Verified result |
 |---|---|
-| Retained gameplay and acquisition reconciliation | Original 798 types/4274 methods, observed production routes and exact source/owner/acquisition dispositions; no unresolved required entry. The inventory is not a body-equivalence claim. |
-| Anomaly classification | A129/A144/A150/A254/A266 and A281–A295 classified; changed source owners and approved defects integrated without extra guards or speculative balance edits. |
-| Complete affected Windows workflows | PASS, exact source/DLL/checkpoint-pinned. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Existing corrected status/Smite, barriers, rune/shield/Hina/Katana/AI/world, arrow/Cannon/Crossbow, legacy and Custom workflows also pass. |
-| Final release and delivery | Remaining: committed normal 1.1.2 package, installed-player roster/input, exact rollback, actual Steam/original/profile/config preservation, remote tag/assets and independent public download, transactional expendable cleanup. |
-| Blockers / deferrals | No source/runtime blocker, external impediment or tracked deferral. P2 remains ACTIVE until the final delivery row passes. |
+| Retained source/acquisition reconciliation | Original 798 reflected types / 4274 methods, current observed routes and explicit method/owner/serialized-ABI/desktop/library dispositions. No unresolved required gameplay entry; captured ranges and inventories are not treated as semantic reviews. |
+| Anomaly classification and implementation | A129 and A281–A295 integrated/verified; A144/A150/A254/A266 retained with explicit source/lifetime conclusions; named approved corrections applied without speculative balance changes. |
+| Complete affected Windows workflows | Current/warm/fresh Continue and exact input binding, native skill/shoot/reload/contact/expiry/pool/AI/world/weapon/rune/Gale/Bulwark/legacy/Custom/restart matrix PASS. Real historical inputs and derived schema4–6 layouts are labelled separately. |
+| Normal release | [v1.1.2](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.2), published 2026-10-24T19:14:48Z; neither draft nor prerelease; required ZIP and SHA256SUMS.txt uploaded and independently retrieved. |
+| Source revision | 7df67d5af2f45d6b280e191a63d2bb14c108946a; release tag verified at this revision. Later receipt-only documentation commits do not move it. |
+| Archive SHA256 | 271e8428a07d2fc8d7d18ef334efd95a6c24193ea2e76bc64c441402275075c8 |
+| Production DLL SHA256 | 631102a000040c01f7ec29a046404d60c62ccadb5af1bd6e2afacd0311902424 |
+| Public package | All20 members, source/version/candidate=false, installer and DLL verified; no extracted game assets or validation DLL.593 runtime assets prepare locally. |
+| Installed copied player | evidence/S6/run-17: PASS/exit0,15 character entries/12 base guns, actual mouse/controller fire/release/reload and repeated scene exits; same delivered production DLL. |
+| Copied rollback |614 exact owned files removed;142 stock originals verify afterward. |
+| Actual Steam update | Verified1.1.1 → stock → 1.1.2,614 owned files.142 originals, three real profile files and configuration remain unchanged; no validation DLL or user-game launch. |
+| Disposable output | Transaction 91da9f183e2d951a9c6d9f224be3fa8b applied all917 reviewed members/136845229 logical bytes. Both exact new task roots are absent; durable research/evidence/release/execution recipes remain. |
+| Blockers / deferrals | None for this Windows outcome. Separate DroidDeck delivery and the analysis-only native Android conversion are not claimed complete. |
+
+These are finite source compatibility and connected native-workflow results, not mathematical equivalence, a natural full-run balance study or a test of every character × weapon × perk combination. Existing M1–M13 requirements and their unchanged UI/progression/720p/1080p evidence were reconciled explicitly in the final private receipt.
+
+## Delivery history
+
+The dated statuses below describe earlier revisions. Their open retained-code and delivery items are superseded by the completed v1.1.2 reconciliation above.
 
 Version 1.1.1 delivered — 2026-10-24: **P1 COMPLETE; P2 ACTIVE for broader retained-body parity coverage**. M15's additional description and three lifecycle corrections are integrated and verified in their complete affected native workflows: descriptions 456, Hina 458/459, Katana/Thousand Blades 460/461, enemy/Rhogog 463/464. Fresh-process Continue inputs match their originating checkpoints byte-for-byte; ordinary restart and native input pass. [Acceptance mapping](BUGFIXES.md). Failed 454/455/457/462 are retained fixture diagnostics; they caused no production workaround.
 

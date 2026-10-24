@@ -27,6 +27,8 @@ These features have implementation and recorded Windows gameplay/integration evi
 
 The download contains the mod and extraction/installation recipes. **593 runtime assets are prepared locally from owned game inputs**, rather than redistributed. The installer owns 614 payload files, preserves the original game and user configuration, and supports exact rollback. [Current delivery receipt](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/blob/main/docs/PROGRESS.md).
 
+**v1.1.2 is published and installed on the verified Windows target**, source **7df67d5af2f45d6b280e191a63d2bb14c108946a**. Its independent public download matches the installed DLL; packaged roster/input, exact rollback and original/profile/configuration preservation pass. [Delivery receipt](docs/PROGRESS.md).
+
 ## Android 8.6 parity ledger
 
 The retained-gameplay comparison and anomaly classification are closed. Every identified required Android 8.6 gameplay difference is implemented; no gameplay integration is parked for a later balance decision. Source quirks remain unless covered by the user's explicit bug-fix authorization.

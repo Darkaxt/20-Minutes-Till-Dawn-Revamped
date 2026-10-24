@@ -1,8 +1,26 @@
 # Android gameplay anomaly ledger
 
+Current final delivery, 2026-10-24: **P2 COMPLETE**, normal v1.1.2 published, independently verified and installed with originals/profile/configuration preserved. No required Windows gameplay implementation or acceptance item remains pending. [Full delivery receipt](PROGRESS.md).
+
 **Current retained-code closure, 2026-10-24:** source reconciliation and complete affected Windows acceptance pass for A129/A281–A295. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Final delivery is recorded in [PROGRESS.md](PROGRESS.md). All earlier source-only/unverified wording is dated history; it does not leave a current implementation deferral.
 
-| Finding | Current classification and implementation |
+## Current dispositions
+
+| Findings | Final disposition / acceptance |
+|---|---|
+| A129 | Approved Glass replay correction; actual acquisition, repeated warm/fresh Continue, native damage and restart pass in S4/480–481. |
+| A281 | Imported independent Anger Point operands and event order; hurt, refresh, expiry and Continue pass in S4/480–481. |
+| A282–A285/A288–A293/A295 | Complete source owners and physics/pickup integration imported; shooting, Abby, reload, event order, singleton/state edges, contacts and Continue pass in S4/482,484, with the combined affected gameplay matrix. |
+| A286–A287 | Global Dragon Bond/Spark lifetimes and source dispatch imported; actual player/non-player impacts, physical damage, teardown and Continue pass in S4/485–486. |
+| A294 | Approved correction retains functional Hina/Shield/Glyph contacts; their complete native contact workflows pass at the imported physics cadence. |
+| A144/A150/A254/A266 | Source behavior retained with explicit lifetime/clock/cadence dispositions. No speculative cleanup, cap or rescheduling change. |
+| Earlier approved corrections | v1.1.0 and v1.1.1 correction contracts remain; affected status, shield, Hina, Katana and enemy/world workflows were rechecked in the final matrix. |
+
+## Recorded source observations and acceptance requirements
+
+The entries below preserve discovery-time wording and earlier evidence. Instructions to import or validate, and older pending labels, describe work now closed by the current dispositions and final delivery receipt above.
+
+| Finding | Source contract recorded during implementation |
 |---|---|
 | A295 | G/I: Gun.get_numOfProjectiles0x1979914 returns the truncated modified integer without Windows' Max(1) clamp. Import that complete getter at the source gun boundary; the receiving base shooter retains its own source single-projectile branch for counts <=1. Other source gun scalar arithmetic uses the existing native StatMod ABI. Directed zero/negative count checks and ordinary/charged/multi-shooter native workflows verify the boundary; do not add another clamp or change the receiving source algorithms. |
 | A289 | G/I: live base Shooter.Shoot0x1999150 omits Windows' TweakProjectileRecipe notification and five-degree spread clamp, and uses `i/count*spread-spread/2` rather than inclusive endpoints. Import the whole source firing method, preserving its reversed-endpoint random rotation, per-projectile transform read and BulletShot notification, muzzle flash, then optional onShoot. This also supplies ChargedShooter's real base call and Abby's dedicated shooter. Validate ordinary/charged/multi-projectile firing, event order, contacts and Continue. |

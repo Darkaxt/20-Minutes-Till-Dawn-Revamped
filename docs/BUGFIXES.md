@@ -1,6 +1,12 @@
+# Revamped bug-correction contract
+
+Current final delivery, 2026-10-24: **P2 COMPLETE**, normal v1.1.2 published, independently verified and installed with originals/profile/configuration preserved. No required Windows gameplay implementation or acceptance item remains pending. [Full delivery receipt](PROGRESS.md).
+
 Current closure acceptance, 2026-10-24: A129 repeated Glass replay and A294 functional native contacts pass the affected complete Windows flows. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Source-only wording below is historical. No additional balance changes.
 
-# Revamped bug-correction contract
+## Historical correction contracts
+
+The following contracts retain their discovery-time requirements and stage labels. Current acceptance and delivery are complete as recorded above; the older ACTIVE/blocker wording is superseded.
 
 ## Retained-code closure corrections — 2026-10-24
 
