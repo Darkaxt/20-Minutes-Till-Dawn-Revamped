@@ -29,7 +29,7 @@ env.update(TEMP=str(args.scratch), TMP=str(args.scratch), MODERNIZATION_SCRATCH=
            DOTNET_CLI_HOME=str(args.scratch / 'dotnet'), DOTNET_GENERATE_ASPNET_CERTIFICATE='false')
 subprocess.run(['dotnet', 'build', str(ROOT / 'src/Modernization.csproj'), '-c', 'Release', '--no-restore',
                 '--nologo', '-v:minimal', '-nodeReuse:false', '-m:1', '-p:UseSharedCompilation=false'], cwd=ROOT, env=env, check=True)
-stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.1.2'
+stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.1.3'
 (stage / 'Mod').mkdir(parents=True)
 plugin = args.scratch / 'bin/Modernization/netstandard2.0/TwentyMinutes.Modernization.dll'
 shutil.copy2(plugin, stage / 'Mod' / plugin.name)
@@ -40,12 +40,26 @@ for name in ('README.md', 'LICENSE', 'INSTALL.md'):
 contract = asset_contract(args.prepared_assets)
 if len(contract) != 593:
     raise SystemExit('Prepared asset contract must contain the complete 593-file local runtime set, including affixes, achievement icons/catalog, source display/camera data and both gameplay sounds with provenance')
-release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.1.2', 'source_commit': revision,
+release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.1.3', 'source_commit': revision,
            'candidate': args.candidate, 'plugin_sha256': digest(plugin), 'assets': contract,
            'asset_delivery': 'Prepared locally from pinned owned inputs; no extracted game art/data in this archive'}
 (stage / 'RELEASE.json').write_text(json.dumps(release, indent=2) + '\n', encoding='utf8', newline='\n')
+# Public hashes of the complete installed payload let the Android client
+# identify updates requiring locally prepared assets before changing files.
+# Only our compiled plugin is carried here; original game assets remain local.
+loader = args.prepared_assets.parent / 'BepInEx'
+installed = {'winhttp.dll': digest(loader / 'winhttp.dll'), 'doorstop_config.ini': digest(loader / 'doorstop_config.ini')}
+installed.update({p.relative_to(loader).as_posix(): digest(p) for p in (loader / 'BepInEx/core').rglob('*') if p.is_file()})
+installed.update({'BepInEx/plugins/20MTDModernization/Assets/' + p.relative_to(args.prepared_assets).as_posix(): digest(p)
+                  for p in args.prepared_assets.rglob('*') if p.is_file()})
+plugin_path = 'BepInEx/plugins/20MTDModernization/TwentyMinutes.Modernization.dll'
+installed[plugin_path] = digest(plugin)
+if len(installed) != 614:
+    raise SystemExit('Updater contract requires the complete 614-file owned payload')
+(stage / 'UPDATE.json').write_text(json.dumps({'schema': 1, 'product': '20MTD-Revamped', 'version': '1.1.3',
+    'source_commit': revision, 'files': installed, 'payload': {plugin_path: 'Mod/' + plugin.name}}, indent=2) + '\n', encoding='utf8', newline='\n')
 files = {p.relative_to(stage).as_posix(): digest(p) for p in sorted(stage.rglob('*')) if p.is_file()}
-(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.1.2', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
+(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.1.3', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
 archive = args.output / (stage.name + '.zip')
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as package:
     for path in sorted(stage.rglob('*')):

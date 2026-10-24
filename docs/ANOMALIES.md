@@ -1,5 +1,14 @@
 # Android gameplay anomaly ledger
 
+## Reported controller selector defects — 2026-10-25
+
+| Finding | Classification and reproduced cause | Correction / acceptance |
+|---|---|---|
+| A296 — blank initial character preview | Existing Windows menu defect. Native `Menu.Show` calls `Button.Select` before installing its selection listeners; the first controller focus therefore leaves the serialized placeholder name/description and base portrait. Reproduced without moving the mouse in S1/run-26. | Initialize character/weapon preview through the native selection event after Show finishes wiring. Actual first entry, remembered Bulwark and re-entry pass in S1/run-28/30 at720p/1080p. |
+| A297 — unreachable appended roster entries | Port integration defect. Stock buttons use explicit navigation. Charge Cannon copied the template's outgoing links, while no original slot linked to it; real controller right/down ends on Spore Gun. The added Gale/Bulwark slots have the same missing incoming links. S1/run-26 records the actual graph and input failure. | Extend existing grid links and restore valid appended remembered indices. Controller visits all15 characters/12 weapons; pointer raycast/hover/click and locked/obtained confirmation pass in S1/run-28/30. The stock gun menu's persistence flag remains false; no new preference policy is invented. |
+
+These are menu defects, not Android gameplay/balance discrepancies. No gameplay formulas, earned ownership, credits or user saves are reset to correct them.
+
 Current final delivery, 2026-10-24: **P2 COMPLETE**, normal v1.1.2 published, independently verified and installed with originals/profile/configuration preserved. No required Windows gameplay implementation or acceptance item remains pending. [Full delivery receipt](PROGRESS.md).
 
 **Current retained-code closure, 2026-10-24:** source reconciliation and complete affected Windows acceptance pass for A129/A281–A295. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Final delivery is recorded in [PROGRESS.md](PROGRESS.md). All earlier source-only/unverified wording is dated history; it does not leave a current implementation deferral.

@@ -107,6 +107,19 @@ public static class Characters
    NativeSelection.VictoryObjects(title.characterVictories)=NativeSelection.VictoryObjects(title.characterVictories).Concat(new[]{badge}).ToArray();
    var labels=NativeSelection.VictoryLabels(title.characterVictories);if(labels!=null)NativeSelection.VictoryLabels(title.characterVictories)=labels.Concat(new[]{badge.GetComponentInChildren<TMPro.TMP_Text>(true)}).ToArray();
   }
+  // These two slots extend the stock third row after Raven. As for the
+  // appended weapon, cloned explicit links alone leave them unreachable.
+  var raven=items.Single(x=>x.data.name=="Raven").GetComponent<Button>();
+  var yuki=items.Single(x=>x.data.name=="Yuki").GetComponent<Button>();
+  var luna=items.Single(x=>x.data.name=="Luna").GetComponent<Button>();
+  var gale=entries[Slots["Haruka"]].button;var bulwark=entries[Slots["Dimond_Portrait"]].button;
+  var navigation=raven.navigation;var back=navigation.selectOnDown;
+  gale.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=raven,selectOnRight=bulwark,selectOnUp=yuki,selectOnDown=back};
+  bulwark.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=gale,selectOnUp=luna,selectOnDown=back};
+  navigation.selectOnRight=gale;raven.navigation=navigation;
+  navigation=yuki.navigation;navigation.selectOnDown=gale;yuki.navigation=navigation;
+  navigation=luna.navigation;navigation.selectOnDown=bulwark;luna.navigation=navigation;
+  NativeSelection.RestoreAddedSelection(title.characterMenu,items.Count-2,items.Count,typeof(DataListMenu<CharacterData>));
   Count=items.Count;Plugin.Trace("characters-appended",new{count=Count,added=string.Join(",",Contracts.Keys)});
  }
  public static void Extend(SaveData data)

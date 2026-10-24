@@ -1,5 +1,9 @@
 # Revamped bug-correction contract
 
+## Controller selector corrections — 2026-10-25
+
+A296/A297: on opening character selection with a controller, the preview matches the focused character (name, portrait, HP, description and any unlock condition). Charge Cannon completes the second weapon row, and Gale/Bulwark extend the third character row with explicit native links. Valid remembered added character indices survive the earlier stock roster clamp; the gun menu retains its original non-persistent startup policy. Browsing locked content remains allowed; confirming it neither starts a run nor grants ownership/spends credits. Actual Input System controller/mouse states pass all15 characters/12 weapons, Back/obtained confirm, locked rejection, re-entry, pointer raycast/hover/click and saved Bulwark at720p/1080p in S1/run-28/30. S1/run-26 reproduces both original failures. The separate test DLL is excluded from releases.
+
 Current final delivery, 2026-10-24: **P2 COMPLETE**, normal v1.1.2 published, independently verified and installed with originals/profile/configuration preserved. No required Windows gameplay implementation or acceptance item remains pending. [Full delivery receipt](PROGRESS.md).
 
 Current closure acceptance, 2026-10-24: A129 repeated Glass replay and A294 functional native contacts pass the affected complete Windows flows. Glass/Anger 480/481; Abby/shooting/reload/fire/pickups/state 482/484; Spark/Dragon impacts 485/486. Source-only wording below is historical. No additional balance changes.

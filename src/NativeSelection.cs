@@ -49,6 +49,15 @@ public static class NativeSelection
    var last=items[GunIndex-1].GetComponent<RectTransform>();var prior=items[GunIndex-2].GetComponent<RectTransform>();
    copy.GetComponent<RectTransform>().anchoredPosition=last.anchoredPosition+(last.anchoredPosition-prior.anchoredPosition);
   }
+  // The stock grid uses explicit navigation. Instantiating a slot copies its
+  // outgoing links, but no existing button gains a link to the new slot.
+  // Charge Cannon completes column six of row two, below Bat Gun.
+  var cannon=copy.GetComponent<Button>();var spore=entries[GunIndex-1].button;var bat=entries[5].button;
+  var navigation=spore.navigation;
+  cannon.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=spore,selectOnUp=bat,selectOnDown=navigation.selectOnDown};
+  navigation.selectOnRight=cannon;spore.navigation=navigation;
+  navigation=bat.navigation;navigation.selectOnDown=cannon;bat.navigation=navigation;
+  RestoreAddedSelection(title.gunMenu,GunIndex,items.Count,typeof(DataListMenu<GunData>));
   // Native Menu.Show installs the normal select/click/cancel listeners later.
   // Cloning the prefab retains its native button/pointer semantics and artwork.
   var unlocked=Unlocks(title.gunUnlocker);UnlockIndex=unlocked.Length;
@@ -60,6 +69,15 @@ public static class NativeSelection
   var labels=VictoryLabels(title.gunVictories);
   if(labels!=null)VictoryLabels(title.gunVictories)=labels.Concat(new[]{badge.GetComponentInChildren<TMP_Text>(true)}).ToArray();
   Plugin.Trace("native-selection-appended",new{gunIndex=GunIndex,unlockIndex=UnlockIndex,originalGuns=GunIndex,totalGuns=items.Count,revolverPreserved=revolver.data.name=="RevolverData",layout=copy.transform.parent.GetComponent<LayoutGroup>()?.GetType().Name});
+ }
+ internal static void RestoreAddedSelection(flanne.UIExtensions.Menu menu,int originalCount,int totalCount,Type dataMenu)
+ {
+  // DataListMenu.Awake ran before the new entries existed and clamped its
+  // saved index to the old roster. Restore valid appended selections once.
+  if(!(bool)AccessTools.Field(dataMenu,"saveLastSelectionToPlayerPrefs").GetValue(menu))return;
+  string key=(string)AccessTools.Field(dataMenu,"playerPrefsKey").GetValue(menu);
+  int saved=PlayerPrefs.GetInt(key,0);
+  if(saved>=originalCount&&saved<totalCount)AccessTools.Field(typeof(flanne.UIExtensions.Menu),"index").SetValue(menu,saved);
  }
  public static void ExtendProgression(SaveData data)
  {
@@ -73,6 +91,17 @@ public static class NativeSelection
    Array.Resize(ref data.gunHighestClear,GunCount);
    for(int i=previous;i<GunCount;i++)data.gunHighestClear[i]=-1;
   }
+ }
+}
+[HarmonyPatch(typeof(flanne.UIExtensions.Menu),nameof(flanne.UIExtensions.Menu.Show))]
+class InitializeRosterPreview
+{
+ static void Postfix(flanne.UIExtensions.Menu __instance,int ___index)
+ {
+  // Stock Show selects the button before wiring its selection listeners.
+  // Publish the initial preview after that wiring, including when Unity keeps
+  // the same focused object across a hide/show. Other menus retain their flow.
+  if(__instance is CharacterMenu||__instance is GunMenu)__instance.onSelect.Invoke(___index);
  }
 }
 [HarmonyPatch(typeof(TitleScreenController),"Start")]

@@ -111,6 +111,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="selectors"){yield return CheckSelectors(title);yield break;}
         if(testMode=="resume-route-inventory"){ExportNativeRoutes();yield break;}
         if(testMode.StartsWith("resume-closure-")){yield return CheckParityClosure(testMode);yield break;}
         if(testMode=="powerups-android-numeric"){yield return CheckAndroidNumeric();yield break;}
