@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
@@ -44,7 +45,12 @@ static class AndroidAffixArt
  static Manifest Data;
  static readonly string[] Names={"Affix_Fire","Affix_Thunder","Affix_Ice","Affix_BulletDamageReduce"};
  static readonly Dictionary<int,Sprite> Sprites=new Dictionary<int,Sprite>();
- static void Load(){if(Data==null)Data=JsonUtility.FromJson<Manifest>(File.ReadAllText(Path.Combine(Plugin.AssetRoot,"affixes.json")));}
+ static void Load()
+ {
+  if(Data==null)
+   using(var stream=File.OpenRead(Path.Combine(Plugin.AssetRoot,"affixes.json")))
+    Data=(Manifest)new DataContractJsonSerializer(typeof(Manifest)).ReadObject(stream);
+ }
  internal static AndroidAffixes Attach(GameObject actor,string prefabName)
  {
   Load();var source=Data.actors.SingleOrDefault(a=>a.name==prefabName);if(source==null)return null;
