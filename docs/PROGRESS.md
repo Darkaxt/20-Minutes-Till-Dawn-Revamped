@@ -4,7 +4,16 @@
 
 The confirmed campaign, Options, Custom numeric-edit and failed-Continue findings are implemented. Windowless native Windows runs S1/44(720p),45(1080p),46(fresh-process settings) and48(full15-character/12-weapon regression) pass with identical production code. Both Options contexts use native rows, opaque backgrounds and explicit controller links; all24 rune slots and all Custom tabs/pages are covered. [Controller correction contracts and evidence boundaries](CONTROLLER-UI.md).
 
-C1 is COMPLETE. C2 is ACTIVE for the copied installed-package/runtime/rollback check and normal public v1.1.4 release with independent download verification. No confirmed controller finding or required refactor remains. The user explicitly chose publication only and will deploy through the existing updater APK; live Windows and phone installations are excluded from this delivery.
+C1 and C2 are COMPLETE. Normal [v1.1.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.4) is published and independently downloaded. No confirmed controller finding, blocker, tracked deferral or required refactor remains. The user explicitly chose publication only and will deploy through the existing updater APK; live Windows and phone installations were left unchanged.
+
+| Delivery criterion | Verified result |
+|---|---|
+| Published source | Tag v1.1.4 at `bbe50837258384bda190d7c71d448eccbd866513`; published2026-10-25T01:23:15Z, normal latest release, ZIP and SHA256SUMS.txt present. Later receipt-only documentation does not move the tag. |
+| Independent download | ZIP SHA-256 `13698db311fe9f480baf58d4acc8480226fcc7c1d548bbbb96c7ac00ce9f1252`; all39 package members/metadata verified, candidate=false, no extracted game assets or validation assembly. |
+| Delivered production DLL | SHA-256 `4045acb8192c60ecb491dd5117db2a45703032d28a98d5b15a091abbb761acd3`; identical to the installed candidate exercised in S6/run-19. |
+| Copied installation/runtime/rollback |614 owned files verify; complete controller workflow passes/exit0 in S6/run-19. Exact614-file rollback preserves142 stock originals. The real Windows owned payload/profile/configuration remain byte-identical. |
+| Existing updater compatibility | UPDATE schema1/payload mapping and all614 target paths match1.1.3. Only the DLL hash changes;613 loader/prepared-asset hashes remain identical. This is package-contract verification; no phone1.1.4 deployment is claimed. |
+| Cleanup | Exact disposable root removed through reviewed transaction `95ef948eea5f146e5e7e19c1950dda98`:1339 members/304911186 logical bytes. Durable release and runtime evidence retained. |
 
 ## Android updater acceptance — 2026-10-25
 

@@ -146,7 +146,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.4** passes complete affected native controller workflows at720p/1080p, fresh-process settings and the full roster regression. All confirmed controller-audit findings are corrected. The unchanged gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater has real GitHub download, installation/read-back and progress-preservation coverage. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
+Version **1.1.4** is published and independently downloaded/verified. It passes complete affected native controller workflows at720p/1080p, fresh-process settings, the full roster regression and the copied installed-package/runtime/rollback check. All confirmed controller-audit findings are corrected. The unchanged gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update;1.1.4 matches its existing package contract and is available for user deployment. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 
