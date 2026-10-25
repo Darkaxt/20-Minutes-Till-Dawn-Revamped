@@ -80,16 +80,20 @@ public static partial class Progression
  }
  static string GoalFor(Gate g)
  {
-  string goal=g.Kind==EncounterKind.Clear?"Clear "+Realm(g.Map):g.Kind==EncounterKind.SecretBoss?"Defeat the secret Forest boss":
-   "Defeat "+(g.Ordinal==0?"the first ":g.Ordinal==1?"the second ":"a ")+Realm(g.Map)+" "+(g.Kind==EncounterKind.Miniboss?"miniboss":"boss");
-  goal+=" at Darkness "+g.MinimumDarkness+"+";
-  var conditions=new List<string>();
-  if(g.RequiredCharacter!=null)conditions.Add("using "+contentNames[g.RequiredCharacter]);
-  if(g.RequiredWeapon!=null)conditions.Add("using "+contentNames[g.RequiredWeapon]);
-  if(g.Attribute!=RunAttribute.None)conditions.Add("at least "+Number(g.Threshold)+" "+AttributeName(g.Attribute));
-  if(g.Perks.Length>0)conditions.Add(string.Join(" + ",g.Perks.Select(LocalizationSystem.GetLocalizedValue)));
-  if(g.RequireHitless)conditions.Add("no damage from run start through the defeat");
-  return goal+(conditions.Count>0?"; "+string.Join("; ",conditions):"");
+  string place=g.Map==null?"any standard scenario":"the "+Realm(g.Map);
+  string goal=g.Kind==EncounterKind.Clear?"Clear "+place:g.Kind==EncounterKind.SecretBoss?"Defeat the secret boss in the Forest":
+   "Defeat "+(g.Ordinal==0?"the first ":g.Ordinal==1?"the second ":"a ")+(g.Kind==EncounterKind.Miniboss?"miniboss":"boss")+" in "+place;
+  if(g.MinimumDarkness>0)goal+=" on Darkness "+g.MinimumDarkness+" or higher";
+  if(g.RequiredCharacter!=null)goal+=" as "+contentNames[g.RequiredCharacter];
+  if(g.RequiredWeapon!=null)goal+=" using "+contentNames[g.RequiredWeapon];
+  if(g.Attribute!=RunAttribute.None)goal+=" with at least "+Number(g.Threshold)+" "+(g.Attribute==RunAttribute.FireRate?"shots per second":AttributeName(g.Attribute));
+  if(g.Perks.Length>0)
+  {
+   var skills=g.Perks.Select(LocalizationSystem.GetLocalizedValue).ToArray();
+   goal+=" with "+(skills.Length==1?skills[0]:string.Join(", ",skills.Take(skills.Length-1))+" and "+skills.Last());
+  }
+  if(g.RequireHitless)goal+=" without taking damage before or during the fight";
+  return goal+".";
  }
  static bool MatchesTarget(Gate g,Encounter e)=>g.Kind==e.Kind&&(g.Map==null||g.Map==e.Map)&&(g.Ordinal<0||g.Ordinal==e.Ordinal);
  static bool Meets(Gate g,Encounter e)=>e.Darkness>=g.MinimumDarkness&&(g.RequiredCharacter==null||g.RequiredCharacter==e.Character)&&

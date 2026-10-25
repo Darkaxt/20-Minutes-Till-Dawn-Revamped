@@ -53,12 +53,13 @@ public partial class RuntimeChecks
   Require(new[]{stats,style}.All(b=>b.GetComponentInChildren<TMP_Text>(true).font==original.font&&b.GetComponentInChildren<TMP_Text>(true).fontSize==original.fontSize),"settings retain native typography");
   string outline=original.text;
   foreach(var button in buttons.Where(b=>b.IsInteractable()))yield return MenuMove(pad,menu.transform,button);
-  bool before=StatsOverlay.Enabled;yield return PadClick(pad,menu.transform,stats);
-  Require(StatsOverlay.Enabled!=before&&stats.GetComponentInChildren<TMP_Text>().text.Contains(StatsOverlay.Enabled?"On":"Off"),"one controller Submit toggles HUD once: "+label);
+  var before=StatsOverlay.Mode;yield return PadClick(pad,menu.transform,stats);
+  Require(StatsOverlay.Mode==(MetricsView)(((int)before+1)%3)&&stats.GetComponentInChildren<TMP_Text>().text.Contains(StatsOverlay.Mode.ToString()),"one controller Submit cycles metrics once: "+label);
   bool art=ColorfulStyle.Instance.Enabled;yield return PadClick(pad,menu.transform,style);
   Require(ColorfulStyle.Instance.Enabled!=art&&ColorfulStyle.Instance.LastRestoreFailures==0,"controller changes artwork with exact restoration: "+label);
-  yield return MenuPointer(stats);Require(StatsOverlay.Enabled==before,"actual pointer toggles HUD once");
+  yield return MenuPointer(stats);Require(StatsOverlay.Mode==(MetricsView)(((int)before+2)%3),"actual pointer cycles metrics once");
   yield return MenuPointer(style);Require(ColorfulStyle.Instance.Enabled==art,"actual pointer toggles artwork once");
+  yield return PadClick(pad,menu.transform,stats);Require(StatsOverlay.Mode==before,"three native metric activations return to the original mode");
   Require(original.text==outline,"enhancement activation does not invoke cloned Outline command");
   if(!StatsOverlay.Enabled)yield return PadClick(pad,menu.transform,stats);
   if(!ColorfulStyle.Instance.Enabled)yield return PadClick(pad,menu.transform,style);

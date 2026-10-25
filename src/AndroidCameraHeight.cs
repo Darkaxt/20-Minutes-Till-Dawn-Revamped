@@ -30,6 +30,33 @@ public static class AndroidCameraHeight
    camera.refResolutionY=height;
    camera.refResolutionX=(int)Math.Floor((float)Screen.width/Screen.height*camera.refResolutionY)&~1;
   }
+  owner.gameObject.AddComponent<GameplayView>().Initialize(height,cameras);
+ }
+}
+
+// Keep native reference heights and pixel-perfect calculation; zoom only the
+// final world projection. This scene owner follows actual viewport transitions.
+public sealed class GameplayView:MonoBehaviour
+{
+ internal static GameplayView Instance;
+ internal PixelPerfectCamera[] Cameras;int height,width,pixelHeight;
+ internal void Initialize(int sourceHeight,PixelPerfectCamera[] cameras)
+ {Instance=this;height=sourceHeight;Cameras=cameras.Where(c=>new[]{"UICam","Main Camera","VisibleInFogCamera"}.Contains(c.name)).ToArray();Resize();}
+ void Update(){if(width!=Screen.width||pixelHeight!=Screen.height)Resize();}
+ void Resize()
+ {
+  width=Screen.width;pixelHeight=Screen.height;
+  foreach(var camera in Cameras){camera.refResolutionY=height;camera.refResolutionX=(int)Math.Floor((float)width/pixelHeight*height)&~1;}
+ }
+ void OnDestroy(){if(Instance==this)Instance=null;}
+}
+[HarmonyPatch(typeof(PixelPerfectCamera),"OnPreCull")]
+class GameplayCameraZoom
+{
+ static void Postfix(PixelPerfectCamera __instance)
+ {
+  var view=GameplayView.Instance;
+  if(view!=null&&view.Cameras.Contains(__instance))__instance.GetComponent<Camera>().orthographicSize*=1+Plugin.Instance.ZoomOut.Value/100f;
  }
 }
 [HarmonyPatch(typeof(GameController),"Awake")]

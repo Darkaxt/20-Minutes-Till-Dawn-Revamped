@@ -111,6 +111,11 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="hud-migration")
+        {
+         Require(StatsOverlay.Mode.ToString()==Environment.GetEnvironmentVariable("MODERNIZATION_EXPECTED_METRICS"),"legacy configuration migrates to "+StatsOverlay.Mode);
+         SetPhase("PASS");Log("complete","Actual plugin startup migrates the legacy HUD preference");Application.Quit(0);yield break;
+        }
         if(testMode=="selectors"){yield return CheckSelectors(title);yield break;}
         if(testMode=="resume-route-inventory"){ExportNativeRoutes();yield break;}
         if(testMode.StartsWith("resume-closure-")){yield return CheckParityClosure(testMode);yield break;}
@@ -168,6 +173,18 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode=="controller-menu-audit"){yield return CheckControllerMenus(title);yield break;}
+        if(testMode.StartsWith("display-")){yield return CheckDisplay(title,testMode);yield break;}
+        if(testMode=="unlock-preview"){yield return CheckUnlockPreview(title);yield break;}
+        if(testMode=="hud-order"){yield return CheckHudOrder();yield break;}
+        if(testMode=="hud-list")
+        {
+         RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
+         var hudGame=Object.FindObjectOfType<GameController>();StopFixtureSpawning();
+         yield return CheckOverlay(hudGame,PlayerController.Instance,fixtureMouse,fixtureKeyboard);
+         SetPhase("PASS");Log("complete","Real acquired skill icons/counts/tiers, long-list clipping and native PgUp/PgDn remain usable with metric modes");Application.Quit(0);yield break;
+        }
+        if(testMode=="hud-presentation-challenge"){yield return CheckHudChallenge();yield break;}
+        if(testMode.StartsWith("hud-presentation")){yield return CheckHudPresentation(title,testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("controller-ui-")){yield return CheckControllerUiFixed(title,testMode=="controller-ui-settings-relaunch");yield break;}
         if(testMode=="delivery-roster"){yield return CheckDeliveredRoster(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();

@@ -140,14 +140,15 @@ public class ChallengeRun:MonoBehaviour
  void BuildHUD()
  {
   var font=Resources.FindObjectsOfTypeAll<TMP_Text>().FirstOrDefault(t=>t.font!=null&&t.gameObject.scene.IsValid())?.font;if(font==null)return;
-  hud=new GameObject("ChallengeObjectives",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));hud.transform.SetParent(transform,false);
-  hud.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;hud.GetComponent<Canvas>().sortingOrder=19;
-  var scaler=hud.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);
+  // Share the timer's native canvas/scale; an independent width-scaled canvas
+  // moves the quota counters into the objective at4:3.
+  hud=new GameObject("ChallengeObjectives",typeof(RectTransform));hud.transform.SetParent(Object.FindObjectOfType<GameController>().hud.transform,false);
+  var root=hud.GetComponent<RectTransform>();root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;root.offsetMin=root.offsetMax=Vector2.zero;
   counts=StatsOverlay.Text(hud.transform,"EnemyAndBossQuotas",font,"",20,Vector2.zero,new Vector2(400,30));
-  StatsOverlay.Rect(counts.gameObject,hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-34),new Vector2(400,30));counts.alignment=TextAlignmentOptions.Center;
+  StatsOverlay.Rect(counts.gameObject,hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-164),new Vector2(400,30));counts.alignment=TextAlignmentOptions.Center;
   // Native enemy artwork makes the two counters recognizable without a panel.
   var data=SelectedMap.MapData;int j=0;foreach(var prefab in new[]{data.spawnSessions[0].monsterPrefab,data.bossSpawns[0].bossPrefab})
-  {var icon=new GameObject(j==0?"EnemyIcon":"BossIcon",typeof(RectTransform),typeof(Image));StatsOverlay.Rect(icon,hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(j==0?-216:216,-34),new Vector2(28,28));var image=icon.GetComponent<Image>();image.sprite=prefab.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.sprite!=null).sprite;image.preserveAspect=true;image.raycastTarget=false;j++;}
+  {var icon=new GameObject(j==0?"EnemyIcon":"BossIcon",typeof(RectTransform),typeof(Image));StatsOverlay.Rect(icon,hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(j==0?-216:216,-164),new Vector2(28,28));var image=icon.GetComponent<Image>();image.sprite=prefab.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.sprite!=null).sprite;image.preserveAspect=true;image.raycastTarget=false;j++;}
  }
 }
 // Mono shares generic method bodies across reference-type instantiations.

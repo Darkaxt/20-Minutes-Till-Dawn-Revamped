@@ -37,6 +37,7 @@ public static partial class Progression
  }
  public static readonly List<Gate> Gates=new List<Gate>();
  public static Journal State;public static TitleScreenController Title;
+ internal static ScriptableObject InspectedData;
  public static string JournalPath=>Path.Combine(Application.persistentDataPath,"revamped-achievements.json");
  static readonly Dictionary<Unlockable,Gate> unlockGates=new Dictionary<Unlockable,Gate>();
  static readonly Dictionary<ScriptableObject,Gate> dataGates=new Dictionary<ScriptableObject,Gate>();
@@ -151,8 +152,16 @@ public static partial class Progression
  public static string Description(ScriptableObject data,string description)
  {
   if(State==null||Allowed(data)||!dataGates.TryGetValue(data,out var gate))return description;
+  string result=description+"<br><color=#FC525F>Unlock: "+gate.Goal+"</color>";
+  if(data is CharacterData||data is GunData)
+  {if(InspectedData!=data)return result;}
   var attempt=State.attempts.FirstOrDefault(a=>a.id==gate.Id);
-  return description+"<br><color=#FC525F>Unlock: "+gate.Goal+"</color><br>"+(attempt?.text??"Not attempted");
+  return result+"<br>"+(attempt?.text??"No qualifying attempt recorded yet.");
+ }
+ internal static bool Activate(ScriptableObject data,flanne.UIExtensions.Menu menu,int index)
+ {
+  if(Allowed(data))return true;
+  InspectedData=data;menu.onSelect.Invoke(index);return false;
  }
  static HashSet<string> CurrentPerks()
  {
@@ -169,6 +178,8 @@ class BrowseAchievementLock{static void Postfix(Unlockable __instance){Progressi
 class AchievementBrowseControls
 {
  static IEnumerable<System.Reflection.MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(flanne.UIExtensions.ButtonExtension),"OnSelect"),AccessTools.Method(typeof(flanne.UIExtensions.ButtonExtension),"OnPointerEnter")};
+ static void Prefix(flanne.UIExtensions.ButtonExtension __instance)
+ {if(__instance.GetComponentInParent<CharacterMenu>()!=null||__instance.GetComponentInParent<GunMenu>()!=null)Progression.InspectedData=null;}
  static void Postfix(flanne.UIExtensions.ButtonExtension __instance){Progression.InspectLock(__instance.GetComponent<Unlockable>());}
 }
 [HarmonyPatch(typeof(Unlockable),nameof(Unlockable.UnlockWithPoints))]
@@ -185,9 +196,9 @@ class AchievementMapLock
  }
 }
 [HarmonyPatch(typeof(CharacterSelectState),"OnClick",new[]{typeof(int)})]
-class CharacterGateGuard{static bool Prefix(int i)=>Progression.Allowed(Progression.Title.characterMenu[i]);}
+class CharacterGateGuard{static bool Prefix(int i)=>Progression.Activate(Progression.Title.characterMenu[i],Progression.Title.characterMenu,i);}
 [HarmonyPatch(typeof(GunSelectState),"OnClick",new[]{typeof(int)})]
-class WeaponGateGuard{static bool Prefix(int i)=>Progression.Allowed(Progression.Title.gunMenu[i]);}
+class WeaponGateGuard{static bool Prefix(int i)=>Progression.Activate(Progression.Title.gunMenu[i],Progression.Title.gunMenu,i);}
 [HarmonyPatch(typeof(ModeSelectState),nameof(ModeSelectState.OnClickPlay))]
 class ModeGateGuard{static bool Prefix()=>Progression.Title.modeSelectMenu.currIndex==0||Progression.Allowed(Progression.Title.modeSelectMenu.toggledData);}
 [HarmonyPatch(typeof(MapSelectState),nameof(MapSelectState.OnClickPlay))]

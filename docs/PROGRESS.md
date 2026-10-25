@@ -1,5 +1,13 @@
 # Current Android gameplay completion
 
+## Display, unlock previews and HUD — 2026-10-25
+
+Z1 and Z2 are COMPLETE. Z3 is ACTIVE for normal public1.1.5 delivery. Native Windows54/55/56 establish display/zoom behavior;63/64 establish three metrics modes, skill counts/tiers, pastel comparisons, run credits without wallet changes and current Continue at4:3/16:9.65 verifies natural gate sentences and controller/pointer expansion of locked character/weapon progress without ownership changes.67 verifies Challenge spacing on the native canvas;68 complete controller workflows;69 long-list skill icons/paging;70/71 actual legacy Off/Extended migrations. The left metric order retains existing values; no standalone magic metric is present. Package/install/rollback and independent download remain the delivery gate.
+
+Explicit fixture boundaries: synthetic devices, controlled skill/stat/kill inputs and isolated saves; fullscreen request flags are intercepted to keep the desktop windowed. Samsung is disconnected; no phone test or live deployment is claimed. The user deploys through the existing updater APK.
+
+Failed/cancelled probes are retained:50 reproduces the native disabled Resolution,57 the noisy preview,59 old metric order,62 clipped skill column and66 mismatched Challenge canvas scaling.49/51–53/58 correct fixture names/transition/map-step/fullscreen-boundary/return assumptions. Earlier54/55/56 retain their unchanged display/camera scope; later source changes affect HUD/unlock presentation, with Challenge67 covering its separate canvas correction. S5/10 stopped at its unstyled-title-texture assertion while recolouring was enabled; focused native HUD69 supplies the actual long-list/input proof. No unrelated artwork change was made.
+
 ## Native controller UI correction — 2026-10-25
 
 The confirmed campaign, Options, Custom numeric-edit and failed-Continue findings are implemented. Windowless native Windows runs S1/44(720p),45(1080p),46(fresh-process settings) and48(full15-character/12-weapon regression) pass with identical production code. Both Options contexts use native rows, opaque backgrounds and explicit controller links; all24 rune slots and all Custom tabs/pages are covered. [Controller correction contracts and evidence boundaries](CONTROLLER-UI.md).

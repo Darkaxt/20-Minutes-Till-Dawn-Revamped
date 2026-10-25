@@ -42,10 +42,10 @@ class NoValidationLeaderboard
 class NoPreferenceWrites
 {
  static IEnumerable<MethodBase> TargetMethods()=>new[]{"SetInt","SetFloat","SetString"}.Select(x=>AccessTools.Method(typeof(PlayerPrefs),x));
- static bool Prefix()=>false;
+ static bool Prefix(string key)=>Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("display-")&&(key=="Fullscreen"||key=="ResolutionIndex");
 }
 [HarmonyPatch(typeof(OptionsSetter),nameof(OptionsSetter.Refresh))]
-class TestViewport{static void Postfix(){bool large=Environment.GetEnvironmentVariable("MODERNIZATION_TEST").EndsWith("1080")||Environment.GetEnvironmentVariable("MODERNIZATION_VIEWPORT")=="1080";Screen.SetResolution(large?1920:1280,large?1080:720,false);}}
+class TestViewport{static void Postfix(){string mode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");if(mode.StartsWith("display-")||mode.StartsWith("hud-presentation"))return;bool large=mode.EndsWith("1080")||Environment.GetEnvironmentVariable("MODERNIZATION_VIEWPORT")=="1080";Screen.SetResolution(large?1920:1280,large?1080:720,false);}}
 [HarmonyPatch(typeof(GunEvolution),nameof(GunEvolution.Apply))]
 class EvolutionProbe{static void Prefix(GunEvolution __instance)=>RuntimeChecks.Log("evolution-apply",__instance.name);}
 [HarmonyPatch(typeof(Summon),"Start")]

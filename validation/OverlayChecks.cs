@@ -18,14 +18,14 @@ public partial class RuntimeChecks
  {
   SetPhase("overlay-base");var overlay=StatsOverlay.Instance;
   while(overlay.Panel==null || !overlay.Panel.activeInHierarchy || overlay.LastStatsText==null)yield return null;
-  overlay.Refresh();Require(overlay.LastStatsText.Contains("Damage  20"),"overlay reads native base damage");
+  StatsOverlay.Mode=MetricsView.Extended;overlay.Refresh();Require(overlay.LastStatsText.Contains("Damage  20"),"overlay reads native base damage");
   yield return Capture("overlay-base.png");
   var big=Resources.FindObjectsOfTypeAll<Powerup>().First(x=>x.name=="BigShot");var haste=Resources.FindObjectsOfTypeAll<Powerup>().First(x=>x.name=="Haste");
   Log("diagnostic-action","Apply two Big Shot pickups and Haste through native PlayerPerks.Equip; not a simulated level-up selection");
   player.playerPerks.Equip(big);player.playerPerks.Equip(big);player.playerPerks.Equip(haste);
   overlay.Refresh();
   Require(Mathf.Abs(player.gun.damage-38)<.01f,"two real Big Shot applications change native damage to 38");
-  Require(overlay.LastStatsText.Contains("Damage  38") && overlay.LastStatsText.Contains("+18"),"overlay shows damage base and actual +18 net bonus");
+  Require(System.Text.RegularExpressions.Regex.Replace(overlay.LastStatsText,"<[^>]*>","").Contains("Damage  38") && overlay.LastStatsText.Contains("+18"),"overlay shows damage base and actual +18 net bonus");
   Require(overlay.Collected.Values.Single(x=>x.Name==big.nameString).Count==2,"actual collected Big Shot stack count = 2");
   Require(overlay.Collected.Values.Single(x=>x.Name==haste.nameString).Tier=="Tier 1","tree tier distinguished from stack count");
   Require(Mathf.Abs(player.finalMoveSpeed-player.movementSpeed*1.2f)<.01f,"Haste changes native movement speed by 20 percent");
@@ -33,7 +33,7 @@ public partial class RuntimeChecks
   SetPhase("overlay-live-modifiers");yield return Capture("overlay-modified.png");
   InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.F2));while(StatsOverlay.Enabled)yield return null;
   InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;
-  Require(!overlay.Panel.activeSelf,"native F2 input hides overlay");
+  Require(!overlay.Body.transform.parent.gameObject.activeSelf&&overlay.Panel.activeSelf&&overlay.SkillContent.gameObject.activeInHierarchy,"native F2 Off hides metrics while retaining selected skills");
   yield return Capture("overlay-hidden.png");
   InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.F2));while(!StatsOverlay.Enabled)yield return null;
   InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;
@@ -68,7 +68,7 @@ public partial class RuntimeChecks
   VerifyTitleArtwork();yield return Capture("revamped-title.png");
   title.ChangeState<flanne.TitleScreen.OptionsMenuState>();while(!Active(title.optionsMenu))yield return null;
   var overlay=StatsOverlay.Instance;while(overlay.SettingButton==null||!overlay.SettingButton.gameObject.activeInHierarchy||!overlay.SettingButton.IsInteractable())yield return null;
-  if(!StatsOverlay.Enabled)Click(overlay.SettingButton);Click(overlay.SettingButton);Require(!StatsOverlay.Enabled,"native Options disables icon HUD");Click(overlay.SettingButton);Require(StatsOverlay.Enabled,"native Options enables icon HUD");
+  StatsOverlay.Mode=MetricsView.Extended;Click(overlay.SettingButton);Require(!StatsOverlay.Enabled,"native Options disables metrics");Click(overlay.SettingButton);Require(StatsOverlay.Mode==MetricsView.Little,"native Options enables Little metrics");
   var style=ColorfulStyle.Instance;
   if(style.Enabled)Click(style.SettingButton);
   Click(style.SettingButton);Require(style.Enabled&&style.AppliedCount>0,"native title Options enables the selected compatible artwork");

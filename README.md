@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.4) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -30,23 +30,27 @@ Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their chara
 
 ### Read your build without a panel
 
-Attributes sit on the left; collected skill icons, tiers and counts sit on the right. Values show the effective attribute followed by its base and net bonus, before charge or conditional effects. Toggle the HUD with **F2** or in Options.
+Attributes sit on the left in character → summons → weapons order; collected skill icons, tiers and counts sit on the right, including at4:3. **F2** or native Options cycles **Off → Little → Extended** metrics. Little shows calculated values only, pastel green above the starting value and pastel red below it. Extended also shows base and net bonus. Off hides metrics while keeping selected skills visible. Charge/conditional effects remain excluded from these base comparisons.
+
+The original timer sits at top center below the level bar, with credits earned this run beneath it. Credits use the game's current reward calculation and do not change the wallet.
 
 ![Transparent HUD with coloured native attribute icons on the left and collected skill tiers and counts on the right](docs/images/hud-build.png)
 
-*Windows 1080p integration capture with the optional recolour enabled and a deliberately configured test build.*
+*Windows 1280×720 Little-mode capture with real Big Shot/Haste acquisitions and deliberately controlled stats/kill count. Also verified at1024×768 and through Continue; not a natural progression run.*
 
 ### Use the native Options menu with a controller
 
-Stats HUD and visual style are native menu rows in both title and pause Options. The opaque background keeps the previous menu out of the way; controller focus stays inside the panel.
+Metrics, visual style and **Zoom out** are native menu rows in title and pause Options. Zoom cycles0/25/50/75/100% extra world view without enlarging the HUD. Resolution remains usable in fullscreen; selecting a native16:9 resolution keeps that choice across re-entry/restart. The opaque background covers the previous menu and controller focus stays inside the panel.
 
 ![Opaque native Options with integrated stats HUD and visual-style settings](docs/images/native-options.png)
 
-*Actual 1080p Windows controller test for 1.1.4, with the optional recolour enabled. [Controller UI corrections and evidence](docs/CONTROLLER-UI.md).*
+*Actual1080p Windows controller test for1.1.5 with recolours enabled. Fullscreen request semantics are tested without switching the desktop display. [Controller UI corrections and evidence](docs/CONTROLLER-UI.md).*
 
 ### Unlock content through play
 
 Characters, weapons and scenarios use thematic milestones instead of currency purchases. Conditions combine minibosses or bosses with Darkness, scenario and build requirements. For example, Diamond requires a Forest miniboss defeat while holding at least seven maximum red hearts. Existing ownership is preserved; earned unlocks generate queued notifications.
+
+Browsing shows a natural unlock sentence. Confirm/click a locked character or weapon to expand its recorded attempt details; moving to another entry or reopening the roster returns to the concise preview. Inspection preserves ownership and credits.
 
 ![Diamond's character menu showing the miniboss and seven maximum red hearts unlock condition](docs/images/unlock-diamond.png)
 
@@ -68,7 +72,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.4 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.4).
+1. Download and extract the [v1.1.5 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -90,7 +94,8 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 |---|---|
 | Move, aim, shoot and character skill | Native keyboard/mouse/controller bindings |
 | Toggle auto-targeting | Space; native controller equivalent |
-| Show/hide the stats HUD | F2 or Options |
+| Off / Little / Extended metrics | F2 or Options; skills stay visible |
+| Widen the world view | Options → Zoom out |
 | Scroll collected skill icons | Page Up / Page Down |
 | Suspend a run | Pause → Save & return; Continue resumes it |
 | Configure a Custom run | Custom selection; live settings from Pause |
@@ -99,6 +104,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD uses T1/T2/T3 for upgrade-tree tiers, S for a special upgrade and ×N for acquisition count. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.1.5 — Display, readable unlocks and Isaac-style HUD
+
+**Added:** persistent native Zoom out; Off/Little/Extended metrics with pastel value comparisons; centered timer and current-run credits. **Fixed:** fullscreen Resolution selection/persistence and skill-column clipping at4:3. **Improved:** character/summon/weapon metric ordering, natural unlock sentences and attempt details on locked-entry activation. Native skills/counts/tiers, Continue, controller/pointer navigation and Challenge spacing are preserved. [Release notes](release/NOTES-1.1.5.md).
 
 ### v1.1.4 — Controller menus and native Options
 
@@ -146,7 +155,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.4** is published and independently downloaded/verified. It passes complete affected native controller workflows at720p/1080p, fresh-process settings, the full roster regression and the copied installed-package/runtime/rollback check. All confirmed controller-audit findings are corrected. The unchanged gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update;1.1.4 matches its existing package contract and is available for user deployment. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
+Version **1.1.5** passes native4:3/16:9 display/zoom/HUD checks, current Continue, natural unlock previews, controller/pointer/F2 navigation, legacy-settings migration and long skill lists. The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

@@ -1,5 +1,7 @@
 # Controller UI corrections — v1.1.4
 
+Current v1.1.5 also adds native Zoom out, fullscreen Resolution access, three metrics modes, viewport-correct skill icons, centered timer/run credits and on-demand locked-entry progress. [Current changelog](../README.md#v115--display-readable-unlocks-and-isaac-style-hud) · [Current acceptance and delivery](PROGRESS.md). The v1.1.4 audit below is retained as history; its binary On/Off metrics behavior is superseded by Off/Little/Extended.
+
 All confirmed findings from the controller audit are implemented and verified. The worker's source audit was followed by native Windows reproductions and corrections; it was not a request to leave repairs pending. [Original audit and evidence classifications](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/blob/e94464ffffac911447fd448c283cc223781c85cc/docs/CONTROLLER-UI.md).
 
 | Section | Correction | Verification |

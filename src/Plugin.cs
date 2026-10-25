@@ -16,15 +16,16 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.1.4")]
+[BepInPlugin(Id,"20MTD Modernization","1.1.5")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
     public static Plugin Instance;
     public static event System.Action<string,object> Diagnostic;
     public static void Trace(string kind,object value){Diagnostic?.Invoke(kind,value);}
-    public ConfigEntry<bool> StatsEnabled;
+    public ConfigEntry<MetricsView> HudMode;
     public ConfigEntry<bool> ColorfulEnabled;
+    public ConfigEntry<int> ZoomOut;
     public static readonly Dictionary<string,string> Text=new Dictionary<string,string>();
     public static readonly Dictionary<GunData,Evolution> Guns=new Dictionary<GunData,Evolution>();
     public static bool TryMode(GunData data,out Evolution mode)
@@ -50,8 +51,10 @@ public class Plugin:BaseUnityPlugin
         Text["soul_knight_description"]="<color=#f5d6c1>Magic Spear</color> gains <color=#f5d6c1>+15</color> damage per <color=#f5d6c1>Soul Heart</color> you currently hold.";
         Text["rune_description_cadence"]="Every 3rd shot gains +99 Piercing, +20% Bullet Size per rank and +20% Bullet Damage per rank.";
         Text["rune_description_tenacity"]="When your HP is at or below half of your Max HP, gain +3% Fire Rate and +5% Knockback per rank.";
-        StatsEnabled=Config.Bind("Enhancements","StatsOverlay",true,"F2 toggles native icon/value stats. Effective (base + bonus), before charge/conditional effects; PgUp/PgDn scroll collected skill icons. Stored in the mod configuration.");
+        var legacyMetrics=Config.Bind("Enhancements","StatsOverlay",true,"Legacy enabled value used only when migrating to MetricsMode.");
+        HudMode=Config.Bind("Enhancements","MetricsMode",legacyMetrics.Value?MetricsView.Extended:MetricsView.Off,"F2 cycles Off, Little and Extended metrics. Selected skills remain visible. Little shows final values; Extended adds base and bonus. Pastel values compare numerically with the starting value.");
         ColorfulEnabled=Config.Bind("Enhancements","ColorfulStyle",false,"Optional compatible Sprites Reborn art (Law / Daramos / Darkly77). Original is default. Selected over older Colorful Overhaul by measured current-build coverage.");
+        ZoomOut=Config.Bind("Enhancements","CameraZoomOut",0,new ConfigDescription("Extra world view in percent. 0 retains the original camera; menus and HUD keep their normal size.",new AcceptableValueList<int>(0,25,50,75,100)));
         new Harmony(Id).PatchAll(typeof(Plugin).Assembly);
         Logger.LogInfo("Native gameplay modernization loaded");
         gameObject.AddComponent<StatsOverlay>();

@@ -16,7 +16,7 @@ namespace TwentyMinutes.Modernization;
 // callbacks stay intact; added commands are handled before the native Back route.
 public sealed class NativeOptionsSettings:MonoBehaviour
 {
- Menu menu;RectTransform column,background;Button stats,style;int statsIndex,styleIndex;
+ Menu menu;RectTransform column,background;Button stats,style,zoom;int statsIndex,styleIndex,zoomIndex;
  void OnEnable(){InputUser.onChange+=ControlsChanged;}
  void OnDisable(){InputUser.onChange-=ControlsChanged;}
  void ControlsChanged(InputUser user,InputUserChange change,InputDevice device)
@@ -32,7 +32,8 @@ public sealed class NativeOptionsSettings:MonoBehaviour
   view.column=(RectTransform)template.transform.parent;
   view.stats=view.Row(template,"StatsSetting","StatsSettingLabel",out view.statsIndex);
   view.style=view.Row(template,"ColorfulSetting","ColorfulSettingLabel",out view.styleIndex);
-  int position=template.transform.GetSiblingIndex()+1;view.stats.transform.SetSiblingIndex(position);view.style.transform.SetSiblingIndex(position+1);
+  view.zoom=view.Row(template,"ZoomSetting","ZoomSettingLabel",out view.zoomIndex);
+  int position=template.transform.GetSiblingIndex()+1;view.stats.transform.SetSiblingIndex(position);view.style.transform.SetSiblingIndex(position+1);view.zoom.transform.SetSiblingIndex(position+2);
   var box=StatsOverlay.Box(owner.transform,"NativeOptionsOpaquePanel",new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,Vector2.zero,new Color(.15f,.13f,.19f,1));
   view.background=box.GetComponent<RectTransform>();box.transform.SetAsFirstSibling();
  }
@@ -55,8 +56,10 @@ public sealed class NativeOptionsSettings:MonoBehaviour
  {
   if(index==statsIndex){StatsOverlay.Instance.Toggle();return true;}
   if(index==styleIndex){ColorfulStyle.Instance.Toggle();return true;}
+  if(index==zoomIndex){Plugin.Instance.ZoomOut.Value=(Plugin.Instance.ZoomOut.Value+25)%125;Plugin.Instance.Config.Save();ZoomLabel();return true;}
   return false;
  }
+ void ZoomLabel(){zoom.GetComponentInChildren<TMP_Text>(true).text="Zoom out: "+Plugin.Instance.ZoomOut.Value+"%";}
  internal void Prepare()
  {
   // Create controls at the actual Show boundary. Clones made after the native
@@ -64,10 +67,10 @@ public sealed class NativeOptionsSettings:MonoBehaviour
   // and steal Automatic navigation from the title menu before their first Show.
   if(stats==null)Build();
   StatsOverlay.Instance.SettingButton=stats;ColorfulStyle.Instance.SettingButton=style;
-  StatsOverlay.UpdateSettingsLabels();ColorfulStyle.Instance.Labels();
+  StatsOverlay.UpdateSettingsLabels();ColorfulStyle.Instance.Labels();ZoomLabel();
   // Native Menu.Hide fails to remove its Show-created lambdas. Keep each new
   // toggle's registration owned by the next Show, so reopening toggles once.
-  foreach(var button in new[]{stats,style})
+  foreach(var button in new[]{stats,style,zoom})
   {var entry=button.GetComponent<ButtonExtension>();entry.onClick.RemoveAllListeners();entry.onSelect.RemoveAllListeners();entry.onCancel.RemoveAllListeners();}
   var controls=column.GetComponentsInChildren<Button>(true).Where(b=>b.gameObject.activeSelf).ToArray();
   var layout=column.GetComponent<VerticalLayoutGroup>();layout.childAlignment=TextAnchor.MiddleCenter;

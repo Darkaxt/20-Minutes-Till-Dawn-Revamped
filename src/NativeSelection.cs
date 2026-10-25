@@ -96,6 +96,8 @@ public static class NativeSelection
 [HarmonyPatch(typeof(flanne.UIExtensions.Menu),nameof(flanne.UIExtensions.Menu.Show))]
 class InitializeRosterPreview
 {
+ static void Prefix(flanne.UIExtensions.Menu __instance)
+ {if(__instance is CharacterMenu||__instance is GunMenu)Progression.InspectedData=null;}
  static void Postfix(flanne.UIExtensions.Menu __instance,int ___index)
  {
   // Stock Show selects the button before wiring its selection listeners.
