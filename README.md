@@ -132,6 +132,8 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
+**Known controller UI gaps:** Challenge and Custom cannot currently be reached through the campaign selector's controller navigation. The HUD and sprite settings still use a separate panel rather than native Options rows. An additional read-only audit records other candidates and their evidence separately; these fixes are pending. [Controller UI audit](docs/CONTROLLER-UI.md).
+
 Version **1.1.3** is published and verified on the supported Windows target, with complete controller/pointer roster checks at720p and1080p, installed-package acceptance, exact rollback and preservation of originals/profile/configuration. The unchanged1.1.2 gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater additionally verifies a real GitHub download and phone installation; all614 delivered mod files and142 originals verify, and current progress/settings/registry are preserved.
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
