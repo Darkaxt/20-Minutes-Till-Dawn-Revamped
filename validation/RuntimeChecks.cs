@@ -168,6 +168,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("resume-android-")){yield return CheckAndroidResume(testMode.EndsWith("continue"));yield break;}
         if(testMode.StartsWith("artwork-")){yield return CheckTitleArtwork(title);yield break;}
         if(testMode=="controller-menu-audit"){yield return CheckControllerMenus(title);yield break;}
+        if(testMode.StartsWith("controller-ui-")){yield return CheckControllerUiFixed(title,testMode=="controller-ui-settings-relaunch");yield break;}
         if(testMode=="delivery-roster"){yield return CheckDeliveredRoster(title);yield break;}
         if(testMode.StartsWith("delivery-")||testMode=="gale"||testMode=="bulwark")RunResume.Invalidate();
         if(testMode.StartsWith("integrated-hud")){yield return CheckIntegratedHud(title);yield break;}

@@ -32,7 +32,9 @@ public partial class RuntimeChecks
  }
  IEnumerator MenuMove(Gamepad pad,Transform root,Selectable target)
  {
-  var path=MenuRoute(root,target);Require(path!=null,"controller graph reaches "+target.name);
+  var path=MenuRoute(root,target);
+  if(path==null){Log("unreachable-controller-control","focus="+SelectorFocus()+" target="+target.name);MenuSnapshot(root,"unreachable-"+target.name);}
+  Require(path!=null,"controller graph reaches "+target.name);
   foreach(var direction in path)yield return SelectorPad(pad,direction);
   Require(EventSystem.current.currentSelectedGameObject==target.gameObject,"real controller reaches "+target.name);
  }

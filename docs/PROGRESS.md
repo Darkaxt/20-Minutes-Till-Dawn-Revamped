@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Native controller UI correction — 2026-10-25
+
+The confirmed campaign, Options, Custom numeric-edit and failed-Continue findings are implemented. Windowless native Windows runs S1/44(720p),45(1080p),46(fresh-process settings) and48(full15-character/12-weapon regression) pass with identical production code. Both Options contexts use native rows, opaque backgrounds and explicit controller links; all24 rune slots and all Custom tabs/pages are covered. [Controller correction contracts and evidence boundaries](CONTROLLER-UI.md).
+
+C1 is COMPLETE. C2 is ACTIVE for the copied installed-package/runtime/rollback check and normal public v1.1.4 release with independent download verification. No confirmed controller finding or required refactor remains. The user explicitly chose publication only and will deploy through the existing updater APK; live Windows and phone installations are excluded from this delivery.
+
 ## Android updater acceptance — 2026-10-25
 
 Native updater0.1.0 automatically found the existing DroidDeck game after one real Android folder grant, retained access across process restart, downloaded/verified public GitHub1.1.3 and completed the real phone1.1.2→1.1.3 update through its normal UI listeners. Independent native read-back verifies614 owned files,142 stock originals and byte-identical current profile/settings/three Wine registry files. No reset or debugging enablement. The actual package was reviewed at unfolded and390dp widths, with measured native controls and original opaque Revamped colors.

@@ -15,6 +15,7 @@
  </PropertyGroup>
  <ItemGroup>
   <Reference Include="$(GameManaged)/UnityEngine.ParticleSystemModule.dll"/>
+  <Reference Include="$(GameManaged)/UnityEngine.TextRenderingModule.dll"/>
   <Reference Include="$(GameManaged)/Assembly-CSharp.dll"/><Reference Include="$(GameManaged)/com.flanne.extensions.dll"/>
   <Reference Include="$(GameManaged)/Facepunch.Steamworks.Win64.dll"/>
   <Reference Include="$(GameManaged)/Unity.2D.PixelPerfect.dll"/>

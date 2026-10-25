@@ -91,13 +91,5 @@ public class ColorfulStyle:MonoBehaviour
   catch{if(copy!=null)Object.Destroy(copy);throw;}
   finally{RenderTexture.active=previous;RenderTexture.ReleaseTemporary(rt);}
  }
- public void AddSetting(Transform panel,TMP_FontAsset font)
- {
-  panel.GetComponent<RectTransform>().sizeDelta=new Vector2(300,238);
-  var row=StatsOverlay.Box(panel,"ColorfulSetting",new Vector2(0,1),new Vector2(0,1),new Vector2(12,-124),new Vector2(276,58),StatsOverlay.Green);
-  var button=row.AddComponent<Button>();button.targetGraphic=row.GetComponent<Image>();
-  StatsOverlay.Text(row.transform,"ColorfulSettingLabel",font,"",18,new Vector2(12,-12),new Vector2(252,40));button.onClick.AddListener(Toggle);SettingButton=button;
-  StatsOverlay.Text(panel,"ColorfulCredit",font,"Sprites Reborn · Law / Daramos\n+ original-pixel palette extension",16,new Vector2(14,-192),new Vector2(272,42));Labels();
- }
- void Labels(){foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="ColorfulSettingLabel"))t.text="Visual style: "+(Enabled?"Sprites Reborn":"Original");}
+ internal void Labels(){foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="ColorfulSettingLabel"))t.text="Visual style: "+(Enabled?"Sprites Reborn":"Original");}
 }

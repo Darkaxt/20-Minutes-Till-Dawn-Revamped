@@ -6,6 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using TMPro;
 using flanne;
 using flanne.Core;
@@ -36,7 +37,13 @@ public class CustomMenu:MonoBehaviour
   menu.cancel=input.FindAction("UI/Cancel");menu.cancel.canceled+=menu.OnCancel;menu.Refresh();
  }
  public static void Close(){if(Instance!=null){Instance.gameObject.SetActive(false);Object.Destroy(Instance.gameObject);Instance=null;}}
- void OnCancel(InputAction.CallbackContext ctx){back();}
+ void OnCancel(InputAction.CallbackContext ctx)
+ {
+  var input=EventSystem.current.currentSelectedGameObject?.GetComponent<TMP_InputField>();
+  if(input!=null&&input.transform.IsChildOf(transform))
+  {input.DeactivateInputField();input.navigation.selectOnRight.Select();return;}
+  back();
+ }
  void OnDestroy(){if(cancel!=null)cancel.canceled-=OnCancel;if(Instance==this)Instance=null;}
  void Add(string label,string key,float original,float step=.1f,float min=0,float max=100,bool integer=false)
  {rows.Add(new Row{label=label,get=()=>CustomMode.Get(key,original),set=v=>CustomMode.Set(key,v),step=step,min=min,max=max,integer=integer});}
@@ -136,12 +143,15 @@ public class CustomMenu:MonoBehaviour
    if(row.action!=null){Button("CustomAction"+index,"Select",new Vector2(758,y),new Vector2(278,32),()=>Run(row.action));continue;}
    TMP_InputField input=null;
    System.Action<float> update=v=>{v=Mathf.Clamp(v,row.min,row.max);if(row.integer)v=Mathf.Round(v);Run(()=>row.set(v));input.SetTextWithoutNotify(row.get().ToString("0.##",CultureInfo.InvariantCulture));};
-   Button("CustomMinus"+index,"−",new Vector2(758,y),new Vector2(48,32),()=>update(row.get()-row.step));
+   var minus=Button("CustomMinus"+index,"−",new Vector2(758,y),new Vector2(48,32),()=>update(row.get()-row.step));
    var inputObj=StatsOverlay.Box(content,"CustomValue"+index,new Vector2(0,1),new Vector2(0,1),new Vector2(816,y),new Vector2(162,32),new Color(.16f,.2f,.28f,1));
    var label=StatsOverlay.Text(inputObj.transform,"ValueText",font,"",19,Vector2.zero,new Vector2(162,32));label.alignment=TextAlignmentOptions.Center;
    input=inputObj.AddComponent<TMP_InputField>();input.textViewport=inputObj.GetComponent<RectTransform>();input.textComponent=(TextMeshProUGUI)label;input.targetGraphic=inputObj.GetComponent<Image>();input.contentType=TMP_InputField.ContentType.DecimalNumber;
-   input.SetTextWithoutNotify(row.get().ToString("0.##",CultureInfo.InvariantCulture));input.onEndEdit.AddListener(text=>{if(float.TryParse(text,NumberStyles.Float,CultureInfo.InvariantCulture,out float value)&&!float.IsNaN(value)&&!float.IsInfinity(value))update(value);else input.SetTextWithoutNotify(row.get().ToString("0.##",CultureInfo.InvariantCulture));});controls.Add(input);
-   Button("CustomPlus"+index,"+",new Vector2(988,y),new Vector2(48,32),()=>update(row.get()+row.step));
+   input.SetTextWithoutNotify(row.get().ToString("0.##",CultureInfo.InvariantCulture));input.onEndEdit.AddListener(text=>{if(float.TryParse(text,NumberStyles.Float,CultureInfo.InvariantCulture,out float value)&&!float.IsNaN(value)&&!float.IsInfinity(value))update(value);else input.SetTextWithoutNotify(row.get().ToString("0.##",CultureInfo.InvariantCulture));});
+   var plus=Button("CustomPlus"+index,"+",new Vector2(988,y),new Vector2(48,32),()=>update(row.get()+row.step));
+   // Controller traversal changes numbers with the existing Minus/Plus buttons.
+   // Pointer/keyboard retain direct entry without trapping the controller ring.
+   input.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=minus,selectOnUp=minus,selectOnRight=plus,selectOnDown=plus};
   }
   pageLabel=StatsOverlay.Text(content,"CustomPage",font,(page+1)+" / "+Math.Max(1,(rows.Count+7)/8),18,new Vector2(480,-529),new Vector2(100,40));pageLabel.alignment=TextAlignmentOptions.Center;
   Button("CustomPrevious","<",new Vector2(410,-530),new Vector2(52,38),()=>{page=Math.Max(0,page-1);Refresh();});

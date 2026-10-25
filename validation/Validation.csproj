@@ -1,1 +1,1 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><AssemblyName>TwentyMinutes.Modernization.Validation</AssemblyName></PropertyGroup><ItemGroup><ProjectReference Include="../src/Modernization.csproj"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><AssemblyName>TwentyMinutes.Modernization.Validation</AssemblyName></PropertyGroup><ItemGroup><ProjectReference Include="../src/Modernization.csproj"/><Reference Include="$(GameManaged)/UnityEngine.IMGUIModule.dll"/></ItemGroup></Project>

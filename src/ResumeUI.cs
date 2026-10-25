@@ -41,7 +41,10 @@ class ResumeDialog:MonoBehaviour
   var font=Resources.FindObjectsOfTypeAll<TMP_Text>().First(t=>t.font!=null&&t.gameObject.scene.IsValid()).font;
   var dialog=Build(RunRecorder.Instance.transform,font);dialog.Description.text="Could not restore this run. Your checkpoint is preserved.\n"+error.Message;
   dialog.ContinueButton.gameObject.SetActive(false);dialog.NewButton.gameObject.SetActive(false);
-  dialog.BackButton.onClick.AddListener(()=>{RunResume.Pending=null;RunRecorder.Instance.Finished=true;RunRecorder.Instance.GetComponent<GameController>().ChangeState<SuspendToTitleState>();});
+  var game=RunRecorder.Instance.GetComponent<GameController>();
+  dialog.back=()=>{RunResume.Pending=null;RunRecorder.Instance.Finished=true;game.ChangeState<SuspendToTitleState>();};
+  dialog.BackButton.onClick.AddListener(()=>dialog.back());
+  dialog.cancel=game.playerInput.actions.FindAction("UI/Cancel");dialog.cancel.canceled+=dialog.OnCancel;
   dialog.BackButton.Select();
  }
  static ResumeDialog Build(Transform parent,TMP_FontAsset font)

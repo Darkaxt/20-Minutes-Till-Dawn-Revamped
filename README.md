@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.3) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.4) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -36,6 +36,14 @@ Attributes sit on the left; collected skill icons, tiers and counts sit on the r
 
 *Windows 1080p integration capture with the optional recolour enabled and a deliberately configured test build.*
 
+### Use the native Options menu with a controller
+
+Stats HUD and visual style are native menu rows in both title and pause Options. The opaque background keeps the previous menu out of the way; controller focus stays inside the panel.
+
+![Opaque native Options with integrated stats HUD and visual-style settings](docs/images/native-options.png)
+
+*Actual 1080p Windows controller test for 1.1.4, with the optional recolour enabled. [Controller UI corrections and evidence](docs/CONTROLLER-UI.md).*
+
 ### Unlock content through play
 
 Characters, weapons and scenarios use thematic milestones instead of currency purchases. Conditions combine minibosses or bosses with Darkness, scenario and build requirements. For example, Diamond requires a Forest miniboss defeat while holding at least seven maximum red hearts. Existing ownership is preserved; earned unlocks generate queued notifications.
@@ -60,13 +68,13 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.3 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.3).
+1. Download and extract the [v1.1.4 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.4).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
 The release contains the mod and installer recipes. It prepares the required artwork/data locally from your owned inputs; extracted game assets and validation assemblies are not bundled. Installation preserves the original game files, saves and configuration and supports exact owned-file rollback.
 
-**DroidDeck:** v1.1.3 is installed on the tested phone. The Android updater found the existing game automatically and installed the public release while preserving current progress and settings. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
+**DroidDeck:** the Android updater finds the existing Steam game and installs compatible releases while preserving progress/settings. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
 
 ### Update directly on Android
 
@@ -92,9 +100,15 @@ The HUD uses T1/T2/T3 for upgrade-tree tiers, S for a special upgrade and ×N fo
 
 ## Changelog
 
+### v1.1.4 — Controller menus and native Options
+
+**Fixed:** controller access to Challenge/Custom and their native tier/Play/Back flow; Custom numeric-field focus traps; B/Cancel on failed Continue. **Improved:** stats HUD and visual style are native Options rows in title and pause, with an opaque background and navigation confined to the panel. Pointer input, settings persistence, existing locks, credits and saved checkpoints are preserved.
+
+Verified with Unity controller/pointer events at720p/1080p, all Custom tabs/pages, rune traversal, roster regression and fresh-process settings. [Release notes](release/NOTES-1.1.4.md) · [Controller ledger](docs/CONTROLLER-UI.md).
+
 ### Android updater 0.1.0
 
-**Added:** automatic DroidDeck Steam-library detection after one folder grant, remembered installation, public GitHub release notes/download verification, compatible code deployment, installed-file read-back and interrupted-update recovery. Native Android UI follows the selected utility layout with Revamped colors. This is a separate APK; game release numbering remains1.1.3.
+**Added:** automatic DroidDeck Steam-library detection after one folder grant, remembered installation, public GitHub release notes/download verification, compatible code deployment, installed-file read-back and interrupted-update recovery. Native Android UI follows the selected utility layout with Revamped colors. This is a separate APK; the game was1.1.3 when this client was released.
 
 ### v1.1.3 — Controller roster fixes
 
@@ -132,9 +146,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-**Known controller UI gaps:** Challenge and Custom cannot currently be reached through the campaign selector's controller navigation. The HUD and sprite settings still use a separate panel rather than native Options rows. An additional read-only audit records other candidates and their evidence separately; these fixes are pending. [Controller UI audit](docs/CONTROLLER-UI.md).
-
-Version **1.1.3** is published and verified on the supported Windows target, with complete controller/pointer roster checks at720p and1080p, installed-package acceptance, exact rollback and preservation of originals/profile/configuration. The unchanged1.1.2 gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater additionally verifies a real GitHub download and phone installation; all614 delivered mod files and142 originals verify, and current progress/settings/registry are preserved.
+Version **1.1.4** passes complete affected native controller workflows at720p/1080p, fresh-process settings and the full roster regression. All confirmed controller-audit findings are corrected. The unchanged gameplay integration also has recorded acquisition, fire/reload, contact, lifecycle, Continue, restart, legacy and Custom checks. The Android updater has real GitHub download, installation/read-back and progress-preservation coverage. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

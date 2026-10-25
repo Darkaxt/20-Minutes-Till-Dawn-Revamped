@@ -65,6 +65,7 @@ public partial class RuntimeChecks
  IEnumerator CheckSelectors(TitleScreenController title)
  {
   SetPhase("controller-selector-regression");
+  RunResume.Invalidate(); // Only this validated fixture identity; start a new roster flow.
   // Only this copied player's isolated save is changed. Start with obtained
   // Shana/Revolver, as on the phone; never grant locked content for this test.
   Progression.State=new Progression.Journal();

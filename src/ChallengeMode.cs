@@ -20,6 +20,18 @@ public static class ChallengeMode
  public static bool Active=>SelectedMap.MapData!=null&&SelectedMap.MapData.name=="Challenge_Forest";
  public static bool Selected=>Progression.Title!=null&&Progression.Title.modeSelectMenu.toggledData==Map&&Map!=null;
  public static Toggle[] Toggles(GameModeMenu menu)=>(Toggle[])AccessTools.Field(typeof(ToggleGroupMenu<MapData>),"toggles").GetValue(menu);
+ internal static void LinkNavigation(GameModeMenu menu,Button play)
+ {
+  var toggles=Toggles(menu);var difficulty=toggles[0].navigation.selectOnDown;
+  for(int i=0;i<toggles.Length;i++)
+  {
+   var navigation=toggles[i].navigation;navigation.mode=Navigation.Mode.Explicit;
+   navigation.selectOnLeft=i==0?null:toggles[i-1];navigation.selectOnRight=i+1==toggles.Length?null:toggles[i+1];
+   var map=toggles[i].GetComponent<MapEntry>().data;
+   navigation.selectOnDown=map.darknessDisabled||map==CustomMode.MenuMap?play:difficulty;
+   toggles[i].navigation=navigation;
+  }
+ }
  public static float SpawnMultiplier(int tier)=>SpawnRate(1,tier);
  internal static float SpawnRate(float initial,int tier)
  {foreach(float value in AdditionalSpawns.Take(tier+1))initial+=value;return initial;}
@@ -143,7 +155,7 @@ public class ChallengeRun:MonoBehaviour
 // menu, corrupting PowerupMenu's entries. All scene Awake calls precede Start;
 // append through the concrete title owner before any native menu initializes.
 [HarmonyPatch(typeof(flanne.TitleScreen.TitleScreenController),"Awake")]
-class AppendChallengeBeforeMenu{static void Postfix(flanne.TitleScreen.TitleScreenController __instance){AndroidMapTables.ConfigureLoaded();ChallengeMode.Append(__instance.modeSelectMenu);CustomMode.Append(__instance.modeSelectMenu);}}
+class AppendChallengeBeforeMenu{static void Postfix(flanne.TitleScreen.TitleScreenController __instance){AndroidMapTables.ConfigureLoaded();ChallengeMode.Append(__instance.modeSelectMenu);CustomMode.Append(__instance.modeSelectMenu);ChallengeMode.LinkNavigation(__instance.modeSelectMenu,__instance.modeSelectStartButton);}}
 [HarmonyPatch(typeof(DifficultyController),"SetDifficulty")]
 class ChallengeDifficultySelection{static bool Prefix(DifficultyController __instance,int diff)=>ChallengeMode.SetDifficulty(__instance,diff);}
 [HarmonyPatch]

@@ -1,27 +1,26 @@
-# Controller UI audit — 2026-10-25
+# Controller UI corrections — v1.1.4
 
-The user requested a read-only agent audit and asked that additional findings be fixed later. These entries distinguish source findings, existing runtime evidence and checks still required. This is not a claim that every UI section passed a fresh controller test.
+All confirmed findings from the controller audit are implemented and verified. The worker's source audit was followed by native Windows reproductions and corrections; it was not a request to leave repairs pending. [Original audit and evidence classifications](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/blob/e94464ffffac911447fd448c283cc223781c85cc/docs/CONTROLLER-UI.md).
 
-## Current requested correction
-
-| Section | Finding | Required correction and acceptance |
+| Section | Correction | Verification |
 |---|---|---|
-| Campaign/mode selection | Confirmed in the isolated Windows player (`evidence/S1/run-31`). Starting through the actual controller input module, the original three modes have navigation routes; Challenge and Custom have none. They clone original toggles without repairing incoming links (`src/ChallengeMode.cs`, `src/CustomMode.cs`). | Real input-module D-pad selection of all five modes, native descriptions/difficulty, Play/Back and re-entry, preserving locks. |
-| Metrics and sprite settings | Confirmed native-menu integration gap. `EnhancementSettingsCanvas`/buttons are outside native Options entries (`src/StatsOverlay.cs:123`, `src/ColorfulStyle.cs:94`); run-31 confirms the separate ownership. Native Automatic navigation can point outside the Options hierarchy, so lack of registration alone does not prove both buttons are completely unreachable. Earlier tests invoked direct clicks. | Integrate both as native Options rows in title and pause; controller/pointer activation, labels/live effects, persistence and viewport fit. |
+| Campaign selection | Link all five modes in order, with native difficulty/Play/Back routes. Challenge and Custom retain their ownership rules. | Actual D-pad/Submit selects every mode and updates descriptions. Unearned Challenge rejects Play without spending credits. Earned tier Right/Left works and cannot exceed its limit. Back, re-entry and controller Custom start pass. |
+| Title and pause Options | Replace the floating enhancement canvas with two native rows, preserving the original font, feedback, indices and option callbacks. An opaque, centered360×350 native-unit panel covers the previous menu/title artwork. Explicit navigation stays inside Options and refreshes with available settings/input scheme. | Controller and pointer toggle HUD/artwork exactly once; original Outline is unchanged. Both contexts pass repeated re-entry and Cancel from an added row. Hit rectangles/rendered glyphs fit720p/1080p. Both settings persist into a separate process and control the live HUD/artwork. |
+| Custom numeric fields | Controller traversal uses Minus/Plus and skips direct text-edit focus. Pointer/keyboard retain direct entry. Cancel leaves a text edit for Plus; another Cancel returns to mode selection. | All seven tabs and their pages are browsed with controller input; Plus/Minus change values. Real pointer focus, legacy TMP key-event processing and pointer commit preserve direct typing. Ownership/credits remain unchanged. |
+| Failed Continue dialog | Bind native Cancel to the same return-to-title operation as Back, with lifecycle unsubscription. | Controlled validation-only restore failures pass through the real restoration error handler. B/Cancel and A on Back both return to title; checkpoint bytes remain identical. Ordinary Continue Cancel also passes. |
 
-## Additional findings reserved for later fixes
+## Other audit findings
 
-| ID | Section | Evidence and confidence | Next bounded check |
-|---|---|---|---|
-| UI-01 | Title → Achievements | Cleared for the checked path. The worker flagged a static candidate because the appended title entry does not repair links (`src/SourceAchievementMenu.cs:33`). Actual Windows controller input reaches it, opens the panel, advances to page 2 and cancels back (`evidence/S1/run-32`). Both enabled panel buttons have incoming routes. | No repair established. Eligible reward claims and every page were not exercised; no claim was granted for this audit. |
-| UI-02 | Custom numeric fields | Confirmed controller focus trap in `evidence/S1/run-33`. D-pad traversal reaches `CustomValue1` and immediately starts editing. Right leaves focus there; Submit followed by Down also leaves it there. B closes the entire Custom panel and returns to Start. `TMP_InputField` controls sit between Minus/Plus in the traversal ring (`src/CustomMenu.cs:137`, `:152`), while the global Cancel handler closes the panel (`:39`). Run-32's initial graph-based probe failed while traversing these editing controls; run-33 observes each real input transition directly. | Implement a deliberate controller edit/exit policy, then verify reaching Plus/next row, changing values and leaving an edit without inadvertently leaving Custom. No repair made in this audit. |
-| UI-03 | Failed Continue → Cancel | Definite source omission. `ResumeUI.RestoreFailed` builds its error dialog without a Cancel binding (`src/ResumeUI.cs:39`); ordinary Continue binds `UI/Cancel`. Focused Back has a Submit action, so total inability to dismiss is not established. | Trigger one controlled rejection in an isolated save fixture; test B dismissal and A on Back independently. |
+- **Achievements:** the tentative missing-link concern was cleared. Controller entry, page navigation and Cancel work. No repair was required; reward claims were not granted for the audit.
+- **Runes:** controller traversal reaches all24 native rune slots and Confirm returns to character selection, closing the earlier coverage gap without changing rune behavior.
+- **Characters/weapons:** the full15-character/12-weapon controller/pointer regression passes, including initial/re-entry previews, locked guards and obtained confirmation.
 
-## Existing evidence and limits
+## Evidence and boundaries
 
-- Characters/weapons: prior actual controller/pointer input-module checks cover15 characters/12 weapons, locked guards and remembered selections in v1.1.3 (`evidence/S6/run-18`). This is copied-player evidence, not a fresh test of the user's current phone session.
-- Runes: native selectable controls remain. Existing tests submit through keyboard after selecting a rune; traversing both trees with a controller is a coverage gap rather than a demonstrated defect.
-- Ordinary Continue: initial focus, explicit horizontal links and Cancel are present (`src/ResumeUI.cs:36`, `:58`).
-- Pause/Custom entry: explicit vertical links exist (`src/ResumeUI.cs:124`, `src/CustomMenu.cs:162`). Check reachable active controls when Save & return is unavailable before claiming a fault.
+`evidence/S1/run-44` and `run-45` pass the complete affected workflows at1280×720 and1920×1080. `run-46` passes fresh-process setting persistence/re-entry; `run-48` passes the roster regression. These runs use the same production DLL. Final package/install/rollback/release receipts are recorded in [delivery history](PROGRESS.md).
 
-The worker audit was read-only. The main agent independently inspected the cited source and reproduced the campaign/navigation, Options ownership and Custom numeric-field findings in a windowless copied Windows player. Achievements passed the bounded path above. Synthetic gamepad events entered Unity's actual input module; no desktop input was injected. To inspect Custom downstream of its broken entry route, only the copied player's Custom toggle was selected programmatically; this is not evidence that the normal Custom entry works. The installed Windows game, phone and user progress were not changed. This audit does not deliver the pending UI fixes.
+These are native Unity input-module checks in a windowless copied Windows player with an isolated profile. Synthetic gamepad/pointer events do not inject desktop input. The shipped legacy TMP field receives key events through its public processor after real pointer focus; no OS keyboard/IME claim is made. Restore errors are injected only by the separate validation assembly. No validation assembly is delivered in the mod.
+
+Implementation-stage failures are retained:34–36 exposed early-created hidden controls retaining interaction;37–38 exposed a geometry check counting native labels' empty100-unit layout boxes rather than hit boxes/glyphs;39–42 corrected fixture navigation/readiness and legacy typing/Plus expectations;43 exposed automatic navigation escaping to the gameplay HUD slider, corrected with explicit Options links. Probe47 was cancelled through the owned fixture interface because a retained checkpoint opened Continue before the roster;48 supplies that fixture precondition explicitly. Failed/cancelled probes are not acceptance results.
+
+No confirmed controller finding remains pending. These bounded checks do not claim every possible game-state/input combination is bug-free.

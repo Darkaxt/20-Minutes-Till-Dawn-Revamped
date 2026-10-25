@@ -29,18 +29,24 @@ env.update(TEMP=str(args.scratch), TMP=str(args.scratch), MODERNIZATION_SCRATCH=
            DOTNET_CLI_HOME=str(args.scratch / 'dotnet'), DOTNET_GENERATE_ASPNET_CERTIFICATE='false')
 subprocess.run(['dotnet', 'build', str(ROOT / 'src/Modernization.csproj'), '-c', 'Release', '--no-restore',
                 '--nologo', '-v:minimal', '-nodeReuse:false', '-m:1', '-p:UseSharedCompilation=false'], cwd=ROOT, env=env, check=True)
-stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.1.3'
+stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.1.4'
 (stage / 'Mod').mkdir(parents=True)
 plugin = args.scratch / 'bin/Modernization/netstandard2.0/TwentyMinutes.Modernization.dll'
 shutil.copy2(plugin, stage / 'Mod' / plugin.name)
 shutil.copytree(ROOT / 'installer', stage / 'installer', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
 shutil.copytree(ROOT / 'docs', stage / 'docs')
+# Keep the README's release-note and updater-instruction links usable offline.
+for note in sorted((ROOT / 'release').glob('NOTES-*.md')):
+    (stage / 'release').mkdir(exist_ok=True)
+    shutil.copy2(note, stage / 'release' / note.name)
+(stage / 'android-updater').mkdir()
+shutil.copy2(ROOT / 'android-updater/README.md', stage / 'android-updater/README.md')
 for name in ('README.md', 'LICENSE', 'INSTALL.md'):
     shutil.copy2(ROOT / name, stage / name)
 contract = asset_contract(args.prepared_assets)
 if len(contract) != 593:
     raise SystemExit('Prepared asset contract must contain the complete 593-file local runtime set, including affixes, achievement icons/catalog, source display/camera data and both gameplay sounds with provenance')
-release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.1.3', 'source_commit': revision,
+release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.1.4', 'source_commit': revision,
            'candidate': args.candidate, 'plugin_sha256': digest(plugin), 'assets': contract,
            'asset_delivery': 'Prepared locally from pinned owned inputs; no extracted game art/data in this archive'}
 (stage / 'RELEASE.json').write_text(json.dumps(release, indent=2) + '\n', encoding='utf8', newline='\n')
@@ -56,10 +62,10 @@ plugin_path = 'BepInEx/plugins/20MTDModernization/TwentyMinutes.Modernization.dl
 installed[plugin_path] = digest(plugin)
 if len(installed) != 614:
     raise SystemExit('Updater contract requires the complete 614-file owned payload')
-(stage / 'UPDATE.json').write_text(json.dumps({'schema': 1, 'product': '20MTD-Revamped', 'version': '1.1.3',
+(stage / 'UPDATE.json').write_text(json.dumps({'schema': 1, 'product': '20MTD-Revamped', 'version': '1.1.4',
     'source_commit': revision, 'files': installed, 'payload': {plugin_path: 'Mod/' + plugin.name}}, indent=2) + '\n', encoding='utf8', newline='\n')
 files = {p.relative_to(stage).as_posix(): digest(p) for p in sorted(stage.rglob('*')) if p.is_file()}
-(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.1.3', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
+(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.1.4', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
 archive = args.output / (stage.name + '.zip')
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as package:
     for path in sorted(stage.rglob('*')):

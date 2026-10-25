@@ -14,7 +14,9 @@ class OpaqueModeDialog
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(AlphaTransition),nameof(AlphaTransition.Show)),AccessTools.Method(typeof(AlphaTransition),nameof(AlphaTransition.Hide))};
  static void Prefix(AlphaTransition __instance,MethodBase __originalMethod)
  {
-  var panel=Progression.Title?.modeSelectPanel;if(panel==null||!__instance.transform.IsChildOf(panel.transform))return;
+  var panel=Progression.Title?.modeSelectPanel;
+  bool mode=panel!=null&&__instance.transform.IsChildOf(panel.transform);
+  if(!mode&&__instance.GetComponentInParent<NativeOptionsSettings>()==null)return;
   __instance.GetComponent<CanvasGroup>().alpha=__originalMethod.Name==nameof(AlphaTransition.Show)?1:0;
  }
 }

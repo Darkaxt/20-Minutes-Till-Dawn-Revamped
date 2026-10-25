@@ -116,34 +116,10 @@ public class StatsOverlay:MonoBehaviour
  }
  public static void UpdateSettingsLabels()
  {foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="StatsSettingLabel"))t.text="Stats overlay: "+(Enabled?"On":"Off")+"  [F2]";}
- public void AddSetting(OptionsSetter options)
- {
-  if(Resources.FindObjectsOfTypeAll<SettingsVisibility>().Any(x=>x.Owner==options))return;
-  var font=options.GetComponentsInChildren<TMP_Text>(true).First(x=>x.font!=null).font;
-  var root=new GameObject("EnhancementSettingsCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);
-  var canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=100;
-  var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
-  var panel=Box(root.transform,"EnhancementSettings",new Vector2(1,.5f),new Vector2(1,.5f),new Vector2(-18,0),new Vector2(300,140),Ink);
-  var visibility=root.AddComponent<SettingsVisibility>();visibility.Owner=options;visibility.Panel=panel;
-  Text(panel.transform,"EnhancementsHeading",font,"ENHANCEMENTS",21,new Vector2(14,-14),new Vector2(272,28)).color=Coral;
-  var row=Box(panel.transform,"StatsSetting",new Vector2(0,1),new Vector2(0,1),new Vector2(12,-58),new Vector2(276,58),Green);var button=row.AddComponent<Button>();button.targetGraphic=row.GetComponent<Image>();
-  var label=Text(row.transform,"StatsSettingLabel",font,"",18,new Vector2(12,-12),new Vector2(252,40));button.onClick.AddListener(Toggle);SettingButton=button;UpdateSettingsLabels();
-  ColorfulStyle.Instance.AddSetting(panel.transform,font);
- }
-}
-public class SettingsVisibility:MonoBehaviour
-{
- public OptionsSetter Owner;public GameObject Panel;
- void LateUpdate()
- {
-  if(Owner==null){Object.Destroy(gameObject);return;}
-  var menu=Owner.GetComponent<flanne.UIExtensions.Menu>();
-  Panel.SetActive(menu!=null && (bool)AccessTools.Field(typeof(flanne.UIExtensions.Menu),"isActive").GetValue(menu));
- }
 }
 [HarmonyPatch(typeof(Powerup),nameof(Powerup.Apply))]
 class CollectedPowerup{static void Postfix(Powerup __instance,PlayerController player){StatsOverlay.Instance?.Record(__instance,player);Plugin.Trace("powerup-application",__instance.name+" Apply");}}
 [HarmonyPatch(typeof(Powerup),nameof(Powerup.ApplyStack))]
 class CollectedPowerupStack{static void Postfix(Powerup __instance,PlayerController player){StatsOverlay.Instance?.Record(__instance,player);Plugin.Trace("powerup-application",__instance.name+" ApplyStack");}}
 [HarmonyPatch(typeof(OptionsSetter),"Start")]
-class OverlaySetting{static void Postfix(OptionsSetter __instance){StatsOverlay.Instance.AddSetting(__instance);}}
+class OverlaySetting{static void Postfix(OptionsSetter __instance){NativeOptionsSettings.Attach(__instance);}}
