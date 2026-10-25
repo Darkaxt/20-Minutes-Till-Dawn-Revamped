@@ -155,7 +155,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.5** passes native4:3/16:9 display/zoom/HUD checks, current Continue, natural unlock previews, controller/pointer/F2 navigation, legacy-settings migration and long skill lists. The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
+Version **1.1.5** is published and independently downloaded/verified. Its packaged production DLL passes copied-install display, HUD, Continue and unlock-preview workflows, followed by exact rollback. Native4:3/16:9 display/zoom/HUD checks, controller/pointer/F2 navigation, legacy-settings migration and long skill lists also pass. The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

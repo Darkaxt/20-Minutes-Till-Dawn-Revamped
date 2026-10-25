@@ -2,7 +2,16 @@
 
 ## Display, unlock previews and HUD — 2026-10-25
 
-Z1 and Z2 are COMPLETE. Z3 is ACTIVE for normal public1.1.5 delivery. Native Windows54/55/56 establish display/zoom behavior;63/64 establish three metrics modes, skill counts/tiers, pastel comparisons, run credits without wallet changes and current Continue at4:3/16:9.65 verifies natural gate sentences and controller/pointer expansion of locked character/weapon progress without ownership changes.67 verifies Challenge spacing on the native canvas;68 complete controller workflows;69 long-list skill icons/paging;70/71 actual legacy Off/Extended migrations. The left metric order retains existing values; no standalone magic metric is present. Package/install/rollback and independent download remain the delivery gate.
+Z1, Z2 and Z3 are COMPLETE. Normal [v1.1.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5) is published and independently downloaded. Native Windows54/55/56 establish display/zoom behavior;63/64 establish three metrics modes, skill counts/tiers, pastel comparisons, run credits without wallet changes and current Continue at4:3/16:9.65 verifies natural gate sentences and controller/pointer expansion of locked character/weapon progress without ownership changes.67 verifies Challenge spacing on the native canvas;68 complete controller workflows;69 long-list skill icons/paging;70/71 actual legacy Off/Extended migrations. The left metric order retains existing values; no standalone magic metric is present. No required blocker or tracked deferral remains for this change.
+
+| Delivery criterion | Verified result |
+|---|---|
+| Published source | Tag v1.1.5 at `649e4abbf9615f87060ee722a4a1173cd60b2ec5`; published2026-10-25T11:02:29Z, normal latest release, ZIP and SHA256SUMS.txt present. Later receipt-only documentation does not move the tag. |
+| Independent download | ZIP SHA-256 `d27f233d3c4bca56ff90ac4932fccc525609e3f4d0ad9f1750844d4d05b05d98`; all40 package members/version/source/candidate=false verified, no extracted game assets or validation assembly. |
+| Delivered production DLL | SHA-256 `230b0928fffb472a85de32676da9dfed8dc45a616e6a982aafe9042621f6ea53`; identical to the installed candidate exercised in S6/run-20–23. |
+| Copied installation/runtime/rollback |614 owned files verify. Complete display, HUD, fresh-process Continue and unlock-preview workflows pass/exit0 in S6/run-20/21/22/23. Exact614-file rollback preserves142 stock originals. The live Windows payload/profile/configuration remain unchanged. |
+| Existing updater compatibility | UPDATE schema1/payload mapping and all614 target paths match1.1.4; only the DLL changes, with613 other hashes and prepared assets identical. User deployment through the existing APK remains separate from these Windows/package checks. |
+| Cleanup | Reviewed transaction `285875d1e1eb814dd98e36dc148f8f2e` removed all1360 exact scratch members/304744034 logical bytes; disposable root absent. Durable release and runtime evidence retained. |
 
 Explicit fixture boundaries: synthetic devices, controlled skill/stat/kill inputs and isolated saves; fullscreen request flags are intercepted to keep the desktop windowed. Samsung is disconnected; no phone test or live deployment is claimed. The user deploys through the existing updater APK.
 
