@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.7) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.8](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.8) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -12,7 +12,7 @@ A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt*
 
 ## What changes
 
-- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; expanded rune progression; Save & return / Continue; native Custom settings and mode-default loading; optional artwork recolours.
+- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; expanded rune progression; Save & return / Continue; native Custom settings and mode-default loading; weighted exploration chests and shared edge pointers; optional artwork recolours.
 - **Ported from Android 8.6:** Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; existing character abilities, combat, status effects, summons, stacking, cooldowns, shooting, event ordering, scenario schedules and mode behavior.
 - **Fixed after the anomaly review:** repeated Continue bonuses, damage signs, frozen-only Shatter, temporary-buff accounting, pooled-effect reuse, exhausted reward menus, encounter/contact defects, character/summon lifetimes and inaccurate descriptions. The changelog below separates each release's ports and corrections.
 
@@ -54,6 +54,16 @@ The native selection panel shows the four-node upgrade path beside the descripti
 
 *Controlled native offers and actual controller selection. Summon damage helps Ghost Friend and Lilith’s spirits; summon attack speed is only attributed to consumers that use it.*
 
+### Explore for optional rewards
+
+Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, credits, healing, magnet, freeze, frenzy and eligible native upgrades.
+
+Open-map placement targets **20–30 seconds of walking**; compact arenas stop at reachable walls. The marker number shows **distance in game units**. Boss chests retain gold markers, independent of the three-chest cap. Exact rewards, positions and timers survive Continue; credits use the normal payout.
+
+![Three mint exploration markers in different directions,76–89 world units away](docs/images/exploration-spread.png)
+
+*Actual native Windows spawn with controlled random/clock operands: roughly24–28 seconds of unobstructed travel at speed3.2. Not the deliberate all-east marker overlap fixture. [Reward weights and rules](docs/EXPLORATION.md).*
+
 ### Track clears at the selected difficulty
 
 Locked modes use the native padlock and a concise unlock condition. Applicable mode buttons show a crown and recorded clear count **inside the button**, for the selected Darkness or Challenge tier. Quickplay uses its fixed difficulty; Endless and Custom have no completion crown. Historical per-mode win totals were never stored, so these counters begin with1.1.7.
@@ -94,7 +104,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.7 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.7).
+1. Download and extract the [v1.1.8 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.8).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -126,6 +136,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.1.8 — Exploration chests and shared pointers
+
+**Added:** weighted benign exploration rewards, simultaneous common chests in different directions, a three-chest cap and20–30-second walking targets on open maps. Native upgrade menus and credit payout, exact reward/timer/position persistence and Custom ownership rules are retained. **Fixed:** complete edge-marker bounds, same-direction separation and collected boss-pointer cleanup. **Ported:** no new Android behavior; exploration is a requested Revamped addition. [Release notes](release/NOTES-1.1.8.md) · [Reward rules](docs/EXPLORATION.md).
 
 ### v1.1.7 — Stillness correction and compact native menus
 
@@ -185,7 +199,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The published **1.1.7** package passes the corrected Stillness/checkpoint, compact HUD, framed interaction, controller and mode-clear workflows. Its copied installation/rollback and independently downloaded public package are verified; the delivery receipt is in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The **1.1.8** source passes native exploration placement/travel, every reward family, Custom, current/older Continue, native payout, complete marker bounds, boss collection and controller checks. Final package/public-download verification is recorded in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

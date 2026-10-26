@@ -1,12 +1,14 @@
 # Android 8.6 gameplay parity and audit
 
-Detailed comparison retained from the pre-gallery README. The current Windows integration is delivered in v1.1.2. [Project overview](../README.md) · [Delivery receipt](PROGRESS.md).
+Detailed comparison retained from the pre-gallery README. Subsequent ports, corrections and delivery versions are recorded below and in the current delivery receipt. [Project overview](../README.md) · [Delivery receipt](PROGRESS.md).
 
 ## Android 8.6 parity ledger
 
 The retained-gameplay comparison and anomaly classification are closed. Every identified required Android 8.6 gameplay difference is implemented; no gameplay integration is parked for a later balance decision. Source quirks remain unless covered by the user's explicit bug-fix authorization.
 
 The user-approved1.1.7 Stillness correction replaces Android’s global MoveSpeed penalty with native shooting-only WalkSpeed, retaining its bonuses. This is an explicit correction to a source bug, documented in [ANOMALIES.md](ANOMALIES.md), alongside Revamped’s HUD, campaign clear counts and other intentional additions.
+
+The1.1.8 [exploration chests](EXPLORATION.md) are another requested Revamped addition, not an Android port. Their weighted rewards, native upgrade/payout integration and exact checkpoint state are verified separately from source parity. Shared boss-pointer bounds and collected-marker lifecycle corrections are recorded in the anomaly ledger.
 
 | ID | Integrated behavior | Native Windows acceptance |
 |---|---|---|

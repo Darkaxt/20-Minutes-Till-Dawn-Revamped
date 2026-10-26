@@ -31,7 +31,7 @@ public sealed class GameplayHudLayout:MonoBehaviour
  {
   int value=ScoreCalculator.SharedInstance.GetScore().totalScore;
   if(value!=previousCredits){previousCredits=value;credits.text="Credits: "+value.ToString("N0");}
-  bool choosing=owner.CurrentState is PowerupMenuState||owner.CurrentState is DevilDealState||owner.CurrentState is ChestState;
+  bool choosing=owner.CurrentState is PowerupMenuState||owner.CurrentState is DevilDealState||owner.CurrentState is ChestState||owner.CurrentState is ExplorationRewardState;
   foreach(var group in clock)group.alpha=choosing?0:1;
  }
 }

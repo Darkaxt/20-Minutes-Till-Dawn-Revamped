@@ -6,7 +6,7 @@ namespace TwentyMinutes.Modernization;
 // The native Score has no field for Android's difficultyScore. Preserve its
 // native UI/currency ABI while carrying that fourth source term on this result.
 sealed class AndroidScore:Score
-{internal int Difficulty;}
+{internal int Difficulty,Exploration;}
 [HarmonyPatch(typeof(ScoreCalculator),nameof(ScoreCalculator.GetScore))]
 class AndroidScoreCalculation
 {
@@ -17,7 +17,7 @@ class AndroidScoreCalculation
    timeSurvivedString=value.timeSurvivedString,timeSurvivedScore=value.timeSurvivedScore,
    enemiesKilled=value.enemiesKilled,enemiesKilledScore=value.enemiesKilledScore,
    levelsEarned=value.levelsEarned,levelsEarnedScore=value.levelsEarnedScore,
-   Difficulty=Mathf.CeilToInt((value.timeSurvivedScore+value.enemiesKilledScore)*.1f*Loadout.difficultyLevel)
+   Difficulty=Mathf.CeilToInt((value.timeSurvivedScore+value.enemiesKilledScore)*.1f*Loadout.difficultyLevel),Exploration=ExplorationRun.Instance?.State?.credits??0
   };
  }
 }
@@ -25,7 +25,7 @@ class AndroidScoreCalculation
 class AndroidScoreTotal
 {
  static void Postfix(Score __instance,ref int __result)
- {if(__instance is AndroidScore value)__result+=value.Difficulty;}
+ {if(__instance is AndroidScore value)__result+=value.Difficulty+value.Exploration;}
 }
 [HarmonyPatch(typeof(ScoreCalculator),"OnDeath")]
 class AndroidScoreDeath

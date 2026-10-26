@@ -39,6 +39,7 @@ public static partial class RunResume
   [DataMember]public bool? unlockHitless;
   [DataMember(IsRequired=true)]public float[] hordeModifiers,bossModifiers;
   [DataMember]public AndroidEndlessState sourceEndless;
+  [DataMember]public ExplorationState exploration;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -62,6 +63,7 @@ public static partial class RunResume
    saved.runes.Any(r=>r==null||string.IsNullOrEmpty(r.name)||r.rank<1||r.rank>5)||saved.runes.Select(r=>r.name).Distinct().Count()!=saved.runes.Count||saved.acquired.Any(a=>a==null||string.IsNullOrEmpty(a.key))||saved.pools.Any(p=>p==null||p.entries==null||p.entries.Any(e=>e==null||string.IsNullOrEmpty(e.key)))||saved.taken.Any(string.IsNullOrEmpty))
    throw new InvalidOperationException("This run checkpoint is incomplete or invalid; it has been preserved.");
   ResumeRuntime.Validate(saved.runtime);CustomMode.Validate(saved.custom);
+  ExplorationRun.Validate(saved.exploration);
   if(saved.version==7&&saved.runtime.sourcePowerups==null)throw new InvalidOperationException("This checkpoint omitted its ordered source runtime contract; it has been preserved.");
   if(saved.version<7&&saved.runtime.sourcePowerups!=null||saved.version==7&&saved.runtime.sourcePowerups.Any(p=>!saved.acquired.Any(a=>!a.evolution&&a.key==p.key)))throw new InvalidOperationException("This checkpoint has an unsupported source runtime owner; it has been preserved.");
   if(saved.version>=5&&saved.version<7&&(saved.runtime.generators==null||saved.runtime.growth==null||saved.runtime.rituals==null||saved.runtime.unharmed==null||saved.runtime.justice==null))throw new InvalidOperationException("This source checkpoint omitted its attachment runtime contract; it has been preserved.");
@@ -109,6 +111,7 @@ public static partial class RunResume
   {state.sourceEndless=endless.Capture();state.roundStart=state.sourceEndless.roundStart;state.roundElapsed=state.seconds-state.roundStart;}
   var challenge=ChallengeRun.Instance;if(challenge!=null)
   {state.challengeEnemies=challenge.EnemyKills;state.challengeBosses=challenge.BossKills;}
+  state.exploration=r.GetComponent<ExplorationRun>().State==null?null:r.GetComponent<ExplorationRun>().Capture();
   CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)
@@ -206,6 +209,7 @@ public static partial class RunResume
   // Generator still must not receive the restored ammo notification above.
   ResumeRuntime.StartRestoredAttachments(p);
   ResumeRuntime.EnableSourceStarts();
+  game.GetComponent<ExplorationRun>().Restore(saved.exploration);
   Pending=null;StatsOverlay.Instance?.Dirty();Plugin.Trace("run-checkpoint-restored",new{saved.map,saved.seconds,saved.level,saved.hitless});
  }
 }
@@ -256,7 +260,7 @@ class RunRestoreState:GameState
  public override void Exit(){AudioManager.Instance.SetLowPassFilter(false);}
 }
 [HarmonyPatch(typeof(GameController),"Awake")]
-class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();}}
+class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();__instance.gameObject.AddComponent<ExplorationRun>();}}
 [HarmonyPatch(typeof(GameController),"Start")]
 class ResumeInitialState{static bool Prefix(GameController __instance){if(!RunResume.Restoring)return true;__instance.ChangeState<RunRestoreState>();return false;}}
 [HarmonyPatch(typeof(PlayerPerks),nameof(PlayerPerks.Equip),typeof(Powerup))]
