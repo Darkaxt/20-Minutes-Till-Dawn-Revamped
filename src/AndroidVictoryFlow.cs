@@ -43,5 +43,6 @@ class AndroidVictoryFlow
   owner.loadoutUI.Show();
   if(!SelectedMap.MapData.achievementsDisabled){Difficulty(state);Achievements(state);}
   Progression.Survived();
+  ModeClearRecords.Record();
  }
 }

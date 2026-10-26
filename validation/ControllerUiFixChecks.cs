@@ -45,6 +45,7 @@ public partial class RuntimeChecks
  {
   while(!Active(menu)||menu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
   var buttons=menu.GetComponentsInChildren<Button>(true);var stats=buttons.Single(b=>b.name=="StatsSetting");var style=buttons.Single(b=>b.name=="ColorfulSetting");
+  Require(!stats.GetComponentInChildren<TMP_Text>().text.Contains("F2"),"native Metrics setting has no shortcut suffix: "+label);
   var backdrop=menu.transform.Find("NativeOptionsOpaquePanel").GetComponent<Image>();
   Require(backdrop.color.a==1&&menu.GetComponent<CanvasGroup>().alpha==1,"Options has an opaque native panel immediately on Show: "+label);
   Require(!Resources.FindObjectsOfTypeAll<Canvas>().Any(c=>c.name=="EnhancementSettingsCanvas"),"floating enhancement canvas is absent");
@@ -116,16 +117,24 @@ public partial class RuntimeChecks
   while(!(title.CurrentState is ModeSelectState))yield return null;
   var toggles=ChallengeMode.Toggles(title.modeSelectMenu);int credits=PointsTracker.pts;
   var challengeGate=Progression.Gates.Single(g=>g.Data==ChallengeMode.Map);Progression.State.earned.RemoveAll(id=>id==challengeGate.Id);
+  var lockedGates=Progression.Gates.Where(g=>g.Data is MapData&&toggles.Any(t=>t.GetComponent<MapEntry>().data==g.Data)).ToArray();
+  var earnedModes=lockedGates.Where(g=>Progression.State.earned.Contains(g.Id)).Select(g=>g.Id).ToArray();
+  foreach(var gate in lockedGates)Progression.State.earned.RemoveAll(id=>id==gate.Id);Progression.Refresh();
+  var nativeLock=(Image)AccessTools.Field(typeof(Unlockable),"lockSprite").GetValue(NativeSelection.Unlocks(title.characterUnlocker).First());
+  foreach(var toggle in toggles){bool locked=!Progression.Allowed(toggle.GetComponent<MapEntry>().data);Require(toggle.GetComponent<ModeLockVisual>().Locked==locked,"campaign lock artwork reflects actual ownership: "+toggle.name);if(locked)Require(toggle.transform.Find("NativeModeLock").GetComponent<Image>().sprite==nativeLock.sprite,"campaign uses exact native character/weapon lock artwork");}
   foreach(var toggle in toggles)
   {
    yield return MenuMove(pad,title.modeSelectPanel.transform,toggle);yield return SelectorPad(pad,GamepadButton.South);
    Require(title.modeSelectMenu.toggledData==toggle.GetComponent<MapEntry>().data,"actual controller selects campaign "+toggle.name);
-   Require(SelectorText().Contains(LocalizationSystem.GetLocalizedValue(title.modeSelectMenu.toggledData.descriptionStringID.key)),"selected campaign description updates");
+   Require(SelectorText().Contains(title.modeSelectMenu.toggledData.description),"selected campaign shows its concise description or unlock condition");
   }
   yield return MenuMove(pad,title.modeSelectPanel.transform,toggles.Single(t=>t.GetComponent<MapEntry>().data==ChallengeMode.Map));yield return SelectorPad(pad,GamepadButton.South);
   yield return PadClick(pad,title.modeSelectPanel.transform,title.modeSelectStartButton);
   Require(title.CurrentState is ModeSelectState&&PointsTracker.pts==credits,"controller cannot start unearned Challenge or spend credits");
+  yield return Capture("campaign-native-locks.png");
+  foreach(string id in earnedModes)Progression.State.earned.Add(id);
   Progression.State.earned.Add(challengeGate.Id);Progression.State.challengeDifficultyUnlocked=1;
+  Progression.Refresh();Require(!toggles.Single(t=>t.GetComponent<MapEntry>().data==ChallengeMode.Map).GetComponent<ModeLockVisual>().Locked,"earned campaign clears its lock artwork immediately");
   yield return MenuMove(pad,title.modeSelectPanel.transform,title.difficultyController.GetComponent<Selectable>());yield return SelectorPad(pad,GamepadButton.DpadRight);
   Require(title.difficultyController.difficulty==1,"controller Right selects the earned next Challenge tier");
   yield return SelectorPad(pad,GamepadButton.DpadRight);Require(title.difficultyController.difficulty==1,"controller cannot exceed earned Challenge tier");

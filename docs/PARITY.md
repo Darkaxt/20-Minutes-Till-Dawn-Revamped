@@ -6,6 +6,8 @@ Detailed comparison retained from the pre-gallery README. The current Windows in
 
 The retained-gameplay comparison and anomaly classification are closed. Every identified required Android 8.6 gameplay difference is implemented; no gameplay integration is parked for a later balance decision. Source quirks remain unless covered by the user's explicit bug-fix authorization.
 
+The user-approved1.1.7 Stillness correction replaces Android’s global MoveSpeed penalty with native shooting-only WalkSpeed, retaining its bonuses. This is an explicit correction to a source bug, documented in [ANOMALIES.md](ANOMALIES.md), alongside Revamped’s HUD, campaign clear counts and other intentional additions.
+
 | ID | Integrated behavior | Native Windows acceptance |
 |---|---|---|
 | A129 | Rebuild Glass from acquisitions at each run boundary; three picks remain factor 6 across repeated warm and fresh Continue. | 480/481 |

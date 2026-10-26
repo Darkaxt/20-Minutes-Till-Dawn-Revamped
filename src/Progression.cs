@@ -27,7 +27,9 @@ public static partial class Progression
   public List<string> enabledRunes;
   public List<int> sourceAchievements=new List<int>(),sourceAchievementRewards=new List<int>();
   public int challengeDifficultyUnlocked;
+  public List<ModeClearRecord> modeClears=new List<ModeClearRecord>();
  }
+ public class ModeClearRecord{public string mode;public int difficulty,count;}
  public class Gate
  {
   public string Id,Goal,Name;public Sprite Icon;public ScriptableObject Data;
@@ -105,6 +107,9 @@ public static partial class Progression
   // earlier award honestly; do not claim the revised condition was completed.
   if(State.attempts==null)State.attempts=new List<Attempt>();
   if(State.notices==null)State.notices=new List<Notice>();
+  // Earlier journals never recorded per-mode/difficulty win totals. Start an
+  // empty record rather than inventing counts from highest-clear arrays.
+  if(State.modeClears==null)State.modeClears=new List<ModeClearRecord>();
   if(State.version<2)
    foreach(string id in State.pending)State.notices.Add(new Notice{id=id,goal="Earned under previous unlock requirements"});
   State.version=2;
@@ -142,6 +147,7 @@ public static partial class Progression
    var purchase=(Button)AccessTools.Field(typeof(Unlockable),"unlockButton").GetValue(gate.Unlock);
    if(purchase!=null)purchase.gameObject.SetActive(false);
   }
+  if(Title!=null)ModeLockVisual.Refresh(Title.modeSelectMenu);
  }
  public static void InspectLock(Unlockable unlock)
  {
@@ -153,6 +159,7 @@ public static partial class Progression
  {
   if(State==null||Allowed(data)||!dataGates.TryGetValue(data,out var gate))return description;
   string result=description+"<br><color=#FC525F>Unlock: "+gate.Goal+"</color>";
+  if(data is MapData)return "<color=#FC525F>Unlock: "+gate.Goal+"</color>";
   if(data is CharacterData||data is GunData)
   {if(InspectedData!=data)return result;}
   var attempt=State.attempts.FirstOrDefault(a=>a.id==gate.Id);

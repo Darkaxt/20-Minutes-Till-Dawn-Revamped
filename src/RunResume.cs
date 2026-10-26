@@ -216,6 +216,7 @@ class RunRecorder:MonoBehaviour
  public List<int> CustomRageAmmo=new List<int>(),CustomFusilladeProjectiles=new List<int>();
  public static RunRecorder Instance;
  public bool Recording=true,Finished,Rebuilding,UnlockHitless=true;public int LastSaveMinute=-1,EndlessCycle;public float RoundStart,RoundClock;MapData customMap;
+ public bool ModeClearRecorded;
  public bool SourceRecklessSkillUsed;
  public List<RunResume.Acquisition> Acquired=new List<RunResume.Acquisition>();
  public readonly HashSet<int> KilledElites=new HashSet<int>(),KilledBosses=new HashSet<int>();

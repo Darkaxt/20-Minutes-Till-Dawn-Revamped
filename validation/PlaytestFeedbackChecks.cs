@@ -71,12 +71,16 @@ public partial class RuntimeChecks
    description.data=tree.startingPowerup;var view=(PowerupTreeUI)WindField(description,"powerupTreeUI");
    var expected=new[]{tree.startingPowerup,tree.leftPowerup,tree.rightPowerup,tree.finalPowerup}.Select(RunResume.Key).OrderBy(k=>k).ToArray();
    Require(view.GetComponentsInChildren<PowerupIcon>().Select(i=>RunResume.Key(i.data)).OrderBy(k=>k).SequenceEqual(expected),"all four exact native nodes bind for "+tree.name);
+   CheckRelationLayout(description);
   }
   game.powerupMenu.OnConfirmClicked();while(!(game.CurrentState is CombatState))yield return null;
   // Complete a real collectible boundary, rather than injecting its event.
   var chest=ObjectPooler.SharedInstance.GetPooledObject("Chest");chest.transform.position=player.transform.position+Vector3.right*40;yield return null;
   player.SetPosition(chest.transform.position);Physics2D.SyncTransforms();while(!(game.CurrentState is ChestState))yield return null;
   Require(chest.GetComponent<AndroidCollectIgnore>()!=null,"physical player/chest contact marks the actual reward as collected");
+  // Physics enters ChestState before the marker's existing LateUpdate consumes
+  // that collection state. Observe the following frame, not the physics callback.
+  yield return null;
   Require(!hud.Panel.GetComponentsInChildren<Image>(true).Any(i=>i.name=="BossChestDirection"&&i.gameObject.activeSelf),"actual collection hides the edge marker");
   var take=(Button)WindField(game.chestUIController,"takeButton");while(!take.IsInteractable())yield return null;yield return MenuPointer(take);while(!(game.CurrentState is CombatState))yield return null;
   yield return AchievementExit(game,false);Require(!hud.Panel.GetComponentsInChildren<Image>(true).Any(i=>i.name=="BossChestDirection"),"scene exit destroys every old chest marker");
@@ -84,6 +88,26 @@ public partial class RuntimeChecks
  }
  static void FeedbackCameras()
  {foreach(var pp in Object.FindObjectsOfType<UnityEngine.U2D.PixelPerfectCamera>().Where(p=>p.enabled)){AccessTools.Method(pp.GetType(),"LateUpdate").Invoke(pp,null);AccessTools.Method(pp.GetType(),"OnPreCull").Invoke(pp,null);}Canvas.ForceUpdateCanvases();}
+ static Rect FeedbackLocalBounds(RectTransform view,RectTransform panel)
+ {
+  var corners=new Vector3[4];view.GetWorldCorners(corners);var points=corners.Select(p=>(Vector2)panel.InverseTransformPoint(p)).ToArray();
+  return Rect.MinMaxRect(points.Min(p=>p.x),points.Min(p=>p.y),points.Max(p=>p.x),points.Max(p=>p.y));
+ }
+ void CheckRelationLayout(PowerupDescription description)
+ {
+  FeedbackCameras();var panel=(RectTransform)description.transform;var strip=(RectTransform)description.transform.Find("BuildInteractions");
+  var frames=strip.GetComponentsInChildren<Image>().Where(i=>i.name=="InteractionHexagon").ToArray();
+  var texts=strip.GetComponentsInChildren<TMP_Text>();var all=frames.Select(i=>i.rectTransform).Concat(texts.Select(t=>t.rectTransform)).ToArray();
+  foreach(var view in all){var r=FeedbackLocalBounds(view,panel);Require(r.xMin>=panel.rect.xMin+349&&r.xMax<=panel.rect.xMax-15&&r.yMin>=panel.rect.yMin+10&&r.yMax<=panel.rect.yMax-19,"right relation column fits its native panel: "+view.name);}
+  for(int a=0;a<all.Length;a++)for(int b=a+1;b<all.Length;b++)Require(!FeedbackLocalBounds(all[a],panel).Overlaps(FeedbackLocalBounds(all[b],panel)),"relation labels and full hexagon frames do not touch or overlap");
+  var benefits=frames.Where(i=>i.transform.GetChild(0).name.StartsWith("Benefit_")).ToArray();var penalties=frames.Where(i=>i.transform.GetChild(0).name.StartsWith("Penalty_")).ToArray();
+  if(benefits.Length>0&&penalties.Length>0){var top=benefits.Select(i=>FeedbackLocalBounds(i.rectTransform,panel)).ToArray();var bottom=penalties.Select(i=>FeedbackLocalBounds(i.rectTransform,panel)).ToArray();CombatClose(top.Min(r=>r.xMin),bottom.Min(r=>r.xMin),"benefit and penalty first icons share a left edge");Require(top.Min(r=>r.yMin)-bottom.Max(r=>r.yMax)>=27,"benefit/penalty hexagons have a full row gap");}
+  var body=(TMP_Text)WindField(description,"descriptionTMP");var bodyBounds=FeedbackLocalBounds(body.rectTransform,panel);Require(bodyBounds.xMax<=panel.rect.xMin+331,"main description is separated from the right relation column");Require(body.preferredHeight<=body.rectTransform.rect.height+1,"whole native description fits beside the path");
+  if(description.data.powerupTreeUIData!=null)
+  {
+   var chart=(PowerupTreeUI)WindField(description,"powerupTreeUI");foreach(var icon in chart.GetComponentsInChildren<PowerupIcon>()){var r=FeedbackLocalBounds((RectTransform)icon.transform,panel);Require(r.xMin>=panel.rect.xMin+15&&r.xMax<bodyBounds.xMin-5&&r.yMin>=panel.rect.yMin+5&&r.yMax<=panel.rect.yMax-35,"all four native path nodes fit on the left, clear of name and description");}
+  }
+ }
  IEnumerator FeedbackOffer(GameController game,Gamepad pad)
  {
   game.ChangeState<PowerupMenuState>();while(WindField(game.powerupMenu,"ConfirmEvent")==null)yield return null;
@@ -103,6 +127,32 @@ public partial class RuntimeChecks
    }
   }
   yield return Capture("upgrade-paths-and-build.png");
+  // Controlled offer lists exercise the real native selection events and its
+  // rendered bindings, independently of random offer frequency/eligibility.
+  var original=toggles.Where(t=>t.gameObject.activeInHierarchy&&t.GetComponentInParent<PowerupTreeUI>()==null).Select(t=>t.GetComponent<DataUIBinding<Powerup>>().data).ToList();
+  var powers=FallbackPool(game.powerupGenerator).Select(i=>i.powerup).ToArray();
+  var choices=new[]{"MagicLens","SummonMastery"}.Select(name=>powers.First(p=>p.name==name)).ToList();
+  var bind=AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.AndroidOfferMenus"),"Bind");bind.Invoke(null,new object[]{game.powerupMenu,choices});
+  // This fixture rebinds an already-visible menu; normal entry selects its
+  // first offer on Show. Align that initial native Select before controller travel.
+  toggles[0].Select();yield return null;
+  foreach(var toggle in toggles.Take(2))
+  {
+   yield return MenuMove(pad,game.powerupMenu.GetComponentInParent<Canvas>().rootCanvas.transform,toggle);yield return null;
+   var expected=SkillPanelDetails.Describe(description.data).SelectMany(r=>r.Icons.Select(i=>new{Icon=i,Prefix=r.Penalty?"Penalty_":"Benefit_"})).ToArray();var images=description.GetComponentsInChildren<Image>().Where(i=>i.name.StartsWith("Benefit_")||i.name.StartsWith("Penalty_")).ToArray();
+   Require(images.Length==expected.Length&&expected.All(e=>images.Any(i=>i.name==e.Prefix+e.Icon.Key&&i.sprite==e.Icon.Sprite)),"actual controller-selected skill renders exact benefit/penalty icons and portrait: "+description.data.name);
+   var chart=(PowerupTreeUI)WindField(description,"powerupTreeUI");var frame=chart.GetComponentsInChildren<PowerupIcon>(true).First().GetComponent<Image>();
+   Require(frame.sprite.name=="PowerupFrame"&&images.All(i=>i.transform.parent.name=="InteractionHexagon"&&i.transform.parent.GetComponent<Image>().sprite==frame.sprite&&i.transform.parent.GetComponent<Image>().color.a>0&&!i.transform.parent.GetComponent<Image>().raycastTarget),"every mini-icon uses the visible native hexagon outline without intercepting input");
+   var benefits=images.Where(i=>i.name.StartsWith("Benefit_")).ToArray();var penalties=images.Where(i=>i.name.StartsWith("Penalty_")).ToArray();
+   if(benefits.Length>0&&penalties.Length>0)Require(benefits.Min(i=>HudPoint(i.rectTransform).y)>penalties.Max(i=>HudPoint(i.rectTransform).y),"benefits and penalties occupy distinct ordered rows");
+   foreach(var icon in images){var point=HudPoint(icon.rectTransform);Require(point.x>0&&point.x<Screen.width&&point.y>0&&point.y<Screen.height&&!icon.raycastTarget,"miniature benefit icons fit and do not intercept input");}
+   foreach(var viewport in new[]{new Vector2Int(900,900),new Vector2Int(1024,768),new Vector2Int(1280,720)})
+   {
+    Screen.SetResolution(viewport.x,viewport.y,false);yield return WaitDisplay(viewport.x,viewport.y);yield return null;CheckRelationLayout(description);
+    yield return Capture("build-icons-"+description.data.name+(viewport.x==1280?"":"-"+viewport.x)+".png");
+   }
+  }
+  bind.Invoke(null,new object[]{game.powerupMenu,original});yield return null;
   var confirm=Resources.FindObjectsOfTypeAll<Button>().First(b=>b.gameObject.activeInHierarchy&&Enumerable.Range(0,b.onClick.GetPersistentEventCount()).Any(i=>b.onClick.GetPersistentTarget(i)==game.powerupMenu&&b.onClick.GetPersistentMethodName(i)=="OnConfirmClicked"));
   yield return MenuPointer(confirm);while(!(game.CurrentState is CombatState))yield return null;
  }
@@ -112,6 +162,7 @@ public partial class RuntimeChecks
   if(continued)yield return CombatBuffContinue();
   else{RunResume.Invalidate();Progression.State.earned.Add("character:Lilith");Progression.Refresh();yield return AchievementRun("Lilith","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());}
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();var player=PlayerController.Instance;var hud=StatsOverlay.Instance;
+  int recordedWins=Progression.State.modeClears.Sum(r=>r.count);
   while(hud.Panel==null)yield return null;
   var powers=FallbackPool(game.powerupGenerator).Select(i=>i.powerup).ToArray();
   var big=powers.First(p=>p.name=="BigShot");
@@ -121,6 +172,8 @@ public partial class RuntimeChecks
    foreach(var name in new[]{"PowerShot","BigShot","BigShot","BigShot","Haste","GhostFriend","SummonMastery","Trainer","RapidFire","QuickHands"})player.playerPerks.Equip(powers.First(p=>p.name==name));
   }
   hud.Dirty();yield return null;
+  Require(hud.AttributeIcons.Count==12&&!hud.LastStatsText.Contains("Max HP")&&!hud.LastStatsText.Contains("Magazine"),"compact metrics omit duplicated hearts and magazine rows");
+  foreach(var view in new[]{MetricsView.Off,MetricsView.Little,MetricsView.Extended}){StatsOverlay.Mode=view;hud.Refresh();Require(hud.LastStatsText.Split('\n').Length==12,"all metric modes retain exactly twelve nonduplicate rows: "+view);}
   Require(hud.Collected.Values.Single(e=>e.Name==big.nameString).Count==3,"tripled skill survives acquisition/Continue");
   Require(hud.SkillIcons.Count==hud.Collected.Count&&hud.SkillContent.GetComponentsInChildren<TMP_Text>().Length==0,"all collected skills are icon-only, with no count/tier labels");
   Require(hud.Collected.Values.Single(e=>e.Name==big.nameString).View.GetComponent<Outline>()!=null,"tripled skill has subtle outline glow");
@@ -135,14 +188,18 @@ public partial class RuntimeChecks
   }
   StatsOverlay.Mode=MetricsView.Little;hud.Refresh();Require(!hud.Body.text.Contains("("),"Little retains final-only values");
   float old=player.gun.reloadDuration;player.stats[StatType.ReloadRate].AddMultiplierBonus(.2f);hud.Refresh();Require(player.gun.reloadDuration<old&&hud.LastStatsText.Split('\n').Single(s=>s.StartsWith("Reload")).Contains("#A8D5BA"),"shorter reload is beneficial pastel green");player.stats[StatType.ReloadRate].AddMultiplierBonus(-.2f);
-  var explain=(string)AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.SkillPanelDetails"),"Explain").Invoke(null,new object[]{powers.First(p=>p.name=="SummonMastery")});
-  Require(explain.Contains("Ghost")&&explain.Contains("Lilith"),"summon damage preview explicitly covers Ghost Friend and Lilith spirits");
+  var mastery=SkillPanelDetails.Describe(powers.First(p=>p.name=="SummonMastery"));var explain=mastery.Where(r=>!r.Penalty).SelectMany(r=>r.Icons).ToArray();
+  Require(explain.Any(i=>i.Key=="ghost_friend_name")&&explain.Any(i=>i.Key=="character:Lilith"&&i.Sprite==player.loadedCharacter.portrait),"summon damage preview uses Ghost Friend icon and Lilith native portrait");
+  Require(!explain.Any(i=>i.Key.StartsWith("weapon:")),"Summon Mastery weapon penalty is not represented as a benefit");
+  Require(mastery.Where(r=>r.Penalty).SelectMany(r=>r.Icons).Any(i=>i.Key=="weapon:"+player.gun.gunData.name),"Summon Mastery weapon damage reduction appears in the penalty row");
+  var speedOnly=powers.First(p=>{var changes=(StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(p);return changes.Any(s=>s.type==StatType.SummonAttackSpeed)&&!changes.Any(s=>s.type==StatType.SummonDamage);});
+  Require(!SkillPanelDetails.Describe(speedOnly).SelectMany(r=>r.Icons).Any(i=>i.Key=="character:Lilith"),"attack-speed-only benefits do not claim Lilith spirit support");
   var lens=powers.First(p=>p.name=="MagicLens");
-  var lensDetails=(string)AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.SkillPanelDetails"),"Explain").Invoke(null,new object[]{lens});
-  Log("lens-build-details",lensDetails);
+  var lensDetails=SkillPanelDetails.Describe(lens).SelectMany(r=>r.Icons).ToArray();
   var trainerStats=(StatChange[])AccessTools.Field(typeof(Powerup),"statChanges").GetValue(powers.First(p=>p.name=="Trainer"));
   Require(trainerStats.Any(s=>s.type==StatType.SummonDamage),"Trainer also supplies summon damage, so Magic Lens legitimately benefits from it");
-  Require(lensDetails.Contains(powers.First(p=>p.name=="SummonMastery").nameString)&&!lensDetails.Contains("attack speed"),"non-attacking Magic Lens lists summon damage buffs without claiming attack-speed benefits");
+  string masteryKey=RunResume.Key(powers.First(p=>p.name=="SummonMastery"));
+  Require(lensDetails.Any(i=>i.Key==masteryKey),"non-attacking Magic Lens displays the actual summon damage buff icon");
   foreach(int zoom in new[]{0,25,50,75,100})
   {
    CameraZoom.Value=zoom;FeedbackCameras();var target=HitEffectTarget(maximum:100000);target.transform.position=player.transform.position+Vector3.right*2;
@@ -172,7 +229,7 @@ public partial class RuntimeChecks
    }
    yield return NativeTomePick(game,false,"TomeOfGlass");var victim=HitEffectTarget(maximum:100000);int hp=victim.HP;victim.TakeDamage(DamageType.Bullet,20);Require(hp-victim.HP==40,"Glass actual damage multiplier is2, not penalty-only");ReturnFixtureActor(victim.gameObject);
    float bullet=Bonus(player.stats[StatType.BulletDamage]),sizeBonus=Bonus(player.stats[StatType.ProjectileSize]);int count=player.gun.numOfProjectiles;
-   yield return NativeTomePick(game,false,"TomeOfStillness");CombatClose(Bonus(player.stats[StatType.BulletDamage])-bullet,1,"Stillness adds100-percent bullet damage");CombatClose(Bonus(player.stats[StatType.ProjectileSize])-sizeBonus,1,"Stillness adds100-percent bullet size");CombatClose(player.finalMoveSpeed,0,"Stillness retains zero movement through native multiplicative reduction");Require(player.gun.numOfProjectiles==count+1,"Stillness adds one projectile");
+   yield return NativeTomePick(game,false,"TomeOfStillness");CombatClose(Bonus(player.stats[StatType.BulletDamage])-bullet,1,"Stillness adds100-percent bullet damage");CombatClose(Bonus(player.stats[StatType.ProjectileSize])-sizeBonus,1,"Stillness adds100-percent bullet size");CombatClose(player.stats[StatType.WalkSpeed].Modify(1),0,"Stillness targets shooting-only WalkSpeed");Require(player.finalMoveSpeed>0,"Stillness preserves ordinary MoveSpeed");Require(player.gun.numOfProjectiles==count+1,"Stillness adds one projectile");
   }
   var chest=Object.FindObjectsOfType<flanne.Pickups.ChestPickup>().FirstOrDefault(c=>c.GetComponent<AndroidCollectIgnore>()==null);
   if(chest==null)chest=ObjectPooler.SharedInstance.GetPooledObject("Chest").GetComponent<flanne.Pickups.ChestPickup>();
@@ -181,7 +238,7 @@ public partial class RuntimeChecks
   chest.transform.position=player.transform.position+Vector3.up*2;yield return null;Require(!marker.gameObject.activeSelf,"visible chest hides its directional marker");chest.transform.position=player.transform.position+Vector3.right*40;yield return null;
   CameraZoom.Value=50;StatsOverlay.Mode=MetricsView.Little;Plugin.Instance.Config.Save();
   if(!continued){yield return DragonSuspend(game,"Integrated playtest HUD/menu/Tome/zoom/color/chest fixes and exact source Continue checkpoint");yield break;}
-  yield return AchievementExit(game,false);Require(hud.Collected.Count==0,"scene exit clears acquired HUD paths");SetPhase("PASS");Log("complete","Current Continue restores grouped skills, exact Tome effects and chest indicators; no stale scene markers");Application.Quit(0);
+  yield return AchievementExit(game,false);Require(hud.Collected.Count==0,"scene exit clears acquired HUD paths");Require(Progression.State.modeClears.Sum(r=>r.count)==recordedWins,"giving up does not increment a mode-clear counter");SetPhase("PASS");Log("complete","Current Continue restores grouped skills, exact Tome effects and chest indicators; no stale scene markers");Application.Quit(0);
  }
  IEnumerator InspectPlaytestFeedback()
  {
@@ -203,6 +260,7 @@ public partial class RuntimeChecks
    var tree=(PowerupTreeUI)AccessTools.Field(typeof(PowerupDescription),"powerupTreeUI").GetValue(d);
    Log("offer-description",d.name+" data="+d.data?.name+" treeData="+d.data?.powerupTreeUIData?.name+" tree="+tree?.name+" active="+tree?.gameObject.activeInHierarchy+" scale="+tree?.transform.lossyScale);
   }
+  foreach(var icon in game.powerupMenuPanel.GetComponentsInChildren<PowerupIcon>(true).Take(2))foreach(var image in icon.GetComponentsInChildren<Image>(true))Log("native-hexagon-layer",NativeSelection.Relative(icon.transform,image.transform)+" sprite="+image.sprite?.name+" override="+image.overrideSprite?.name+" color="+image.color+" enabled="+image.enabled+" type="+image.type+" canvasAlpha="+image.canvasRenderer.GetAlpha());
   foreach(var prefab in Resources.FindObjectsOfTypeAll<GameObject>().Where(o=>!o.scene.IsValid()&&(o.name=="PF_ShotgunProjectile"||o.name=="PF_Fireball"||o.name=="PF_HellfireProjectile")))
   {foreach(var tr in prefab.GetComponentsInChildren<TrailRenderer>(true))Log("template-trail",prefab.name+"/"+tr.name+" color="+tr.startColor+" material="+tr.sharedMaterial?.name);foreach(var ps in prefab.GetComponentsInChildren<ParticleSystem>(true))Log("template-particles",prefab.name+"/"+ps.name+" color="+ps.main.startColor.color+" mode="+ps.main.startColor.mode+" material="+ps.GetComponent<ParticleSystemRenderer>()?.sharedMaterial?.name);}
   foreach(var renderer in Resources.FindObjectsOfTypeAll<TrailRenderer>().Where(r=>r.gameObject.scene.IsValid()).GroupBy(r=>r.name).Select(g=>g.First()))Log("trail",renderer.transform.root.name+"/"+renderer.name+" material="+renderer.sharedMaterial?.name+" color="+renderer.startColor+"/"+renderer.endColor+" texture="+renderer.sharedMaterial?.mainTexture?.name);

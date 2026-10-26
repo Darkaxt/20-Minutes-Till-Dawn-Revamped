@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.6](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.6) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.7) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -32,21 +32,33 @@ Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their chara
 
 Attributes sit on the left in character → summons → weapons order. Acquired skills use **one icon-only row per upgrade path** on the right, with separate character, Tome and Synergy rows. Both groups center vertically, including on square screens. A tripled skill has a subtle glow instead of a count label.
 
+The metrics omit Max HP and Magazine: the native hearts and ammo counter already show them at top left.
+
 **F2** or native Options cycles **Off → Little → Extended** metrics. Little shows calculated values only; pastel green means improved and pastel red means worse, including shorter reload times in green. Extended also shows base and net bonus. Off hides metrics while keeping selected skills visible. Charge/conditional effects remain excluded from these base comparisons.
 
 The original timer sits at top center below the level bar, with credits earned this run beneath it. Credits use the game's current reward calculation and do not change the wallet.
 
 ![Transparent HUD with centered attributes on the left and acquired upgrade-path rows on the right](docs/images/hud-build.png)
 
-*Actual1280×720 Windows Little-mode capture with controlled Lilith/Ghost Friend/stat upgrades. Also verified at900×900,1024×768 and through Continue; not a natural progression run.*
+*Actual1280×720 Windows capture with twelve metric rows and controlled Lilith/Ghost Friend/stat upgrades. Also verified at900×900,1024×768 and through Continue; not a natural progression run.*
 
 ### See the upgrade path and its role in your build
 
-The native selection panel shows its four-node upgrade chart again. Build help explains summon stat consumers and named Synergy recipes completed by the selected upgrade. Enemy damage numbers stay readable while zooming out; an edge icon points toward off-screen boss reward chests.
+The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Enemy damage numbers stay readable while zooming out; an edge icon points toward off-screen boss reward chests.
 
-![Native Frost Mage offer with its restored four-node upgrade chart](docs/images/upgrade-paths.png)
+![Native Magic Lens offer with its four-node path on the left and build relations on the right](docs/images/upgrade-paths.png)
 
 *Actual Windows controller selection capture. All25 regular native paths are checked; chart previews cannot select an unoffered upgrade. [Playtest fixes and projectile-color audit](docs/PLAYTEST-FIXES.md).*
+
+![Summon Mastery shows Ghost Friend and Lilith as benefits, with the weapon in a separate penalty row; all miniatures have native hexagon frames](docs/images/skill-interactions.png)
+
+*Controlled native offers and actual controller selection. Summon damage helps Ghost Friend and Lilith’s spirits; summon attack speed is only attributed to consumers that use it.*
+
+### Track clears at the selected difficulty
+
+Locked modes use the native padlock and a concise unlock condition. Applicable mode buttons show a crown and recorded clear count **inside the button**, for the selected Darkness or Challenge tier. Quickplay uses its fixed difficulty; Endless and Custom have no completion crown. Historical per-mode win totals were never stored, so these counters begin with1.1.7.
+
+![Native campaign buttons with clear-count crowns inside them and a concise mode description](docs/images/mode-clears.png)
 
 ### Use the native Options menu with a controller
 
@@ -54,7 +66,7 @@ Metrics, visual style and **Zoom out** are native menu rows in title and pause O
 
 ![Opaque native Options with integrated stats HUD and visual-style settings](docs/images/native-options.png)
 
-*Actual1080p Windows controller test for1.1.5 with recolours enabled. Fullscreen request semantics are tested without switching the desktop display. [Controller UI corrections and evidence](docs/CONTROLLER-UI.md).*
+*Actual1080p Windows controller test with integrated settings and no F2 suffix on the Metrics row. Fullscreen request semantics are tested without switching the desktop display. [Controller UI corrections and evidence](docs/CONTROLLER-UI.md).*
 
 ### Unlock content through play
 
@@ -82,7 +94,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.6 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.6).
+1. Download and extract the [v1.1.7 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.7).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -114,6 +126,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.1.7 — Stillness correction and compact native menus
+
+**Fixed:** Stillness blocks movement only while shooting; releasing fire and reloading restore movement, including existing checkpoints. Its bonuses are retained. **Improved:** twelve metric rows without duplicate hearts/magazine; hexagon-framed Benefits/Penalties icons and character portraits; native campaign padlocks, concise descriptions and no shortcut suffix on the Metrics setting. **Added:** recorded clear-count crowns inside applicable mode buttons, separated by selected Darkness/Challenge tier. Historical totals are not invented. [Release notes](release/NOTES-1.1.7.md) · [Contracts and evidence](docs/PLAYTEST-FIXES.md).
 
 ### v1.1.6 — Playtest fixes and cleaner build HUD
 
@@ -169,7 +185,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.6** is published and independently downloaded/verified. Its packaged native player passes square/4:3/16:9 HUD, upgrade paths, build help, zoom damage, actual projectile rendering, chest pickup, fresh-process Continue and full controller checks, followed by exact copied rollback. A subsequent user correction identifies Stillness’s global immobilization as a bug: restoring its original shooting-only restriction is the next corrective release. [Current delivery and correction status](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The **1.1.7** source passes the corrected Stillness/checkpoint, compact HUD, framed interaction, controller and mode-clear workflows. Its final delivery stage verifies the committed package, copied installation/rollback and independent public download; the current receipt is in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

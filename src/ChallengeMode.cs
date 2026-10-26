@@ -46,7 +46,7 @@ public static class ChallengeMode
   Map=Object.Instantiate(forest);Map.name="Challenge_Forest";Object.DontDestroyOnLoad(Map);
   Map.nameStringID="revamped_challenge_name";Map.descriptionStringID="revamped_challenge_description";
   Plugin.Text["revamped_challenge_name"]="Challenge";
-  Plugin.Text["revamped_challenge_description"]="Defeat the enemy and boss quotas. Five tiers; no time limit. Clear a tier to unlock the next.";
+  Plugin.Text["revamped_challenge_description"]="Defeat the enemy and boss quotas. No time limit.";
   Map.timeLimit=float.MaxValue;Map.endless=false;Map.darknessDisabled=false;Map.achievementsDisabled=false;Map.runesDisabled=false;Map.numPowerupsRepeat=1;
   var prefabs=Resources.FindObjectsOfTypeAll<Health>().Where(h=>!h.gameObject.scene.IsValid()).GroupBy(h=>h.gameObject.name).ToDictionary(g=>g.Key,g=>g.First().gameObject);
   Map.spawnSessions=ChallengeWaves.Hordes(n=>prefabs[n]);Map.bossSpawns=ChallengeWaves.Bosses(n=>prefabs[n]);
@@ -73,6 +73,7 @@ public static class ChallengeMode
   foreach(var t in all)t.onValueChanged.AddListener(_=>RefreshDifficulty());
  }
  static bool wasChallenge;static int normalDifficulty;
+ public static int NormalDifficulty=>Selected?normalDifficulty:Progression.Title.difficultyController.difficulty;
  public static void RefreshDifficulty()
  {
   var title=Progression.Title;if(title==null||Progression.State==null)return;
@@ -89,7 +90,7 @@ public static class ChallengeMode
   Plugin.SetField(c,"<difficulty>k__BackingField",tier);Loadout.difficultyLevel=tier;
   ((TMP_Text)AccessTools.Field(typeof(DifficultyController),"labelTMP").GetValue(c)).text="Challenge "+(tier+1);
   ((TMP_Text)AccessTools.Field(typeof(DifficultyController),"descriptionTMP").GetValue(c)).text=EnemyTargets[tier]+" enemies + "+BossTargets[tier]+" bosses";
-  ((TMP_Text)AccessTools.Field(typeof(DifficultyController),"unlockTMP").GetValue(c)).text="Unlocked "+(Progression.State.challengeDifficultyUnlocked+1)+"/5";
+  ((TMP_Text)AccessTools.Field(typeof(DifficultyController),"unlockTMP").GetValue(c)).text="";
   return false;
  }
  public static void Clear()

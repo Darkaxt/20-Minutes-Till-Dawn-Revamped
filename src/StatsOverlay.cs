@@ -51,12 +51,12 @@ public class StatsOverlay:MonoBehaviour
   var scale=canvas.GetComponent<CanvasScaler>();scale.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scale.referenceResolution=new Vector2(1280,720);scale.matchWidthOrHeight=.5f;
   Panel=new GameObject("LiveStatsHUD",typeof(RectTransform));Rect(Panel,canvas.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(1280,720));
   var root=Panel.GetComponent<RectTransform>();root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;root.offsetMin=root.offsetMax=Vector2.zero;
-  attributes=Rect(new GameObject("Attributes",typeof(RectTransform)),Panel.transform,new Vector2(0,.5f),new Vector2(0,.5f),new Vector2(16,0),new Vector2(302,420));
-  foreach(string key in new[]{"Vitality","Haste","Evasive","SummonMastery","Trainer","PowerShot","RapidFire","QuickHands","FreshClip","DoubleShot","Sniper","BigShot","Penetration","RubberBullets"})
+  attributes=Rect(new GameObject("Attributes",typeof(RectTransform)),Panel.transform,new Vector2(0,.5f),new Vector2(0,.5f),new Vector2(16,0),new Vector2(302,360));
+  foreach(string key in new[]{"Haste","Evasive","SummonMastery","Trainer","PowerShot","RapidFire","QuickHands","DoubleShot","Sniper","BigShot","Penetration","RubberBullets"})
   {
    var icon=Icon(attributes,"Attribute_"+key,Vector2.zero,new Vector2(26,26));icon.rectTransform.anchoredPosition=new Vector2(0,-AttributeIcons.Count*30);AttributeIcons.Add(icon);
   }
-  Body=Text(attributes,"StatsValues",Font,"",18,new Vector2(36,-2),new Vector2(266,420));Body.enableWordWrapping=false;
+  Body=Text(attributes,"StatsValues",Font,"",18,new Vector2(36,-2),new Vector2(266,360));Body.enableWordWrapping=false;
   var viewport=new GameObject("SkillsViewport",typeof(RectTransform));Rect(viewport,Panel.transform,new Vector2(1,.5f),new Vector2(1,.5f),new Vector2(-16,0),new Vector2(40,420));
   SkillContent=Rect(new GameObject("CollectedSkills",typeof(RectTransform)),viewport.transform,new Vector2(1,.5f),new Vector2(1,.5f),Vector2.zero,new Vector2(40,420));
   // No GraphicRaycaster on this canvas: it cannot swallow a Fire/aim pointer.
@@ -93,9 +93,9 @@ public class StatsOverlay:MonoBehaviour
  public void Refresh()
  {
   var p=bound;var g=p.gun;var d=g.gunData;var recipe=g.GetProjectileRecipe();
-  var rows=new[]{Row("Damage",d.damage,recipe.damage),Row("Fire rate",1f/d.shotCooldown,1f/g.shotCooldown,"/s"),Row("Reload",d.reloadDuration,g.reloadDuration,"s",true),Row("Magazine",d.maxAmmo,g.maxAmmo),Row("Projectiles",d.numOfProjectiles,g.numOfProjectiles),Row("Bullet speed",d.projectileSpeed,recipe.projectileSpeed),Row("Bullet size",100,recipe.size*100,"%"),Row("Pierce",d.piercing,recipe.piercing),Row("Bounce",d.bounce,recipe.bounce)};
+  var rows=new[]{Row("Damage",d.damage,recipe.damage),Row("Fire rate",1f/d.shotCooldown,1f/g.shotCooldown,"/s"),Row("Reload",d.reloadDuration,g.reloadDuration,"s",true),Row("Projectiles",d.numOfProjectiles,g.numOfProjectiles),Row("Bullet speed",d.projectileSpeed,recipe.projectileSpeed),Row("Bullet size",100,recipe.size*100,"%"),Row("Pierce",d.piercing,recipe.piercing),Row("Bounce",d.bounce,recipe.bounce)};
   float dodge=Mathf.Clamp(p.stats[StatType.Dodge].Modify(1)-1,0,p.stats[StatType.DodgeCapMod].Modify(60)/100);
-  var all=new[]{Row("Max HP",p.loadedCharacter.startHP,p.playerHealth.maxHP),Row("Move speed",p.movementSpeed,p.finalMoveSpeed),Row("Dodge",0,dodge*100,"%"),Row("Summon damage",100,p.stats[StatType.SummonDamage].Modify(1)*100,"%"),Row("Summon speed",100,p.stats[StatType.SummonAttackSpeed].Modify(1)*100,"%")}.Concat(rows).ToArray();
+  var all=new[]{Row("Move speed",p.movementSpeed,p.finalMoveSpeed),Row("Dodge",0,dodge*100,"%"),Row("Summon damage",100,p.stats[StatType.SummonDamage].Modify(1)*100,"%"),Row("Summon speed",100,p.stats[StatType.SummonAttackSpeed].Modify(1)*100,"%")}.Concat(rows).ToArray();
   LastStatsText=string.Join("\n",all);Body.text="<line-height=30>"+string.Join("\n",all.Select(r=>r.Substring(r.IndexOf("  ",StringComparison.Ordinal)+2)));
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();
   foreach(var icon in AttributeIcons){string key=icon.name.Substring("Attribute_".Length);icon.sprite=powers.First(x=>x.name==key).icon;}
@@ -129,8 +129,8 @@ public class StatsOverlay:MonoBehaviour
   float height=root.height-top-bottom,center=(bottom-top)*.5f;
   attributes.anchoredPosition=new Vector2(left+16,center);
   // Keep the established text size; shrink the group uniformly only if the
-  // safe viewport is shorter than its complete fourteen-row content.
-  attributes.localScale=Vector3.one*Mathf.Min(1,(height-32)/420);
+  // safe viewport is shorter than its complete twelve-row content.
+  attributes.localScale=Vector3.one*Mathf.Min(1,(height-32)/360);
   var groups=collected.Values.OrderBy(e=>e.Order).GroupBy(e=>e.Path).ToArray();
   float cell=Mathf.Min(36,(height-200)/Mathf.Max(1,groups.Length));
   int columns=groups.Length==0?0:groups.Max(g=>g.Count());
@@ -148,7 +148,7 @@ public class StatsOverlay:MonoBehaviour
   }
  }
  public static void UpdateSettingsLabels()
-  {foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="StatsSettingLabel"))t.text="Metrics: "+Mode+"  [F2]";}
+  {foreach(var t in Resources.FindObjectsOfTypeAll<TMP_Text>().Where(x=>x.name=="StatsSettingLabel"))t.text="Metrics: "+Mode;}
 }
 [HarmonyPatch(typeof(Powerup),nameof(Powerup.Apply))]
 class CollectedPowerup{static void Postfix(Powerup __instance,PlayerController player){StatsOverlay.Instance?.Record(__instance,player);Plugin.Trace("powerup-application",__instance.name+" Apply");}}

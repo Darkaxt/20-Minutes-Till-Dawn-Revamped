@@ -111,6 +111,9 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="lock-native-inspect"){yield return InspectNativeLock();yield break;}
+        if(testMode.StartsWith("mode-clear-")){yield return CheckModeClearRecords(testMode);yield break;}
+        if(testMode.StartsWith("stillness-")){yield return CheckStillness(testMode);yield break;}
         if(testMode=="playtest-inspect"){yield return InspectPlaytestFeedback();yield break;}
         if(testMode=="playtest-contracts"){yield return CheckPlaytestContracts();yield break;}
         if(testMode=="playtest-colors"){yield return CheckPlaytestColors();yield break;}

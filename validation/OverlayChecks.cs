@@ -51,7 +51,7 @@ public partial class RuntimeChecks
   yield return Capture("overlay-long-skills-top.png");
   Require(overlay.SkillContent.GetComponentsInChildren<TMPro.TMP_Text>().Length==0,"collected skill HUD has no rank or count labels");
   Require(overlay.Panel.GetComponentsInChildren<Image>().All(i=>i.sprite!=null&&!i.raycastTarget),"every HUD image is a native icon with no panel, border or raycast target");
-  Require(overlay.AttributeIcons.Count==14&&overlay.SkillIcons.Count==overlay.Collected.Count,"native attributes and every collected skill have their own icons");
+  Require(overlay.AttributeIcons.Count==12&&overlay.SkillIcons.Count==overlay.Collected.Count,"native attributes and every collected skill have their own icons");
   Require(!overlay.Body.text.Contains("Damage")&&overlay.Body.fontSize>=16,"floating attribute numbers have no repeated labels and remain legible");
   Log("overlay-geometry","root="+overlay.Panel.GetComponent<RectTransform>().rect+" stats preferredHeight="+overlay.Body.preferredHeight+" skills height="+overlay.SkillContent.rect.height);
  }
