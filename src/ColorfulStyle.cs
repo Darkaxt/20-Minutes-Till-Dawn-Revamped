@@ -16,6 +16,7 @@ public class ColorfulStyle:MonoBehaviour
  readonly Dictionary<string,Sheet> sheets=new Dictionary<string,Sheet>();
  public class AppliedSheet{public Sheet Sheet;public string OriginalPixelHash;public byte[] RestorePng;}
  readonly Dictionary<Texture2D,AppliedSheet> applied=new Dictionary<Texture2D,AppliedSheet>();
+ readonly Dictionary<Texture2D,bool> neutralTextures=new Dictionary<Texture2D,bool>();
  public int AppliedCount=>applied.Count;
  public int LastRestored,LastRestoreFailures;
  public bool Enabled=>Plugin.Instance.ColorfulEnabled.Value;
@@ -64,8 +65,21 @@ public class ColorfulStyle:MonoBehaviour
   }
   Plugin.Trace("visual-style",new{style=Enabled?"Colorful":"Original",applied=applied.Count,restored=LastRestored,restoreHashFailures=LastRestoreFailures});
   if(LastRestoreFailures!=0)throw new InvalidOperationException("Original texture pixel restoration failed");
+  foreach(var visual in Resources.FindObjectsOfTypeAll<ColorfulProjectileVisuals>())if(visual.gameObject.scene.IsValid())visual.Apply();
  }
  public static string Hash(byte[] bytes){using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-","").ToLowerInvariant();}
+ internal bool NeedsProjectileTint(Sprite sprite)
+ {
+  if(sprite==null||sheets.ContainsKey(sprite.texture.name))return false;
+  var texture=sprite.texture;if(neutralTextures.TryGetValue(texture,out bool neutral))return neutral;
+  var copy=Sample(texture);
+  try
+  {
+   neutral=copy.GetPixels32().Where(p=>p.a>8).All(p=>Mathf.Max(p.r,Mathf.Max(p.g,p.b))-Mathf.Min(p.r,Mathf.Min(p.g,p.b))<=78);
+   neutralTextures.Add(texture,neutral);return neutral;
+  }
+  finally{Object.Destroy(copy);}
+ }
  static void CopyDxt(Texture2D target,byte[] bytes)
  {
   if(target.format!=TextureFormat.DXT5 || target.mipmapCount!=1)throw new InvalidDataException("Compressed target format changed: "+target.name);

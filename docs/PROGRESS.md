@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Playtest correction batch — 2026-10-26
+
+H1 is COMPLETE: [H01–H08 contracts](PLAYTEST-FIXES.md) pass the inspected native Windows workflows at square,4:3 and16:9 sizes. H2 is ACTIVE for the single final1.1.6 public delivery: versioned source/documentation, copied install/runtime/rollback, normal publication, independent download and exact temporary-output cleanup. No H1 blocker or tracked deferral remains. No phone or live Windows deployment is requested.
+
+The native evidence includes S1/95 fresh,96 fresh-process Continue,90 real Shotgun/Fire Starter rendering,85 all25 trees/finite offers/physical chest cleanup and84 full controller regression. Failed93/94 assumed Trainer supplied only attack speed; actual serialized Trainer also supplies summon damage, so the test was corrected.89 failed shutdown while still shooting;90 waits for native Idle and exits normally. Failed probes are not acceptance evidence.
+
 ## Display, unlock previews and HUD — 2026-10-25
 
 Z1, Z2 and Z3 are COMPLETE. Normal [v1.1.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5) is published and independently downloaded. Native Windows54/55/56 establish display/zoom behavior;63/64 establish three metrics modes, skill counts/tiers, pastel comparisons, run credits without wallet changes and current Continue at4:3/16:9.65 verifies natural gate sentences and controller/pointer expansion of locked character/weapon progress without ownership changes.67 verifies Challenge spacing on the native canvas;68 complete controller workflows;69 long-list skill icons/paging;70/71 actual legacy Off/Extended migrations. The left metric order retains existing values; no standalone magic metric is present. No required blocker or tracked deferral remains for this change.

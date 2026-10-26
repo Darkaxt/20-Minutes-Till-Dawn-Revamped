@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.1.5")]
+[BepInPlugin(Id,"20MTD Modernization","1.1.6")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -52,7 +52,7 @@ public class Plugin:BaseUnityPlugin
         Text["rune_description_cadence"]="Every 3rd shot gains +99 Piercing, +20% Bullet Size per rank and +20% Bullet Damage per rank.";
         Text["rune_description_tenacity"]="When your HP is at or below half of your Max HP, gain +3% Fire Rate and +5% Knockback per rank.";
         var legacyMetrics=Config.Bind("Enhancements","StatsOverlay",true,"Legacy enabled value used only when migrating to MetricsMode.");
-        HudMode=Config.Bind("Enhancements","MetricsMode",legacyMetrics.Value?MetricsView.Extended:MetricsView.Off,"F2 cycles Off, Little and Extended metrics. Selected skills remain visible. Little shows final values; Extended adds base and bonus. Pastel values compare numerically with the starting value.");
+        HudMode=Config.Bind("Enhancements","MetricsMode",legacyMetrics.Value?MetricsView.Extended:MetricsView.Off,"F2 cycles Off, Little and Extended metrics. Selected skill paths remain visible. Little shows final values; Extended adds base and bonus. Pastel values show benefit relative to the starting value; shorter reload time is green.");
         ColorfulEnabled=Config.Bind("Enhancements","ColorfulStyle",false,"Optional compatible Sprites Reborn art (Law / Daramos / Darkly77). Original is default. Selected over older Colorful Overhaul by measured current-build coverage.");
         ZoomOut=Config.Bind("Enhancements","CameraZoomOut",0,new ConfigDescription("Extra world view in percent. 0 retains the original camera; menus and HUD keep their normal size.",new AcceptableValueList<int>(0,25,50,75,100)));
         new Harmony(Id).PatchAll(typeof(Plugin).Assembly);

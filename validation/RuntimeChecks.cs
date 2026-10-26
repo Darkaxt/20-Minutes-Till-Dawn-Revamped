@@ -111,6 +111,10 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="playtest-inspect"){yield return InspectPlaytestFeedback();yield break;}
+        if(testMode=="playtest-contracts"){yield return CheckPlaytestContracts();yield break;}
+        if(testMode=="playtest-colors"){yield return CheckPlaytestColors();yield break;}
+        if(testMode.StartsWith("playtest-feedback")){yield return CheckPlaytestFeedback(title,testMode.EndsWith("continue"));yield break;}
         if(testMode=="hud-migration")
         {
          Require(StatsOverlay.Mode.ToString()==Environment.GetEnvironmentVariable("MODERNIZATION_EXPECTED_METRICS"),"legacy configuration migrates to "+StatsOverlay.Mode);
@@ -551,7 +555,12 @@ public partial class RuntimeChecks:MonoBehaviour
     {
         // Batch players have no usable backbuffer. Render the native cameras and
         // overlay canvases explicitly into a GPU texture, without a desktop window.
-        yield return null;Canvas.ForceUpdateCanvases();
+        yield return null;
+        // Batchmode omits automatic camera rendering/OnPreCull. Execute the
+        // actual native callbacks before measuring camera-bound canvases.
+        foreach(var pp in Object.FindObjectsOfType<UnityEngine.U2D.PixelPerfectCamera>().Where(p=>p.enabled))
+        {AccessTools.Method(pp.GetType(),"LateUpdate").Invoke(pp,null);AccessTools.Method(pp.GetType(),"OnPreCull").Invoke(pp,null);}
+        Canvas.ForceUpdateCanvases();
         var cameraObject=new GameObject("OffscreenUiCamera");var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.orthographic=true;camera.orthographicSize=360;camera.transform.position=new Vector3(0,0,-1000);camera.nearClipPlane=.1f;camera.farClipPlane=10;camera.clearFlags=CameraClearFlags.Depth;camera.cullingMask=-1;
         var overlays=Resources.FindObjectsOfTypeAll<Canvas>().Where(x=>x.isRootCanvas && x.gameObject.activeInHierarchy && x.renderMode==RenderMode.ScreenSpaceOverlay).ToArray();
         var previousCameras=overlays.Select(x=>x.worldCamera).ToArray();

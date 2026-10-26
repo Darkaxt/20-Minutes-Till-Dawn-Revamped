@@ -18,14 +18,18 @@ static class AndroidOfferMenus
  {
   var toggles=(Toggle[])AccessTools.Field(typeof(ToggleGroupMenu<Powerup>),"toggles").GetValue(menu);
   var group=(ToggleGroup)AccessTools.Field(typeof(ToggleGroupMenu<Powerup>),"toggleGroup").GetValue(menu);bool allowSwitchOff=group.allowSwitchOff;group.allowSwitchOff=true;
+  int choiceIndex=0;
   for(int i=0;i<toggles.Length;i++)
   {
+   // The native serialized list also includes the four chart-preview slots.
+   // They are not offered choices and must not be hidden by finite binding.
+   if(toggles[i].GetComponentInParent<PowerupTreeUI>()!=null)continue;
    // Native SetData/OnToggleChanged refresh the description immediately and
    // require a selected non-null value. Bind the new entries as one operation
    // before publishing its selection, including the valid empty-list case.
    toggles[i].SetIsOnWithoutNotify(false);
-   if(i<choices.Count)toggles[i].GetComponent<DataUIBinding<Powerup>>().data=choices[i];
-   menu.SetActive(i,i<choices.Count);
+   if(choiceIndex<choices.Count)toggles[i].GetComponent<DataUIBinding<Powerup>>().data=choices[choiceIndex];
+   menu.SetActive(i,choiceIndex<choices.Count);choiceIndex++;
   }
   if(choices.Count>0)toggles[0].SetIsOnWithoutNotify(true);group.allowSwitchOff=allowSwitchOff;
   if(choices.Count>0){AccessTools.Property(typeof(ToggleGroupMenu<Powerup>),"currIndex").SetValue(menu,0);menu.RefreshDescription();}

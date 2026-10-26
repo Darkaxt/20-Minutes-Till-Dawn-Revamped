@@ -47,15 +47,9 @@ public partial class RuntimeChecks
   Require(extra.Length==14,"long-list fixture has fourteen real nonnegative stat-only powerups");
   foreach(var powerup in extra)player.playerPerks.Equip(powerup);
   overlay.Refresh();yield return null;
-  Require(overlay.SkillContent.rect.height>420,"long collected-skill list exceeds viewport and remains scrollable");
+  Require(overlay.SkillIcons.Count==overlay.Collected.Count,"all collected skills fit the grouped HUD without scrolling");
   yield return Capture("overlay-long-skills-top.png");
-  var scroll=overlay.SkillScroll;
-  InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.PageDown));while(scroll.verticalNormalizedPosition>.51f)yield return null;
-  InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;
-  Require(overlay.SkillContent.anchoredPosition.y>0,"Page Down reaches later collected skills");
-  yield return Capture("overlay-long-skills-scrolled.png");
-  InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.PageUp));while(scroll.verticalNormalizedPosition<.99f)yield return null;
-  InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;
+  Require(overlay.SkillContent.GetComponentsInChildren<TMPro.TMP_Text>().Length==0,"collected skill HUD has no rank or count labels");
   Require(overlay.Panel.GetComponentsInChildren<Image>().All(i=>i.sprite!=null&&!i.raycastTarget),"every HUD image is a native icon with no panel, border or raycast target");
   Require(overlay.AttributeIcons.Count==14&&overlay.SkillIcons.Count==overlay.Collected.Count,"native attributes and every collected skill have their own icons");
   Require(!overlay.Body.text.Contains("Damage")&&overlay.Body.fontSize>=16,"floating attribute numbers have no repeated labels and remain legible");

@@ -8,6 +8,16 @@ namespace TwentyMinutes.Modernization;
 // lifetime, MoveTowards/scale Update and pooled release already match source.
 public sealed class AndroidDamagePopup:MonoBehaviour
 {
+ TextMeshPro label;float originalFontSize;
+ void Awake(){label=GetComponent<TextMeshPro>();originalFontSize=label.fontSize;}
+ void LateUpdate()
+ {
+  // World geometry shrinks under camera zoom. Compensate only the glyph size;
+  // native motion, scale animation, fog placement and pooled expiry stay owned
+  // by WorldTextPopup. Set from the original value, never multiply repeatedly.
+  float size=originalFontSize*(1+Plugin.Instance.ZoomOut.Value/100f);
+  if(label.fontSize!=size)label.fontSize=size;
+ }
  static readonly AccessTools.FieldRef<WorldTextPopup,float> Timer=AccessTools.FieldRefAccess<WorldTextPopup,float>("timer");
  static readonly AccessTools.FieldRef<WorldTextPopup,Vector3> Next=AccessTools.FieldRefAccess<WorldTextPopup,Vector3>("newPos");
  internal static void ConfigurePrefab(GameObject prefab)

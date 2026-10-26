@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.6](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.6) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -30,13 +30,23 @@ Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their chara
 
 ### Read your build without a panel
 
-Attributes sit on the left in character → summons → weapons order; collected skill icons, tiers and counts sit on the right, including at4:3. **F2** or native Options cycles **Off → Little → Extended** metrics. Little shows calculated values only, pastel green above the starting value and pastel red below it. Extended also shows base and net bonus. Off hides metrics while keeping selected skills visible. Charge/conditional effects remain excluded from these base comparisons.
+Attributes sit on the left in character → summons → weapons order. Acquired skills use **one icon-only row per upgrade path** on the right, with separate character, Tome and Synergy rows. Both groups center vertically, including on square screens. A tripled skill has a subtle glow instead of a count label.
+
+**F2** or native Options cycles **Off → Little → Extended** metrics. Little shows calculated values only; pastel green means improved and pastel red means worse, including shorter reload times in green. Extended also shows base and net bonus. Off hides metrics while keeping selected skills visible. Charge/conditional effects remain excluded from these base comparisons.
 
 The original timer sits at top center below the level bar, with credits earned this run beneath it. Credits use the game's current reward calculation and do not change the wallet.
 
-![Transparent HUD with coloured native attribute icons on the left and collected skill tiers and counts on the right](docs/images/hud-build.png)
+![Transparent HUD with centered attributes on the left and acquired upgrade-path rows on the right](docs/images/hud-build.png)
 
-*Windows 1280×720 Little-mode capture with real Big Shot/Haste acquisitions and deliberately controlled stats/kill count. Also verified at1024×768 and through Continue; not a natural progression run.*
+*Actual1280×720 Windows Little-mode capture with controlled Lilith/Ghost Friend/stat upgrades. Also verified at900×900,1024×768 and through Continue; not a natural progression run.*
+
+### See the upgrade path and its role in your build
+
+The native selection panel shows its four-node upgrade chart again. Build help explains summon stat consumers and named Synergy recipes completed by the selected upgrade. Enemy damage numbers stay readable while zooming out; an edge icon points toward off-screen boss reward chests.
+
+![Native Frost Mage offer with its restored four-node upgrade chart](docs/images/upgrade-paths.png)
+
+*Actual Windows controller selection capture. All25 regular native paths are checked; chart previews cannot select an unoffered upgrade. [Playtest fixes and projectile-color audit](docs/PLAYTEST-FIXES.md).*
 
 ### Use the native Options menu with a controller
 
@@ -72,7 +82,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.5 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.5).
+1. Download and extract the [v1.1.6 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.6).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -96,14 +106,18 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 | Toggle auto-targeting | Space; native controller equivalent |
 | Off / Little / Extended metrics | F2 or Options; skills stay visible |
 | Widen the world view | Options → Zoom out |
-| Scroll collected skill icons | Page Up / Page Down |
+| Collected skill paths | Automatic rows; all acquired icons stay visible |
 | Suspend a run | Pause → Save & return; Continue resumes it |
 | Configure a Custom run | Custom selection; live settings from Pause |
 | Optional recolours | Options; original artwork is the default |
 
-The HUD uses T1/T2/T3 for upgrade-tree tiers, S for a special upgrade and ×N for acquisition count. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
+The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.1.6 — Playtest fixes and cleaner build HUD
+
+**Added:** acquired-path HUD rows, current-build summon/Synergy help and off-screen chest directions. **Fixed:** hidden native upgrade charts, zoomed damage-number readability, square-screen HUD placement, reload benefit colors and neutral Shotgun/fireball rendering in Sprites Reborn. **Improved:** icon-only skills with triple-acquisition glow and benefit-first Glass/Stillness descriptions, preserving their actual gameplay trade-offs. [Release notes](release/NOTES-1.1.6.md) · [Contracts and color audit](docs/PLAYTEST-FIXES.md).
 
 ### v1.1.5 — Display, readable unlocks and Isaac-style HUD
 
@@ -155,7 +169,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-Version **1.1.5** is published and independently downloaded/verified. Its packaged production DLL passes copied-install display, HUD, Continue and unlock-preview workflows, followed by exact rollback. Native4:3/16:9 display/zoom/HUD checks, controller/pointer/F2 navigation, legacy-settings migration and long skill lists also pass. The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md) · [Package/install/rollback and delivery receipts](docs/PROGRESS.md).
+The **1.1.6** playtest batch passes native square/4:3/16:9 HUD, upgrade paths, build help, zoom damage, actual projectile rendering, chest pickup and fresh-process Continue checks. Final publication requires its copied-package runtime/rollback and independent public-download gates; their current receipt is in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

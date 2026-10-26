@@ -99,6 +99,8 @@ public sealed class AndroidPools:MonoBehaviour
   AndroidContacts.ConfigurePrefab(prefab);
   BossArenaLifetime.ConfigurePrefab(prefab);
   AndroidDamagePopup.ConfigurePrefab(prefab);
+  ColorfulProjectileVisuals.Configure(prefab);
+  if(prefab.GetComponent<flanne.Pickups.ChestPickup>()!=null&&prefab.GetComponent<ChestDirectionIndicator>()==null)prefab.AddComponent<ChestDirectionIndicator>();
   prefab=SourceTemplate(prefab);
   var source=AndroidPoolTables.Items.FirstOrDefault(i=>i.Tag==tag)??AndroidPoolTables.Items.FirstOrDefault(i=>i.Prefab==prefab.name);
   int maximum=source?.Maximum??99999,visible=sourceVisible??source?.Visible??-1,initial=source?.Initial??0;
