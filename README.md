@@ -185,7 +185,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The **1.1.7** source passes the corrected Stillness/checkpoint, compact HUD, framed interaction, controller and mode-clear workflows. Its final delivery stage verifies the committed package, copied installation/rollback and independent public download; the current receipt is in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The published **1.1.7** package passes the corrected Stillness/checkpoint, compact HUD, framed interaction, controller and mode-clear workflows. Its copied installation/rollback and independently downloaded public package are verified; the delivery receipt is in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 
