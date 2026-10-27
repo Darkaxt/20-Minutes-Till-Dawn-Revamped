@@ -10,6 +10,8 @@ The user-approved1.1.7 Stillness correction replaces Android’s global MoveSpee
 
 The1.1.8 [exploration chests](EXPLORATION.md) are another requested Revamped addition, not an Android port. Their weighted rewards, native upgrade/payout integration and exact checkpoint state are verified separately from source parity. Shared boss-pointer bounds and collected-marker lifecycle corrections are recorded in the anomaly ledger.
 
+The1.1.9 playtest corrections intentionally adjust those exploration distances and credit/XP rewards, remove the results skill list, keep controller focus within the composed native menus and clarify Mixed build relations. They do not alter Android combat recipes or reopen the completed source comparison. [Current verification](PROGRESS.md).
+
 | ID | Integrated behavior | Native Windows acceptance |
 |---|---|---|
 | A129 | Rebuild Glass from acquisitions at each run boundary; three picks remain factor 6 across repeated warm and fresh Continue. | 480/481 |

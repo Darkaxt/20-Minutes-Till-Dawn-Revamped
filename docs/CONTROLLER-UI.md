@@ -1,4 +1,12 @@
-# Controller UI corrections — v1.1.4
+# Controller UI corrections
+
+## v1.1.9 — Menu ownership and results
+
+Victory and death omit the skill list and keep all directional navigation on Retry/Quit. Native shown menus own focus through presentation, hide/disable, input-scheme changes and actual controller navigation/submit/cancel events. Valid pointer/controller selection is preserved; there is no per-frame focus override. The roster's grid and shared Runes/Back panel form one composed menu even though they are sibling hierarchy roots. Custom, achievement and Continue dialogs register their own existing controls.
+
+Native173/174/175 verifies the full title/pause/Options, roster, rune, campaign, Custom, reward and Continue-error flows, plus actual Forest victory/Retry/death/Quit and first-event focus recovery after switching from the pointer. Earlier171/172 exposed incorrect ownership boundaries for the shared roster panel; those failed probes are retained rather than counted as acceptance. Final package evidence is recorded in [PROGRESS.md](PROGRESS.md).
+
+## Historical v1.1.4 audit
 
 Current v1.1.5 also adds native Zoom out, fullscreen Resolution access, three metrics modes, viewport-correct skill icons, centered timer/run credits and on-demand locked-entry progress. [Current changelog](../README.md#v115--display-readable-unlocks-and-isaac-style-hud) · [Current acceptance and delivery](PROGRESS.md). The v1.1.4 audit below is retained as history; its binary On/Off metrics behavior is superseded by Off/Little/Extended.
 

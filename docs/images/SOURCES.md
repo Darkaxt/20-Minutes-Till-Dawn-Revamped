@@ -9,7 +9,9 @@ These PNGs are byte-for-byte copies of existing Windows test captures, inspected
 | [hud-build.png](hud-build.png) | `evidence/S1/run-131/grouped-hud-1280.png` | `9008d05d34790d349cdbb8ea4b52441a34f16892902e11f198de18b245750858` |
 | [skill-interactions.png](skill-interactions.png) | `evidence/S1/run-131/build-icons-SummonMastery.png` | `00ccd122158c071e40c1deff258f19828e76bdef59c0011036ed2ce41e8d091c` |
 | [mode-clears.png](mode-clears.png) | `evidence/S1/run-122/mode-crowns-darkness-2.png` | `d9e3363b97ec9c9c5df475e40def9f625f702b2e93fc86b1a63e6edb6a32b2e4` |
-| [exploration-spread.png](exploration-spread.png) | `evidence/S1/run-157/exploration-markers-spread.png` | `bdf5411cce72748f1e4daca399a7d09f70bb79edaf63b7236e06bcf8a8fad5fa` |
+| [exploration-spread.png](exploration-spread.png) | `evidence/S1/run-165/exploration-markers-spread.png` | `4da614847ae925597b52ca2038cd74c2f43c6707ecfa45e916b4139791bb3baa` |
+| [results-controller.png](results-controller.png) | `evidence/S1/run-174/results-controller.png` | `fc7e424d9eb11bfc5eee88b63b90bcfbaf3afec355328938f4701269c1a93b1c` |
+| [mixed-relations.png](mixed-relations.png) | `evidence/S1/run-174/mixed-relations-1280.png` | `1b5e9baaedb0f48a1c86ed26c9d8b4d765dd2b1e03aac4285c5f431ec8262f84` |
 | [native-options.png](native-options.png) | `evidence/S1/run-125/native-title-options-1.png` | `1b16c20c48f3cf497a4ca3d3c62c7a536294be1f71b7ed93508e1221d700a9c9` |
 | [unlock-diamond.png](unlock-diamond.png) | `evidence/S1/run-65/unlock-character-preview.png` | `9a28aef0e8613dc9b8b741b2d7377b9efb01bbe508da9d49ed2ee689347825a1` |
 | [runes-progression.png](runes-progression.png) | `evidence/S3/run-98/rune-multiple-enabled-and-column-gates.png` | `972a6cb9ad145bcd298dfef579b74049b6aa8adb598716bc1bdea722450b3a56` |

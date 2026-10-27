@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.8](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.8) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.1.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.9) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -46,6 +46,10 @@ The original timer sits at top center below the level bar, with credits earned t
 
 The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Enemy damage numbers stay readable while zooming out; an edge icon points toward off-screen boss reward chests.
 
+When one target gains an attribute and loses another, it appears **once under Mixed (+ / −)**. For example, Double Shot adds a projectile but lowers bullet damage. This describes the trade-off without pretending to calculate a universal net benefit.
+
+![Double Shot shows its weapon once as a mixed trade-off](docs/images/mixed-relations.png)
+
 ![Native Magic Lens offer with its four-node path on the left and build relations on the right](docs/images/upgrade-paths.png)
 
 *Actual Windows controller selection capture. All25 regular native paths are checked; chart previews cannot select an unoffered upgrade. [Playtest fixes and projectile-color audit](docs/PLAYTEST-FIXES.md).*
@@ -58,11 +62,19 @@ The native selection panel shows the four-node upgrade path beside the descripti
 
 Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, credits, healing, magnet, freeze, frenzy and eligible native upgrades.
 
-Open-map placement targets **20–30 seconds of walking**; compact arenas stop at reachable walls. The marker number shows **distance in game units**. Boss chests retain gold markers, independent of the three-chest cap. Exact rewards, positions and timers survive Continue; credits use the normal payout.
+Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. Credit chests give **1,000 credits**; XP chests give **30% of the current level's full requirement**, including earned XP bonuses. The marker number shows **distance in game units**. Boss chests retain gold markers, independent of the three-chest cap. Fixed reward types, positions and timers survive Continue; credits use the normal payout.
 
-![Three mint exploration markers in different directions,76–89 world units away](docs/images/exploration-spread.png)
+![Three mint exploration markers in different directions,45–76 world units away](docs/images/exploration-spread.png)
 
-*Actual native Windows spawn with controlled random/clock operands: roughly24–28 seconds of unobstructed travel at speed3.2. Not the deliberate all-east marker overlap fixture. [Reward weights and rules](docs/EXPLORATION.md).*
+*Actual native Windows spawn with controlled random/clock operands. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. Not the deliberate all-east marker overlap fixture. [Reward weights and rules](docs/EXPLORATION.md).*
+
+### Finish a run with the controller
+
+Victory and death show scores, the character/weapon loadout and **Try Again / Quit To Menu**, without the redundant skill list. Results navigation stays on those two buttons. Shown menus own controller focus, including recovery on the first controller input after switching from the mouse; no frame-by-frame focus override.
+
+![Native victory results without the skill list, focused on Quit To Menu](docs/images/results-controller.png)
+
+*Windowless Windows test with an actual Forest boss defeat, controlled combat clock, native victory, controller Retry, death and Quit. The test profile's score is not a natural full-run balance result.*
 
 ### Track clears at the selected difficulty
 
@@ -104,7 +116,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.1.8 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.8).
+1. Download and extract the [v1.1.9 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.9).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -136,6 +148,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.1.9 — Results focus and useful exploration rewards
+
+**Fixed:** results controller navigation/focus and duplicated benefit/penalty icons; mixed trade-offs now show once. **Improved:** removed the end-of-run skill list; exploration travel varies across5–30 seconds; credit chests give1,000 credits and XP scales with30% of the current level requirement, including native bonuses. Existing positions and collected totals survive Continue. **Ported:** no additional Android behavior; these are requested Revamped playtest corrections. [Release notes](release/NOTES-1.1.9.md) · [Reward rules](docs/EXPLORATION.md).
 
 ### v1.1.8 — Exploration chests and shared pointers
 
@@ -199,7 +215,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The published **1.1.8** package passes native exploration placement/travel, every reward family, Custom, current/older Continue, native payout, complete marker bounds, boss collection and controller checks. Copied installation/rollback and the independently downloaded public package are verified in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The **1.1.9** source passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Final copied-package/rollback and public-download verification is recorded in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 

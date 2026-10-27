@@ -139,7 +139,7 @@ public partial class RuntimeChecks
   foreach(var toggle in toggles.Take(2))
   {
    yield return MenuMove(pad,game.powerupMenu.GetComponentInParent<Canvas>().rootCanvas.transform,toggle);yield return null;
-   var expected=SkillPanelDetails.Describe(description.data).SelectMany(r=>r.Icons.Select(i=>new{Icon=i,Prefix=r.Penalty?"Penalty_":"Benefit_"})).ToArray();var images=description.GetComponentsInChildren<Image>().Where(i=>i.name.StartsWith("Benefit_")||i.name.StartsWith("Penalty_")).ToArray();
+   var expected=SkillPanelDetails.Describe(description.data).SelectMany(r=>r.Icons.Select(i=>new{Icon=i,Prefix=r.Mixed?"Mixed_":r.Penalty?"Penalty_":"Benefit_"})).ToArray();var images=description.GetComponentsInChildren<Image>().Where(i=>i.name.StartsWith("Benefit_")||i.name.StartsWith("Penalty_")||i.name.StartsWith("Mixed_")).ToArray();
    Require(images.Length==expected.Length&&expected.All(e=>images.Any(i=>i.name==e.Prefix+e.Icon.Key&&i.sprite==e.Icon.Sprite)),"actual controller-selected skill renders exact benefit/penalty icons and portrait: "+description.data.name);
    var chart=(PowerupTreeUI)WindField(description,"powerupTreeUI");var frame=chart.GetComponentsInChildren<PowerupIcon>(true).First().GetComponent<Image>();
    Require(frame.sprite.name=="PowerupFrame"&&images.All(i=>i.transform.parent.name=="InteractionHexagon"&&i.transform.parent.GetComponent<Image>().sprite==frame.sprite&&i.transform.parent.GetComponent<Image>().color.a>0&&!i.transform.parent.GetComponent<Image>().raycastTarget),"every mini-icon uses the visible native hexagon outline without intercepting input");

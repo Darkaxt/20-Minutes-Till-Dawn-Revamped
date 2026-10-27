@@ -38,7 +38,6 @@ class AndroidVictoryFlow
   yield return new WaitForSecondsRealtime(.1f);
   owner.endScreenUIC.SetScores(ScoreCalculator.SharedInstance.GetScore());
   owner.endScreenUIC.Show(true);
-  owner.powerupListUI.Show();
   // Keep the native Windows end-screen loadout presentation.
   owner.loadoutUI.Show();
   if(!SelectedMap.MapData.achievementsDisabled){Difficulty(state);Achievements(state);}

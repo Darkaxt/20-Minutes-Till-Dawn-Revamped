@@ -80,7 +80,7 @@ public sealed class ExplorationRun:MonoBehaviour
   for(int i=0;i<count;i++)
   {
    float angle=empty?start+360f*i/count:OpenDirection();
-   if(!TravelPosition(angle,20+Next(10001)/1000f,out var position))continue;
+   if(!TravelPosition(angle,5+Next(25001)/1000f,out var position))continue;
    var reward=i==0?first:RewardForRoll(Next(72));
    var drop=new ExplorationDrop{id=State.nextId++,reward=reward,x=position.x,y=position.y};
    if(reward==ExplorationReward.Upgrade||reward==ExplorationReward.CharacterUpgrade)
@@ -137,7 +137,7 @@ public sealed class ExplorationRun:MonoBehaviour
   switch(drop.reward)
   {
    case ExplorationReward.Experience:Experience();break;
-   case ExplorationReward.Credits:State.credits+=50;Notify("+50 credits");break;
+   case ExplorationReward.Credits:State.credits+=1000;Notify("+1000 credits");break;
    case ExplorationReward.Healing:if(player.playerHealth.hp<player.playerHealth.maxHP){player.playerHealth.Heal(1);Notify("+1 heart");}else Experience();break;
    case ExplorationReward.Magnet:foreach(var xp in Object.FindObjectsOfType<XPPickup>())xp.GetComponent<AndroidPickup>().TargetPick(player.gameObject);Notify("XP magnet");break;
    case ExplorationReward.Freeze:foreach(var ai in Object.FindObjectsOfType<AIComponent>().Where(a=>a.gameObject.layer==(int)TagLayerUtil.Enemy))AndroidFreezeApplication.Apply(FreezeSystem.SharedInstance,ai.gameObject,3);Notify("Freeze");break;
@@ -149,7 +149,11 @@ public sealed class ExplorationRun:MonoBehaviour
   }
   StatsOverlay.Instance?.Dirty();RunResume.Save();Plugin.Trace("exploration-collected",new{drop.id,drop.reward,State.credits,State.frenzy});
  }
- void Experience(){Notify("+20 XP");game.playerXP.GainXP(20);}
+ void Experience()
+ {
+  var xp=game.playerXP;float amount=.3f*(float)AccessTools.Property(xp.GetType(),"xpToLevel").GetValue(xp);
+  Notify("+"+xp.xpMultiplier.Modify(amount).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture)+" XP");xp.GainXP(amount);
+ }
  void SetFrenzy(bool enabled)
  {
   if(frenzyApplied==enabled)return;frenzyApplied=enabled;

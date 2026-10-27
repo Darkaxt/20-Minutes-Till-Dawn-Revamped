@@ -47,7 +47,7 @@ public sealed class SourceAchievementMenu:MonoBehaviour
   if(instance==null)instance=Build(owner);
   owner.mainMenu.interactable=false;
   SourceAchievementRewards.ImportSteam();
-  instance.gameObject.SetActive(true);instance.Refresh();instance.back.Select();
+  instance.gameObject.SetActive(true);instance.Refresh();instance.back.Select();NativeMenuFocus.Open(instance,instance.back);
   return true;
  }
  static SourceAchievementMenu Build(TitleScreenController owner)

@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.1.8")]
+[BepInPlugin(Id,"20MTD Modernization","1.1.9")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";

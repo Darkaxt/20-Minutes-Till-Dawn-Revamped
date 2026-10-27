@@ -42,7 +42,7 @@ public sealed class SkillPanelDetails:MonoBehaviour
 {
  RectTransform interactions;
  public class BenefitIcon{public string Key;public Sprite Sprite;}
- public class Relation{public string Label;public bool Penalty;public List<BenefitIcon> Icons;}
+ public class Relation{public string Label;public bool Penalty,Mixed;public List<BenefitIcon> Icons;}
  internal void Refresh(PowerupDescription owner)
  {
   var power=owner.data;if(power==null)return;
@@ -60,22 +60,23 @@ public sealed class SkillPanelDetails:MonoBehaviour
   if(interactions==null)interactions=StatsOverlay.Rect(new GameObject("BuildInteractions",typeof(RectTransform)),root,new Vector2(0,1),new Vector2(0,1),new Vector2(350,-20),new Vector2(194,104));
   foreach(Transform child in interactions){child.gameObject.SetActive(false);Destroy(child.gameObject);}
   var relations=Describe(power);
-  foreach(bool penalty in new[]{false,true})
+  var bands=new[]{relations.Where(r=>!r.Penalty&&!r.Mixed).ToArray(),relations.Where(r=>r.Mixed).ToArray(),relations.Where(r=>r.Penalty).ToArray()}.Where(r=>r.Length>0).ToArray();
+  for(int band=0;band<bands.Length;band++)
   {
-   var row=relations.Where(r=>r.Penalty==penalty).ToArray();var labels=new List<TMP_Text>();float top=penalty?-52:0;
-   foreach(var relation in row){var label=StatsOverlay.Text(interactions,"Relation",description.font,relation.Label,9,Vector2.zero,new Vector2(194,12));label.color=penalty?new Color(.91f,.64f,.66f):new Color(.66f,.84f,.73f);labels.Add(label);}
+   var row=bands[band];bool mixed=row[0].Mixed,penalty=row[0].Penalty;var labels=new List<TMP_Text>();float top=-(bands.Length==3?34:52)*band,labelHeight=bands.Length==3?10:12,iconOffset=bands.Length==3?14:18;
+   foreach(var relation in row){var label=StatsOverlay.Text(interactions,"Relation",description.font,relation.Label,9,Vector2.zero,new Vector2(194,labelHeight));label.color=mixed?new Color(.91f,.81f,.65f):penalty?new Color(.91f,.64f,.66f):new Color(.66f,.84f,.73f);labels.Add(label);}
    // Labels sit above their icons. Both rows begin at the same x; the native
    // hexagons have a full ten-unit gap even at their largest size.
    float desiredWidth=row.Select((r,i)=>Mathf.Max(labels[i].preferredWidth,r.Icons.Count*28-4)).Sum()+Mathf.Max(0,row.Length-1)*8;
-   float scale=desiredWidth>194?194/desiredWidth:1,size=24*scale,gap=4*scale,x=0;
+   float scale=desiredWidth>194?194/desiredWidth:1,size=(bands.Length==3?16:24)*scale,gap=4*scale,x=0;
    for(int group=0;group<row.Length;group++)
    {
-    var label=labels[group];float width=Mathf.Max(label.preferredWidth*scale,row[group].Icons.Count*(size+gap)-gap);label.fontSize=9*scale;label.rectTransform.anchoredPosition=new Vector2(x,top);label.rectTransform.sizeDelta=new Vector2(width,12);
+    var label=labels[group];float width=Mathf.Max(label.preferredWidth*scale,row[group].Icons.Count*(size+gap)-gap);label.fontSize=9*scale;label.rectTransform.anchoredPosition=new Vector2(x,top);label.rectTransform.sizeDelta=new Vector2(width,labelHeight);
     foreach(var item in row[group].Icons)
     {
-     var frame=new GameObject("InteractionHexagon",typeof(RectTransform),typeof(Image));StatsOverlay.Rect(frame,interactions,new Vector2(0,1),new Vector2(0,1),new Vector2(x,top-18),Vector2.one*size);
+     var frame=new GameObject("InteractionHexagon",typeof(RectTransform),typeof(Image));StatsOverlay.Rect(frame,interactions,new Vector2(0,1),new Vector2(0,1),new Vector2(x,top-iconOffset),Vector2.one*size);
      var border=frame.GetComponent<Image>();border.sprite=nativeFrame.sprite;border.color=nativeFrame.color;border.material=nativeFrame.material;border.type=nativeFrame.type;border.preserveAspect=true;border.raycastTarget=false;
-     var icon=new GameObject((penalty?"Penalty_":"Benefit_")+item.Key,typeof(RectTransform),typeof(Image));StatsOverlay.Rect(icon,frame.transform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,Vector2.one*(size*.8f));
+     var icon=new GameObject((mixed?"Mixed_":penalty?"Penalty_":"Benefit_")+item.Key,typeof(RectTransform),typeof(Image));StatsOverlay.Rect(icon,frame.transform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,Vector2.one*(size*.8f));
      var image=icon.GetComponent<Image>();image.sprite=item.Sprite;image.preserveAspect=true;image.raycastTarget=false;x+=size+gap;
     }
     x=label.rectTransform.anchoredPosition.x+width+8*scale;
@@ -130,6 +131,13 @@ public sealed class SkillPanelDetails:MonoBehaviour
    .GroupBy(RunResume.Key).Select(g=>Icon(g.First())).ToArray();
   if(RunResume.Key(power)=="ghost_wizard_name")benefited.AddRange(owned.Where(e=>e.Power!=null&&RunResume.Key(e.Power)=="ghost_friend_name").Select(e=>Icon(e.Power)));
   Add(messages,"Benefits",benefited);Add(messages,"Penalties",penalized,true);Add(messages,"Synergy",recipes);
+  // A weapon/summon can gain one attribute and lose another. Report that
+  // real trade-off once instead of making contradictory binary claims.
+  var mixed=messages.Where(r=>r.Label!="Synergy").SelectMany(r=>r.Icons.Select(i=>new{r.Penalty,Icon=i})).GroupBy(i=>i.Icon.Key).Where(g=>g.Any(i=>i.Penalty)&&g.Any(i=>!i.Penalty)).Select(g=>g.First().Icon).ToList();
+  var keys=new HashSet<string>(mixed.Select(i=>i.Key));
+  foreach(var relation in messages.Where(r=>r.Label!="Synergy"))relation.Icons.RemoveAll(i=>keys.Contains(i.Key));
+  messages.RemoveAll(r=>r.Icons.Count==0);
+  if(mixed.Count>0)messages.Add(new Relation{Label="Mixed (+ / −)",Mixed=true,Icons=mixed});
   return messages;
  }
 }

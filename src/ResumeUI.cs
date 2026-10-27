@@ -34,7 +34,7 @@ class ResumeDialog:MonoBehaviour
    catch(Exception ex){Plugin.Trace("run-continue-rejected",ex.ToString());dialog.Description.text=ex.Message;dialog.ContinueButton.interactable=false;dialog.NewButton.Select();}
   });
   dialog.cancel=title.input.FindAction("UI/Cancel");dialog.cancel.canceled+=dialog.OnCancel;
-  (saved!=null?dialog.ContinueButton:dialog.BackButton).Select();
+  var first=saved!=null?dialog.ContinueButton:dialog.BackButton;first.Select();NativeMenuFocus.Open(dialog,first);
  }
  public static void RestoreFailed(Exception error)
  {
@@ -45,7 +45,7 @@ class ResumeDialog:MonoBehaviour
   dialog.back=()=>{RunResume.Pending=null;RunRecorder.Instance.Finished=true;game.ChangeState<SuspendToTitleState>();};
   dialog.BackButton.onClick.AddListener(()=>dialog.back());
   dialog.cancel=game.playerInput.actions.FindAction("UI/Cancel");dialog.cancel.canceled+=dialog.OnCancel;
-  dialog.BackButton.Select();
+  dialog.BackButton.Select();NativeMenuFocus.Open(dialog,dialog.BackButton);
  }
  static ResumeDialog Build(Transform parent,TMP_FontAsset font)
  {

@@ -2,13 +2,13 @@
 
 Mint-tinted chests appear beyond the visible playfield on reachable ground. They are separate from gold boss chests and have no ambush or penalty mechanic. A run can have **at most three uncollected exploration chests**; boss rewards keep their existing lifecycle.
 
-The system draws a new wave every **60–90 seconds of combat**. Pauses and upgrade menus stop this clock. Common waves can contain one to three chests in different directions. Placement targets **20–30 seconds of travel at the player's current walking speed**. Compact arenas such as Temple cap that distance at their reachable walls; they cannot offer an open-map journey. New placements also account for exploration chests already on the ground. Blocked placement sectors are skipped; the game does not put rewards through walls or outside map boundaries.
+The system draws a new wave every **60–90 seconds of combat**. Pauses and upgrade menus stop this clock. Common waves can contain one to three chests in different directions. Placement varies across **5–30 seconds of travel at the player's current walking speed**, mixing nearer and farther targets instead of a narrow distant ring. Viewport exclusion sets a minimum visible-edge distance; compact arenas such as Temple cap the journey at reachable walls. New placements also account for exploration chests already on the ground. Blocked placement sectors are skipped; the game does not put rewards through walls or outside map boundaries.
 
 | Primary wave draw | Weight | Reward |
 |---|---:|---|
-| Experience |25|20 XP through the native level-up flow |
-| Credits |20|50 credits added to the run score and normal payout |
-| Healing |15|One red heart;20 XP instead when health is full |
+| Experience |25|30% of the current level's full XP requirement, with earned XP bonuses and the native level-up flow |
+| Credits |20|1,000 credits added to the run score and normal payout |
+| Healing |15|One red heart; the same percentage XP reward instead when health is full |
 | Magnet |12|Existing XP pickups fly to the player using their normal collection behavior |
 | Freeze |10|Three-second native enemy freeze, retaining boss resistance and immunities |
 | Frenzy |8|+25% bullet damage, summon damage and fire rate for15 combat seconds; another refreshes its duration |
@@ -17,7 +17,7 @@ The system draws a new wave every **60–90 seconds of combat**. Pauses and upgr
 
 The first four outcomes form the common pool. Extra chests in a common wave draw only from that pool; uncommon and rare waves contain one chest. These are **wave weights**, not the final distribution of individual chests.
 
-Permanent upgrade rewards respect current prerequisites and remaining repetitions. Their exact upgrade is chosen at spawn. If it has become unavailable before collection, the chest grants20 XP rather than rerolling or opening an empty menu. There is no content-unlock bypass. Custom retains its obtained-content and no-achievement rules.
+Permanent upgrade rewards respect current prerequisites and remaining repetitions. Their exact upgrade is chosen at spawn. If it has become unavailable before collection, the chest grants the percentage XP reward rather than rerolling or opening an empty menu. XP is calculated when collected from the current full level requirement, not the remaining XP gap. Native XP multipliers still apply. There is no content-unlock bypass. Custom retains its obtained-content and no-achievement rules.
 
 ## Shared pointers
 
@@ -25,11 +25,11 @@ Boss and exploration chests use the same marker layout: fixed-size native chest 
 
 ![Three exploration chests spawned in different directions](images/exploration-spread.png)
 
-This is a controlled native Windows spawn, with the three world targets120° apart. It is distinct from the deliberate all-east overlap stress test.
+This is a controlled native Windows spawn in different directions, with distances45,71 and76 game units. A48-seed real-geometry sample includes journeys from5.1 to29.85 seconds at the fixture's walking speed. These are placement checks, not natural full-run balance evidence. It is distinct from the deliberate all-east overlap stress test.
 
 ## Continue and credits
 
-The existing checkpoint stores chest positions, fixed rewards, the separate exploration random sequence, spawn time remaining, frenzy time remaining and exploration credits. Continue restores those values without another reward roll or another frenzy stack. Existing supported checkpoints initialize an empty exploration state.
+The existing checkpoint stores chest positions, fixed reward types/upgrades, the separate exploration random sequence, spawn time remaining, frenzy time remaining and exploration credits. Continue restores those values without another reward roll or another frenzy stack. Old chest positions and already collected credit totals are retained; unclaimed chests use the current reward amounts when opened. Checkpoints predating exploration initialize an empty exploration state.
 
 Exploration credits appear in the run's normal total and reach the wallet through the existing end-of-run payout. They are not written to the wallet separately on collection. This keeps Continue and payout accounting together.
 

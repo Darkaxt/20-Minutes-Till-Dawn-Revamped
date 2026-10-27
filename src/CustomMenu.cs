@@ -160,7 +160,7 @@ public class CustomMenu:MonoBehaviour
   if(start!=null)Button("CustomStart","Start Custom",new Vector2(806,-530),new Vector2(230,42),()=>Run(start));
   else StatsOverlay.Text(content,"CustomTriggerScope",font,"Stats change; abilities keep their normal behavior.",15,new Vector2(700,-529),new Vector2(336,48));
   for(int i=0;i<controls.Count;i++){var nav=controls[i].navigation;nav.mode=Navigation.Mode.Explicit;nav.selectOnUp=nav.selectOnLeft=controls[(i+controls.Count-1)%controls.Count];nav.selectOnDown=nav.selectOnRight=controls[(i+1)%controls.Count];controls[i].navigation=nav;}
-  if(presets)content.Find(pendingPreset!=null?"CustomAction1":"CustomAction0").GetComponent<Button>().Select();else controls[tab].Select();
+  var first=presets?content.Find(pendingPreset!=null?"CustomAction1":"CustomAction0").GetComponent<Button>():controls[tab];first.Select();NativeMenuFocus.Open(this,first);
  }
  void Run(System.Action action){try{action();}catch(InvalidOperationException ex){status.text=ex.Message;}}
  Button Button(string name,string text,Vector2 pos,Vector2 size,System.Action action)
