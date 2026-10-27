@@ -8,6 +8,15 @@ using UnityEngine;
 using flanne;
 namespace TwentyMinutes.Modernization;
 
+// The retained native setter queues Rigidbody2D.rotation. Rendering/particle
+// emission can run before physics publishes that pose (especially on reuse).
+// Publish the same angle to the Transform at the existing angle boundary too.
+[HarmonyPatch(typeof(Projectile),"set_angle")]
+class ProjectileVisibleAngle
+{
+ static void Postfix(Projectile __instance,float __0)=>__instance.transform.rotation=Quaternion.AngleAxis(__0,Vector3.forward);
+}
+
 // Native has a base Projectile on this owned prefab; Android has MultiProjectile.
 // Keep that source component identity when a pool tag or owner changes.
 public sealed class AndroidMultiProjectile:MonoBehaviour{}

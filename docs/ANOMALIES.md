@@ -1,5 +1,11 @@
 # Android gameplay anomaly ledger
 
+## Phoenix visible-angle synchronization — 2026-10-27
+
+Confirmed presentation defect: the retained native Projectile angle setter writes Rigidbody2D.rotation, while visible Transform rotation can remain at the old angle until a physics update. Native orientation run-2 reproduces this before the correction, including pooled reuse; the first diagnostic capture shows all eight requested directions facing right. A postfix on that existing setter publishes the same angle immediately to Transform.rotation, with no per-frame correction or particle/artwork rewrite. Run-6 verifies eight directions in both visual styles and two activations for every one of 37 loaded Projectile templates, preserving body angle, velocity and authored child poses. It also verifies the separate SpiritSummon/PF_Icicle movement-facing path, inventories five shooting/orbital/stabbing summon owners, exercises actual Scarlett burn and Fire Starter damage contacts, and preserves Yuki's moth animation after a normal scene restart. This is a bounded same-cause audit, not a claim that every possible animation or combat build was played.
+
+Diagnostics run-4 lacked the damage-kind observer required by the reused emitter contact assertion; run-5 reached the restart test with Yuki locked in the test profile. Both were fixture defects corrected without another production change. Run-6 completes the whole correction/audit. Current source and render hashes, scope and closure review are retained in L1-acceptance.json; final public delivery is recorded in PROGRESS.md. This correction does not alter the Android parity classification or any combat recipe.
+
 ## Reported controller selector defects — 2026-10-25
 
 | Finding | Classification and reproduced cause | Correction / acceptance |

@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Phoenix facing and related-effects audit — 2026-10-27
+
+L1 is COMPLETE; L2 is ACTIVE. The original native run-2 reproduces delayed visible rotation despite the requested Rigidbody2D angle. Current native run-6 passes actual Scarlett third-shot/burn contact, eight-direction Original/Reborn renders, pooled reuse, all 37 loaded Projectile owners, two independent movement-facing owners, Fire Starter damage and Yuki animation after scene restart. Five separate summon-owner component inventories retain their existing paths. L1-acceptance.json pins behavior source, binaries and inspected renders under the retained phoenix-20261027 evidence. No gameplay recipe or artwork change, implementation blocker or tracked deferral remains. The final committed package, installation/rollback, public download and exact scratch cleanup remain L2 gates. Live Steam and phone deployment remain user-controlled.
+
 ## Results focus and POI playtest corrections — 2026-10-27
 
 K1 and K2 are COMPLETE. Normal [v1.1.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.9) was published 2026-10-27T01:19:38Z from `0defb6fdf8f4826d7dcdc834a1962b0418062127`. All 52 package members were independently downloaded and verified; ZIP SHA-256 `00facf2e47e2222ce8d99e51564f6e5b4b0c543ccd5a5b1f0d5bfc035c6537bc`, production DLL `117e8f4f241ee148c9f8e8af0fd470de8fc9c9ff6622672f81a61bc40493e7f4`.
