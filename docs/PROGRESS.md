@@ -2,7 +2,11 @@
 
 ## Results focus and POI playtest corrections — 2026-10-27
 
-K1 is COMPLETE; K2 is ACTIVE. Native1.1.9 S1/173/174/175/165/166/167/168/170 verifies results skill-list removal, victory/Retry/death/Quit controller containment and first-input focus recovery, retained menu/pointer workflows,5–30-second open-map placement variation,1000 credits,30-percent level XP/native bonuses, native payout and exact current/prior checkpoints. Mixed trade-offs render once without altering recipes; current frame/path/layout checks pass. Source/DLL and input hashes are pinned in K1-acceptance.json. No implementation blocker or tracked deferral remains. Final copied package, rollback, normal public release, independent download and exact cleanup remain K2 gates. Live Steam and phone deployment remain user-controlled.
+K1 and K2 are COMPLETE. Normal [v1.1.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.9) was published 2026-10-27T01:19:38Z from `0defb6fdf8f4826d7dcdc834a1962b0418062127`. All 52 package members were independently downloaded and verified; ZIP SHA-256 `00facf2e47e2222ce8d99e51564f6e5b4b0c543ccd5a5b1f0d5bfc035c6537bc`, production DLL `117e8f4f241ee148c9f8e8af0fd470de8fc9c9ff6622672f81a61bc40493e7f4`.
+
+The exact packaged native player passes S6/44/45/46/47/48/49: Forest boss/victory/Retry/death/Quit, menu focus and retained controller/pointer workflows, Mixed relations, 5–30-second placement, percentage XP/native bonuses, 1,000-credit rewards, all scenarios/Custom, exact fresh/current/original 1.1.8 checkpoints and native payout. The source-only 1.1.7 checkpoint and unchanged recipe/path contracts retain their explicit K1 applicability.
+
+Copied 614-file installation and exact rollback preserve 142 originals; live Windows payload/profile/configuration remain unchanged. UPDATE schema 1, its 614 targets, 613 unchanged hashes and prepared assets match 1.1.8. Reviewed cleanup transaction `20b4f451eb41276325e213da4a8739d7` removed 1,339 members / 308,028,409 logical bytes; the exact disposable root is absent. No required blocker or tracked deferral remains. User deployment through the existing updater APK remains separate. [Feature rules](EXPLORATION.md).
 
 ## Exploration rewards — 2026-10-26
 

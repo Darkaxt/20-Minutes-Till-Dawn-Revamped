@@ -215,7 +215,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The **1.1.9** source passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Final copied-package/rollback and public-download verification is recorded in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The published **1.1.9** package passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Copied installation/rollback and the independently downloaded public package are verified in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 
