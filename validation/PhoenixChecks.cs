@@ -38,7 +38,7 @@ public partial class RuntimeChecks
   yield return AchievementRun("Scarlett","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>());
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();var p=PlayerController.Instance;this.AddObserver(CharacterActorHurt,"Revamped.AndroidSurvivingHurt");
   var generator=EmitterGenerator("PF_FirewaveGenerator");while(WindField(generator,"OP")==null)yield return null;
-  Log("fixture-precondition","Actual native Scarlett and third-shot phoenix producer, then explicit native SpawnProjectile calls at eight aim directions to isolate orientation. Native particle simulation advances0.08s for windowless GPU captures. Enemy scheduling stopped; no OS input or natural balance claim.");
+  Log("fixture-precondition","Actual native Scarlett and third-shot phoenix producer, then explicit native SpawnProjectile calls at eight aim directions to isolate orientation. Authored wings/tail emit only per travelled distance; render captures wait for actual native movement and nonempty particle buffers. No manual emission, altered particle modules or fixed-delay synchronization. Enemy scheduling stopped; no OS input or natural balance claim.");
   PhoenixObserveInput=true;yield return MothShots(game,3);PhoenixObserveInput=false;var actual=Object.FindObjectsOfType<Projectile>().Single(x=>x.name=="PF_FireWave");Log("phoenix-actual",PhoenixPose(actual.gameObject));
   foreach(var ps in actual.GetComponentsInChildren<ParticleSystem>())Log("phoenix-actual-particle",PhoenixParticles(ps));
   if(!inspect){Require(PhoenixActualSpawns==1,"actual Scarlett third shot reaches corrected spawn exactly once");yield return EmitterContact(actual,0,3);}
@@ -56,12 +56,15 @@ public partial class RuntimeChecks
     immediateFacing&=Mathf.Abs(Mathf.DeltaAngle(actor.transform.eulerAngles.z,angle))<.01f;
     Log("phoenix-spawn",PhoenixPose(actor));
     Require(actor.GetComponent<Projectile>().damage==0&&(float)WindField(actor.GetComponent<AndroidProjectile>(),"Size")==p.stats[StatType.ProjectileSize].Modify(1),"phoenix visible rotation preserves source zero Bullet damage and live size");
-    actor.GetComponent<MoveComponent2D>().enabled=false;
+    actor.GetComponent<MoveComponent2D>().enabled=true;
    }
-   yield return new WaitForFixedUpdate();
-   foreach(var actor in pool.pooledObjectsDictionary["PF_FireWave"].Where(x=>x.activeSelf))
-   {Log("phoenix-after-physics",PhoenixPose(actor));foreach(var ps in actor.GetComponentsInChildren<ParticleSystem>()){ps.Simulate(.08f,true,true);Log("phoenix-particle",PhoenixParticles(ps));}}
-   Time.timeScale=0;yield return Capture("phoenix-eight-"+(colorful?"reborn":"original")+".png");Time.timeScale=1;
+   var waveActors=pool.pooledObjectsDictionary["PF_FireWave"].Where(x=>x.activeSelf).ToArray();
+   while(waveActors.SelectMany(x=>x.GetComponentsInChildren<ParticleSystem>()).Any(ps=>ps.particleCount==0))
+   {Require(waveActors.All(x=>x.activeSelf),"actual phoenix remains alive until distance-based particles are visible");Camera.main.Render();yield return null;}
+   Time.timeScale=0;
+   foreach(var actor in waveActors)
+   {Log("phoenix-after-physics",PhoenixPose(actor));foreach(var ps in actor.GetComponentsInChildren<ParticleSystem>()){Require(ps.particleCount>0,"actual phoenix particle buffer is nonempty before capture: "+ps.name);Log("phoenix-particle",PhoenixParticles(ps));}}
+   yield return Capture("phoenix-eight-"+(colorful?"reborn":"original")+".png");Time.timeScale=1;
    foreach(var actor in pool.pooledObjectsDictionary["PF_FireWave"].Where(x=>x.activeSelf).ToArray())ReturnFixtureActor(actor);
   }
   foreach(var prefab in Resources.FindObjectsOfTypeAll<GameObject>().Where(x=>!x.scene.IsValid()&&(x.GetComponent<Projectile>()!=null||x.GetComponent<SeekEnemy>()!=null||x.GetComponent<MoveComponent2D>()?.rotateTowardsMove==true)).OrderBy(x=>x.name))

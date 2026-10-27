@@ -6,6 +6,8 @@ Confirmed presentation defect: the retained native Projectile angle setter write
 
 Diagnostics run-4 lacked the damage-kind observer required by the reused emitter contact assertion; run-5 reached the restart test with Yuki locked in the test profile. Both were fixture defects corrected without another production change. Run-6 completes the whole correction/audit. Current source and render hashes, scope and closure review are retained in L1-acceptance.json; final public delivery is recorded in PROGRESS.md. This correction does not alter the Android parity classification or any combat recipe.
 
+Final screenshot review of the first copied package caught an empty Reborn capture despite passing angle assertions. Original particle data explains it: wings emit 40 particles per travelled unit, tail 20, and both emit zero per second. The fixture had disabled movement and attempted time-only simulation. Run-7 correctly fails the added nonempty-buffer assertion. Run-8 uses actual native movement and waits for nonempty particle buffers, without manual emission or altered particle modules; both inspected styles and the complete orientation/contact/restart audit pass. Production code is unchanged by this capture correction. The final committed package repeats this gate before publication.
+
 ## Reported controller selector defects — 2026-10-25
 
 | Finding | Classification and reproduced cause | Correction / acceptance |
