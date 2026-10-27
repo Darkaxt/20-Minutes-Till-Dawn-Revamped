@@ -255,6 +255,9 @@ class RunRestoreState:GameState
    if(error!=null){Plugin.Trace("run-restore-failed",error.ToString());ResumeDialog.RestoreFailed(error);yield break;}
    if(!next)break;yield return current;
   }
+  // Continue bypasses the opening animation that grows this scene-authored
+  // zero-sized reveal to unit scale. Its children already own VisionRange.
+  owner.playerFogRevealer.transform.localScale=Vector3.one;
   hud.Show();pauseController.UnPause();owner.ChangeState<CombatState>();
  }
  public override void Exit(){AudioManager.Instance.SetLowPassFilter(false);}

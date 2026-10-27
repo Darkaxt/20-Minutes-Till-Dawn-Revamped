@@ -2,6 +2,8 @@
 
 Mint-tinted chests appear beyond the visible playfield on reachable ground. They are separate from gold boss chests and have no ambush or penalty mechanic. A run can have **at most three uncollected exploration chests**; boss rewards keep their existing lifecycle.
 
+**Uncollected exploration chests do not expire.** They remain until collected or the run ends, including across later spawn waves. Save & return / Continue preserves their fixed positions and rewards.
+
 The system draws a new wave every **60–90 seconds of combat**. Pauses and upgrade menus stop this clock. Common waves can contain one to three chests in different directions. Placement varies across **5–30 seconds of travel at the player's current walking speed**, mixing nearer and farther targets instead of a narrow distant ring. Viewport exclusion sets a minimum visible-edge distance; compact arenas such as Temple cap the journey at reachable walls. New placements also account for exploration chests already on the ground. Blocked placement sectors are skipped; the game does not put rewards through walls or outside map boundaries.
 
 | Primary wave draw | Weight | Reward |
@@ -22,6 +24,25 @@ Permanent upgrade rewards respect current prerequisites and remaining repetition
 ## Shared pointers
 
 Boss and exploration chests use the same marker layout: fixed-size native chest artwork, a directional arrow and the rounded distance in game world units. Exploration markers retain the mint tint. Markers disappear when their targets are visible, collected or removed, and separate when several targets share a direction. The layout accounts for the safe area and existing HUD graphics.
+
+World exploration chests retain the normal chest's red/blue fog-reveal sprites, so their artwork is visible through the shadows when the edge pointer hides. These mask colors are internal lighting channels and are independent of the content colors below.
+
+### Nearby content colors
+
+A small, steady glow fades in within **eight world units**, reaching full strength within **two**. Distant chests and edge pointers remain mint; the reward category becomes apparent as you approach. The glow uses the game's existing circle artwork and visible-in-fog rendering, with no pulse, panel or new setting. It works with Original and Sprites Reborn.
+
+| Primary content | Nearby glow |
+|---|---|
+| Experience | Mint / teal |
+| Credits | Gold |
+| Healing | Rose |
+| Magnet | Violet |
+| Freeze | Ice blue |
+| Frenzy | Orange |
+| Normal upgrade | Lime |
+| Character upgrade | Pink |
+
+Color indicates the fixed primary reward category. Existing full-health or exhausted-upgrade XP replacements still apply; this does not change the reward roll or amount. Boss chests retain their original artwork and lighting.
 
 ![Three exploration chests spawned in different directions](images/exploration-spread.png)
 

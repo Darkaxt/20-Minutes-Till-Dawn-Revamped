@@ -126,6 +126,7 @@ public sealed class ExplorationRun:MonoBehaviour
   var renderer=go.GetComponent<SpriteRenderer>();var original=template.GetComponentInChildren<SpriteRenderer>();renderer.sprite=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(template);renderer.color=Mint;renderer.sortingLayerID=original.sortingLayerID;renderer.sortingOrder=original.sortingOrder;
   var collider=go.GetComponent<BoxCollider2D>();collider.isTrigger=true;collider.size=(Vector2)renderer.sprite.bounds.size*.8f;
   var chest=go.AddComponent<ExplorationChest>();chest.Owner=this;chest.Drop=drop;Chests.Add(chest);
+  ExplorationChestVisual.Attach(chest,template);
   var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;marker.Icon=renderer.sprite;
   return chest;
  }

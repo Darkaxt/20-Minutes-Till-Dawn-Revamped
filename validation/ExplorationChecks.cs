@@ -80,6 +80,7 @@ public partial class RuntimeChecks
   // Native boss drops are restored near the saved player. These tests exercise
   // exploration persistence, so move before their next physical pickup step.
   if(input!=null){player.SetPosition(player.transform.position+new Vector3(100,100,0));Physics2D.SyncTransforms();}
+  yield return null;yield return null;foreach(var chest in run.Chests)PoiVisualContract(chest);
   if(mode=="exploration-legacy")
   {
    Require(input.exploration==null&&run.State.drops.Count==0&&run.State.credits==0&&run.State.frenzy==0&&run.State.remaining>=59&&run.State.remaining<=90,"original1.1.7 checkpoint gains an empty valid exploration state without rewriting acquisitions");
@@ -164,8 +165,12 @@ public partial class RuntimeChecks
     yield return Capture("exploration-map-no-placement-"+map+".png");
    }
    Require(run.Chests.Count>=1&&run.Chests.Count<=3,"native map supports off-screen reachable exploration without exceeding cap: "+map);
-   foreach(var chest in run.Chests){var at=Camera.main.WorldToViewportPoint(chest.transform.position);Require(at.x<0||at.x>1||at.y<0||at.y>1,"map exploration starts beyond visible ground: "+map);}
-   var first=run.Chests.First();first.Drop.reward=ExplorationReward.Credits;yield return ExplorationContact(first,game);Require(run.State.credits==1000,"native map collects exploration credits: "+map);
+   yield return null;yield return null;
+   foreach(var chest in run.Chests){PoiVisualContract(chest);var at=Camera.main.WorldToViewportPoint(chest.transform.position);Require(at.x<0||at.x>1||at.y<0||at.y>1,"map exploration starts beyond visible ground: "+map);}
+   var first=run.Chests.First();first.Drop.reward=ExplorationReward.Credits;
+   PlayerController.Instance.SetPosition(first.transform.position+Vector3.left*3);yield return null;yield return null;
+   PoiVisualContract(first);Require(first.GetComponent<ExplorationChestVisual>().Strength>0,"actual scenario reveals nearby chest content: "+map);yield return PoiCapture("poi-visible-"+map+".png");
+   yield return ExplorationContact(first,game);Require(run.State.credits==1000,"native map collects exploration credits: "+map);
    yield return Capture("exploration-map-"+map+".png");yield return AchievementExit(game,false);Require(ExplorationRun.Instance==null,"map exit clears the exploration owner: "+map);
   }
   RunResume.Invalidate();yield return OpenCustomConfiguration();Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();yield return MenuPointer(CustomButton("CustomStart"));GameController custom;
