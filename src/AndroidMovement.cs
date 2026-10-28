@@ -63,7 +63,10 @@ class AndroidMovementStep
    var move=actors[i];if(!move.isActiveAndEnabled)continue;
    Vector2 before=move.vector;
    move.vector=before.normalized*(before.magnitude*Mathf.Exp(-move.drag*dt));
-   move.transform.position+=(Vector3)(move.vector*dt);
+   ElementalWind.Steer(move,dt);
+   var control=move.GetComponent<ElementalControl>();
+   Vector2 velocity=control!=null&&control.AI!=null?control.Movement(move,dt):move.vector;
+   move.transform.position+=(Vector3)(velocity*dt);
    if(!move.rotateTowardsMove)continue;
    move.transform.rotation=Quaternion.AngleAxis(Mathf.Atan2(move.vector.y,move.vector.x)*Mathf.Rad2Deg,Vector3.forward);
    move.transform.localScale=move.vector.x<0?new Vector3(1,-1,1):Vector3.one;

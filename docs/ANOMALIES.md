@@ -1,5 +1,16 @@
 # Android gameplay anomaly ledger
 
+## Elemental redesign integration — 2026-10-28
+
+The user approved the elemental rules in [ELEMENTS.md](ELEMENTS.md). These deliberately replace the old flat/signed positional lightning, size Mastery and Energized ammo refund. The old lightning validation oracle is replaced with the complete new damage/control/save contract; its historical evidence remains retained.
+
+- **Duplicate physical lightning damage:** native diagnostic `elements-20261028/native/S1/run-1` records 44 damage at both center and edge from a positional 22 input. The old pooled impact retained a damage callback on a disabled MonoBehaviour, and Unity still dispatched its collision messages. The new shared sampler owns damage once per victim and leaves the artwork without a damage collider. This is required to implement the approved falloff and deduplication.
+- **Burn on returned actors:** integration run-4 shows a returned burning actor can continue spreading into a later fixture. Its burn list retained the pooled target identity. Elemental pool teardown now releases that burn; release is idempotent because death can return the actor while its tick is dispatching. New statuses, visibility counts and aiming snapshots clear at the same actor lifecycle.
+- **Direct impact on non-pooled actors:** review found that the new fireball blast resolved even its directly hit object through the pool's identity table. Map-instantiated actors need not be in that table. The blast now retains the actual primary contact object and uses pool identities only for its neighboring query. The complete fire workflow includes a standalone native actor regression.
+- **Fixture corrections:** run-2 used the legacy serialized pool list rather than the active Android registration table; run-3 assumed Mastery necessarily acquired Electro Bug; run-5 used a display name instead of `IntenseFlame`; run-7 sampled a newly acquired projectile before its movement registration. These are test setup findings, not additional gameplay changes.
+
+The redesigned controls do not enter FreezeSystem, and normal freeze/Frostbite/Shatter remain independent. Champion resistance applies to the new controls; immunity and ordinary typed damage modifiers remain in their existing channels. Final runtime and delivery status is recorded in [PROGRESS.md](PROGRESS.md).
+
 ## Continue player vision — 2026-10-27
 
 Confirmed Revamped restore defect: native fresh idle vision has an active root at scale (1,1,1); a fresh-process Continue of the same checkpoint leaves that active root at (0,0,1). Its child red/blue sprites, layers and VisionRange value remain correct. The restore state replaces normal opening animation flow without completing its root-scale initialization. Native runs13/14 reproduce the visible idle-darkness difference and fail the exact scale contract. Restore now sets that presentation root to unit scale before entering CombatState, leaving the stat-driven children and saved upgrades untouched. No checkpoint replacement, per-frame override or artificial light is added. Verification includes an actually acquired Night Vision upgrade.

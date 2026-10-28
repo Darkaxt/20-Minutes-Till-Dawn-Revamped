@@ -100,7 +100,8 @@ public sealed class AndroidAI:MonoBehaviour
   for(int i=0;i<actors.Count;i++)
   {
    var ai=actors[i];if(!ai.gameObject.activeInHierarchy||ai.frozen)continue;
-   var state=ai.GetComponent<AndroidAIActor>();Vector2 direction=follow.position-ai.transform.position;
+   var control=ai.GetComponent<ElementalControl>();if(control!=null&&(control.Stun>0||control.Fear>0))continue;
+   var state=ai.GetComponent<AndroidAIActor>();Vector2 perceived=control!=null?control.Perceived(follow.position):(Vector2)follow.position;Vector2 direction=perceived-(Vector2)ai.transform.position;
    if(Native.playerRepel)
    {
     Vector2 away=-direction.normalized;
@@ -112,7 +113,7 @@ public sealed class AndroidAI:MonoBehaviour
     if(ai.specialTimer<=0)
     {
      ai.specialTimer+=ai.specialCooldown*state.SpecialCooldownMultiplier;
-     ai.specialSO.Use(ai,follow);
+     ai.specialSO.Use(ai,control!=null?control.Aim(follow):follow);
      if(!ai.dontLookAtPlayer)Look.Invoke(Native,new object[]{ai,direction});
     }
     ai.specialTimer-=dt;

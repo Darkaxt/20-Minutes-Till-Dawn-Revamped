@@ -130,6 +130,7 @@ public sealed class SkillPanelDetails:MonoBehaviour
    .Where(p=>!(p.anyPrereqFulfill?p.prereqs.Any(r=>previous.Contains(RunResume.Key(r))):p.prereqs.All(r=>previous.Contains(RunResume.Key(r)))))
    .GroupBy(RunResume.Key).Select(g=>Icon(g.First())).ToArray();
   if(RunResume.Key(power)=="ghost_wizard_name")benefited.AddRange(owned.Where(e=>e.Power!=null&&RunResume.Key(e.Power)=="ghost_friend_name").Select(e=>Icon(e.Power)));
+  if(RunResume.Key(power)=="energized_name")benefited.Add(new BenefitIcon{Key="weapon:"+player.gun.gunData.name,Sprite=player.gun.gunData.icon});
   Add(messages,"Benefits",benefited);Add(messages,"Penalties",penalized,true);Add(messages,"Synergy",recipes);
   // A weapon/summon can gain one attribute and lose another. Report that
   // real trade-off once instead of making contradictory binary claims.

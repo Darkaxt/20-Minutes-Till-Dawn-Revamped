@@ -263,7 +263,7 @@ class RunRestoreState:GameState
  public override void Exit(){AudioManager.Instance.SetLowPassFilter(false);}
 }
 [HarmonyPatch(typeof(GameController),"Awake")]
-class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();__instance.gameObject.AddComponent<ExplorationRun>();}}
+class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();__instance.gameObject.AddComponent<ExplorationRun>();__instance.gameObject.AddComponent<ElementalRun>();}}
 [HarmonyPatch(typeof(GameController),"Start")]
 class ResumeInitialState{static bool Prefix(GameController __instance){if(!RunResume.Restoring)return true;__instance.ChangeState<RunRestoreState>();return false;}}
 [HarmonyPatch(typeof(PlayerPerks),nameof(PlayerPerks.Equip),typeof(Powerup))]

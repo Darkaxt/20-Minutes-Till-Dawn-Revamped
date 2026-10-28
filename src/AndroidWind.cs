@@ -17,6 +17,7 @@ public sealed class AndroidWind:MonoBehaviour
  internal GameObject prototype,original;
  internal int BonusDamage;
  internal bool ScaleMovement,Eye;
+ internal bool Mastery;
  PlayerController player;
  public int Damage=>Mathf.FloorToInt((20+BonusDamage)*(ScaleMovement?player.stats[StatType.MoveSpeed].Modify(1):1));
  internal static AndroidWind Current
@@ -55,9 +56,12 @@ public sealed class AndroidWindActor:MonoBehaviour
  internal float ContactTimer,AreaTimer;
  readonly List<int> contacts=new List<int>();
  readonly List<int> areaTargets=new List<int>();
+ void OnEnable()=>ElementalWind.Gales.Add(this);
+ void OnDisable()=>ElementalWind.Gales.Remove(this);
+ void OnDestroy()=>ElementalWind.Gales.Remove(this);
  void OnCollisionEnter2D(Collision2D collision)
  {
-  var target=collision.gameObject;if(AndroidPersistentTargets.Eligible(target))contacts.Add(target.GetInstanceID());
+  var target=collision.gameObject;if(AndroidPersistentTargets.Eligible(target)){contacts.Add(target.GetInstanceID());if(target.GetComponent<AIComponent>()!=null)ElementalControl.Get(target);}
  }
  void OnCollisionExit2D(Collision2D collision)
  {var target=collision.gameObject;if(AndroidPersistentTargets.Eligible(target))contacts.Remove(target.GetInstanceID());}
@@ -79,7 +83,8 @@ public sealed class AndroidWindActor:MonoBehaviour
   AreaTimer+=Time.deltaTime;if(AreaTimer<2)return;AreaTimer-=2;
   areaTargets.Clear();ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetMonsterInRange(areaTargets,3,transform.position);
   for(int i=areaTargets.Count-1;i>=0;i--)
-  {var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(areaTargets[i]);if(target==null)continue;var health=target.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Owner.Damage*2,DamageType.Gale);}
+  {var target=ObjectPooler.SharedInstance.GetComponent<AndroidPools>().GetFromID(areaTargets[i]);if(target==null)continue;var health=target.GetComponent<Health>();if(health!=null){int before=health.HP;AndroidDamageRounding.ChangeHealth(health,-Owner.Damage*2,DamageType.Gale);if(target.activeInHierarchy&&!health.isDead){var control=ElementalControl.Get(target);control.Push((Vector2)(target.transform.position-transform.position),before-health.HP);if(Owner.Mastery)control.Disorient();}}}
+  ElementalWind.Pulse(this);
  }
  // Source has no enable/disable timer or contact-list reset. Its pooled state
  // deliberately survives until collision exit, later ticks or scene teardown.
@@ -99,7 +104,7 @@ public sealed class AndroidWindUpgrade:flanne.PerkSystem.Action
  public int FlatDamage;
  public bool Movement,Eye;
  public override void Activate(GameObject target)
- {var wind=AndroidWind.Current;wind.BonusDamage+=FlatDamage;wind.ScaleMovement|=Movement;wind.Eye|=Eye;}
+ {var wind=AndroidWind.Current;wind.BonusDamage+=FlatDamage;wind.ScaleMovement|=Movement;wind.Eye|=Eye;if(FlatDamage==15)wind.Mastery=true;}
 }
 [HarmonyPatch]
 class AndroidWindRecipes

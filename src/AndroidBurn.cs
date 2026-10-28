@@ -31,12 +31,15 @@ public sealed class AndroidBurnStatus
    var owner=BurnSystem.SharedInstance;
    int amount=Mathf.FloorToInt(owner.burnDamageMultiplier.Modify(damage));
    int cap=AndroidBurnState.Get(owner).MaxDamage;if(amount>cap)amount=cap;
+   Vector2 position=Target.transform.position;float potency=damage;
    AndroidDamageRounding.ChangeHealth(health,-amount,DamageType.Burn);
+   AndroidBurnState.Get(owner).Spread(position,potency);
   }
   if(remaining<=0)Release();
  }
  internal void Release()
  {
+  if(Target==null)return;
   AndroidBurnState.Get(BurnSystem.SharedInstance).Release(this);
   damage=0;remaining=0;elapsed=0;interval=0;health=null;Target=null;
   if(Effect!=null){AndroidPools.Return(Effect);Effect=null;}
@@ -62,7 +65,8 @@ public sealed class AndroidBurnState:MonoBehaviour
  {for(int i=0;i<active.Count;i++)if(active[i].Target==target)return i;return -1;}
  public AndroidBurnStatus Find(GameObject target)
  {int index=Index(target);return index<0?null:active[index];}
- internal void Burn(GameObject target,int amount)
+ internal void Burn(GameObject target,int amount)=>Apply(target,amount);
+ internal void Apply(GameObject target,float amount)
  {
   if(target==null||!target.activeSelf||target.layer==(int)TagLayerUtil.Player)return;
   if(AndroidAffixes.Has(target,0))return;
@@ -75,9 +79,18 @@ public sealed class AndroidBurnState:MonoBehaviour
    buff=free.Count>0?free.Pop():new AndroidBurnStatus();
    if(!buff.Affect(target,1,amount,count)){free.Push(buff);return;}
    buff.Effect=ObjectPooler.SharedInstance.GetPooledObject(Tag);active.Add(buff);
+   ElementalControl.Get(target).Ignite();
   }
   if(index>=0&&!buff.Affect(target,1,amount,count))return;
   Owner.PostNotification(BurnSystem.InflictBurnEvent,null);
+ }
+ internal void Spread(Vector2 position,float potency)
+ {
+  float inherited=potency*.7f;if(Mathf.FloorToInt(Owner.burnDamageMultiplier.Modify(inherited))<1)return;
+  var ids=new List<int>();var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();pool.GetMonsterInRange(ids,ElementalRun.Instance.BodyWidth*2,position);
+  GameObject nearest=null;float distance=float.MaxValue;
+  foreach(int id in ids){var target=pool.GetFromID(id);if(target==null||!target.activeInHierarchy||target.GetComponent<Health>().isDead||AndroidAffixes.Has(target,0)||Index(target)>=0)continue;float d=Vector2.SqrMagnitude((Vector2)target.transform.position-position);if(d<distance){nearest=target;distance=d;}}
+  if(nearest!=null)Apply(nearest,inherited);
  }
  void FixedUpdate()
  {

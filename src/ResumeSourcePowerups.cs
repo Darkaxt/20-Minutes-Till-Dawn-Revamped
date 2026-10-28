@@ -123,7 +123,7 @@ public static partial class ResumeRuntime
  }
  internal static void DeferSourceStarts(PlayerController player)
  {
-  foreach(var owner in SourceOwners.Keys.SelectMany(key=>SourceHelpers(player,key)).Concat(player.GetComponentsInChildren<AndroidAmmoOnThunder>(true)).Distinct())
+  foreach(var owner in SourceOwners.Keys.SelectMany(key=>SourceHelpers(player,key)).Concat(player.GetComponentsInChildren<EnergizedReload>(true)).Distinct())
   {
    var components=owner is BuffPlayerStats?owner.GetComponents<MonoBehaviour>():new[]{owner};
    foreach(var component in components)

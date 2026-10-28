@@ -20,6 +20,18 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 
 ## See it in game
 
+### Elemental roles — verified for the next release
+
+Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bounce. Energized grants reload speed from visible electrocuted enemies. Fire spreads weaker burns, causes brief slow retreat and gives Fire Starter an explosion. Wind gathers enemies, scatters hostile shots and disorients their aiming; ice keeps its existing rules. [Exact values and effects](docs/ELEMENTS.md).
+
+![Lightning splash and chain cues in the Windows game](docs/images/element-lightning.png)
+
+![Fireball explosion and burning-enemy cues](docs/images/element-fire.png)
+
+![Gale pulse and wind-control cues](docs/images/element-wind.png)
+
+*Controlled Windows fixtures show the actual new effects. Both artwork modes, native menus, mixed builds, current/older Continue and scenario transitions are verified; natural playtest balance remains for player feedback. This source stage is complete; the combined release follows the elite-enemy stage.*
+
 ### Play the Android additions with desktop controls
 
 Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their character skills, animations and exclusive upgrades to the native Windows selection and combat flow.

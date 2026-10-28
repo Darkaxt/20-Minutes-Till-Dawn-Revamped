@@ -12,7 +12,7 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
- internal static bool EmitterMode=>Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("resume-emitters-");
+ internal static bool EmitterMode=>Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("resume-emitters-")||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")=="elements-fire"||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")=="elements-producers";
  internal sealed class Emission{internal Projectile Shot;internal string Name;internal Vector3 Position;internal Vector2 Direction;internal float At,Damage,RecipeDamage,Speed;}
  internal static readonly List<Emission> Emitted=new List<Emission>(),FanEmitted=new List<Emission>();
  internal static readonly List<GameObject> IceEmitted=new List<GameObject>();

@@ -124,6 +124,7 @@ public sealed class AndroidProjectile:MonoBehaviour
  internal void Contact(GameObject target)
  {
   if(target.layer!=EnemyLayer)return;var health=target.GetComponent<Health>();if(health==null){Debug.LogError("Health == null:"+target.name);return;}
+  if(poolTag=="PF_Fireball"){foreach(var item in ordered)if(item is Knockback knockback)Knockback(knockback,target);ElementalFire.Explode(Shot,target,BulletEffect);AndroidPools.Return(gameObject);return;}
   if(Shot is ExplosiveProjectile)
   {
    Shot.PostNotification(Projectile.ImpactEvent,target);

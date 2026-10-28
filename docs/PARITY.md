@@ -4,6 +4,8 @@ Detailed comparison retained from the pre-gallery README. Subsequent ports, corr
 
 ## Android 8.6 parity ledger
 
+The subsequently approved [elemental redesign](ELEMENTS.md) intentionally changes lightning splash/stun/chaining, Energized, fire propagation/explosions and defensive wind control. These changes supersede those Android contracts; they are user-requested refinements rather than missing ports. Ice remains unchanged. Current verification and final delivery are tracked in [PROGRESS.md](PROGRESS.md).
+
 The retained-gameplay comparison and anomaly classification are closed. Every identified required Android 8.6 gameplay difference is implemented; no gameplay integration is parked for a later balance decision. Source quirks remain unless covered by the user's explicit bug-fix authorization.
 
 The user-approved1.1.7 Stillness correction replaces Android’s global MoveSpeed penalty with native shooting-only WalkSpeed, retaining its bonuses. This is an explicit correction to a source bug, documented in [ANOMALIES.md](ANOMALIES.md), alongside Revamped’s HUD, campaign clear counts and other intentional additions.

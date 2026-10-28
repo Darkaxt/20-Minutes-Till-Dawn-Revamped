@@ -1,5 +1,15 @@
 # Current Android gameplay completion
 
+## Elemental roles and enhanced regular enemies — 2026-10-28
+
+| Stage | Status | Satisfied / remaining |
+|---|---|---|
+| N1 Complete elemental redesign | COMPLETE | N01–N06 pass complete native lightning8/fire16/wind11/save10/Continue13/prior14/maps17/producers20/controller18; exact checkpoint inputs and inspected both-style cues. N1-acceptance.json records scope/source pins and closure review. No blocker or deferral. |
+| N2 Enhanced regular enemies | NOT STARTED | Every 200 kills opens one opportunity; 3× spawned health/XP, red aura, Eye firing frequency +50%. Must verify actual spawning/accounting/pooling/save behavior. Depends on N1. |
+| N3 Final public delivery | NOT STARTED | One normal release of the combined verified outcome, package/download verification, rollback and cleanup. Depends on N1 and N2. |
+
+The current public release remains v1.1.11. No live Steam or phone deployment. No tracked deferral outside these named stages. [Element rules](ELEMENTS.md).
+
 ## Exploration visibility and nearby reward glow — 2026-10-27
 
 M1 and M2 are COMPLETE. Normal [v1.1.11](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.11) was published 2026-10-27T22:01:10Z from `f8909fe0e419cb81229ffc43e102f9aebfc4b6dd`. All 55 public package members were independently downloaded and verified; ZIP SHA-256 `07b892c2fd3360f70aed27e82688c1123b7c11c27294e443b748be3b85979cef`, production DLL `befbec77f5013a9b6ab20e080a16b90a5a95dd57265827ea2578a77955961e7c`. Exact packaged native S6/run-1 (poi-glow-fresh), S6/run-2 (exploration-fresh), S6/run-3 (exploration-continue), S6/run-4 (exploration-prior), S6/run-5 (exploration-maps), S6/run-6 (poi-vision-fresh), S6/run-7 (poi-vision-continue) passes. Inspected renders verify all eight nearby colors, Original/Reborn, square/4:3/16:9 and zoom, scenario lighting and restored idle vision with an acquired Night Vision bonus. Real collection, reward menus, pause, no expiry across waves, current/1.1.9 checkpoints, Custom, payout and teardown pass. Copied installation/rollback verifies614 owned files and preserves142 originals; UPDATE schema1,613 unchanged hashes and593 prepared assets match1.1.10. Live Steam/profile/configuration are unchanged. Reviewed cleanup transaction `122d2f0a8c91bb2a0f9de7ff13e09741` removed 1393 members / 310905241 logical bytes; the exact disposable root is absent. No blocker or tracked deferral remains. User deployment through the existing updater remains separate.

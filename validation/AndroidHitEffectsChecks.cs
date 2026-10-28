@@ -86,13 +86,10 @@ public partial class RuntimeChecks
    calls=HitEffectThunderCalls;boss.TakeDamage(DamageType.Summon,1000000);
    Require(HitEffectThunderCalls==calls,"lethal source Summon damage does not invoke Thunderspawns");SummonThunderMinimum=.5f;SummonThunderMaximum=1;
    if(!continuation){yield return AndroidPick(game,"Energized",game.playerXP.level);yield return AndroidPick(game,"Energized",game.playerXP.level);}
-   while(p.GetComponentsInChildren<AndroidAmmoOnThunder>().Any(helper=>WindField(helper,"ammo")==null))yield return null;
-   Require(p.GetComponentsInChildren<AndroidAmmoOnThunder>().Length==2&&p.ammo.max>=6,"source repeat/Continue creates two independent initialized Energized helpers");
-   target=HitEffectTarget();int particles=ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticFX"].Count(o=>o!=null&&o.activeSelf);
-   Plugin.SetField(p.ammo,"<amount>k__BackingField",0);GenerateThunderWithRoll(target.gameObject,0,.2f);
-   Require(p.ammo.amount==6&&ObjectPooler.SharedInstance.pooledObjectsDictionary["StaticFX"].Count(o=>o!=null&&o.activeSelf)==particles+2,"one actual lightning event lets both repeated source Energized helpers grant three ammo and separate pooled feedback");
-   Plugin.SetField(p.ammo,"<amount>k__BackingField",1);for(int i=0;i<5;i++)GenerateThunderWithRoll(target.gameObject,.2f,1);
-   Require(p.ammo.amount==1,"failed source Energized rolls do not grant cadence ammo");ReturnFixtureActor(target.gameObject);
+   Require(p.GetComponentsInChildren<EnergizedReload>().Length==2,"repeat/Continue creates two Energized reload owners");
+   target=HitEffectTarget();target.transform.position=p.transform.position+Vector3.right*3;int ammoBefore=p.ammo.amount;
+   GenerateThunderWithRoll(target.gameObject,0,.2f);yield return null;yield return null;
+   Require(p.ammo.amount==ammoBefore&&(int)AccessTools.Method(typeof(ElementalControl),"VisibleStunned").Invoke(null,null)>0,"Energized counts electrical stuns without ammunition refunds");ReturnFixtureActor(target.gameObject);
    if(!continuation)
    {
     float speed=Bonus(p.stats[StatType.SummonAttackSpeed]);yield return AndroidPick(game,"Culling",game.playerXP.level);
@@ -133,15 +130,6 @@ class AndroidHitEffectsThunderProbe
 {
  static void Prefix(GameObject target,int damage){if(damage==22){RuntimeChecks.HitEffectThunderCalls++;RuntimeChecks.HitEffectThunderTarget=target;}}
 }
-[HarmonyPatch(typeof(AndroidAmmoOnThunder),"OnThunderHit")]
-class AndroidHitEffectsRollProbe
-{
- // Native thunder visuals and SoundEffectSO consume their own random draws.
- // Control only the tested perk roll at the actual delivered callback boundary.
- [HarmonyPriority(Priority.First)]
- static void Prefix(){if(RuntimeChecks.ForceEnergizedRoll)RuntimeChecks.SeedFirstRoll(RuntimeChecks.EnergizedMinimum,RuntimeChecks.EnergizedMaximum);}
-}
-
 [HarmonyPatch(typeof(AndroidSummonHurtAsset),"OnHurt")]
 class SummonHurtRollProbe
 {
