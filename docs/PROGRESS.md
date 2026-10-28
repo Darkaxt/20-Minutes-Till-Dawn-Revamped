@@ -6,7 +6,7 @@
 |---|---|---|
 | N1 Complete elemental redesign | COMPLETE | N01–N06 pass complete native lightning8/fire16/wind11/save10/Continue13/prior14/maps17/producers20/controller18; exact checkpoint inputs and inspected both-style cues. N1-acceptance.json records scope/source pins and closure review. No blocker or deferral. |
 | N2 Enhanced regular enemies | COMPLETE | Native22/23/24/25 verify real200-kill cadence,3x health/XP, red aura both styles, Eye frequency, boss separation, pool reuse, exact pending/prior saves and all six modes plus Custom. N2-acceptance.json records source pins and closure review. No blocker or deferral. |
-| N3 Final public delivery | NOT STARTED | One normal release of the combined verified outcome, package/download verification, rollback and cleanup. Depends on N1 and N2. |
+| N3 Final public delivery | ACTIVE | N1 and N2 are COMPLETE. Preparing normal1.2.0, then exact committed-package native verification, copied installation/rollback, public publication/download verification and exact cleanup. |
 
 The current public release remains v1.1.11. No live Steam or phone deployment. No tracked deferral outside these named stages. [Element rules](ELEMENTS.md).
 
