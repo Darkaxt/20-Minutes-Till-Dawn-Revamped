@@ -56,6 +56,7 @@ public partial class RuntimeChecks
   if(mode=="rune-rewards-modes"){yield return RuneRewardMaps(false,true);yield break;}
   if(mode=="rune-rewards-standard-maps"){yield return RuneRewardMaps(true);yield break;}
   if(mode=="rune-rewards-tome-first"){yield return RuneRewardTomeFirst();yield break;}
+  if(mode=="rune-rewards-retry"){yield return RuneRewardRetry();yield break;}
   if(mode=="rune-rewards-continue")yield return CombatBuffContinue();
   else
   {
@@ -217,5 +218,21 @@ public partial class RuntimeChecks
   yield return RunePopup(game);yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;
   Require(run.State.rewards[0].phase==2&&RuneProgression.Profile("Shana").ranks.Sum(r=>r.rank)==1,"ordinary Tome choice completes before the one first-boss permanent rank");
   ElementClear();yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Actual Tome-first collision/reward ordering and stable checkpoint boundary");Application.Quit(0);
+ }
+ IEnumerator RuneRewardRetry()
+ {
+  RunResume.Invalidate();var profile=RuneProgression.Profile("Shana");foreach(var rank in profile.ranks)rank.rank=0;profile.ranks.Single(r=>r.name=="PowerRuneData").rank=2;profile.enabled=new List<string>{"PowerRuneData"};
+  yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>{var data=Resources.FindObjectsOfTypeAll<RuneData>().First(r=>r.name=="PowerRuneData");data.level=2;Loadout.RuneSelection=new List<RuneData>{data};});
+  var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();
+  Require(Loadout.RuneSelection.Single().level==2,"initial battle uses its owned rank-two copy");
+  profile.ranks.Single(r=>r.name=="PowerRuneData").rank=3;profile.ranks.Single(r=>r.name=="AlacrityRuneData").rank=1;profile.enabled.Add("AlacrityRuneData");Progression.Save();
+  Require(Loadout.RuneSelection.Single().level==2,"permanent grants do not alter the battle already running");
+  PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();yield return null;Click(game.giveupButton);
+  while(!(game.CurrentState is PlayerDeadState)||!game.retryRunButton.IsInteractable())yield return null;
+  int previous=game.GetInstanceID();Click(game.retryRunButton);
+  while((game=Object.FindObjectOfType<GameController>())==null||game.GetInstanceID()==previous)yield return null;
+  while(!(game.CurrentState is CombatState)){Require(Loadout.RuneSelection.All(r=>r!=null),"Retry never carries destroyed battle rune objects into the new scene");yield return null;}
+  Require(Loadout.RuneSelection.Count==2&&Loadout.RuneSelection.Single(r=>r.name=="PowerRuneData").level==3&&Loadout.RuneSelection.Single(r=>r.name=="AlacrityRuneData").level==1,"Retry starts the next run with the character's newly earned ranks and enabled runes");
+  StopFixtureSpawning();GameTimer.SharedInstance.Stop();ElementClear();yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Real death/Retry preserves earned rune data across scene ownership");Application.Quit(0);
  }
 }

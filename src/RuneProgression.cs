@@ -10,6 +10,7 @@ using flanne;
 using flanne.UI;
 using flanne.RuneSystem;
 using flanne.TitleScreen;
+using flanne.Core;
 namespace TwentyMinutes.Modernization;
 
 [Serializable]public sealed class RuneProfile
@@ -20,6 +21,7 @@ namespace TwentyMinutes.Modernization;
 public static class RuneProgression
 {
  static string projected;
+ static Dictionary<string,RuneData> definitions;
  public static RuneRowUI[] Rows(RuneTreeUI tree)=>(RuneRowUI[])AccessTools.Field(typeof(RuneTreeUI),"rows").GetValue(tree);
  public static RuneUnlocker[] Entries(RuneRowUI row)=>(RuneUnlocker[])AccessTools.Field(typeof(RuneRowUI),"runes").GetValue(row);
  public static Toggle Toggle(RuneUnlocker rune)=>(Toggle)AccessTools.Field(typeof(RuneUnlocker),"toggle").GetValue(rune);
@@ -30,6 +32,7 @@ public static class RuneProgression
  internal static void Initialize()
  {
   var state=Progression.State;projected=null;
+  definitions=All().ToDictionary(r=>r.rune.data.name,r=>r.rune.data);
   if(state.characterRunes==null)state.characterRunes=new List<RuneProfile>();
   if(state.runeSeed==null)
   {
@@ -59,6 +62,13 @@ public static class RuneProgression
   return profile;
  }
  public static int Rank(string character,string name)=>Profile(character).ranks.Single(r=>r.name==name).rank;
+ internal static List<RuneData> RetrySelection()
+ {
+  var profile=Profile(Loadout.CharacterSelection.name);var selected=new List<RuneData>();
+  foreach(var rank in profile.ranks.Where(r=>r.rank>0&&profile.enabled.Contains(r.name)))
+  {var data=definitions[rank.name];data.level=rank.rank;selected.Add(data);}
+  return selected;
+ }
  internal static void Project()
  {
   if(Progression.State==null||Progression.Title==null)return;
@@ -137,4 +147,11 @@ class CharacterRuneMenu
 {
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(RuneMenuCharacterState),"Enter"),AccessTools.Method(typeof(RuneMenuGunState),"Enter")};
  static void Prefix()=>RuneProgression.Project();
+}
+[HarmonyPatch(typeof(TransitionToRetryState),nameof(TransitionToRetryState.Enter))]
+class CharacterRunesOnRetry
+{
+ // Native Retry carries Loadout across the scene boundary. Rebind to its
+ // persistent definitions/current profile before old battle copies are freed.
+ static void Prefix()=>Loadout.RuneSelection=RuneProgression.RetrySelection();
 }

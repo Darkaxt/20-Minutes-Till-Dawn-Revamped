@@ -10,6 +10,7 @@
 - **Legacy seed initialization:** `SaveSystem.Load` precedes `InitState`'s projection of saved ranks into rune widgets. Seeding from widget levels could lose old purchases. The migration reads the saved rank array through `TieredUnlockManager`'s serialized index mapping instead. A legacy profile with all 24 ranks at two reproduces the old failure and verifies character-owned preservation and independent toggles after the correction.
 - **Endless dispatch ownership:** its scheduler belongs to the map initializer, while `RuneRewardRun` belongs to the game controller. Dispatch now uses that actual run owner; the native two-pair regression covers repeated grants.
 - **Battle rank transfer:** enabled widgets must transfer their rank into the selected `RuneData`. Its `level` is also `[NonSerialized]`, so Unity cloning does not carry that field into the independent battle copy. Both transfers are explicit. Native menu and actual Custom battle/save/Continue checks cover positive owned ranks through the full lifecycle.
+- **Retry used stale ranks:** native Retry carries its `Loadout` into the next scene. Re-cloning that battle selection omitted ranks and runes earned during the completed run. Native run39 reproduces the failure. Retry now rebinds the persistent rune definitions to the character's current ranks and enabled selections before the old battle assets are released; the next battle receives its own new copies.
 
 ## Elemental redesign integration — 2026-10-28
 
