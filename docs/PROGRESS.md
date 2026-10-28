@@ -5,9 +5,16 @@
 | Stage | Status | Acceptance |
 |---|---|---|
 | O1 Complete elite-size workflow | COMPLETE | O01–O03 pass native3/4/5/6: both-style size/collider renders, actual movement, exact pool/death/second-promotion restoration, byte-bound current/prior Continue and all six modes/Custom. O1-acceptance.json pins current source. No blocker or deferral. |
-| O2 Final public delivery | ACTIVE | O1 is COMPLETE. Verify committed v1.2.1 package, copied install/rollback, independent public download, synchronized documentation and reviewed cleanup. |
+| O2 Final public delivery | COMPLETE | Normal v1.2.1, exact packaged runtime, copied install/rollback, independent public download, synchronized documentation and reviewed cleanup pass. No blocker or deferral. |
 
-The current public version is v1.2.0. Only wind displacement scales with actual damage/maxHP; the other elemental control durations remain as documented in [ELEMENTS.md](ELEMENTS.md). The requested size change does not alter those durations. Authoritative requirements O01–O03 are in SPEC.md.
+O1 and O2 are COMPLETE. Normal [v1.2.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.1) was published 2026-10-28T11:34:36Z from `e90b5c859cd3568834d0b42680f98a9e11f1a86c`. All 62 public package members were independently downloaded and checked; ZIP SHA-256 `106a347c342ea0d2c795cbbb0015eb8605f14d85a9985c1d9fb0ad245092bef6`, production DLL `1950097d86e09e1efb3c7a488ff80ef031e6ab6dd4b7f363d00383337059bce2`. Exact packaged native workflows below verify 25% larger XY sprite/collider bounds, both art modes, actual Eye movement/attacks, death/pool/second-promotion restoration, byte-bound current/prior Continue, six source modes and Custom. Copied installation/rollback verifies 614 owned files and preserves 142 stock originals; updater schema 1 and 613 unchanged runtime hashes retain compatibility. The current source comparison confirms elemental/control/menu/exploration code remains identical to v1.2.0 except release version metadata; prior applicable evidence is retained. Live Steam, profile/config and phone remain untouched. Cleanup `ee68aa3c79fdc4884cfd870ef0a09cba` removed 1385 members / 312367217 logical bytes; the exact scratch root is absent. No blocker or tracked deferral remains.
+
+| Packaged native workflow | Evidence | Result |
+|---|---|---|
+| elites-fresh | S6/run-1 | PASS |
+| elites-continue | S6/run-2 | PASS |
+| elites-prior | S6/run-3 | PASS |
+| elites-maps | S6/run-4 | PASS |
 
 ## Elemental roles and enhanced regular enemies — 2026-10-28
 
