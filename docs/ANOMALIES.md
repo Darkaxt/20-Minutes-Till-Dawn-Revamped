@@ -1,5 +1,16 @@
 # Android gameplay anomaly ledger
 
+## Character rune transition — 2026-10-28
+
+- **Outdated Wild Magic role:** automatic tick-based fire propagation made the old Burn/Freeze death spread overlap with the redesigned elements. The user explicitly selected both Curse propagation and Smite echoes as its replacement, retaining the 5% per-rank death lottery. This is an intentional gameplay refinement.
+- **Summon actor count:** Dedication's actor count treated paired offensive actors and the defensive Seismic Ward pair as multiple summons. The requested rule counts distinct offensive `SummonTypeID` families and refreshes when actual actors enable/disable. Two different offensive families still remove its bonus.
+- **Missing new status consumers:** electrical stun and wind disorientation did not enter Elemental Barrage's original Burn/Freeze counter. Their actual application boundaries now notify its existing counter without producing fake Freeze events.
+- **Boss reward/drop ordering:** native `Health.DeathEvent` runs before its ordinary Tome drop is created. A checkpoint written from the new death callback could therefore record a defeated boss without its Tome. Rune outcomes remain journaled at death, while run snapshots use stable state/frame boundaries after native drop dispatch. The Tome-first collision regression verifies the original reward is preserved.
+- **Quickplay schedule:** its shipped map has one arena boss, so its full rune allotment belongs to that boss. Standard uses its two-boss split; Endless repeats per persistent boss pair. This is a mode scheduling distinction, not a second missing boss.
+- **Legacy seed initialization:** `SaveSystem.Load` precedes `InitState`'s projection of saved ranks into rune widgets. Seeding from widget levels could lose old purchases. The migration reads the saved rank array through `TieredUnlockManager`'s serialized index mapping instead. A legacy profile with all 24 ranks at two reproduces the old failure and verifies character-owned preservation and independent toggles after the correction.
+- **Endless dispatch ownership:** its scheduler belongs to the map initializer, while `RuneRewardRun` belongs to the game controller. Dispatch now uses that actual run owner; the native two-pair regression covers repeated grants.
+- **Battle rank transfer:** enabled widgets must transfer their rank into the selected `RuneData`. Its `level` is also `[NonSerialized]`, so Unity cloning does not carry that field into the independent battle copy. Both transfers are explicit. Native menu and actual Custom battle/save/Continue checks cover positive owned ranks through the full lifecycle.
+
 ## Elemental redesign integration — 2026-10-28
 
 Final package review found a Revamped integration error: chain counts used `stats.Piercing/Bounce.Modify(0)`, omitting weapon-base values. The HUD instead displays the complete current projectile recipe. N01 requires those full metrics. This reopened the elemental stage and superseded candidate5114bea before publication; the corrected contract is verified with both acquired bonuses and nonzero weapon-base values. No extra chain cap is authorized or added.

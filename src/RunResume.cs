@@ -41,6 +41,7 @@ public static partial class RunResume
   [DataMember]public AndroidEndlessState sourceEndless;
   [DataMember]public ExplorationState exploration;
   [DataMember]public int? eliteClaims;
+  [DataMember]public RuneRewardStateData runeRewards;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -50,6 +51,7 @@ public static partial class RunResume
  static Dictionary<string,Powerup> Powers()=>Resources.FindObjectsOfTypeAll<Powerup>().Where(p=>!string.IsNullOrEmpty(Key(p))).GroupBy(Key).ToDictionary(g=>g.Key,g=>g.First());
  static Dictionary<string,GunEvolution> Evolutions()=>Resources.FindObjectsOfTypeAll<GunEvolution>().Where(e=>!string.IsNullOrEmpty(Key(e))).GroupBy(Key).ToDictionary(g=>g.Key,g=>g.First());
  static readonly List<RuneData> RunLocalRunes=new List<RuneData>();
+ internal static RuneData CopyRune(RuneData original){var copy=Object.Instantiate(original);copy.name=original.name;copy.level=original.level;RunLocalRunes.Add(copy);return copy;}
  internal static void ReleaseRunAssets(){foreach(var rune in RunLocalRunes)Object.Destroy(rune);RunLocalRunes.Clear();ReleaseSpawnIdentities();}
  public static Snapshot Read()
  {
@@ -65,6 +67,7 @@ public static partial class RunResume
    throw new InvalidOperationException("This run checkpoint is incomplete or invalid; it has been preserved.");
   ResumeRuntime.Validate(saved.runtime);CustomMode.Validate(saved.custom);
   ExplorationRun.Validate(saved.exploration);
+  RuneRewardRun.Validate(saved.runeRewards);
   if(saved.eliteClaims.HasValue&&(saved.eliteClaims.Value<0||saved.eliteClaims.Value>saved.kills/200))throw new InvalidOperationException("The checkpoint's elite cadence is invalid; it has been preserved.");
   if(saved.version==7&&saved.runtime.sourcePowerups==null)throw new InvalidOperationException("This checkpoint omitted its ordered source runtime contract; it has been preserved.");
   if(saved.version<7&&saved.runtime.sourcePowerups!=null||saved.version==7&&saved.runtime.sourcePowerups.Any(p=>!saved.acquired.Any(a=>!a.evolution&&a.key==p.key)))throw new InvalidOperationException("This checkpoint has an unsupported source runtime owner; it has been preserved.");
@@ -86,7 +89,7 @@ public static partial class RunResume
  {
   var r=RunRecorder.Instance;var game=r?.GetComponent<GameController>();var p=PlayerController.Instance;
   return !Restoring&&!ResumeRuntime.RevivalInProgress&&r!=null&&!r.Finished&&p!=null&&p.playerHealth.hp>0&&SelectedMap.MapData!=null&&
-   (game.CurrentState is CombatState||game.CurrentState is PauseState||game.CurrentState is OptionsState||game.CurrentState is SynergyUIState);
+   (game.CurrentState is CombatState||game.CurrentState is PauseState||game.CurrentState is OptionsState||game.CurrentState is SynergyUIState||game.CurrentState is RuneRewardState);
  }
  public static void Save()
  {
@@ -114,6 +117,7 @@ public static partial class RunResume
   var challenge=ChallengeRun.Instance;if(challenge!=null)
   {state.challengeEnemies=challenge.EnemyKills;state.challengeBosses=challenge.BossKills;}
   state.exploration=r.GetComponent<ExplorationRun>().State==null?null:r.GetComponent<ExplorationRun>().Capture();
+  RuneRewardRun.Instance.Ensure();state.runeRewards=RuneRewardRun.Instance.State;
   state.eliteClaims=EliteRun.Instance.Claimed;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)
@@ -125,7 +129,7 @@ public static partial class RunResume
   if(!Progression.Allowed(title.characterMenu[character])||!Progression.Allowed(title.gunMenu[weapon])||!Progression.Allowed(map))throw new InvalidOperationException("The checkpoint uses content this save has not obtained; it has been preserved.");
   var runes=Resources.FindObjectsOfTypeAll<RuneData>();var selection=new List<RuneData>();
   if(saved.runes.Any(rank=>rank.rank<1||rank.rank>5||!runes.Any(r=>r.name==rank.name)))throw new InvalidOperationException("The checkpoint's rune rank is unavailable");
-  if(saved.custom!=null&&saved.runes.Any(rank=>!new[]{title.swordRuneTree,title.shieldRuneTree}.SelectMany(RuneProgression.Rows).SelectMany(RuneProgression.Entries).Any(ui=>ui.rune.data.name==rank.name&&ui.level>=rank.rank)))throw new InvalidOperationException("The Custom checkpoint uses rune ranks this save has not purchased.");
+  if(saved.custom!=null&&saved.runes.Any(rank=>RuneProgression.Rank(saved.character,rank.name)<rank.rank))throw new InvalidOperationException("The Custom checkpoint uses rune ranks this character has not earned.");
   ReleaseRunAssets();
   foreach(var rank in saved.runes)
   {
@@ -212,6 +216,7 @@ public static partial class RunResume
   ResumeRuntime.StartRestoredAttachments(p);
   ResumeRuntime.EnableSourceStarts();
   game.GetComponent<ExplorationRun>().Restore(saved.exploration);
+  game.GetComponent<RuneRewardRun>().Restore(saved.runeRewards);
   Pending=null;StatsOverlay.Instance?.Dirty();Plugin.Trace("run-checkpoint-restored",new{saved.map,saved.seconds,saved.level,saved.hitless});
  }
 }
@@ -237,7 +242,7 @@ class RunRecorder:MonoBehaviour
   // canvas cannot own this battle subscription; the run recorder is created
   // after that clear and removed with the actual battle scene.
   Progression.EnemyDeath(sender,args);
-  if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);}
+  if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);if(encounter.Item1)GetComponent<RuneRewardRun>().BossKilled(encounter.Item2);}
  }
  void Update()
  {if(RunResume.CanSave()){int minute=Mathf.FloorToInt(GameTimer.SharedInstance.timer/60);if(minute!=LastSaveMinute){RunResume.Save();LastSaveMinute=minute;}}}
@@ -265,7 +270,7 @@ class RunRestoreState:GameState
  public override void Exit(){AudioManager.Instance.SetLowPassFilter(false);}
 }
 [HarmonyPatch(typeof(GameController),"Awake")]
-class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();__instance.gameObject.AddComponent<ExplorationRun>();__instance.gameObject.AddComponent<ElementalRun>();__instance.gameObject.AddComponent<EliteRun>();}}
+class ResumeRunLifetime{static void Postfix(GameController __instance){__instance.gameObject.AddComponent<RunRecorder>();__instance.gameObject.AddComponent<ExplorationRun>();__instance.gameObject.AddComponent<ElementalRun>();__instance.gameObject.AddComponent<EliteRun>();__instance.gameObject.AddComponent<RuneRewardRun>();}}
 [HarmonyPatch(typeof(GameController),"Start")]
 class ResumeInitialState{static bool Prefix(GameController __instance){if(!RunResume.Restoring)return true;__instance.ChangeState<RunRestoreState>();return false;}}
 [HarmonyPatch(typeof(PlayerPerks),nameof(PlayerPerks.Equip),typeof(Powerup))]

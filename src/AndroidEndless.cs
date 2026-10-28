@@ -47,7 +47,11 @@ public sealed class AndroidEndlessRun:MonoBehaviour
  float Modifier(string field,float value)=>value*(CustomMode.Active?CustomMode.Get("spawn:"+field):1);
  void Awake()=>this.AddObserver(OnDeath,Health.DeathEvent);
  void OnDestroy()=>this.RemoveObserver(OnDeath,Health.DeathEvent);
- void OnDeath(object sender,object args){if(sender is Health health)liveBosses.Remove(health);}
+ void OnDeath(object sender,object args)
+ {
+  if(!(sender is Health health)||!liveBosses.TryGetValue(health,out var record))return;
+  RuneRewardRun.Instance.BossKilled(record.level);liveBosses.Remove(health);
+ }
  internal void Initialize(MapInitializer initializer,RunResume.Snapshot saved)
  {
   map=SelectedMap.MapData;endless=map.endless;

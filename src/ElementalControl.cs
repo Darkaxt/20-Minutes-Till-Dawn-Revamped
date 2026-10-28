@@ -18,11 +18,11 @@ public sealed class ElementalControl:MonoBehaviour
  void OnDisable(){Active.Remove(this);Stun=Fear=Slow=Dizzy=pushRemaining=0;SlowFraction=0;push=Vector2.zero;if(aim!=null)aim.gameObject.SetActive(false);if(status!=null)status.enabled=false;var burn=BurnSystem.SharedInstance!=null?AndroidBurnState.Get(BurnSystem.SharedInstance)?.Find(gameObject):null;if(burn!=null)burn.Release();}
  void OnDestroy(){Active.Remove(this);if(aim!=null)Destroy(aim.gameObject);}
  public bool Electrified=>isActiveAndEnabled&&health!=null&&!health.isDead&&Stun>0;
- internal void Electrocute(){if(AI!=null)Stun=2*(Boss?.2f:1);}
+ internal void Electrocute(){if(AI!=null){Stun=2*(Boss?.2f:1);RuneMechanics.ElementalInflict(gameObject);}}
  internal void Ignite()
  {if(AI==null)return;Fear=Boss?0:.75f;Slow=2*(Boss?.2f:1);SlowFraction=Boss?.1f:.25f;}
  internal void Disorient()
- {if(AI==null)return;Dizzy=1.5f*(Boss?.2f:1);lastSeen=PlayerController.Instance.transform.position;if(aim!=null){aim.position=lastSeen;aim.gameObject.SetActive(true);}}
+ {if(AI==null)return;Dizzy=1.5f*(Boss?.2f:1);lastSeen=PlayerController.Instance.transform.position;if(aim!=null){aim.position=lastSeen;aim.gameObject.SetActive(true);}RuneMechanics.ElementalInflict(gameObject);}
  internal Vector2 Perceived(Vector2 actual)=>Dizzy>0?lastSeen:actual;
  internal Transform Aim(Transform actual)
  {

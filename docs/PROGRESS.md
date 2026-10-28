@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Character runes and updater transition — 2026-10-28
+
+P1 is COMPLETE; P2 is ACTIVE; P3 is NOT STARTED. The public download remains v1.2.1 until both products pass final delivery. [Authoritative requirements and stage ledger](RUNES.md).
+
+P1-acceptance.json under the retained `rune-rewards-20261028` evidence records native legacy rank preservation, independent character toggles, actual battle rank copies/Custom Continue, sequential popup reveal and conversion, all three viewport shapes, capped/uncapped awards, exact fresh-process Continue/XP/evolution, revised rune mechanics in both styles and mode reward rules. Current controller run34 covers the final rank-copy correction. Standard cases completed in run23 precede its superseded Quickplay fixture; run25 passes Quickplay's sole-boss allotment, two Endless pairs, Challenge's single allotment and Custom exclusion. No P1 blocker or deferral remains. Final packaged verification, signed APK reset checks and publication remain required; live Steam/profile and phone are untouched.
+
 ## Larger elite regular enemies — 2026-10-28
 
 | Stage | Status | Acceptance |

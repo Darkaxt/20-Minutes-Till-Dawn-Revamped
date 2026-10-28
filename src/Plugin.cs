@@ -46,7 +46,7 @@ public class Plugin:BaseUnityPlugin
         // Original Android TimeManager. FixedUpdate owners and projectile
         // sampling must run at its shipped cadence, not Windows'0.02.
         Time.fixedDeltaTime=.03f;
-        Text["rune_menu_instructions"]="Select to toggle · Hold to upgrade";
+        Text["rune_menu_instructions"]="Select to toggle · Earn ranks from arena bosses";
         Text["thunderspawns_description"]="Your summons have a <color=#f5d6c1>15%</color> chance on hit to call down <color=#f5d6c1>Lightning</color> for <color=#f5d6c1>22</color> damage.";
         Text["soul_knight_description"]="<color=#f5d6c1>Magic Spear</color> gains <color=#f5d6c1>+15</color> damage per <color=#f5d6c1>Soul Heart</color> you currently hold.";
         Text["rune_description_cadence"]="Every 3rd shot gains +99 Piercing, +20% Bullet Size per rank and +20% Bullet Damage per rank.";

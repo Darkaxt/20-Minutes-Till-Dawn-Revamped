@@ -19,7 +19,7 @@ public static partial class Progression
  }
  public class Attempt{public string id,text;}
  public class Notice{public string id,goal;}
- const string Forest="20M_Forest",Temple="20M_Temple",Pumpkin="20M_PumpkinPatch";
+ internal const string Forest="20M_Forest",Temple="20M_Temple",Pumpkin="20M_PumpkinPatch";
  static readonly Dictionary<string,string> contentNames=new Dictionary<string,string>();
  static Gate RuleFor(string name)
  {

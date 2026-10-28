@@ -25,6 +25,10 @@ public static partial class Progression
   public List<Attempt> attempts=new List<Attempt>();public List<Notice> notices=new List<Notice>();
   public List<string> facts=new List<string>(),earned=new List<string>(),pending=new List<string>(),notified=new List<string>();
   public List<string> enabledRunes;
+  public List<RuneProfile> characterRunes;
+  public List<RunResume.RuneRank> runeSeed;
+  public List<string> runeSeedEnabled;
+  public RuneRewardHistory runeHistory;
   public List<int> sourceAchievements=new List<int>(),sourceAchievementRewards=new List<int>();
   public int challengeDifficultyUnlocked;
   public List<ModeClearRecord> modeClears=new List<ModeClearRecord>();
@@ -113,6 +117,7 @@ public static partial class Progression
   if(State.version<2)
    foreach(string id in State.pending)State.notices.Add(new Notice{id=id,goal="Earned under previous unlock requirements"});
   State.version=2;
+  RuneProgression.Initialize();
   SourceAchievementRewards.Load();
   foreach(var gate in Gates)
   {

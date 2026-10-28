@@ -172,6 +172,7 @@ public partial class RuntimeChecks
   yield return PadClick(pad,title.modeSelectPanel.transform,title.modeSelectStartButton);while(CustomMenu.Instance==null)yield return null;
   yield return PadClick(pad,CustomMenu.Instance.transform,CustomButton("CustomStart"));GameController game;
   while((game=Object.FindObjectOfType<GameController>())==null||!(game.CurrentState is CombatState))yield return null;
+  Require(Loadout.RuneSelection.All(r=>r.level>0&&r.level==RuneProgression.Rank(Loadout.CharacterSelection.name,r.name)),"actual battle rune clones retain their character-owned ranks");
   GameTimer.SharedInstance.Stop();StopFixtureSpawning();PlayerController.Instance.playerHealth.isInvincible.Flip();
   for(int entry=0;entry<2;entry++)
   {

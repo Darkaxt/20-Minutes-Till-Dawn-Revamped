@@ -8,6 +8,7 @@ namespace TwentyMinutes.Modernization;
 [HarmonyPatch(typeof(PlayerXP),"get_xpToLevel")]
 class AndroidExperience
 {
+ internal static float Requirement(int level){int next=level+1;return next<21?next*10-5:next<41?next*13-6:next*16-8;}
  static bool Prefix(PlayerXP __instance,ref float __result)
- {int next=__instance.level+1;__result=next<21?next*10-5:next<41?next*13-6:next*16-8;return false;}
+ {__result=Requirement(__instance.level);return false;}
 }

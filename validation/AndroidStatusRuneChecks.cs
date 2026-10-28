@@ -66,23 +66,15 @@ public partial class RuntimeChecks
   var near=HitEffectTarget(maximum:100000);near.transform.position=center+Vector3.right*.5f;
   var far=HitEffectTarget(maximum:100000);far.transform.position=center+Vector3.right*3;
   var untagged=HitEffectTarget(maximum:100000,tag:"Untagged");untagged.transform.position=center+Vector3.up*.5f;
-  BurnSystem.SharedInstance.Burn(dead.gameObject,1);AccessTools.Method(AccessTools.TypeByName("TwentyMinutes.Modernization.AndroidFreezeApplication"),"Apply").Invoke(null,new object[]{FreezeSystem.SharedInstance,dead.gameObject,3f});
+  CurseSystem.Instance.Curse(dead.gameObject);
   SpreadSuccess=success;SpreadRollControl=true;
+  Physics2D.SyncTransforms();
   try{dead.TakeDamage(DamageType.Bullet,100000);}finally{SpreadRollControl=false;}
-  var actors=StatusSpreaders();Require(actors.Length==(success?2:0),"actual untagged Health death uses one source15-percent roll and independently spawns both existing statuses");
-  foreach(var actor in actors)
-  {
-   Require(Vector3.Distance(actor.transform.position,center)<.001f,"source status spreader originates at the dead actor");
-   Require(actor.GetComponent<Rigidbody2D>().useFullKinematicContacts&&!actor.GetComponent<Collider2D>().isTrigger,"original full-kinematic non-trigger spreaders can reach the source bodyless NPC");
-   CombatClose((float)WindField(actor.GetComponent<TimeToLive>(),"lifetime"),.1f,"original source spreader lifetime");
-  }
-  Physics2D.SyncTransforms();while(actors.Any(a=>a.activeInHierarchy))yield return null;
-  Require(BurnSystem.SharedInstance.IsBurning(near.gameObject)==success&&FreezeSystem.SharedInstance.IsFrozen(near.gameObject)==success,"actual short-lived physical spreaders apply burn and freeze to the nearby enemy");
-  Require(!BurnSystem.SharedInstance.IsBurning(far.gameObject)&&!FreezeSystem.SharedInstance.IsFrozen(far.gameObject),"source spread radius rejects the distant neighbor");
-  Require(BurnSystem.SharedInstance.IsBurning(untagged.gameObject)==success&&!FreezeSystem.SharedInstance.IsFrozen(untagged.gameObject),"A284 source fire admits nearby untagged NPC layers while the distinct freeze callback retains its tag predicate");
-  if(success)CombatClose(AndroidBurnState.Get(BurnSystem.SharedInstance).Find(near.gameObject).Damage,3,"actual spread collision applies the original three-damage burn");
+  var cursed=(List<Health>)WindField(CurseSystem.Instance,"_cursedTargets");
+  Require(StatusSpreaders().Length==0,"revised Wild Magic does not spawn legacy Burn/Freeze spreaders");
+  Require(cursed.Contains(near)==success&&cursed.Contains(untagged)==success&&!cursed.Contains(far),"retained rank-three15-percent lottery restarts Curse only on nearby NPCs");
   foreach(var h in new[]{near,far,untagged})ReturnFixtureActor(h.gameObject);
-  while(new[]{dead,near,far,untagged}.Any(h=>FreezeSystem.SharedInstance.IsFrozen(h.gameObject)))yield return null;
+  while(new[]{dead,near,far,untagged}.Any(cursed.Contains))yield return null;
  }
  IEnumerator StatusRuneGlyph(SpawnerRune spawner)
  {

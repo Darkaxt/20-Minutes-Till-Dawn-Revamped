@@ -124,11 +124,17 @@ Browsing shows a natural unlock sentence. Confirm/click a locked character or we
 
 ![Diamond's character menu showing the miniboss and seven maximum red hearts unlock condition](docs/images/unlock-diamond.png)
 
-### Spend credits on runes
+### Earn character runes from arena bosses
 
-Each rank costs 20% more than the preceding rank, rounded upward. Enable multiple purchased runes in the same row. To buy a lower rune, fully upgrade the runes above it **in the same column**. The native five-rank cap remains.
+Runes belong to each character and are earned automatically from arena bosses. Credits, hold-to-buy and column purchase prerequisites are removed. Press an earned rune to enable or disable it; multiple runes in the same row can remain active. The five-rank cap remains, and existing Windows purchased ranks seed each character once.
 
-![Native rune menu showing multiple enabled runes and a same-column prerequisite](docs/images/runes-progression.png)
+Forest's total lottery draws rise from **1 → 3 → 6 → 10** at Darkness **0 / 4 / 8 / 12**. Temple uses Darkness+4; Pumpkin Patch uses +2. The first arena boss awards half, rounded down; the second receives the remainder. Quickplay's single arena boss receives the full allotment. Endless awards again for each boss pair; Challenge awards once, and Custom is excluded. [Exact row table and interactions](docs/RUNES.md).
+
+![Rune rewards reveal each lottery slot in order inside one opaque popup](docs/images/rune-lottery.png)
+
+Each stopped slot shows its saved result. Once all slots are revealed, capped runes burn into XP gems inside the popup: a discarded tier-1 rune is half a level, tier-2 is one level, and so on. Earned ranks improve the character's next runs. Continue preserves outcomes and compensation without rerolls.
+
+![Permanent character rune ranks remain visible after the lottery](docs/images/rune-awards.png)
 
 ### Build a Custom run
 
