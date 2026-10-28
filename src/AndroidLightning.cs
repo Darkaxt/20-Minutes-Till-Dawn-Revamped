@@ -34,7 +34,7 @@ public static class AndroidLightning
   foreach(int id in ids){var target=actors.GetFromID(id);if(Eligible(target))Hit(owner,target,Mathf.FloorToInt(full*Falloff(Vector2.Distance(position,target.transform.position),radius)),visited,kind);}
   if(state.Chain)
   {
-   var p=PlayerController.Instance;int jumps=3+Mathf.FloorToInt(p.stats[StatType.Piercing].Modify(0))+Mathf.FloorToInt(p.stats[StatType.Bounce].Modify(0));Vector3 from=position;
+   var recipe=PlayerController.Instance.gun.GetProjectileRecipe();int jumps=3+recipe.piercing+recipe.bounce;Vector3 from=position;
    for(int i=0;i<jumps;i++)
    {
     ids.Clear();actors.GetMonsterInRange(ids,state.BodyWidth*3,from);

@@ -4,11 +4,11 @@
 
 | Stage | Status | Satisfied / remaining |
 |---|---|---|
-| N1 Complete elemental redesign | COMPLETE | N01–N06 pass complete native lightning8/fire16/wind11/save10/Continue13/prior14/maps17/producers20/controller18; exact checkpoint inputs and inspected both-style cues. N1-acceptance.json records scope/source pins and closure review. No blocker or deferral. |
+| N1 Complete elemental redesign | BLOCKED | Full HUD Pierce/Bounce is corrected and verified by native27 after native26 reproduces the omission. Remaining external requirement decision: native Flame Cannon/swords use999 Pierce, so whether zero-damage chain jumps still stun needs the user's choice. Stop below1 damage is proposed; no cap/termination change has been applied. Prior unaffected element/save/mode evidence remains applicable. |
 | N2 Enhanced regular enemies | COMPLETE | Native22/23/24/25 verify real200-kill cadence,3x health/XP, red aura both styles, Eye frequency, boss separation, pool reuse, exact pending/prior saves and all six modes plus Custom. N2-acceptance.json records source pins and closure review. No blocker or deferral. |
-| N3 Final public delivery | ACTIVE | N1 and N2 are COMPLETE. Preparing normal1.2.0, then exact committed-package native verification, copied installation/rollback, public publication/download verification and exact cleanup. |
+| N3 Final public delivery | BLOCKED | Parked on N01 full-metric chain correction in N1. Candidate5114bea is superseded and its acceptance is cancelled through the owned player signal. No public1.2.0 release. Resume after N1 closes; remaining exact package, publication/download and cleanup gates still apply. |
 
-The current public release remains v1.1.11. No live Steam or phone deployment. No tracked deferral outside these named stages. [Element rules](ELEMENTS.md).
+The current public release remains v1.1.11;1.2.0 has not been published. No live Steam or phone deployment. The full-metric correction passes native27. Native data uses999 Pierce for Flame Cannon/sword variants; the user has been asked whether damage falloff should terminate a chain below1 damage or allow remaining zero-damage stuns. This external requirement decision blocks N1/N3 closure; it is not a deferred feature. Superseded candidate cleanup `90c2aeaccb88a40c287e564612f299dc` removed866 members/145944795 logical bytes, and both exact obsolete roots are absent. The main scratch/transaction remains retained for the unfinished corrected release, with no player running. [Element rules](ELEMENTS.md).
 
 ## Exploration visibility and nearby reward glow — 2026-10-27
 

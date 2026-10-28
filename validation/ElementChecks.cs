@@ -122,6 +122,16 @@ public partial class RuntimeChecks
   int[] expected={34,23,16,11,8,5,4,0};for(int i=0;i<targets.Count;i++)Require(10000-targets[i].HP==expected[i],"chain uses live Pierce+Bounce, per-jump falloff and one hit per enemy at index"+i);
   yield return PoiCapture("element-lightning-chain.png");
   foreach(bool style in new[]{false,true}){if(ColorfulStyle.Instance.Enabled!=style)ColorfulStyle.Instance.Toggle();ThunderGenerator.SharedInstance.GenerateAt(targets[0].gameObject,22);yield return PoiCapture("element-lightning-"+(style?"reborn":"original")+".png");}
+  ElementClear();var data=p.gun.gunData;int originalPierce=data.piercing,originalBounce=data.bounce;
+  Log("chain-weapon-bases",string.Join(";",Resources.FindObjectsOfTypeAll<GunData>().Select(d=>d.name+":"+d.piercing+"/"+d.bounce).Distinct()));
+  try
+  {
+   data.piercing=1;data.bounce=1;var current=p.gun.GetProjectileRecipe();Require(current.piercing==3&&current.bounce==2,"native HUD recipe includes weapon-base and acquired Pierce/Bounce");targets.Clear();
+   for(int i=0;i<10;i++)targets.Add(ElementEnemy(origin+Vector2.right*(ElementWidth*2*i)));
+   ThunderGenerator.SharedInstance.GenerateAt(targets[0].gameObject,22);yield return null;yield return null;int[] combined={34,23,16,11,8,5,4,2,1,0};
+   for(int i=0;i<targets.Count;i++)Require(10000-targets[i].HP==combined[i],"chain follows full HUD metrics including weapon-base values at "+i);
+  }
+  finally{data.piercing=originalPierce;data.bounce=originalBounce;}
   p.stats[StatType.Piercing].AddFlatBonus(-2);p.stats[StatType.Bounce].AddFlatBonus(-1);ElementClear();yield return null;
   var reused=ElementEnemy(origin);Require(Control(reused)==null||Control(reused).Stun==0,"pooled NPC reuse carries no electrical stun");ElementClear();
   yield return AndroidPick(game,"ElectroBug",game.playerXP.level);yield return null;yield return null;
