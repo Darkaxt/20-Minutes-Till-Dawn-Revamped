@@ -55,7 +55,7 @@ public partial class RuntimeChecks
   while(EliteShots[ai].Count<3)yield return null;
   float enhancedInterval=(EliteShots[ai][2]-EliteShots[ai][0])/2;Require(Mathf.Abs(enhancedInterval-ai.specialCooldown*2/3)<.12f,"actual enhanced Eye fires at two-thirds ordinary cooldown");
   foreach(bool style in new[]{false,true}){if(ColorfulStyle.Instance.Enabled!=style)ColorfulStyle.Instance.Toggle();yield return PoiCapture("elite-aura-"+(style?"reborn":"original")+".png");}
-  var aura=elite.transform.Find("EliteAura").GetComponent<SpriteRenderer>();Require(aura.enabled&&aura.color.r>.9f&&aura.color.g<.3f,"elite has a visible red native-art aura in both artwork modes");
+  var aura=elite.transform.Find("EliteContour").GetComponent<SpriteRenderer>();Require(aura.enabled&&aura.color.r>.75f&&aura.color.g<.3f,"elite has a visible red sprite-contour glow in both artwork modes");
   normal.GetComponent<AIComponent>().enabled=true;ReturnFixtureActor(normal.gameObject);
   var move=elite.GetComponent<MoveComponent2D>();move.enabled=true;ai.specialTimer=0;
   elite.transform.position=PlayerController.Instance.transform.position+Vector3.right*(Mathf.Sqrt(ai.specialRangeSqr)+2);Vector3 beforeMove=elite.transform.position;
@@ -65,7 +65,7 @@ public partial class RuntimeChecks
   elite.TakeDamage(DamageType.Bullet,100000);Require(LiveXP().Length==3&&NativeKills==201,"enhanced death drops triple XP but counts as one kill");
   Require(elite.transform.localScale==ordinaryScale,"death returns the exact original scale before pool reuse");
   Require(((HashSet<int>)WindField(recorder,"KilledElites")).Count==minis&&((HashSet<int>)WindField(recorder,"KilledBosses")).Count==bosses,"enhanced ordinary death does not count as a scheduled miniboss or boss");yield return EliteCollect(game,LiveXP(),3);
-  var reused=EliteSpawn("EyeMonster");Require(reused==elite&&!Enhanced(reused)&&reused.maxHP==baseHP&&!reused.transform.Find("EliteAura").GetComponent<SpriteRenderer>().enabled&&reused.transform.localScale==ordinaryScale,"pool reuse restores ordinary size/health and hides the old aura");
+  var reused=EliteSpawn("EyeMonster");Require(reused==elite&&!Enhanced(reused)&&reused.maxHP==baseHP&&!reused.transform.Find("EliteContour").GetComponent<SpriteRenderer>().enabled&&reused.transform.localScale==ordinaryScale,"pool reuse restores ordinary size/health and hides the old aura");
   Physics2D.SyncTransforms();CombatClose(reused.GetComponent<Collider2D>().bounds.size.x,ordinaryCollider.x,"ordinary reuse restores the original collider width");
   ai=reused.GetComponent<AIComponent>();reused.transform.position=PlayerController.Instance.transform.position+Vector3.right*2;reused.GetComponent<MoveComponent2D>().enabled=false;ai.specialTimer=0;EliteShots[ai]=new List<float>();
   while(EliteShots[ai].Count<3)yield return null;
@@ -88,6 +88,8 @@ public partial class RuntimeChecks
   if(mode=="elites-continue"||mode=="elites-prior")yield return CombatBuffContinue();
   else{RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());}
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();
+  if(mode=="elites-contour-probe"){yield return EliteContourProbe(game);yield break;}
+  if(mode=="elites-contour"){yield return EliteContourPresentation(game);yield break;}
   if(mode=="elites-fresh"){yield return EliteCadence(game);yield break;}
   if(mode=="elites-prior")
   {
@@ -96,6 +98,31 @@ public partial class RuntimeChecks
   Require(NativeKills==600&&EliteClaims==2,"fresh-process Continue preserves pending third opportunity exactly");
   var next=EliteSpawn();Require(Enhanced(next)&&EliteClaims==3,"resumed pending opportunity promotes the next ordinary actor once");var normal=EliteSpawn();Require(!Enhanced(normal),"restored opportunity cannot be claimed twice");ElementClear();
   yield return AchievementExit(game,false);yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();Require(NativeKills==0&&EliteClaims==0&&!Enhanced(EliteSpawn()),"fresh run resets kills/cadence and spawns ordinary enemies");ElementClear();yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Enhanced enemies exact pending Continue, one-time claim and fresh-run reset");Application.Quit(0);
+ }
+ IEnumerator EliteContourProbe(GameController game)
+ {
+  foreach(string tag in new[]{"Boomer","BigBoomer","EyeMonster","BrainMonster"})
+  {
+   var ordinary=EliteSpawn(tag);Log("elite-actor-components",tag+":"+string.Join(",",ordinary.GetComponents<Component>().Select(c=>c.GetType().Name)));var sr=ordinary.GetComponentInChildren<SpriteRenderer>();while(sr.sprite==null)yield return null;var original=ordinary.transform.localScale;Physics2D.SyncTransforms();var bounds=sr.bounds.size;var collider=ordinary.GetComponentInChildren<Collider2D>().bounds.size;
+   ReturnFixtureActor(ordinary.gameObject);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",(EliteClaims+1)*200);
+   var elite=EliteSpawn(tag);elite.transform.position=PlayerController.Instance.transform.position+Vector3.right*4;
+   Log("elite-pose-initial",tag+" ordinary="+original+" elite="+elite.transform.localScale+" sprite="+sr.sprite.name+" material="+sr.sharedMaterial.shader.name+" art="+bounds+" collider="+collider+" components="+string.Join(",",elite.GetComponents<Component>().Select(c=>c.GetType().Name)));
+   Log("elite-renderers",tag+":"+string.Join(";",elite.GetComponentsInChildren<SpriteRenderer>().Select(r=>r.name+" scale="+r.transform.localScale+" loss="+r.transform.lossyScale+" shader="+r.sharedMaterial.shader.name)));
+   var animator=elite.GetComponentInChildren<Animator>();if(animator!=null)Log("elite-animation-clips",tag+":"+string.Join(",",animator.runtimeAnimatorController.animationClips.Select(c=>c.name)));
+   var shader=sr.sharedMaterial.shader;for(int property=0;property<shader.GetPropertyCount();property++){string name=shader.GetPropertyName(property),type=shader.GetPropertyType(property).ToString();Log("elite-shader-property",tag+":"+name+" type="+type+" value="+(type=="Color"?sr.sharedMaterial.GetColor(name).ToString():type=="Float"||type=="Range"?sr.sharedMaterial.GetFloat(name).ToString():type));}
+   if(animator!=null){animator.Update(0);Log("elite-animation-write",tag+":"+elite.transform.localScale);elite.transform.localScale=new Vector3(original.x*1.25f,original.y*1.25f,original.z);}
+   AccessTools.Method(typeof(AIController),"AILookTowards").Invoke(AIController.SharedInstance,new object[]{elite.GetComponent<AIComponent>(),Vector2.left});Log("elite-facing-write",tag+":"+elite.transform.localScale);
+   float began=Time.time;int last=-1;while(elite.gameObject.activeSelf&&Time.time-began<3)
+   {
+    int step=Mathf.FloorToInt((Time.time-began)*5);if(step!=last){last=step;Log("elite-pose-frame",tag+" t="+(Time.time-began)+" scale="+elite.transform.localScale+" sprite="+sr.sprite.name+" art="+sr.bounds.size);}
+    yield return null;
+   }
+   elite.transform.position=PlayerController.Instance.transform.position+Vector3.right*.3f;
+   began=Time.time;last=-1;while(elite.gameObject.activeSelf&&Time.time-began<3)
+   {int step=Mathf.FloorToInt((Time.time-began)*5);if(step!=last){last=step;Log("elite-special-frame",tag+" t="+(Time.time-began)+" scale="+elite.transform.localScale+" sprite="+sr.sprite.name+" art="+sr.bounds.size);}yield return null;}
+   if(elite.gameObject.activeSelf)ReturnFixtureActor(elite.gameObject);
+  }
+  yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Elite pose diagnostic only; not full contour acceptance");Application.Quit(0);
  }
  IEnumerator EliteMaps()
  {

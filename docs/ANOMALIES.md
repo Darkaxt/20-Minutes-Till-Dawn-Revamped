@@ -1,5 +1,9 @@
 # Android gameplay anomaly ledger
 
+## Elite presentation correction — 2026-10-29
+
+Revamped regression: native `AIController.AILookTowards` resets Boomer's enlarged transform to a signed unit scale. Native probe4 isolates the call:125% becomes100%, while the direct animation update retains125%. The facing boundary now preserves pre-call dimensions and the native selected direction. The circular elite marker is replaced with a cached outside-alpha contour and two softer pixel-glow bands; source artwork/animation remains intact. Native6–10 cover eleven regular actor types, explosion windup/death, both artwork modes, square/4:3/16:9, exact pool restoration/resource disposal, health/XP/cadence, current/prior Continue and six modes/Custom. This is a Revamped presentation correction, not an Android balance change.
+
 ## Character rune transition — 2026-10-28
 
 - **Outdated Wild Magic role:** automatic tick-based fire propagation made the old Burn/Freeze death spread overlap with the redesigned elements. The user explicitly selected both Curse propagation and Smite echoes as its replacement, retaining the 5% per-rank death lottery. This is an intentional gameplay refinement.

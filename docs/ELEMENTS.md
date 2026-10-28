@@ -46,6 +46,27 @@ Verification status is recorded in [PROGRESS.md](PROGRESS.md). Controlled fixtur
 
 ## Enhanced regular enemies
 
+### Elite contour correction — 2026-10-29
+
+Authoritative requirements for the reported Forest exploder presentation:
+
+- Q01: Verify actual sprite/collision dimensions stay 25% larger through native Boomer movement, animation and explosion windup. Trace any overwrite before changing size ownership; preserve signed/nonuniform prefab proportions and the ordinary spawn/pool lifecycle.
+- Q02: Replace the circular elite aura with thin glowing red lines following the animated sprite's opaque contour, including its facing and silhouette changes. Use a crisp narrow inner edge and softer outer glow, with no filled disk/background. Keep original interior artwork, both artwork modes and fog readability. Inspect close-up and normal-zoom captures at square/4:3/16:9 sizes.
+- Q03: Preserve the 200-kill cadence, 3x health/XP, Eye firing modifier, contacts, explosion/death dispatch, pause and Continue rules. Pool return removes the contour and restores ordinary geometry; repeated promotion must not compound scale or retain visual resources.
+- Q04: Update the documentation/screenshots, commit/synchronize and publish a verified normal game1.3.1 release. Keep updater0.2.0/save epoch1 compatible; no additional reset for an already transitioned installation. Verify the actual package and copied install/rollback, public source/assets/download hashes. Preserve live Steam/profile/phone installations and retire expendable scratch through reviewed cleanup.
+- Q05 (2026-10-29 playtest correction): Remove credits from random exploration chest rewards. Preserve other reward rules and convert already-saved, unopened credit exploration drops to the existing experience reward so they cannot keep paying credits. Arena-boss/native chests and ordinary end-of-run credit accounting are unchanged.
+- Q06 (2026-10-29 requested completion): Non-boss exploration edge indicators show the actual stored reward's content icon, retaining direction/distance, visibility and nearby content glow. Indicator and collected reward must agree across Continue and old credit-drop conversion. Boss treasure retains its distinct chest pointer.
+- Q07 (2026-10-29 approved Endless escalation): Keep Elite opportunities every200 native kills. In Endless, every10 defeated tier-1 Elites earns an Elite+ promotion and every5 defeated Elite+ enemies earns an Elite++ promotion. Higher-tier pending promotions take priority on the next eligible regular wave spawn without consuming an owed lower-tier promotion; do not create extra waves or promote scheduled bosses/minibosses. Higher tiers repeat the existing multipliers: health/XP3/9/27x, XY size1.25/1.5625/1.953125x, Eye frequency1.5/2.25/3.375x. Explosion radius and existing crowd-control rules remain unchanged. Use distinct contour colours, preserve pooled ordinary reuse, native kill/quota identity and exact saved counters/pending claims. Older checkpoints start new higher-tier counters at zero; retain their existing tier-1 cadence. Other modes retain ordinary Elites.
+
+| Stage | Status | Acceptance |
+|---|---|---|
+| Q1 Complete elite presentation | COMPLETE | Q01–Q03 pass native6–10: eleven regular types, Boomer facing/movement/explosion windup, outside-alpha glow, animation, both styles/three viewports, pause/pool/resource teardown, real200-kill/health/XP/Eye cadence, current/prior Continue, six modes and Custom. Q1-acceptance.json binds inputs. No blocker or deferral. |
+| Q2 Exploration reward and pointer correction | ACTIVE | Q05–Q06: remove credit outcomes and show actual content icons, including saved-drop migration/Continue and boss-pointer separation. |
+| Q3 Endless elite tiers | NOT STARTED | Q07: complete tier cadence/multipliers/cues, pool/death/XP/identity and current/prior Continue verification, after Q2. |
+| Q4 Final delivery | NOT STARTED | Q04: final verified game package for all requested corrections, public delivery and cleanup follow Q3. |
+
+Storage: `D:/Temp/20mtd-elite-contour-20261029` is the .NET/native small-file I/O exception, registered before generation. Retained diagnostic/verification evidence and usable release artifacts belong in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029`. Existing shared native inputs remain in place. No tracked deferrals.
+
 Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a visible red aura and **25% larger width and height**. The sprite and collision bounds scale together from that actor's original size, preserving its proportions. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
 
 This promotion is separate from the game's scheduled minibosses and bosses. Those encounters do not consume the opportunity; a promoted regular enemy still counts as one normal enemy, including in Challenge quotas. Health scaling from difficulty, modes and Custom settings is applied before the promotion.
