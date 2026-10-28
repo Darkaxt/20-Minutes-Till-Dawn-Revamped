@@ -4,7 +4,7 @@ import argparse,hashlib,json,re,shutil,subprocess,urllib.request
 
 ROOT=Path(__file__).resolve().parents[1]
 REPO='Darkaxt/20-Minutes-Till-Dawn-Revamped'
-VERSION='0.1.0';TAG='updater-v'+VERSION;APK='Revamped-Updater-'+VERSION+'.apk'
+VERSION='0.2.0';TAG='updater-v'+VERSION;APK='Revamped-Updater-'+VERSION+'.apk'
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('action',choices=['prepare','publish','verify'])
 parser.add_argument('--package',required=True,type=Path)
@@ -35,7 +35,7 @@ if args.action=='prepare':
     assert sha(args.build/APK)==build['artifacts'][APK]
     certificate=re.search(r'Signer #1 certificate SHA-256 digest: ([a-f0-9]{64})',(args.build/(APK.removesuffix('.apk')+'-signature.txt')).read_text()).group(1)
     args.package.mkdir(parents=True);shutil.copyfile(args.build/APK,args.package/APK)
-    metadata={'product':'Revamped-Updater','version':VERSION,'version_code':1,'package':'org.darkaxt.revamped.updater','source_commit':commit,'apk_sha256':sha(args.package/APK),'certificate_sha256':certificate,'source_files':repository_files,'build_input_files':build['source_files'],'source_comparison':'Text line endings normalized; compiler input digests retained separately','min_sdk':26,'target_sdk':36}
+    metadata={'product':'Revamped-Updater','version':VERSION,'version_code':2,'package':'org.darkaxt.revamped.updater','source_commit':commit,'apk_sha256':sha(args.package/APK),'certificate_sha256':certificate,'source_files':repository_files,'build_input_files':build['source_files'],'source_comparison':'Text line endings normalized; compiler input digests retained separately','min_sdk':26,'target_sdk':36}
     (args.package/'UPDATER.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf8')
     (args.package/'SHA256SUMS.txt').write_text(''.join(sha(args.package/name)+'  '+name+'\n' for name in [APK,'UPDATER.json']),encoding='utf8')
     print(json.dumps(metadata,indent=2))
@@ -43,7 +43,7 @@ elif args.action=='publish':
     metadata=json.loads((args.package/'UPDATER.json').read_text());commit=metadata['source_commit']
     assert git('ls-remote','origin','refs/heads/main').split()[0]==commit,'Push the verified source before release'
     assert sha(args.package/APK)==metadata['apk_sha256']
-    subprocess.run(['gh','release','create',TAG,*[str(args.package/name) for name in [APK,'UPDATER.json','SHA256SUMS.txt']],'--repo',REPO,'--target',commit,'--title','Revamped Updater '+VERSION,'--notes-file',str(ROOT/'release/NOTES-updater-0.1.0.md'),'--latest=false'],cwd=ROOT,check=True)
+    subprocess.run(['gh','release','create',TAG,*[str(args.package/name) for name in [APK,'UPDATER.json','SHA256SUMS.txt']],'--repo',REPO,'--target',commit,'--title','Revamped Updater '+VERSION,'--notes-file',str(ROOT/('release/NOTES-updater-'+VERSION+'.md')),'--latest=false'],cwd=ROOT,check=True)
 else:
     assert args.scratch and not args.scratch.exists() and args.sdk and args.jdk,'Provide new verification scratch and installed SDK/JDK'
     expected=json.loads((args.package/'UPDATER.json').read_text())
@@ -64,6 +64,6 @@ else:
     signing=subprocess.check_output([str(java),'-jar',str(tools/'lib/apksigner.jar'),'verify','--verbose','--print-certs',str(args.scratch/APK)],text=True)
     assert 'Signer #1 certificate SHA-256 digest: '+expected['certificate_sha256'] in signing
     badging=subprocess.check_output([str(tools/'aapt2.exe'),'dump','badging',str(args.scratch/APK)],text=True)
-    assert "package: name='org.darkaxt.revamped.updater' versionCode='1' versionName='0.1.0'" in badging
+    assert "package: name='org.darkaxt.revamped.updater' versionCode='2' versionName='0.2.0'" in badging
     (args.package/'delivery-verified.json').write_text(json.dumps({'tag':TAG,'url':release['html_url'],'published_at':release['published_at'],'source_commit':expected['source_commit'],'apk_sha256':expected['apk_sha256'],'certificate_sha256':expected['certificate_sha256'],'normal_published_release':True,'independently_downloaded_assets':sorted(assets),'signature_and_package_verified':True},indent=2)+'\n',encoding='utf8')
     print((args.package/'delivery-verified.json').read_text())

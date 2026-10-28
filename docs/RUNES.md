@@ -19,8 +19,8 @@ This document describes the requested replacement; implementation and delivery a
 | Stage | Status | Required acceptance and evidence |
 |---|---|---|
 | P1 Character rune mechanics and rewards | COMPLETE | P01–P06 verified by P1-acceptance.json: legacy ranks/controller toggles, actual battle copies/Custom Continue, both-style mechanics, sequential popup/three aspect ratios, exact pending Continue/XP/evolution, Standard cases and Quickplay/recurring Endless/Challenge/Custom. No blocker or deferral. |
-| P2 One-time Android transition | ACTIVE | P07: selected-prefix reset, interruption/repeat fixtures, native updater UI and signed APK verification remain. Internal acceptance blocker: implementation/verification pending; resolved by completing this stage. P3 depends on P2. |
-| P3 Final delivery | NOT STARTED | P08: final packages, independent public delivery, documentation and reviewed scratch cleanup. |
+| P2 One-time Android transition | COMPLETE | P07 passes the signed 0.2.0 APK's native isolated SAF tests: six exact save deletions, first-deletion interruption/recovery, five unrelated files preserved, narrow-grant preflight, installed epoch, later/repeated progress preservation and inspected warning. P2-acceptance.json pins build inputs. No blocker or deferral. |
+| P3 Final delivery | ACTIVE | P08: final packages, independent public delivery, documentation and reviewed scratch cleanup remain. Internal acceptance blocker: delivery work pending; resolved by verified publication and cleanup. |
 
 No tracked deferrals. Wild Magic's Curse+Smite choice and Quickplay/recurring Endless rewards are explicitly confirmed. Quickplay's actual schedule contains one arena boss, which receives its full allotment rather than losing the second half. Challenge's one-allotment behavior is the communicated implementation assumption. Custom remains explicitly excluded.
 

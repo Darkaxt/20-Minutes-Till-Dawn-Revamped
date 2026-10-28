@@ -21,6 +21,7 @@ public final class UpdaterInstrumentation extends Instrumentation {
         try {
             String mode=arguments.getString("mode","ui-check"); long started=System.nanoTime();
             if(mode.equals("recovery")) recovery(report);
+            else if(mode.equals("rune-reset")) runeReset(report);
             else if(mode.equals("delivery-audit")) audit(report);
             else ui(mode,report);
             report.put("ok",true).put("elapsed_ms",(System.nanoTime()-started)/1000000); result.putString("report",report.toString()); finish(Activity.RESULT_OK,result);
@@ -95,6 +96,38 @@ public final class UpdaterInstrumentation extends Instrumentation {
         SafGame delivered=new SafGame(getTargetContext().getContentResolver(),game.tree);
         for(String path:new String[]{SafGame.PLUGIN,SafGame.MANIFEST})require(!delivered.exists(path+".revamped-next")&&!delivered.exists(path+".revamped-previous"),"no completed transaction leftovers");
         report.put("fixture_only",true).put("recovery_after_partial_write",true).put("recovery_after_plugin_activation",true).put("assets_rejected_before_write",true).put("unowned_preserved",true);
+    }
+    private void runeReset(JSONObject report)throws Exception {
+        String name=arguments.getString("fixture_name");require(name!=null,"isolated fixture required");
+        java.util.concurrent.CountDownLatch prepared=new java.util.concurrent.CountDownLatch(1);Bundle preparation=new Bundle();
+        android.os.ResultReceiver receiver=new android.os.ResultReceiver(null){@Override protected void onReceiveResult(int code,Bundle data){preparation.putBoolean("ok",code==1);preparation.putAll(data);prepared.countDown();}};
+        getContext().startActivity(new Intent().setClassName("org.darkaxt.revamped.updater.tests",PrepareFixture.class.getName()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra("fixture_name",name).putExtra("rune_layout",true).putExtra("receiver",receiver));
+        prepared.await();require(preparation.getBoolean("ok"),"fixture preparation: "+preparation.getString("error"));
+        android.content.Context context=getTargetContext();Uri tree=DocumentsContract.buildTreeDocumentUri(FixtureProvider.AUTHORITY,name);
+        SafGame game=new SafGame(context.getContentResolver(),tree,name+"/library/steamapps/common/20MinuteTillDawn");SafGame granted=new SafGame(context.getContentResolver(),tree);
+        UpdateEngine engine=new UpdateEngine(context);require(!engine.pending(),"no unrelated journal");
+        GitHubRelease release=fixtureRelease(game,"1.3.0","rune-code",false);release.update.put("save_epoch",1);
+        JSONObject plan=SaveTransition.plan(context,game);require(plan.getJSONArray("files").length()==6,"all six native/companion/partial saves recorded");
+        String prefix="library/steamapps/compatdata/1966900/pfx/",profile=prefix+"drive_c/users/steamuser/AppData/LocalLow/Flanne/MinutesTillDawn/";
+        String[] preserved={prefix+"user.reg",profile+"notes.txt",prefix+"drive_c/users/steamuser/AppData/LocalLow/Flanne/OtherGame/gamedata.json","library/steamapps/compatdata/123456/pfx/drive_c/users/steamuser/AppData/LocalLow/Flanne/MinutesTillDawn/gamedata.json","library/steamapps/common/20MinuteTillDawn/BepInEx/config/revamped.cfg"};
+        JSONObject hashes=new JSONObject();for(String path:preserved)hashes.put(path,granted.hash(path));
+        try { SaveTransition.plan(context,new SafGame(context.getContentResolver(),DocumentsContract.buildTreeDocumentUri(FixtureProvider.AUTHORITY,game.rootId)));throw new AssertionError("narrow grant must require reconnection"); }catch(IllegalStateException expected){require(expected.getMessage().contains("Reconnect"),"game-only grant rejected before mutations");}
+        context.getSharedPreferences("MainActivity",0).edit().putString("gameTree",tree.toString()).putString("gameDocumentId",game.rootId).commit();
+        MainActivity activity=(MainActivity)startActivitySync(new Intent(context,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));await(activity);
+        runOnMainSync(()->{try{java.lang.reflect.Field field=MainActivity.class.getDeclaredField("release");field.setAccessible(true);field.set(activity,release);java.lang.reflect.Method render=MainActivity.class.getDeclaredMethod("renderButtons");render.setAccessible(true);render.invoke(activity);}catch(Exception error){throw new RuntimeException(error);}});
+        require(((Button)activity.findViewById(MainActivity.DEPLOY_BUTTON)).getText().toString().contains("Reset saves"),"native action announces reset");capture(activity,report,"reset_warning_png");runOnMainSync(()->activity.finish());
+        try { engine.deploy(game,release,message->{if(message.equals("Resetting old game saves 1 / 6"))throw new Interrupted();});throw new AssertionError("expected reset interruption"); }catch(Interrupted expected){}
+        require(engine.pending()&&game.hash(SafGame.PLUGIN).equals(SafGame.hash("previous-code".getBytes("UTF-8"))),"reset interruption keeps old plugin and recorded journal");
+        new UpdateEngine(context).finish(message->{});
+        require(UpdateEngine.installed(new SafGame(context.getContentResolver(),tree,game.rootId)).getInt("rune_save_epoch")==1,"persistent installed transition marker");
+        SafGame after=new SafGame(context.getContentResolver(),tree);for(String path:preserved)require(after.hash(path).equals(hashes.getString(path)),"preserve unrelated member "+path);
+        SafGame profileGame=GameLocator.at(context,after,plan.getString("prefix"));JSONArray deleted=plan.getJSONArray("files");for(int i=0;i<deleted.length();i++)require(!profileGame.exists(deleted.getJSONObject(i).getString("path")),"old save absent");
+        Uri directory=after.find(profile.substring(0,profile.length()-1));Uri fresh=DocumentsContract.createDocument(context.getContentResolver(),directory,"application/json","gamedata.json");try(java.io.OutputStream output=context.getContentResolver().openOutputStream(fresh,"wt")){output.write("new-player-progress".getBytes("UTF-8"));}
+        SafGame current=new SafGame(context.getContentResolver(),tree,game.rootId);GitHubRelease later=fixtureRelease(current,"1.3.1","later-code",false);later.update.put("save_epoch",1);
+        new UpdateEngine(context).deploy(current,later,message->{});new UpdateEngine(context).deploy(new SafGame(context.getContentResolver(),tree,game.rootId),later,message->{});
+        require(new SafGame(context.getContentResolver(),tree).hash(profile+"gamedata.json").equals(SafGame.hash("new-player-progress".getBytes("UTF-8"))),"later/repeated update preserves new progress");
+        require(!new UpdateEngine(context).pending(),"completed transactions removed");
+        report.put("fixture_only",true).put("save_files_deleted",6).put("interrupted_reset_recovered",true).put("unrelated_files_preserved",preserved.length).put("later_and_repeat_preserve_progress",true).put("narrow_grant_requires_reconnect",true).put("persistent_epoch",1);
     }
     private void click(MainActivity activity,int id) {
         runOnMainSync(()->{Button button=activity.findViewById(id);require(button.isShown()&&button.isEnabled(),"native action enabled "+id);button.performClick();});

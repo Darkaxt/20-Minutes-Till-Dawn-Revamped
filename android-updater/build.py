@@ -1,6 +1,6 @@
 """Build the small native Android client with the installed Android SDK, without Gradle."""
 from pathlib import Path
-import argparse,hashlib,json,os,shutil,subprocess,zipfile
+import argparse,hashlib,json,os,shutil,subprocess,zipfile,xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser(description=__doc__)
@@ -47,11 +47,12 @@ def build(name,manifest,sources,resources=None,assets=None,classpath=None):
     return output,classes
 
 assets=args.work/'assets';assets.mkdir();shutil.copy2(ROOT.parent/'installer/supported-windows.json',assets/'supported-windows.json')
-app,classes=build('Revamped-Updater-0.1.0',ROOT/'AndroidManifest.xml',ROOT/'src',ROOT/'res',assets)
+version=ET.parse(ROOT/'AndroidManifest.xml').getroot().attrib['{http://schemas.android.com/apk/res/android}versionName']
+app,classes=build('Revamped-Updater-'+version,ROOT/'AndroidManifest.xml',ROOT/'src',ROOT/'res',assets)
 outputs=[app]
 if args.tests:
     test,_=build('Revamped-Updater-Tests',ROOT/'tests/AndroidManifest.xml',ROOT/'tests/src',classpath=classes);outputs.append(test)
 inputs=[ROOT/'AndroidManifest.xml',ROOT/'build.py',ROOT.parent/'installer/supported-windows.json',*sorted((ROOT/'src').rglob('*')),*sorted((ROOT/'res').rglob('*'))]
-receipt={'version':'0.1.0','source_files':{p.relative_to(ROOT.parent).as_posix():sha(p) for p in inputs if p.is_file()},'artifacts':{p.name:sha(p) for p in outputs},'sdk_platform':36,'build_tools':'35.0.0','min_sdk':26,'native_sdk_build':True,'signing_verified':True}
+receipt={'version':version,'source_files':{p.relative_to(ROOT.parent).as_posix():sha(p) for p in inputs if p.is_file()},'artifacts':{p.name:sha(p) for p in outputs},'sdk_platform':36,'build_tools':'35.0.0','min_sdk':26,'native_sdk_build':True,'signing_verified':True}
 (args.output/'BUILD.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf8')
 print(json.dumps(receipt['artifacts'],indent=2),flush=True)

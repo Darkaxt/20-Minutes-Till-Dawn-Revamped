@@ -23,7 +23,7 @@ final class GitHubRelease {
     private static HttpsURLConnection connect(String url) throws Exception {
         SafGame.check(url.startsWith("https://"), "GitHub returned a non-HTTPS download.");
         HttpsURLConnection connection = (HttpsURLConnection)new URL(url).openConnection();
-        connection.setRequestProperty("User-Agent", "Revamped-Updater/0.1.0");
+        connection.setRequestProperty("User-Agent", "Revamped-Updater/0.2.0");
         connection.setRequestProperty("Accept", "application/vnd.github+json");
         connection.setRequestProperty("X-GitHub-Api-Version", "2026-03-10");
         return connection;
@@ -89,7 +89,8 @@ final class GitHubRelease {
             }
             JSONObject release = json(zip, prefix + "RELEASE.json");
             JSONObject update = json(zip, prefix + "UPDATE.json");
-            SafGame.check(!release.getBoolean("candidate") && update.getInt("schema") == 1 && update.getString("product").equals("20MTD-Revamped"), "Unsupported update contract.");
+            SafGame.check(!release.getBoolean("candidate") && (update.getInt("schema") == 1 || update.getInt("schema") == 2) && update.getString("product").equals("20MTD-Revamped"), "Unsupported update contract.");
+            if(compareVersions(version,"1.3.0")>=0)SafGame.check(update.getInt("schema")==2&&update.getInt("save_epoch")==SaveTransition.EPOCH&&update.getString("minimum_updater").equals("0.2.0"),"This game requires a different save-transition updater.");
             String source = release.getString("source_commit");
             SafGame.check(version.equals(release.getString("version")) && version.equals(update.getString("version")) && version.equals(inventory.getString("version")), "Package versions disagree.");
             SafGame.check(source.equals(update.getString("source_commit")) && source.equals(inventory.getString("source_commit")), "Package revisions disagree.");

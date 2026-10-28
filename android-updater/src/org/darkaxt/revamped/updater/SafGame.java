@@ -73,6 +73,23 @@ final class SafGame {
     }
     boolean exists(String path) throws Exception { return find(path) != null; }
 
+    List<String> childDirectories(String path) throws Exception {
+        List<String> result = new ArrayList<>(); if (!exists(path)) return result;
+        Uri listing = DocumentsContract.buildChildDocumentsUriUsingTree(tree, DocumentsContract.getDocumentId(find(path)));
+        try (Cursor cursor = resolver.query(listing, new String[]{DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE}, null, null, null)) {
+            check(cursor != null, "The profile provider did not return a listing.");
+            while (cursor.moveToNext()) if (DocumentsContract.Document.MIME_TYPE_DIR.equals(cursor.getString(1))) result.add(safe(cursor.getString(0)));
+        }
+        Collections.sort(result); return result;
+    }
+
+    void deleteSave(String path, String expected) throws Exception {
+        SaveTransition.checkPath(path); if (!exists(path)) return;
+        check(hash(path).equals(expected), "A game save changed during the transition. Close the game; it was preserved: " + path);
+        check(DocumentsContract.deleteDocument(resolver, find(path)), "Cannot reset the selected game's save.");
+        directories.remove(parent(path));
+    }
+
     InputStream open(String path) throws Exception {
         Uri uri = find(path);
         check(uri != null, "Missing installed file: " + path);

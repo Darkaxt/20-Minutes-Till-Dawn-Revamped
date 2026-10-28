@@ -8,7 +8,7 @@ import java.util.regex.*;
 
 /** Reads only known Steam locations and its library catalogue within the granted tree. */
 final class GameLocator {
-    private static SafGame at(Context context, SafGame granted, String absolute) throws Exception {
+    static SafGame at(Context context, SafGame granted, String absolute) throws Exception {
         if (absolute.equals(granted.rootId)) return granted;
         if (!absolute.startsWith(granted.rootId + "/")) return null;
         Uri folder = granted.find(absolute.substring(granted.rootId.length() + 1));

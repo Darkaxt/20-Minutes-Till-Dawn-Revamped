@@ -62,7 +62,7 @@ plugin_path = 'BepInEx/plugins/20MTDModernization/TwentyMinutes.Modernization.dl
 installed[plugin_path] = digest(plugin)
 if len(installed) != 614:
     raise SystemExit('Updater contract requires the complete 614-file owned payload')
-(stage / 'UPDATE.json').write_text(json.dumps({'schema': 1, 'product': '20MTD-Revamped', 'version': '1.2.1',
+(stage / 'UPDATE.json').write_text(json.dumps({'schema': 2, 'minimum_updater': '0.2.0', 'save_epoch': 1, 'product': '20MTD-Revamped', 'version': '1.2.1',
     'source_commit': revision, 'files': installed, 'payload': {plugin_path: 'Mod/' + plugin.name}}, indent=2) + '\n', encoding='utf8', newline='\n')
 files = {p.relative_to(stage).as_posix(): digest(p) for p in sorted(stage.rglob('*')) if p.is_file()}
 (stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.2.1', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')

@@ -2,9 +2,9 @@
 
 ## Character runes and updater transition — 2026-10-28
 
-P1 is COMPLETE; P2 is ACTIVE; P3 is NOT STARTED. The public download remains v1.2.1 until both products pass final delivery. [Authoritative requirements and stage ledger](RUNES.md).
+P1 and P2 are COMPLETE; P3 is ACTIVE. The public download remains v1.2.1 until both products pass final delivery. [Authoritative requirements and stage ledger](RUNES.md).
 
-P1-acceptance.json under the retained `rune-rewards-20261028` evidence records native legacy rank preservation, independent character toggles, actual battle rank copies/Custom Continue, sequential popup reveal and conversion, all three viewport shapes, capped/uncapped awards, exact fresh-process Continue/XP/evolution, revised rune mechanics in both styles and mode reward rules. Current controller run34 covers the final rank-copy correction. Standard cases completed in run23 precede its superseded Quickplay fixture; run25 passes Quickplay's sole-boss allotment, two Endless pairs, Challenge's single allotment and Custom exclusion. No P1 blocker or deferral remains. Final packaged verification, signed APK reset checks and publication remain required; live Steam/profile and phone are untouched.
+P1-acceptance.json under the retained `rune-rewards-20261028` evidence records native legacy rank preservation, independent character toggles, actual battle rank copies/Custom Continue, sequential popup reveal and conversion, all three viewport shapes, capped/uncapped awards, exact fresh-process Continue/XP/evolution, revised rune mechanics in both styles and mode reward rules. Current controller run34 covers the final rank-copy correction. Standard cases completed in run23 precede its superseded Quickplay fixture; run25 passes Quickplay's sole-boss allotment, two Endless pairs, Challenge's single allotment and Custom exclusion. P2-acceptance.json binds the signed updater 0.2.0 to native SAF deletion/recovery/scope/epoch/repeat checks and the inspected reset warning. No P1/P2 blocker or deferral remains. Final packaged verification/publication and reviewed scratch cleanup remain required; live Steam/profile and phone are untouched.
 
 ## Larger elite regular enemies — 2026-10-28
 

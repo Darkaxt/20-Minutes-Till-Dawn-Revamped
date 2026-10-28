@@ -27,6 +27,8 @@ public final class MainActivity extends Activity {
     private ProgressBar progress;
     private boolean busy, updatedHere;
     private String installedVersion;
+    private int installedEpoch;
+    private boolean transitionNeeded() { return release != null && release.update.optInt("save_epoch",0)>installedEpoch; }
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -133,7 +135,7 @@ public final class MainActivity extends Activity {
         if (engine.pending()) execute(() -> { engine.finish(this::progress); updatedHere = true; refreshInstalled(); progress("Update verified. Open DroidDeck to play."); });
         else if (game == null) chooseFolder();
         else if (release == null) checkGitHub();
-        else if (installedVersion != null && GitHubRelease.compareVersions(release.version, installedVersion) <= 0) openDroidDeck();
+        else if (installedVersion != null && GitHubRelease.compareVersions(release.version, installedVersion) <= 0 && !transitionNeeded()) openDroidDeck();
         else execute(() -> { engine.deploy(game, release, this::progress); updatedHere = true; refreshInstalled(); progress("Update verified. Open DroidDeck to play."); });
     }
 
@@ -173,6 +175,7 @@ public final class MainActivity extends Activity {
     private void refreshInstalled() throws Exception {
         JSONObject data = UpdateEngine.installed(game);
         installedVersion = data.getString("version");
+        installedEpoch = data.optInt("rune_save_epoch",0);
         runOnUiThread(() -> installed.setText(installedVersion));
     }
 
@@ -192,12 +195,13 @@ public final class MainActivity extends Activity {
         boolean interrupted = engine.pending();
         choose.setEnabled(!busy && !interrupted); check.setEnabled(!busy && !interrupted);
         choose.setText(game == null ? "Connect" : "Change");
-        boolean current = release != null && installedVersion != null && GitHubRelease.compareVersions(release.version, installedVersion) <= 0;
-        String action = interrupted ? "Finish interrupted update" : game == null ? "Connect DroidDeck" : release == null ? "Check GitHub" : current ? "Open DroidDeck" : "Install " + release.version;
+        boolean reset = transitionNeeded();
+        boolean current = release != null && installedVersion != null && GitHubRelease.compareVersions(release.version, installedVersion) <= 0 && !reset;
+        String action = interrupted ? "Finish interrupted update" : game == null ? "Connect DroidDeck" : release == null ? "Check GitHub" : current ? "Open DroidDeck" : (reset ? "Reset saves & install " : "Install ") + release.version;
         deploy.setText(action); deploy.setEnabled(!busy);
         headline.setText(interrupted ? "Finish your update" : game == null ? "Connect your game" : release == null ? "Game connected" : current ? "You’re up to date" : "Ready to update");
         progress.setVisibility(busy ? View.VISIBLE : View.GONE);
-        foot.setText(updatedHere ? "Your saves and settings were preserved." : "Close the game in DroidDeck before updating.");
+        foot.setText(reset ? "One-time reset: this game's progress and Continue save will be deleted. Settings stay in place." : updatedHere ? "Update verified. Future updates preserve your new saves and settings." : "Close the game in DroidDeck before updating.");
     }
     @Override protected void onDestroy() { worker.shutdown(); super.onDestroy(); }
 }

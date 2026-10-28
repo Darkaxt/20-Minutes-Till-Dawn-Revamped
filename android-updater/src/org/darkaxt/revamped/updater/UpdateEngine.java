@@ -71,6 +71,8 @@ final class UpdateEngine {
         SafGame.check(pluginRow >= 0, "The installed plugin is not recorded.");
         String oldPlugin = rows.getJSONObject(pluginRow).getString("sha256");
         JSONObject after = new JSONObject(before.toString());
+        JSONObject reset = SaveTransition.needed(before,release) ? SaveTransition.plan(context,game) : null;
+        if (reset != null) after.put("rune_save_epoch",SaveTransition.EPOCH);
         after.put("version", release.version); after.put("source_commit", release.source);
         after.getJSONArray("files").getJSONObject(pluginRow).put("sha256", SafGame.hash(release.plugin));
         byte[] afterBytes = (after.toString(2) + "\n").getBytes("UTF-8");
@@ -80,6 +82,7 @@ final class UpdateEngine {
         write(plugin, release.plugin); write(manifest, afterBytes);
         JSONObject record = new JSONObject().put("tree", game.tree.toString()).put("root_id", game.rootId).put("version", release.version).put("source_commit", release.source)
             .put("old_plugin", oldPlugin).put("new_plugin", SafGame.hash(release.plugin)).put("old_manifest", SafGame.hash(beforeBytes)).put("new_manifest", SafGame.hash(afterBytes)).put("files", expected);
+        if(reset!=null)record.put("save_reset",reset);
         write(journal, record.toString().getBytes("UTF-8"));
         finish(progress);
     }
@@ -111,6 +114,9 @@ final class UpdateEngine {
     void finish(GitHubRelease.Progress progress) throws Exception {
         SafGame.check(pending(), "There is no interrupted update.");
         JSONObject record = json(read(journal)); SafGame game = new SafGame(context.getContentResolver(), Uri.parse(record.getString("tree")), record.getString("root_id"));
+        // The exact deletion plan was committed before any reset or activation.
+        // Missing recorded files mean a completed deletion after interruption.
+        SaveTransition.finish(context,game,record.optJSONObject("save_reset"),progress);
         progress.show("Installing verified plugin…");
         activate(game, SafGame.PLUGIN, record.getString("old_plugin"), record.getString("new_plugin"), read(plugin));
         progress.show("Updating installation record…");
@@ -122,6 +128,7 @@ final class UpdateEngine {
         }
         JSONObject installed = installed(game);
         SafGame.check(installed.getString("version").equals(record.getString("version")) && installed.getString("source_commit").equals(record.getString("source_commit")), "Installed version read-back failed.");
+        if(record.has("save_reset"))SafGame.check(installed.getInt("rune_save_epoch")==SaveTransition.EPOCH,"Save transition marker read-back failed.");
         game.deleteExpected(SafGame.PLUGIN + ".revamped-previous", record.getString("old_plugin"));
         game.deleteExpected(SafGame.MANIFEST + ".revamped-previous", record.getString("old_manifest"));
         JSONObject receipt = new JSONObject().put("version", record.getString("version")).put("source_commit", record.getString("source_commit"))
