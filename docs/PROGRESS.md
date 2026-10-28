@@ -6,9 +6,27 @@
 |---|---|---|
 | N1 Complete elemental redesign | COMPLETE | Latest complete lightning29 verifies full HUD metrics and approved below-one termination; fire16/wind11/save10/Continue13/prior14/maps17/producers20/controller18 remain applicable. Exact inputs and both-style cues are retained in N1-acceptance.json. No blocker or deferral. |
 | N2 Enhanced regular enemies | COMPLETE | Native22/23/24/25 verify real200-kill cadence,3x health/XP, red aura both styles, Eye frequency, boss separation, pool reuse, exact pending/prior saves and all six modes plus Custom. N2-acceptance.json records source pins and closure review. No blocker or deferral. |
-| N3 Final public delivery | ACTIVE | N1 and N2 are COMPLETE. User-approved below-one chain termination passes native29. Verify corrected committed1.2.0 package, copied installation/rollback, publication/download and exact cleanup. |
+| N3 Final public delivery | COMPLETE | Normal1.2.0, exact packaged runtime, copied installation/rollback, independent public download, documentation and reviewed cleanup all pass. No blocker or deferral. |
 
-The current public release remains v1.1.11. N1/N2 are closed after the user approved damage-based chain termination, verified in native29 for targeted/positional strikes, full weapon metrics and higher-damage boundary changes. N3 is ACTIVE for the corrected1.2.0 delivery. Superseded candidate5114bea was cancelled before publication; cleanup90c2aeaccb88a40c287e564612f299dc removed866 members/145944795 logical bytes and both obsolete roots are absent. Main scratch remains owned by this unfinished release. No implementation blocker or tracked deferral remains; package/publication/cleanup acceptance is still required. [Element rules](ELEMENTS.md).
+N1, N2 and N3 are COMPLETE. Normal [v1.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.0) was published 2026-10-28T09:45:35Z from `59c1ef8d961f653d6a53469bb42a5eddab38c938`. All 61 public package members were independently downloaded and verified; ZIP SHA-256 `bd556ef6f15cf6d93b21e72ec3e2c01d95f1cfc9104ae70cb45c094045dd31aa`, production DLL `190b7fa4d43fc4cccfb4c8f1a1cf2bda8d66192111a1f4e169ba2289c7ebe354`. The exact committed package passes all elemental, elite, current/prior save, scenario/Custom, native controller and exploration workflows listed below. Controlled fixtures verify the specified arithmetic, lifecycle and actual producer/XP/input paths; natural player balance remains for playtesting. Copied installation and rollback verify 614 owned files and preserve 142 originals. UPDATE schema 1, 613 unchanged runtime hashes and 593 prepared assets match 1.1.11. Live Steam/profile/configuration and the phone remain untouched. Reviewed cleanup `e061ef6d943339a03b05a8b6928562fd` removed 1453 members / 312360927 logical bytes; the exact disposable root is absent. No blocker or tracked deferral remains. Install through the existing updater APK or installer.
+
+| Packaged native workflow | Evidence | Result |
+|---|---|---|
+| elements-lightning | S6/run-10 | PASS |
+| elements-fire | S6/run-11 | PASS |
+| elements-wind | S6/run-12 | PASS |
+| elements-save | S6/run-13 | PASS |
+| elements-continue | S6/run-14 | PASS |
+| elements-prior | S6/run-15 | PASS |
+| elements-maps | S6/run-16 | PASS |
+| elements-producers | S6/run-17 | PASS |
+| elites-fresh | S6/run-18 | PASS |
+| elites-continue | S6/run-19 | PASS |
+| elites-prior | S6/run-20 | PASS |
+| elites-maps | S6/run-21 | PASS |
+| exploration-fresh | S6/run-22 | PASS |
+| exploration-continue | S6/run-23 | PASS |
+| controller-ui-fixed | S6/run-24 | PASS |
 
 ## Exploration visibility and nearby reward glow — 2026-10-27
 
