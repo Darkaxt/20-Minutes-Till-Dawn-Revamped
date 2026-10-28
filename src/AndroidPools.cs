@@ -215,8 +215,9 @@ class AndroidDeathDropPoolConsumer
 {
  static bool Prefix(SpawnFromObjectPool __instance,string objectPoolTag)
  {
-  var value=ObjectPooler.SharedInstance.GetPooledObject(objectPoolTag);
-  if(value!=null)value.transform.position=__instance.transform.position;
+  var pool=ObjectPooler.SharedInstance;var enhanced=__instance.GetComponent<EnhancedEnemy>();
+  int copies=enhanced!=null&&pool.itemDictionary.TryGetValue(objectPoolTag,out var item)&&item.objectToPool.GetComponent<flanne.Pickups.XPPickup>()!=null?enhanced.XpCopies:1;
+  for(int i=0;i<copies;i++){var value=pool.GetPooledObject(objectPoolTag);if(value!=null)value.transform.position=__instance.transform.position;}
   return false;
  }
 }

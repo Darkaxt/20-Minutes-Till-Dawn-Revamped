@@ -41,3 +41,13 @@ Lightning uses native strike artwork, blue impact/status cues and connecting arc
 Acquisitions rebuild the new owners on Continue, including supported older checkpoints. Enemy-local control, projectiles and temporary Energized counts do not become permanent saved bonuses. Pool return clears elemental status; a new run clears the previous run's owners.
 
 Verification status is recorded in [PROGRESS.md](PROGRESS.md). Controlled fixtures establish arithmetic and lifecycle behavior, not natural playtest balance.
+
+## Enhanced regular enemies
+
+Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a visible red aura. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
+
+This promotion is separate from the game's scheduled minibosses and bosses. Those encounters do not consume the opportunity; a promoted regular enemy still counts as one normal enemy, including in Challenge quotas. Health scaling from difficulty, modes and Custom settings is applied before the promotion.
+
+The existing run checkpoint stores how many opportunities have been claimed. A pending opportunity survives Continue, and a new run starts at zero. Older checkpoints without the new member begin at their next 200-kill boundary, retaining their partial progress without retroactively spawning elites for all previous kills. Ordinary enemy world instances follow the game's existing Continue behavior; this addition preserves the cadence rather than introducing a separate enemy-world save system.
+
+Pool reuse removes the health multiplier, red aura and faster Eye firing. The source returns an enemy before dispatching its drops, so its XP multiplier remains available for that death dispatch and resets on its next activation.

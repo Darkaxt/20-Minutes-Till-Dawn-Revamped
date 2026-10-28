@@ -32,6 +32,14 @@ Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bo
 
 *Controlled Windows fixtures show the actual new effects. Both artwork modes, native menus, mixed builds, current/older Continue and scenario transitions are verified; natural playtest balance remains for player feedback. This source stage is complete; the combined release follows the elite-enemy stage.*
 
+### Face enhanced regular enemies
+
+The next release also adds enhanced regular enemies: every **200 kills** earns one elite opportunity, with **3× health and XP**, a **red aura**, and **50% faster firing** for elite Eyes. Scheduled minibosses/bosses remain distinct, and the cadence survives Continue. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
+
+![Elite Eye with its red aura in the Windows game](docs/images/elite-aura.png)
+
+*Controlled Windows test after 200 actual enemy deaths. Native XP collection, firing intervals, both artwork modes, saved cadence and normal reuse are verified.*
+
 ### Play the Android additions with desktop controls
 
 Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their character skills, animations and exclusive upgrades to the native Windows selection and combat flow.

@@ -2,6 +2,8 @@
 
 ## Elemental redesign integration — 2026-10-28
 
+The subsequent enhanced-regular-enemy feature is a requested addition. It uses the native kill count and final ordinary spawn values, without changing Android's scheduled elite/miniboss identities. Source Death returns its actor before invoking drop spawners; the new XP multiplier therefore survives that deactivation until drop dispatch completes, while health/aura/firing reset for reuse. This lifecycle is covered by native death/XP/pool checks. The new checkpoint member is optional for older runs, which retain progress toward the next 200-kill boundary.
+
 The user approved the elemental rules in [ELEMENTS.md](ELEMENTS.md). These deliberately replace the old flat/signed positional lightning, size Mastery and Energized ammo refund. The old lightning validation oracle is replaced with the complete new damage/control/save contract; its historical evidence remains retained.
 
 - **Duplicate physical lightning damage:** native diagnostic `elements-20261028/native/S1/run-1` records 44 damage at both center and edge from a positional 22 input. The old pooled impact retained a damage callback on a disabled MonoBehaviour, and Unity still dispatched its collision messages. The new shared sampler owns damage once per victim and leaves the artwork without a damage collider. This is required to implement the approved falloff and deduplication.

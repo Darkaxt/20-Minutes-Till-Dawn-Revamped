@@ -179,6 +179,7 @@ public sealed class AndroidEndlessRun:MonoBehaviour
    float speed=elite?Modifier("eliteSpeedMultiplier",horde.eliteSpeedMultiplier):Modifier("speedMultiplier",horde.speedMultiplier),speedGrowth=endless?AndroidEndlessTables.HordeMovespeedUp.Value(level):1;
    ai.maxMoveSpeed=ai.baseMaxMoveSpeed*speed*speedGrowth;ai.acceleration=ai.baseAcceleration*speed*speedGrowth;
   }
+  EliteRun.Instance.Spawned(actor,elite);
  }
  void SpawnBoss(AndroidEndlessBossState saved=null)
  {
