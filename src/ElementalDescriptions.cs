@@ -11,7 +11,7 @@ class ElementalDescriptions
   ["electro_mage_name"]="Every 2nd shot calls Lightning for 22 base damage. A small splash deals less damage toward its edge and stuns enemies for 2 seconds.",
   ["electro_bug_name"]="Summon an Electro Bug that calls 2 Lightning strikes every 3 seconds. Its strikes gain summon bonuses, splash and electrical stun.",
   ["energized_name"]="Reload Speed +1% for each living, electrically stunned enemy currently on screen. Each enemy counts once; there is no cap.",
-  ["electro_mastery_name"]="Lightning Damage +12. Lightning chains to 3 + Pierce + Bounce additional enemies, retaining 70% damage per jump. Jumps stun but do not splash.",
+  ["electro_mastery_name"]="Lightning Damage +12. Chain to up to 3 + Pierce + Bounce more enemies, retaining 70% damage per jump. Jumps stun without splash. Chains end below 1 damage.",
   ["pyro_mage_name"]="Bullets have a 50% chance to apply 3 Burn damage per second for 5 seconds. Burns accumulate. Fresh ignitions cause brief slow retreat and spread weaker fire nearby.",
   ["fire_starter_name"]="Every 4th shot launches a Fireball with 40 base damage, improved by Bullet Damage. It explodes with twice its radius, dealing less damage toward the edge and igniting enemies.",
   ["intense_burn_name"]="Burn Damage +35%, including propagated burns. Fire spreads with 70% of its parent's accumulated potency; bonuses are applied once.",

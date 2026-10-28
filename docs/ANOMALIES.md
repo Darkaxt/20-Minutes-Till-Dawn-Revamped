@@ -4,6 +4,8 @@
 
 Final package review found a Revamped integration error: chain counts used `stats.Piercing/Bounce.Modify(0)`, omitting weapon-base values. The HUD instead displays the complete current projectile recipe. N01 requires those full metrics. This reopened the elemental stage and superseded candidate5114bea before publication; the corrected contract is verified with both acquired bonuses and nonzero weapon-base values. No extra chain cap is authorized or added.
 
+The native inventory reports999 Pierce on Flame Cannon/sword variants. The user explicitly chose damage-based termination: stop before a jump whose falloff is below1 damage, including its stun and artwork. This preserves the full metric budget without adding a hard target cap. Native tests cover34 total damage reaching nine additional enemies and36 reaching ten, for both targeted and positional producers.
+
 The subsequent enhanced-regular-enemy feature is a requested addition. It uses the native kill count and final ordinary spawn values, without changing Android's scheduled elite/miniboss identities. Source Death returns its actor before invoking drop spawners; the new XP multiplier therefore survives that deactivation until drop dispatch completes, while health/aura/firing reset for reuse. This lifecycle is covered by native death/XP/pool checks. The new checkpoint member is optional for older runs, which retain progress toward the next 200-kill boundary.
 
 The user approved the elemental rules in [ELEMENTS.md](ELEMENTS.md). These deliberately replace the old flat/signed positional lightning, size Mastery and Energized ammo refund. The old lightning validation oracle is replaced with the complete new damage/control/save contract; its historical evidence remains retained.

@@ -11,6 +11,7 @@ namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
  internal static AIComponent ElementAimed;internal static Vector2 ElementAimPoint;internal static int ElementStrikes;
+ int ElementChainNotices;void ElementChainHit(object sender,object args)=>ElementChainNotices++;
  IEnumerator CheckElements(string mode)
  {
   if(mode=="elements-save"||mode=="elements-continue"||mode=="elements-prior"){yield return ElementSave(mode);yield break;}
@@ -130,8 +131,22 @@ public partial class RuntimeChecks
    for(int i=0;i<10;i++)targets.Add(ElementEnemy(origin+Vector2.right*(ElementWidth*2*i)));
    ThunderGenerator.SharedInstance.GenerateAt(targets[0].gameObject,22);yield return null;yield return null;int[] combined={34,23,16,11,8,5,4,2,1,0};
    for(int i=0;i<targets.Count;i++)Require(10000-targets[i].HP==combined[i],"chain follows full HUD metrics including weapon-base values at "+i);
+   data.piercing=999;this.AddObserver(ElementChainHit,ThunderGenerator.ThunderHitEvent);
+   foreach(bool positional in new[]{false,true})foreach(int input in new[]{22,24})
+   {
+    ElementClear();while(Object.FindObjectsOfType<ElementalArc>().Length>0)yield return null;ElementChainNotices=0;targets.Clear();for(int i=0;i<14;i++)targets.Add(ElementEnemy(origin+Vector2.right*(ElementWidth*2*i)));
+    if(positional)ThunderGenerator.SharedInstance.GenerateAt((Vector3)origin,input);else ThunderGenerator.SharedInstance.GenerateAt(targets[0].gameObject,input);
+    yield return null;yield return null;int victims=input==22?10:11;
+    Require((int)AccessTools.Field(typeof(AndroidLightning),"LastVictims").GetValue(null)==victims,"999-Pierce chain ends at damage floor rather than a fixed target cap: positional="+positional+" input="+input);
+    Require(ElementChainNotices==victims&&Object.FindObjectsOfType<ElementalArc>().Length==victims-1,"below-one jump creates no lightning notification or visual arc");
+    for(int i=0;i<targets.Count;i++)
+    {
+     int amount=Mathf.FloorToInt((input+12)*Mathf.Pow(.7f,i));Require(10000-targets[i].HP==(i<victims?amount:0),"999-Pierce chain retains unrounded falloff through its last damaging jump");
+     Require(i<victims?Control(targets[i])!=null&&Control(targets[i]).Stun>0:Control(targets[i])==null||Control(targets[i]).Stun==0,"below-one chain targets receive no electrical stun");
+    }
+   }
   }
-  finally{data.piercing=originalPierce;data.bounce=originalBounce;}
+  finally{this.RemoveObserver(ElementChainHit,ThunderGenerator.ThunderHitEvent);data.piercing=originalPierce;data.bounce=originalBounce;}
   p.stats[StatType.Piercing].AddFlatBonus(-2);p.stats[StatType.Bounce].AddFlatBonus(-1);ElementClear();yield return null;
   var reused=ElementEnemy(origin);Require(Control(reused)==null||Control(reused).Stun==0,"pooled NPC reuse carries no electrical stun");ElementClear();
   yield return AndroidPick(game,"ElectroBug",game.playerXP.level);yield return null;yield return null;

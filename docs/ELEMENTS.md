@@ -14,7 +14,7 @@ These are user-requested Revamped balance changes, superseding the corresponding
 - **Electro Mage:** every second shot calls a 22-base-damage strike. Splash radius is 1.1 ordinary BrainMonster collider widths, for roughly three closely grouped ordinary mobs.
 - **Electro Bug:** retains two strikes every three seconds and summon scaling, using the shared splash/stun rules.
 - **Energized:** +1% Reload Speed per living, electrically stunned enemy currently on screen, per acquired Energized owner. No cap or ammunition refund. Contributions disappear on recovery, death or leaving the screen.
-- **Electro Mastery:** +12 Lightning Damage; replaces the size increase with 3 + current Pierce + current Bounce chain jumps. Each jump retains 70% unrounded potency, chooses a new target within three body widths and stuns without another splash. Each victim is hit once per original strike.
+- **Electro Mastery:** +12 Lightning Damage; replaces the size increase with up to 3 + current Pierce + current Bounce chain jumps, including weapon-base values. Each jump retains 70% unrounded potency, chooses a new target within three body widths and stuns without another splash. A chain ends when its next jump would deal less than 1 damage; that jump produces no strike, arc or stun. Each victim is hit once per original strike.
 
 ## Fire
 

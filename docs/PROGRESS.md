@@ -4,7 +4,7 @@
 
 | Stage | Status | Satisfied / remaining |
 |---|---|---|
-| N1 Complete elemental redesign | BLOCKED | Full HUD Pierce/Bounce is corrected and verified by native27 after native26 reproduces the omission. Remaining external requirement decision: native Flame Cannon/swords use999 Pierce, so whether zero-damage chain jumps still stun needs the user's choice. Stop below1 damage is proposed; no cap/termination change has been applied. Prior unaffected element/save/mode evidence remains applicable. |
+| N1 Complete elemental redesign | COMPLETE | Latest complete lightning29 verifies full HUD metrics and approved below-one termination; fire16/wind11/save10/Continue13/prior14/maps17/producers20/controller18 remain applicable. Exact inputs and both-style cues are retained in N1-acceptance.json. No blocker or deferral. |
 | N2 Enhanced regular enemies | COMPLETE | Native22/23/24/25 verify real200-kill cadence,3x health/XP, red aura both styles, Eye frequency, boss separation, pool reuse, exact pending/prior saves and all six modes plus Custom. N2-acceptance.json records source pins and closure review. No blocker or deferral. |
 | N3 Final public delivery | BLOCKED | Parked on N01 full-metric chain correction in N1. Candidate5114bea is superseded and its acceptance is cancelled through the owned player signal. No public1.2.0 release. Resume after N1 closes; remaining exact package, publication/download and cleanup gates still apply. |
 

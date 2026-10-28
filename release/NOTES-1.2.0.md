@@ -4,7 +4,7 @@ Lightning, fire and wind now have distinct crowd-control roles alongside the exi
 
 ## Added and refined
 
-- Lightning strikes splash with damage falloff and a separate two-second electrical stun. Electro Mastery adds chains with **3 + Pierce + Bounce** jumps, retaining 70% damage per jump. Energized gives **+1% Reload Speed per visible electrocuted enemy**, replacing ammunition refunds.
+- Lightning strikes splash with damage falloff and a separate two-second electrical stun. Electro Mastery adds up to **3 + Pierce + Bounce** jumps using full weapon metrics, retaining 70% damage per jump. Chains stop below1 damage, without zero-damage stuns or arcs. Energized gives **+1% Reload Speed per visible electrocuted enemy**, replacing ammunition refunds.
 - Fresh fire causes brief slow retreat. Burns spread at 70% underlying potency without multiplying bonuses twice. Fire Starter explodes with twice its current visible radius and ignites blast victims.
 - Gales gather enemies and bend hostile shots outward. Eye pulses push enemies and scatter shots; Mastery disorients movement and ranged aiming. Friendly shots retain their trajectories.
 - Every **200 kills** earns an elite opportunity. The next regular wave enemy gains **3× final health and normal XP**, with a red aura. Elite Eyes fire **50% more frequently**. Scheduled minibosses and bosses keep their existing roles.

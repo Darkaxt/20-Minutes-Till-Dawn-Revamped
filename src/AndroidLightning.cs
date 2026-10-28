@@ -37,9 +37,10 @@ public static class AndroidLightning
    var recipe=PlayerController.Instance.gun.GetProjectileRecipe();int jumps=3+recipe.piercing+recipe.bounce;Vector3 from=position;
    for(int i=0;i<jumps;i++)
    {
+    int amount=Mathf.FloorToInt(full*Mathf.Pow(.7f,i+1));if(amount<1)break;
     ids.Clear();actors.GetMonsterInRange(ids,state.BodyWidth*3,from);
     var next=ids.Select(actors.GetFromID).Where(t=>Eligible(t)&&!visited.Contains(t.GetInstanceID())).OrderBy(t=>Vector2.SqrMagnitude(t.transform.position-from)).ThenBy(t=>t.GetInstanceID()).FirstOrDefault();if(next==null)break;
-    var to=next.transform.position;Visual(owner,to,prefab,impactPrefab,pool,sound);state.Arc(from,to);Hit(owner,next,Mathf.FloorToInt(full*Mathf.Pow(.7f,i+1)),visited,kind);from=to;
+    var to=next.transform.position;Visual(owner,to,prefab,impactPrefab,pool,sound);state.Arc(from,to);Hit(owner,next,amount,visited,kind);from=to;
    }
   }
   LastVictims=visited.Count;
