@@ -4,9 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.1.11](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.11) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
-
-**1.2.0 is not released yet.** The new elemental/elite source is verified except for a final chain-balance decision involving weapons with999 Pierce. [Current status](docs/PROGRESS.md).
+[Download v1.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.0) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -144,7 +142,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [current v1.1.11 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.1.11). Version1.2.0 remains unreleased.
+1. Download and extract the [v1.2.0 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.0).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -177,7 +175,7 @@ The HUD groups acquired icons by native upgrade path, with a subtle glow for tri
 
 ## Changelog
 
-### Unreleased v1.2.0 — Elemental roles and elite enemies
+### v1.2.0 — Elemental roles and elite enemies
 
 **Added/refined:** lightning splash/stun/chains, visible-stun Energized reload speed, fire panic/spread/explosions, defensive wind and distinct visual cues; kill-earned elite regular enemies with3× health/XP and faster Eyes. **Fixed:** duplicate lightning collision damage, stale pooled burns and non-pooled fireball primary impacts. Ice is unchanged. Current/older Continue and native controller/mode behavior remain supported. [Release notes](release/NOTES-1.2.0.md) · [Exact rules](docs/ELEMENTS.md).
 
@@ -255,7 +253,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The **1.2.0** source has verified elemental/elite workflows and the corrected full-metric chain calculation. A final balance decision for999-Pierce weapons remains open, so1.2.0 is not published; [PROGRESS.md](docs/PROGRESS.md) records the exact blocker. The published **1.1.11** package passes POI visibility, all eight nearby reward colors and fresh-process Continue vision with acquired vision bonuses. Exact packaged native workflows, copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.10** package passes the native directional-effects audit in both artwork modes, actual phoenix/Fire Starter/Shotgun behavior and Yuki animation/restart. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.9** package passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Copied installation/rollback and the independently downloaded public package are verified in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
+The **1.2.0** source passes complete elemental/elite native acceptance; final package and public-download verification is tracked in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.11** package passes POI visibility, all eight nearby reward colors and fresh-process Continue vision with acquired vision bonuses. Exact packaged native workflows, copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.10** package passes the native directional-effects audit in both artwork modes, actual phoenix/Fire Starter/Shotgun behavior and Yuki animation/restart. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.9** package passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Copied installation/rollback and the independently downloaded public package are verified in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 
 These are bounded source and gameplay checks, not a natural full-run balance study or a test of every character × weapon × upgrade combination. The next step is user playtesting before broader promotion. [Exact delivery receipt](docs/PROGRESS.md).
 
