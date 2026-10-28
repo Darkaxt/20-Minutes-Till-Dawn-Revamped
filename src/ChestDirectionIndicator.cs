@@ -27,8 +27,8 @@ public sealed class ChestDirectionIndicator:MonoBehaviour
  internal void Build(StatsOverlay hud)
  {
   Marker=StatsOverlay.Rect(new GameObject(Exploration?"ExplorationChestDirection":"BossChestDirection",typeof(RectTransform),typeof(Image)),hud.Panel.transform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(28,28));
-  var image=Marker.GetComponent<Image>();image.sprite=Icon;image.preserveAspect=true;image.raycastTarget=false;image.color=Exploration?ExplorationRun.Mint:Color.white;
-  var arrow=StatsOverlay.Text(Marker,"Direction",hud.Font,"›",20,Vector2.zero,new Vector2(20,20));arrow.alignment=TextAlignmentOptions.Center;arrow.color=image.color;
+  var image=Marker.GetComponent<Image>();image.sprite=Icon;image.preserveAspect=true;image.raycastTarget=false;image.color=Color.white;
+  var arrow=StatsOverlay.Text(Marker,"Direction",hud.Font,"›",20,Vector2.zero,new Vector2(20,20));arrow.alignment=TextAlignmentOptions.Center;arrow.color=Exploration?ExplorationChestVisual.RewardColor(GetComponent<ExplorationChest>().Drop.reward):Color.white;
   Arrow=StatsOverlay.Rect(arrow.gameObject,Marker,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(20,20));
   DistanceText=StatsOverlay.Text(Marker,"Distance",hud.Font,"",12,Vector2.zero,new Vector2(64,16));DistanceText.alignment=TextAlignmentOptions.Center;DistanceText.color=StatsOverlay.Cream;
   StatsOverlay.Rect(DistanceText.gameObject,Marker,new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Vector2(0,-43),new Vector2(64,16));

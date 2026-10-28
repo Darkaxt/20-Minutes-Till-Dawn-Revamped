@@ -1,5 +1,16 @@
 # Current Android gameplay completion
 
+## Elite contours, exploration contents and Endless tiers — 2026-10-29
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| Q1 Complete elite presentation | COMPLETE | Native6–10 verify eleven types, actual Boomer facing/size/windup, animated outside-alpha contour, both styles/viewports, pool/death/XP/Eye cadence and current/prior Continue. | None. |
+| Q2 Exploration reward and pointer correction | COMPLETE | Native11–14,16–17 verify seven actual content icons, no new credits, actual old unopened-credit conversion with earned totals preserved, current Continue, all maps/Custom and nearby visibility. | None. |
+| Q3 Endless elite tiers | ACTIVE | Approved cadence and repeated multipliers are specified in ELEMENTS.md. | Tier implementation and complete native acceptance remain; internal advancement blocker, resolvable in this stage. No deferral. |
+| Q4 Final delivery | NOT STARTED | Target game1.3.1, updater0.2.0/epoch1 unchanged. | Final metadata/package/native copied-install/rollback/public download and cleanup follow Q3. No external blocker. |
+
+Q1-acceptance.json and Q2-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. No production placement change. Live Steam/profile/phone installations remain untouched. No release has been published for these intermediate stages.
+
 ## Character runes and updater transition — 2026-10-28
 
 P1, P2 and P3 are COMPLETE. Normal [game1.3.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0) and signed [updater0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) were published from `29951ac176f74a8fc08f0049adb4ff91f6e48468`. [Authoritative requirements and stage ledger](RUNES.md).

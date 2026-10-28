@@ -1,5 +1,9 @@
 # Android gameplay anomaly ledger
 
+## Exploration playtest correction — 2026-10-29
+
+The requested content pointers had not replaced the generic exploration chest icons, and random credit rewards remained enabled. Exploration now displays the actual stored reward sprite with a colour-coded arrow; native boss treasure retains its chest pointer. Credits are removed from new draws, and old unopened credit drops normalize to XP before rendering/collection without rerolling position or sequence. Previously earned credit totals remain payable. Native11–14,16–17 verify the complete flow, including a real prior-release checkpoint with an unopened credit chest and2000 earned credits. This is a requested Revamped change, not an Android defect.
+
 ## Elite presentation correction — 2026-10-29
 
 Revamped regression: native `AIController.AILookTowards` resets Boomer's enlarged transform to a signed unit scale. Native probe4 isolates the call:125% becomes100%, while the direct animation update retains125%. The facing boundary now preserves pre-call dimensions and the native selected direction. The circular elite marker is replaced with a cached outside-alpha contour and two softer pixel-glow bands; source artwork/animation remains intact. Native6–10 cover eleven regular actor types, explosion windup/death, both artwork modes, square/4:3/16:9, exact pool restoration/resource disposal, health/XP/cadence, current/prior Continue and six modes/Custom. This is a Revamped presentation correction, not an Android balance change.

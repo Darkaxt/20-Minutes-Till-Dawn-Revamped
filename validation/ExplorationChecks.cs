@@ -21,7 +21,7 @@ public partial class RuntimeChecks
   SetPhase("exploration-weight-contract");
   var type=AccessTools.TypeByName("TwentyMinutes.Modernization.ExplorationRun");
   Require(type!=null,"exploration rewards are integrated into the native run");
-  var roll=AccessTools.Method(type,"RewardForRoll");var expected=new[]{"Experience","Credits","Healing","Magnet","Freeze","Frenzy","Upgrade","CharacterUpgrade"};var weights=new[]{25,20,15,12,10,8,8,2};
+  var roll=AccessTools.Method(type,"RewardForRoll");var expected=new[]{"Experience","Healing","Magnet","Freeze","Frenzy","Upgrade","CharacterUpgrade"};var weights=new[]{45,15,12,10,8,8,2};
   int from=0;for(int i=0;i<weights.Length;i++){for(int n=from;n<from+weights[i];n++)Require(roll.Invoke(null,new object[]{n}).ToString()==expected[i],"weighted reward interval "+expected[i]+" roll "+n);from+=weights[i];}
   Require(from==100,"reward weights cover the whole draw exactly");
   SetPhase("PASS");Application.Quit(0);yield break;
@@ -66,7 +66,8 @@ public partial class RuntimeChecks
    Require(label.text==expected.ToString(),"edge distance is the actual rounded player/world-target distance");
    foreach(var graphic in target.Marker.GetComponentsInChildren<Graphic>())
    {var corners=new Vector3[4];graphic.rectTransform.GetWorldCorners(corners);var points=corners.Select(p=>RectTransformUtility.WorldToScreenPoint(null,p)).ToArray();Log("marker-geometry",graphic.name+" safe="+safe+" bounds="+string.Join(";",points.Select(p=>p.ToString()))+" raycast="+graphic.raycastTarget+" root="+StatsOverlay.Instance.Panel.GetComponent<RectTransform>().rect);Require(points.All(p=>safe.Contains(p))&&!graphic.raycastTarget,"complete icon/arrow/distance fits safe area without taking input");}
-   Require(!target.Exploration||target.Marker.GetComponent<Image>().color==ExplorationRun.Mint,"exploration and boss marker palettes remain distinguishable");
+   Require(target.Marker.GetComponent<Image>().color==Color.white,"marker preserves the actual icon's artwork colours");
+   if(target.Exploration)Require(target.Marker.GetComponent<Image>().sprite==run.ContentIcon(target.GetComponent<ExplorationChest>().Drop),"exploration pointer shows its fixed content icon");
   }
   for(int a=0;a<markers.Length;a++)for(int b=a+1;b<markers.Length;b++)Require(Vector2.Distance(HudPoint(markers[a].Marker),HudPoint(markers[b].Marker))>=65*markers[a].Marker.lossyScale.x,"simultaneous edge markers are separated, including coincident directions");
  }
@@ -89,7 +90,7 @@ public partial class RuntimeChecks
   if(mode=="exploration-continue")
   {
    Require(input.exploration!=null&&run.State.random==input.exploration.random&&run.State.credits==input.exploration.credits&&run.State.drops.Count==input.exploration.drops.Count,"Continue preserves exploration RNG, earned credits and unclaimed inventory");
-   foreach(var before in input.exploration.drops){var now=run.State.drops.Single(d=>d.id==before.id);Require(now.reward==before.reward&&now.x==before.x&&now.y==before.y&&now.power==before.power,"Continue preserves exact reward, upgrade key and world position");}
+   foreach(var before in input.exploration.drops){var now=run.State.drops.Single(d=>d.id==before.id);var expected=before.reward==ExplorationReward.Credits?ExplorationReward.Experience:before.reward;Require(now.reward==expected&&now.x==before.x&&now.y==before.y&&now.power==before.power,"Continue preserves reward/key/position, converting a legacy credit drop to XP without a reroll");}
    Require(Mathf.Abs(run.State.remaining-input.exploration.remaining)<.5f&&Mathf.Abs(run.State.frenzy-input.exploration.frenzy)<.5f,"Continue retains spawn/frenzy remaining combat time");
    float expectedDamage=float.Parse(File.ReadAllText(Path.Combine(Environment.GetEnvironmentVariable("MODERNIZATION_EXPECTED_DIR"),"exploration-damage.txt")),System.Globalization.CultureInfo.InvariantCulture);
    CombatClose(Bonus(player.stats[StatType.BulletDamage]),expectedDamage,"Continue applies exactly the saved source bonuses and one exploration frenzy");
@@ -132,7 +133,7 @@ public partial class RuntimeChecks
    if(reward==ExplorationReward.Freeze){target=HitEffectTarget(maximum:10000);target.transform.position=player.transform.position+Vector3.right*5;}
    if(reward==ExplorationReward.Upgrade||reward==ExplorationReward.CharacterUpgrade)power=RunResume.Key(((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{reward==ExplorationReward.CharacterUpgrade})).First());
    var chest=ExplorationFixture(run,reward,origin+Vector2.right*2,power);yield return ExplorationContact(chest,game,reward!=ExplorationReward.CharacterUpgrade);
-   if(reward==ExplorationReward.Credits){Require(run.State.credits==score+1000,"credit reward adds1000 to the saved native-payout score");yield return null;var notice=(TMP_Text)WindField(run,"notice");var at=HudPoint(notice.rectTransform);Require(at.y>30&&at.y<Screen.height*.25f,"real reward notice fits below playfield without covering native level/timer");yield return Capture("exploration-credit-notice.png");}
+   if(reward==ExplorationReward.Credits){Require(run.State.credits==score&&chest.Drop.reward==ExplorationReward.Experience,"legacy credit chest converts to experience and never awards new credits");yield return null;var notice=(TMP_Text)WindField(run,"notice");var at=HudPoint(notice.rectTransform);Require(at.y>30&&at.y<Screen.height*.25f,"real reward notice fits below playfield without covering native level/timer");yield return Capture("exploration-xp-notice.png");}
    if(reward==ExplorationReward.Healing)Require(player.playerHealth.hp==hp+1,"healing reward restores one real red heart");
    if(reward==ExplorationReward.Magnet){while(xp.activeSelf)yield return null;yield return ExplorationConfirmXP(game);Require(!xp.activeSelf,"magnet uses real XP pickup flight and collection");}
    if(reward==ExplorationReward.Freeze){Require(FreezeSystem.SharedInstance.IsFrozen(target.gameObject),"freeze reward invokes native enemy freeze");ReturnFixtureActor(target.gameObject);}
@@ -144,7 +145,8 @@ public partial class RuntimeChecks
   var finalFrenzy=ExplorationFixture(run,ExplorationReward.Frenzy,(Vector2)player.transform.position+Vector2.up*2);yield return ExplorationContact(finalFrenzy,game);
   foreach(var pair in new[]{new{reward=ExplorationReward.Credits,offset=Vector2.right*80},new{reward=ExplorationReward.Experience,offset=Vector2.up*90},new{reward=ExplorationReward.Upgrade,offset=Vector2.left*100}})
   {string power=pair.reward==ExplorationReward.Upgrade?RunResume.Key(((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{false})).First()):null;ExplorationFixture(run,pair.reward,(Vector2)player.transform.position+pair.offset,power);}
-  run.State.remaining=47;RunResume.Save();var saved=RunResume.Read();Require(saved.exploration.drops.Count==3&&saved.exploration.credits==run.State.credits&&saved.exploration.credits>=50&&saved.exploration.frenzy>0,"real checkpoint includes exact active exploration state");
+  Require(run.State.credits==0,"all newly collected exploration rewards leave credits unchanged");run.State.credits=50;Log("fixture-precondition","Seed50 previously earned legacy credits to verify historical payout preservation; new exploration chests awarded none.");
+  run.State.remaining=47;RunResume.Save();var saved=RunResume.Read();Require(saved.exploration.drops.Count==3&&saved.exploration.credits==50&&saved.exploration.frenzy>0,"real checkpoint includes exact active exploration state and historical earned balance");
   File.WriteAllText(Path.Combine(ResultDir,"exploration-checkpoint.json"),JsonUtility.ToJson(saved.exploration,true));
   File.WriteAllText(Path.Combine(ResultDir,"exploration-damage.txt"),Bonus(player.stats[StatType.BulletDamage]).ToString("R",System.Globalization.CultureInfo.InvariantCulture));
   yield return DragonSuspend(game,"Complete weighted exploration, common waves/cap/geometry, all rewards/native menus, shared markers, combat timers and source checkpoint");
@@ -167,10 +169,10 @@ public partial class RuntimeChecks
    Require(run.Chests.Count>=1&&run.Chests.Count<=3,"native map supports off-screen reachable exploration without exceeding cap: "+map);
    yield return null;yield return null;
    foreach(var chest in run.Chests){PoiVisualContract(chest);var at=Camera.main.WorldToViewportPoint(chest.transform.position);Require(at.x<0||at.x>1||at.y<0||at.y>1,"map exploration starts beyond visible ground: "+map);}
-   var first=run.Chests.First();first.Drop.reward=ExplorationReward.Credits;
+   var first=run.Chests.First();Require(run.Chests.All(c=>c.Drop.reward!=ExplorationReward.Credits),"every reachable map reward excludes credits");
    PlayerController.Instance.SetPosition(first.transform.position+Vector3.left*3);yield return null;yield return null;
    PoiVisualContract(first);Require(first.GetComponent<ExplorationChestVisual>().Strength>0,"actual scenario reveals nearby chest content: "+map);yield return PoiCapture("poi-visible-"+map+".png");
-   yield return ExplorationContact(first,game);Require(run.State.credits==1000,"native map collects exploration credits: "+map);
+   yield return ExplorationContact(first,game);Require(run.State.credits==0,"native map collects exploration rewards without credits: "+map);
    yield return Capture("exploration-map-"+map+".png");yield return AchievementExit(game,false);Require(ExplorationRun.Instance==null,"map exit clears the exploration owner: "+map);
   }
   RunResume.Invalidate();yield return OpenCustomConfiguration();Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();yield return MenuPointer(CustomButton("CustomStart"));GameController custom;
@@ -179,11 +181,11 @@ public partial class RuntimeChecks
   Require(CustomMode.Active&&SelectedMap.MapData.achievementsDisabled,"exploration uses the actual no-award Custom scenario");
   var credit=ExplorationFixture(owner,ExplorationReward.Credits,(Vector2)player.transform.position+Vector2.right*2);yield return ExplorationContact(credit,custom);
   var choices=(List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(owner,new object[]{false});string key=RunResume.Key(choices.First());var upgrade=ExplorationFixture(owner,ExplorationReward.Upgrade,(Vector2)player.transform.position+Vector2.up*2,key);yield return ExplorationContact(upgrade,custom,false);
-  Require(Ownership()==ownership&&owner.State.credits==1000,"Custom exploration preserves every unlock/achievement owner while allowing run rewards");
+  Require(Ownership()==ownership&&owner.State.credits==0,"Custom exploration preserves every unlock/achievement owner and grants no exploration credits");
   FeedbackCameras();var search=AccessTools.Method(typeof(ExplorationRun),"FindPosition");object[] probe={0f,Vector2.zero};Require((bool)search.Invoke(owner,probe),"native ground has a valid clear placement ray");
   var origin=player.transform.position;var wall=new GameObject("ExplorationFixtureWall",typeof(BoxCollider2D));wall.transform.position=origin+Vector3.right*2;wall.GetComponent<BoxCollider2D>().size=new Vector2(2,200);Physics2D.SyncTransforms();
   probe=new object[]{0f,Vector2.zero};Require(!(bool)search.Invoke(owner,probe),"solid world geometry blocks the whole searched sector");wall.GetComponent<BoxCollider2D>().isTrigger=true;wall.tag="MapBounds";Physics2D.SyncTransforms();probe=new object[]{0f,Vector2.zero};Require(!(bool)search.Invoke(owner,probe),"native MapBounds trigger also blocks exploration placement");Object.Destroy(wall);yield return null;
-  int wallet=PointsTracker.pts,score=ScoreCalculator.SharedInstance.GetScore().totalScore;yield return AchievementExit(custom,false);Require(PointsTracker.pts-wallet==score,"Custom native payout includes exploration credits once");
+  int wallet=PointsTracker.pts,score=ScoreCalculator.SharedInstance.GetScore().totalScore;yield return AchievementExit(custom,false);Require(PointsTracker.pts-wallet==score,"Custom native end-of-run payout remains unchanged");
   SetPhase("PASS");Log("complete","All native scenarios, Custom obtained/no-award ownership, real rewards/menu/payout and explicit solid/MapBounds geometry");Application.Quit(0);
  }
 }

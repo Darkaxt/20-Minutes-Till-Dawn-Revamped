@@ -11,6 +11,8 @@ using flanne.Pickups;
 using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization;
 
+// Credits keeps its serialized ordinal for old checkpoints; restored drops
+// convert to Experience before their world object and marker are created.
 public enum ExplorationReward{Experience,Credits,Healing,Magnet,Freeze,Frenzy,Upgrade,CharacterUpgrade}
 [Serializable]public sealed class ExplorationDrop
 {public int id;public ExplorationReward reward;public float x,y;public string power;}
@@ -32,7 +34,7 @@ public sealed class ExplorationRun:MonoBehaviour
  public static ExplorationReward RewardForRoll(int roll)
  {
   if(roll<0||roll>=100)throw new ArgumentOutOfRangeException(nameof(roll));
-  return roll<25?ExplorationReward.Experience:roll<45?ExplorationReward.Credits:roll<60?ExplorationReward.Healing:roll<72?ExplorationReward.Magnet:roll<82?ExplorationReward.Freeze:roll<90?ExplorationReward.Frenzy:roll<98?ExplorationReward.Upgrade:ExplorationReward.CharacterUpgrade;
+  return roll<45?ExplorationReward.Experience:roll<60?ExplorationReward.Healing:roll<72?ExplorationReward.Magnet:roll<82?ExplorationReward.Freeze:roll<90?ExplorationReward.Frenzy:roll<98?ExplorationReward.Upgrade:ExplorationReward.CharacterUpgrade;
  }
  void Awake(){Instance=this;game=GetComponent<GameController>();}
  internal static void Validate(ExplorationState state)
@@ -121,14 +123,25 @@ public sealed class ExplorationRun:MonoBehaviour
  }
  internal ExplorationChest Create(ExplorationDrop drop)
  {
+  if(drop.reward==ExplorationReward.Credits){drop.reward=ExplorationReward.Experience;drop.power=null;}
   var template=Resources.FindObjectsOfTypeAll<ChestPickup>().First(c=>!c.gameObject.scene.IsValid());
   var go=new GameObject("ExplorationChest_"+drop.id,typeof(SpriteRenderer),typeof(BoxCollider2D));go.transform.SetParent(transform,false);go.transform.position=new Vector3(drop.x,drop.y,0);go.layer=template.gameObject.layer;
   var renderer=go.GetComponent<SpriteRenderer>();var original=template.GetComponentInChildren<SpriteRenderer>();renderer.sprite=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(template);renderer.color=Mint;renderer.sortingLayerID=original.sortingLayerID;renderer.sortingOrder=original.sortingOrder;
   var collider=go.GetComponent<BoxCollider2D>();collider.isTrigger=true;collider.size=(Vector2)renderer.sprite.bounds.size*.8f;
   var chest=go.AddComponent<ExplorationChest>();chest.Owner=this;chest.Drop=drop;Chests.Add(chest);
   ExplorationChestVisual.Attach(chest,template);
-  var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;marker.Icon=renderer.sprite;
+  var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;marker.Icon=ContentIcon(drop);
   return chest;
+ }
+ public Sprite ContentIcon(ExplorationDrop drop)
+ {
+  var experience=ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].GetComponentInChildren<SpriteRenderer>(true).sprite;
+  if(drop.reward==ExplorationReward.Experience||drop.reward==ExplorationReward.Credits)return experience;
+  var powers=Resources.FindObjectsOfTypeAll<Powerup>();
+  if(drop.reward==ExplorationReward.Upgrade||drop.reward==ExplorationReward.CharacterUpgrade)
+  {var power=powers.FirstOrDefault(p=>RunResume.Key(p)==drop.power);return power==null?experience:power.icon;}
+  string key=drop.reward==ExplorationReward.Healing?"Vitality":drop.reward==ExplorationReward.Magnet?"Magnetism":drop.reward==ExplorationReward.Freeze?"FrostMage":"RapidFire";
+  return powers.First(p=>p.name==key).icon;
  }
  internal void Collect(ExplorationChest chest)
  {
@@ -137,8 +150,8 @@ public sealed class ExplorationRun:MonoBehaviour
   var player=PlayerController.Instance;
   switch(drop.reward)
   {
-   case ExplorationReward.Experience:Experience();break;
-   case ExplorationReward.Credits:State.credits+=1000;Notify("+1000 credits");break;
+   case ExplorationReward.Experience:
+   case ExplorationReward.Credits:Experience();break;
    case ExplorationReward.Healing:if(player.playerHealth.hp<player.playerHealth.maxHP){player.playerHealth.Heal(1);Notify("+1 heart");}else Experience();break;
    case ExplorationReward.Magnet:foreach(var xp in Object.FindObjectsOfType<XPPickup>())xp.GetComponent<AndroidPickup>().TargetPick(player.gameObject);Notify("XP magnet");break;
    case ExplorationReward.Freeze:foreach(var ai in Object.FindObjectsOfType<AIComponent>().Where(a=>a.gameObject.layer==(int)TagLayerUtil.Enemy))AndroidFreezeApplication.Apply(FreezeSystem.SharedInstance,ai.gameObject,3);Notify("Freeze");break;

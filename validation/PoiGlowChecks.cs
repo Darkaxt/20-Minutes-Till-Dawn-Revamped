@@ -51,7 +51,7 @@ public partial class RuntimeChecks
   var glow=chest.GetComponentsInChildren<SpriteRenderer>(true).Where(r=>r.name.StartsWith("RewardGlow")).ToArray();Require(glow.Length==3,"three restrained native-circle layers form the glow");
   var color=ExplorationChestVisual.RewardColor(chest.Drop.reward);
   foreach(var renderer in glow)Require(renderer.enabled==(expected>0)&&renderer.color.r==color.r&&renderer.color.g==color.g&&renderer.color.b==color.b&&renderer.color.a<=.1201f&&renderer.gameObject.layer==template.transform.Find("Arrow").gameObject.layer,"reward glow uses the native visible-in-fog layer without changing native fog channels");
-  var marker=chest.GetComponent<ChestDirectionIndicator>();if(marker.Marker!=null)Require(marker.Marker.GetComponent<UnityEngine.UI.Image>().color==ExplorationRun.Mint,"edge pointer retains mint instead of leaking distant reward type");
+  var marker=chest.GetComponent<ChestDirectionIndicator>();if(marker.Marker!=null)Require(marker.Marker.GetComponent<UnityEngine.UI.Image>().color==Color.white&&marker.Marker.GetComponent<UnityEngine.UI.Image>().sprite==chest.Owner.ContentIcon(chest.Drop),"edge pointer shows its actual reward artwork without mint tint");
  }
  IEnumerator PoiCapture(string name)
  {
@@ -67,7 +67,7 @@ public partial class RuntimeChecks
  {
   var player=PlayerController.Instance;var origin=player.transform.position;
   Log("fixture-precondition","Eight reward categories are created in batches of at most three for native visual checks; visual-only chests are removed without claiming rewards. The separate full exploration workflow exercises every actual pickup/reward/menu and current/prior checkpoints. FogOfWarCamera renders its actual mask texture before batchmode screenshots, as a normal player does automatically.");
-  var palette=Enum.GetValues(typeof(ExplorationReward)).Cast<ExplorationReward>().ToArray();Require(palette.Select(ExplorationChestVisual.RewardColor).Distinct().Count()==8,"eight reward types have distinct palette entries");
+  var palette=Enum.GetValues(typeof(ExplorationReward)).Cast<ExplorationReward>().Where(r=>r!=ExplorationReward.Credits).ToArray();Require(palette.Select(ExplorationChestVisual.RewardColor).Distinct().Count()==7,"seven current reward types have distinct palette entries; credit rewards are excluded");
   for(int batch=0;batch<3;batch++)
   {
    foreach(var reward in palette.Skip(batch*3).Take(3))
@@ -87,7 +87,7 @@ public partial class RuntimeChecks
    RemovePoiFixture(run);yield return null;
   }
   // Keep a full set while the actual scheduler attempts repeated new waves.
-  for(int i=0;i<3;i++)ExplorationFixture(run,ExplorationReward.Credits,(Vector2)origin+new Vector2(4,2*(i-1)));
+  for(int i=0;i<3;i++)ExplorationFixture(run,ExplorationReward.Experience,(Vector2)origin+new Vector2(4,2*(i-1)));
   var ids=run.Chests.Select(c=>c.Drop.id).ToArray();for(int i=0;i<4;i++){run.State.remaining=0;yield return null;yield return null;Require(run.Chests.Select(c=>c.Drop.id).SequenceEqual(ids)&&run.Chests.All(c=>c.gameObject.activeSelf),"unclaimed POIs survive later wave boundaries without expiring");}
   var selected=run.Chests[1];var near=origin+new Vector3(2.5f,0,0);player.SetPosition(near);yield return null;yield return null;Require(selected.GetComponent<ExplorationChestVisual>().Strength==1,"full glow is reached within two world units");
   game.pauseController.Pause();game.ChangeState<PauseState>();yield return null;float strength=selected.GetComponent<ExplorationChestVisual>().Strength;yield return null;CombatClose(selected.GetComponent<ExplorationChestVisual>().Strength,strength,"pause introduces no timed glow or expiry");
@@ -98,7 +98,8 @@ public partial class RuntimeChecks
    foreach(int zoom in new[]{0,100}){CameraZoom.Value=zoom;FeedbackCameras();yield return null;yield return null;foreach(var chest in run.Chests)PoiVisualContract(chest);yield return PoiCapture("poi-near-"+size.x+"-zoom"+zoom+".png");}
   }
   CameraZoom.Value=0;FeedbackCameras();int credits=run.State.credits;var marker=selected.GetComponent<ChestDirectionIndicator>();
-  yield return ExplorationContact(selected,game);Require(run.State.credits==credits+1000&&run.Chests.Count==2,"actual visible chest contact collects once with existing reward amount");yield return null;Require(marker==null||marker.Marker==null||!marker.Marker.gameObject.activeSelf,"collection clears the nearby glow and pointer together");
+  int beforeLevel=game.playerXP.level;float beforeXP=(float)WindField(game.playerXP,"xp");
+  yield return ExplorationContact(selected,game);Require(run.State.credits==credits&&run.Chests.Count==2&&(game.playerXP.level>beforeLevel||(float)WindField(game.playerXP,"xp")>beforeXP),"actual visible chest contact grants XP once without credits");yield return null;Require(marker==null||marker.Marker==null||!marker.Marker.gameObject.activeSelf,"collection clears the nearby glow and pointer together");
   yield return AchievementExit(game,false);Require(ExplorationRun.Instance==null&&!Object.FindObjectsOfType<ExplorationChestVisual>().Any(),"scene exit removes all chest visuals");
   SetPhase("PASS");Log("complete","Native exploration reveal, all8 reward colors/near-far/pause/non-expiry/zoom/viewports/real collection and teardown");Application.Quit(0);
  }

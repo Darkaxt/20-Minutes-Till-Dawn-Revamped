@@ -61,8 +61,8 @@ Authoritative requirements for the reported Forest exploder presentation:
 | Stage | Status | Acceptance |
 |---|---|---|
 | Q1 Complete elite presentation | COMPLETE | Q01–Q03 pass native6–10: eleven regular types, Boomer facing/movement/explosion windup, outside-alpha glow, animation, both styles/three viewports, pause/pool/resource teardown, real200-kill/health/XP/Eye cadence, current/prior Continue, six modes and Custom. Q1-acceptance.json binds inputs. No blocker or deferral. |
-| Q2 Exploration reward and pointer correction | ACTIVE | Q05–Q06: remove credit outcomes and show actual content icons, including saved-drop migration/Continue and boss-pointer separation. |
-| Q3 Endless elite tiers | NOT STARTED | Q07: complete tier cadence/multipliers/cues, pool/death/XP/identity and current/prior Continue verification, after Q2. |
+| Q2 Exploration reward and pointer correction | COMPLETE | Q05–Q06 pass native11–14,16–17: all seven content icons, credit-free selection/actual collection, native boss separation, both styles/three viewports/zoom, byte-bound current and actual older credit-drop Continue, all maps/Custom and nearby visibility. Q2-acceptance.json binds inputs. No blocker or deferral. |
+| Q3 Endless elite tiers | ACTIVE | Q07: complete tier cadence/multipliers/cues, pool/death/XP/identity and current/prior Continue verification. |
 | Q4 Final delivery | NOT STARTED | Q04: final verified game package for all requested corrections, public delivery and cleanup follow Q3. |
 
 Storage: `D:/Temp/20mtd-elite-contour-20261029` is the .NET/native small-file I/O exception, registered before generation. Retained diagnostic/verification evidence and usable release artifacts belong in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029`. Existing shared native inputs remain in place. No tracked deferrals.

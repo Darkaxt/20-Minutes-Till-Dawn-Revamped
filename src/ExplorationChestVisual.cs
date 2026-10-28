@@ -14,7 +14,7 @@ public sealed class ExplorationChestVisual:MonoBehaviour
   switch(reward)
   {
    case ExplorationReward.Experience:return new Color(.54f,.84f,.73f);
-   case ExplorationReward.Credits:return new Color(.96f,.80f,.39f);
+   case ExplorationReward.Credits:return RewardColor(ExplorationReward.Experience);
    case ExplorationReward.Healing:return new Color(.96f,.55f,.64f);
    case ExplorationReward.Magnet:return new Color(.65f,.57f,.91f);
    case ExplorationReward.Freeze:return new Color(.48f,.78f,.97f);

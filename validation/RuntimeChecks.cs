@@ -121,6 +121,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="lock-native-inspect"){yield return InspectNativeLock();yield break;}
         if(testMode.StartsWith("mode-clear-")){yield return CheckModeClearRecords(testMode);yield break;}
         if(testMode.StartsWith("stillness-")){yield return CheckStillness(testMode);yield break;}
+        if(testMode=="exploration-contents"){yield return CheckExplorationContents();yield break;}
         if(testMode=="exploration-contract"){yield return CheckExplorationContract();yield break;}
         if(testMode=="exploration-prior"){yield return CheckExploration("exploration-continue");yield break;}
         if(testMode=="exploration-maps"){yield return CheckExplorationMaps();yield break;}
