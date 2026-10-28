@@ -2,9 +2,27 @@
 
 ## Character runes and updater transition — 2026-10-28
 
-P1 and P2 are COMPLETE; P3 is ACTIVE. The public download remains v1.2.1 until both products pass final delivery. [Authoritative requirements and stage ledger](RUNES.md).
+P1, P2 and P3 are COMPLETE. Normal [game1.3.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0) and signed [updater0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) were published from `29951ac176f74a8fc08f0049adb4ff91f6e48468`. [Authoritative requirements and stage ledger](RUNES.md).
 
-P1-acceptance.json under the retained `rune-rewards-20261028` evidence records native legacy rank preservation, independent character toggles, actual battle rank copies/Custom Continue, sequential popup reveal and conversion, all three viewport shapes, capped/uncapped awards, exact fresh-process Continue/XP/evolution, revised rune mechanics in both styles and mode reward rules. Final lifecycle review reproduced stale ranks on Retry in run39; run40 verifies the correction, run41 repeats legacy ownership and run42 passes the complete controller/battle/Continue workflow. Standard cases completed in run23 precede its superseded Quickplay fixture; run25 passes Quickplay's sole-boss allotment, two Endless pairs, Challenge's single allotment and Custom exclusion. P2-acceptance.json binds the signed updater 0.2.0 to native SAF deletion/recovery/scope/epoch/repeat checks and the inspected reset warning. No P1/P2 blocker or deferral remains. Final packaged verification/publication and reviewed scratch cleanup remain required; live Steam/profile and phone are untouched.
+P1-acceptance.json under the retained `rune-rewards-20261028` evidence records native legacy rank preservation, independent character toggles, actual battle rank copies/Custom Continue, sequential popup reveal and conversion, all three viewport shapes, capped/uncapped awards, exact fresh-process Continue/XP/evolution, revised rune mechanics in both styles and mode reward rules. Final lifecycle review reproduced stale ranks on Retry in run39; run40 verifies the correction, run41 repeats legacy ownership and run42 passes the complete controller/battle/Continue workflow. P2-acceptance.json binds the signed updater0.2.0 to native SAF deletion/recovery/scope/epoch/repeat checks and the inspected reset warning.
+
+P3-acceptance.json records independently downloaded normal releases: game ZIP SHA-256 `17bd137ac4e19d7606fe08f7ce29332342f4d95896ce8e1be7ec2cf7341049b8`, production DLL `f4540c20f348e816294b892388b77d2377439f88b25046df51faa47f895aa55c`, APK `17ad351c4f7102ccab821c378a264bb659d0592d525ae523ddf84048c5ef4e75`, existing signer `f3cf1ff75941f4c019cf90109d787146f328cb6a7ac759746b02ef31d9f2075f`. All67 package members, schema2/minimum-updater0.2.0/save-epoch1,614 targets/613 unchanged runtime files and all593 prepared assets pass. Copied installation and rollback preserve142 stock files. A fresh isolated native Android client fetched public1.3.0 and verified its package; its installed APK matches the public APK hash. Live Steam/profile/settings and the phone remain untouched. **Install updater0.2.0 first; its announced one-time reset deletes this game's old progress and Continue save.**
+
+| Packaged workflow | Evidence | Result |
+|---|---|---|
+| Lottery, reveal/burn and aspect ratios | S6/run15 | PASS |
+| Exact Continue, awards and XP | S6/run16 | PASS |
+| Three areas, bands, Quickplay, recurring Endless, Challenge and Custom | S6/run17 | PASS |
+| Legacy ranks and independent native menu | S6/run18 | PASS |
+| Changed rune mechanics, Original/Reborn | S6/run19/20 | PASS |
+| Native Tome-first ordering | S6/run21 | PASS |
+| XP/native upgrade/evolution branching | S6/run22 | PASS |
+| Complete controller workflow | S6/run23 | PASS |
+| Corrected fixture on original/final packaged Retry | S6/run26/27 | PASS |
+
+Run24/25's failed Retry expectation came from a fixture selection overwritten during native menu navigation. The corrected fixture establishes and asserts it at run start. Production inputs are unchanged; candidate-acceptance.json records source applicability for run15–23 and final29951ac package installation/Retry/rollback. Source revision stamping changes the assembled DLL; no gameplay change was made for that fixture correction.
+
+The owned headless emulator exited before reviewed cleanup `740e8c6d3c29e3fbcba77571c4db2304` removed4537 members /4236892440 logical bytes; the exact disposable root is absent. Temporary test-app package review could not parse Android15's appId identity; this limitation was preserved, and the whole task-created AVD was retired through the Windows artifact transaction. No package-uninstall claim is made. Superseded unpublished APK metadata packages were also reviewed and removed. No blocker or tracked deferral remains.
 
 ## Larger elite regular enemies — 2026-10-28
 
