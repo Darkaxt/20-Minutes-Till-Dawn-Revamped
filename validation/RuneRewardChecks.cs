@@ -18,6 +18,13 @@ namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
  Gamepad runePad;
+ IEnumerator RunePopup(GameController game)
+ {
+  // Native drops may open their Tome choice before a queued rune reward,
+  // including when Continue reconstructs a drop near the player.
+  while(!(game.CurrentState is RuneRewardState))
+  {if(game.CurrentState is DevilDealState&&WindField(game.devilDealMenu,"ConfirmEvent")!=null)game.devilDealMenu.OnConfirmClicked();yield return null;}
+ }
  IEnumerator RuneConfirm(GameController game)
  {
   while(!Object.FindObjectOfType<RuneConversionVisual>().Ready)yield return null;
@@ -62,7 +69,7 @@ public partial class RuntimeChecks
   {
    Require(run.State.rewards.Count==1&&run.State.rewards[0].phase==0&&run.State.rewards[0].revealed==1,"fresh-process Continue retains the first revealed slot and pending lottery");
    int before=game.playerXP.level;float levels=.5f*run.State.rewards[0].draws.Sum(d=>d.tier);
-   while(!(game.CurrentState is RuneRewardState))yield return null;
+   yield return RunePopup(game);
    while(Object.FindObjectOfType<RuneConversionVisual>()==null||Object.FindObjectOfType<RuneConversionVisual>().Progress<.4f)yield return null;
    Require(!game.GetComponentsInChildren<TMP_Text>().Any(t=>t.name=="RuneRewardExperience"),"conversion has no debug XP readout");yield return PoiCapture("rune-xp-continued.png");
    yield return RuneConfirm(game);
@@ -80,7 +87,7 @@ public partial class RuntimeChecks
    // Second boss now exercises uncapped permanent ranks and the rune window.
    foreach(var rank in RuneProgression.Profile("Shana").ranks)rank.rank=0;
    RuneSpawnBoss(1);
-   RuneDefeatBoss(game,1);while(!(game.CurrentState is RuneRewardState))yield return null;
+   RuneDefeatBoss(game,1);yield return RunePopup(game);
    Require(run.State.rewards[1].draws.Count==3&&run.State.rewards[1].draws.All(d=>!d.capped),"second real arena boss awards the other half as permanent ranks");
    Require(RuneProgression.Profile("Shana").ranks.Sum(r=>r.rank)==3,"three lottery draws award exactly three permanent ranks with replacement");
    while(!Object.FindObjectOfType<RuneConversionVisual>().Ready)yield return null;yield return PoiCapture("rune-awarded-icons.png");yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;
@@ -96,7 +103,7 @@ public partial class RuntimeChecks
   var other=RuneProgression.Profile("Diamond");other.ranks[0].rank=1;Require(profile.ranks[0].rank==5,"character rune profiles have independent rank objects");
   run.State=null;ElementCall(run,"Ensure");var rows=run.State.schedules[0].rows;Require(rows.Count==6&&rows.Count(t=>t==1)==3&&rows.Count(t=>t==2)==2&&rows.Count(t=>t==3)==1,"D8 full six-draw schedule retains row totals after shuffling");
   RuneSpawnBoss(0);
-  RuneDefeatBoss(game,0);while(!(game.CurrentState is RuneRewardState))yield return null;
+  RuneDefeatBoss(game,0);yield return RunePopup(game);
   Require(run.State.rewards.Count==1&&run.State.rewards[0].draws.Count==3&&run.State.rewards[0].draws.All(d=>d.capped),"first actual arena boss grants three capped draws and never rerolls them");
   Require(run.State.rewards[0].phase==0,"all-capped lottery first reveals each slot inside the popup");
   Require(ObjectPooler.SharedInstance.pooledObjectsDictionary["DevilDeal"].Any(o=>o.activeSelf),"ordinary arena-boss Tome drop still spawns alongside rune rewards");
@@ -183,7 +190,7 @@ public partial class RuntimeChecks
      {if(WindField(game.devilDealMenu,"ConfirmEvent")!=null)game.devilDealMenu.OnConfirmClicked();yield return null;}
      int expected=bosses==1?total:boss%2==0?total/2:total-total/2;Require(run.State.rewards.Single(r=>r.boss==boss).draws.Count==expected,"actual arena split "+pair.Item1+" D"+pair.Item2+" boss"+boss+" = "+expected);
      foreach(var drop in ObjectPooler.SharedInstance.pooledObjectsDictionary["DevilDeal"].Where(o=>o.activeSelf).ToArray())ReturnFixtureActor(drop);
-     if(expected>0){while(!(game.CurrentState is RuneRewardState))yield return null;yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;}
+     if(expected>0){yield return RunePopup(game);yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;}
     }
     Require(profile.ranks.Sum(r=>r.rank)==total*(bosses==4?2:1),"actual arena bosses grant exact permanent ranks for "+pair.Item1+" D"+pair.Item2);
     if(pair.Item1=="Endless_Forest")Require(run.State.schedules.Count==2,"Endless creates a distinct persisted schedule for each pair");
@@ -207,7 +214,7 @@ public partial class RuntimeChecks
   var checkpoint=RunResume.Read();Require(!checkpoint.killedBosses.Contains(0)||checkpoint.devilDeals>0,"no death-callback checkpoint loses the ordinary Tome drop");
   Require(run.State.rewards.Count==1&&run.State.rewards[0].phase==0&&Object.FindObjectOfType<RuneConversionVisual>()==null,"permanent rune outcome waits behind the actual native Tome menu");
   while(WindField(game.devilDealMenu,"ConfirmEvent")==null)yield return null;game.devilDealMenu.OnConfirmClicked();
-  while(!(game.CurrentState is RuneRewardState))yield return null;yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;
+  yield return RunePopup(game);yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;
   Require(run.State.rewards[0].phase==2&&RuneProgression.Profile("Shana").ranks.Sum(r=>r.rank)==1,"ordinary Tome choice completes before the one first-boss permanent rank");
   ElementClear();yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Actual Tome-first collision/reward ordering and stable checkpoint boundary");Application.Quit(0);
  }
