@@ -1,5 +1,7 @@
 # DroidDeck installation
 
+For game 1.3.0, install [Revamped Updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) first. The character-rune transition resets this game's old progress and Continue checkpoint once. The updater announces the reset, uses the selected game's Steam prefix and preserves settings, registry and other games. Later/repeated updates keep new progress. [Current updater instructions](../android-updater/README.md). Earlier delivery records below describe their historical versions; publication does not update the live phone.
+
 ## Current phone delivery — 2026-10-25
 
 **Revamped1.1.3 is now installed through the native Android updater.** The user granted DroidDeck folder access once; the client automatically found the existing game through its Steam library catalogue, remembered the actual game folder, fetched the public GitHub release and upgraded1.1.2→1.1.3. The installed manifest identifies source `26cd69f5f131efb390270923f68aaed14d40aa90`; all614 owned files and142 stock originals verify. Current profile files, settings and all three Wine registry files match the immediate pre-update baseline. No saves or preferences were reset during this update.

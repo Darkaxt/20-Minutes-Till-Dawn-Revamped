@@ -1,4 +1,6 @@
-# Install 1.2.1
+# Install 1.3.0
+
+Android/DroidDeck: install **Revamped Updater 0.2.0** before this game update. The character-rune transition resets this game's old progress and Continue save once. Its button announces the reset; subsequent updates preserve new progress. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 

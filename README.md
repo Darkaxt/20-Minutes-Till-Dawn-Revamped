@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.2.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.1) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -12,7 +12,7 @@ A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt*
 
 ## What changes
 
-- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; expanded rune progression; Save & return / Continue; native Custom settings and mode-default loading; weighted exploration chests and shared edge pointers; optional artwork recolours.
+- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; character rune rewards from arena bosses; Save & return / Continue; native Custom settings and mode-default loading; weighted exploration chests and shared edge pointers; optional artwork recolours.
 - **Ported from Android 8.6:** Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; existing character abilities, combat, status effects, summons, stacking, cooldowns, shooting, event ordering, scenario schedules and mode behavior.
 - **Fixed after the anomaly review:** repeated Continue bonuses, damage signs, frozen-only Shatter, temporary-buff accounting, pooled-effect reuse, exhausted reward menus, encounter/contact defects, character/summon lifetimes and inaccurate descriptions. The changelog below separates each release's ports and corrections.
 
@@ -148,15 +148,17 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.2.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.1).
+1. Download and extract the [v1.3.0 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
-The release contains the mod and installer recipes. It prepares the required artwork/data locally from your owned inputs; extracted game assets and validation assemblies are not bundled. Installation preserves the original game files, saves and configuration and supports exact owned-file rollback.
+The release contains the mod and installer recipes. It prepares the required artwork/data locally from your owned inputs; extracted game assets and validation assemblies are not bundled. Windows installation preserves the original game files, saves and configuration and supports exact owned-file rollback.
 
-**DroidDeck:** the Android updater finds the existing Steam game and installs compatible releases while preserving progress/settings. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
+**DroidDeck:** updater 0.2.0 finds the existing Steam game and performs the one-time rune-transition save reset described below. Later updates preserve new progress and settings. This runs the Windows mod inside DroidDeck. [Phone delivery and launch notes](docs/DROIDDECK.md).
 
 ### Update directly on Android
+
+**Install updater 0.2.0 first.** This transition resets this game's old progress and Continue save once, as shown by **Reset saves & install**. Settings and other games remain. Later updates preserve new progress. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -180,6 +182,14 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.0 — Character runes and arena-boss rewards
+
+**Added:** permanent character-specific rune ranks, automatic row-based boss lotteries, sequential slot reveals and capped-rune burning/XP conversion in one popup. Standard splits rewards between its two arena bosses; Quickplay's sole boss receives all; Endless repeats per pair; Challenge awards once; Custom is excluded. **Changed:** rune purchases/prices/column prerequisites are removed, while independent toggles and the five-rank cap remain. **Fixed/refined:** legacy rank migration and battle-copy/Continue ownership; Wild Magic Curse/Smite chains, Elemental Barrage's new control consumers and Dedication's offensive-family counting. [Exact rules](docs/RUNES.md) · [Release notes](release/NOTES-1.3.0.md).
+
+### Android updater 0.2.0
+
+**Added:** a visible one-time save reset for the rune transition, scoped to this game's Steam prefix, with interrupted-reset recovery and an installed epoch that preserves new progress on later/repeated updates. Existing signer and folder autodetection remain. Game 1.3.0 requires this updater. [Instructions](android-updater/README.md).
 
 ### v1.2.1 — Larger elite enemies
 

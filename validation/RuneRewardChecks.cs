@@ -32,7 +32,7 @@ public partial class RuntimeChecks
   var source=Object.FindObjectOfType<AndroidEndlessRun>();WorldClearSchedule(source);((List<int>)WindField(source,"pendingBosses")).Add(index);WorldTime(SelectedMap.MapData.bossSpawns[index].timeToSpawn);ElementCall(source,"Update");
  }
  void RuneDefeatBoss(GameController game,int index)
- {var boss=RuneBoss(game,index);boss.transform.position=PlayerController.Instance.transform.position+Vector3.right*6;Physics2D.SyncTransforms();boss.TakeDamage(DamageType.Bullet,100000000);}
+ {var boss=RuneBoss(game,index);boss.transform.position=PlayerController.Instance.transform.position+Vector3.right*18;Physics2D.SyncTransforms();boss.TakeDamage(DamageType.Bullet,100000000);}
  IEnumerator CheckRuneRewards(string mode)
  {
   if(mode=="rune-rewards-menu"||mode=="rune-rewards-legacy")
