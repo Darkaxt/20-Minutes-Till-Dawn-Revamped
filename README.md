@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.0) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.2.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.1) · [Android updater](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.1.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -34,9 +34,9 @@ Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bo
 
 ### Face enhanced regular enemies
 
-Enhanced regular enemies add another challenge: every **200 kills** earns one elite opportunity, with **3× health and XP**, a **red aura**, and **50% faster firing** for elite Eyes. Scheduled minibosses/bosses remain distinct, and the cadence survives Continue. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
+Enhanced regular enemies add another challenge: every **200 kills** earns one elite opportunity, with **3× health and XP**, a **red aura**, **25% larger size**, and **50% faster firing** for elite Eyes. Scheduled minibosses/bosses remain distinct, and the cadence survives Continue. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
 
-![Elite Eye with its red aura in the Windows game](docs/images/elite-aura.png)
+![Larger elite Eye with a red aura beside an ordinary Eye in the Windows game](docs/images/elite-aura.png)
 
 *Controlled Windows test after 200 actual enemy deaths. Native XP collection, firing intervals, both artwork modes, saved cadence and normal reuse are verified.*
 
@@ -142,7 +142,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.2.0 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.0).
+1. Download and extract the [v1.2.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.2.1).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -174,6 +174,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.2.1 — Larger elite enemies
+
+**Added:** elite regular enemies are 25% larger in width and height, including their collision bounds. Pool return restores the exact original size, without growth accumulating on reuse. The red aura, 3× health/XP and faster Eye firing remain. Only wind knockback scales with damage/maxHP; the other control durations remain fixed. [Release notes](release/NOTES-1.2.1.md) · [Exact rules](docs/ELEMENTS.md).
 
 ### v1.2.0 — Elemental roles and elite enemies
 
@@ -252,6 +256,8 @@ Verified with actual controller and mouse input in the isolated Windows player a
 [Full anomaly history](docs/ANOMALIES.md) · [Correction-by-correction evidence](docs/BUGFIXES.md) · [Release and verification history](docs/PROGRESS.md).
 
 ## Verification and limits
+
+The **1.2.1** elite-size source workflow is verified. Exact-package and public-download acceptance is tracked in [PROGRESS.md](docs/PROGRESS.md).
 
 The published **1.2.0** package passes the complete elemental/elite native workflows, both visual styles, current/prior Continue, all modes/Custom, controller menus and exploration regression. Exact packaged runtime, copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.11** package passes POI visibility, all eight nearby reward colors and fresh-process Continue vision with acquired vision bonuses. Exact packaged native workflows, copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.10** package passes the native directional-effects audit in both artwork modes, actual phoenix/Fire Starter/Shotgun behavior and Yuki animation/restart. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md). The previous published **1.1.9** package passes native results navigation, Retry/death/Quit, complete retained menus, Mixed relations, varied exploration placement, scaled XP/credits, current/older Continue and native payout. Copied installation/rollback and the independently downloaded public package are verified in [PROGRESS.md](docs/PROGRESS.md). The unchanged gameplay integration retains its recorded acquisition, fire/reload, contact, lifecycle, restart, legacy and Custom checks. The Android updater previously completed a real1.1.2→1.1.3 update; current compatible releases remain user-deployed. [Controller verification](docs/CONTROLLER-UI.md).
 

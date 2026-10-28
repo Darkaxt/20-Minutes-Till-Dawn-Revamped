@@ -1,5 +1,14 @@
 # Current Android gameplay completion
 
+## Larger elite regular enemies — 2026-10-28
+
+| Stage | Status | Acceptance |
+|---|---|---|
+| O1 Complete elite-size workflow | COMPLETE | O01–O03 pass native3/4/5/6: both-style size/collider renders, actual movement, exact pool/death/second-promotion restoration, byte-bound current/prior Continue and all six modes/Custom. O1-acceptance.json pins current source. No blocker or deferral. |
+| O2 Final public delivery | ACTIVE | O1 is COMPLETE. Verify committed v1.2.1 package, copied install/rollback, independent public download, synchronized documentation and reviewed cleanup. |
+
+The current public version is v1.2.0. Only wind displacement scales with actual damage/maxHP; the other elemental control durations remain as documented in [ELEMENTS.md](ELEMENTS.md). The requested size change does not alter those durations. Authoritative requirements O01–O03 are in SPEC.md.
+
 ## Elemental roles and enhanced regular enemies — 2026-10-28
 
 | Stage | Status | Satisfied / remaining |

@@ -19,11 +19,12 @@ public sealed class EliteRun:MonoBehaviour
 }
 public sealed class EnhancedEnemy:MonoBehaviour
 {
- internal bool Enhanced,FasterEye;internal int XpCopies=1;int originalMaximum;Health health;SpriteRenderer aura;
+ internal bool Enhanced,FasterEye;internal int XpCopies=1;int originalMaximum;Vector3 originalScale;Health health;SpriteRenderer aura;
  void Awake(){health=GetComponent<Health>();}
  void OnEnable(){Enhanced=false;XpCopies=1;}
  internal void Promote()
  {
+  originalScale=transform.localScale;transform.localScale=new Vector3(originalScale.x*1.25f,originalScale.y*1.25f,originalScale.z);
   originalMaximum=health.maxHP;health.maxHP=originalMaximum*3;Enhanced=true;XpCopies=3;
   FasterEye=GetComponent<AIComponent>().specialSO!=null&&GetComponent<AIComponent>().specialSO.name=="EyeMonsterShoot";
   if(aura==null){aura=ElementalRun.Instance.Status(transform);aura.name="EliteAura";aura.transform.localScale*=1.5f;}
@@ -35,6 +36,7 @@ public sealed class EnhancedEnemy:MonoBehaviour
   if(!Enhanced)return;
   // Clear the owned spawn multiplier before any other pool consumer reuses
   // this actor. Do not emit health callbacks from an inactive pool member.
+  transform.localScale=originalScale;
   Plugin.SetField(health,"_maxHP",originalMaximum);AndroidHealthEvents.HP(health)=Mathf.Min(health.HP,originalMaximum);Enhanced=false;FasterEye=false;
   // Source Death returns the actor before dispatching its serialized drops.
   // Retain XP copies for that dispatch; the next OnEnable resets them to one.

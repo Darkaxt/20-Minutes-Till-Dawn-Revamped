@@ -36,6 +36,8 @@ These are user-requested Revamped balance changes, superseding the corresponding
 
 Champion control durations are 20% of ordinary durations; displacement is 25%. Boss ignition applies a brief 10% slow instead of retreat. Native freeze and electrical stun stop movement before fear or wind displacement. Slow modifies displacement without repeatedly reducing stored velocity.
 
+Damage relative to maximum enemy health scales **wind pulse displacement only**. Electrical stun, fire retreat/slow and wind disorientation use the fixed durations above; they do not grow with damage or the victim's missing health.
+
 Lightning uses native strike artwork, blue impact/status cues and connecting arcs. Fire uses native burn artwork, an orange status cue and an impact blast. Wind retains Gale artwork with mint pulse and disorientation cues. Both artwork modes use the same geometry and rules. Effects use combat time and stop during native pause.
 
 Acquisitions rebuild the new owners on Continue, including supported older checkpoints. Enemy-local control, projectiles and temporary Energized counts do not become permanent saved bonuses. Pool return clears elemental status; a new run clears the previous run's owners.
@@ -44,10 +46,10 @@ Verification status is recorded in [PROGRESS.md](PROGRESS.md). Controlled fixtur
 
 ## Enhanced regular enemies
 
-Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a visible red aura. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
+Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a visible red aura and **25% larger width and height**. The sprite and collision bounds scale together from that actor's original size, preserving its proportions. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
 
 This promotion is separate from the game's scheduled minibosses and bosses. Those encounters do not consume the opportunity; a promoted regular enemy still counts as one normal enemy, including in Challenge quotas. Health scaling from difficulty, modes and Custom settings is applied before the promotion.
 
 The existing run checkpoint stores how many opportunities have been claimed. A pending opportunity survives Continue, and a new run starts at zero. Older checkpoints without the new member begin at their next 200-kill boundary, retaining their partial progress without retroactively spawning elites for all previous kills. Ordinary enemy world instances follow the game's existing Continue behavior; this addition preserves the cadence rather than introducing a separate enemy-world save system.
 
-Pool reuse removes the health multiplier, red aura and faster Eye firing. The source returns an enemy before dispatching its drops, so its XP multiplier remains available for that death dispatch and resets on its next activation.
+Pool return restores the exact pre-promotion size and removes the health multiplier, red aura and faster Eye firing. Repeated promotion does not compound scale. The source returns an enemy before dispatching its drops, so its XP multiplier remains available for that death dispatch and resets on its next activation.
