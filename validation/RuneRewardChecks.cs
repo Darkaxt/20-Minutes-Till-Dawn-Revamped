@@ -177,6 +177,10 @@ public partial class RuntimeChecks
       var live=(Dictionary<Health,AndroidEndlessBossState>)WindField(source,"liveBosses");var actor=live.Single(p=>p.Value.level==boss).Key;actor.transform.position=PlayerController.Instance.transform.position+Vector3.right*6;Physics2D.SyncTransforms();actor.TakeDamage(DamageType.Bullet,100000000);
      }
      else{RuneSpawnBoss(boss);RuneDefeatBoss(game,boss);}yield return null;
+     // Native Tome pickup can win the state transition on the death frame.
+     // Exercise that real choice before waiting for the queued rune popup.
+     while(game.CurrentState is DevilDealState)
+     {if(WindField(game.devilDealMenu,"ConfirmEvent")!=null)game.devilDealMenu.OnConfirmClicked();yield return null;}
      int expected=bosses==1?total:boss%2==0?total/2:total-total/2;Require(run.State.rewards.Single(r=>r.boss==boss).draws.Count==expected,"actual arena split "+pair.Item1+" D"+pair.Item2+" boss"+boss+" = "+expected);
      foreach(var drop in ObjectPooler.SharedInstance.pooledObjectsDictionary["DevilDeal"].Where(o=>o.activeSelf).ToArray())ReturnFixtureActor(drop);
      if(expected>0){while(!(game.CurrentState is RuneRewardState))yield return null;yield return RuneConfirm(game);while(!(game.CurrentState is CombatState))yield return null;}
