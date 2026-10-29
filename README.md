@@ -28,7 +28,7 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 
 *Actual Windows test capture. The maintenance credit is part of the pixel artwork; the Emberpath promotional panel is removed.*
 
-*v1.3.5 delivery verified: the public download matches the qualified package; shared progression, saved runs and native controller menus pass in the actual Windows player. Compatible saves are preserved.*
+*v1.3.6 delivery verified: the public download matches the qualified package. Local fire panic, paced XP collection, reward markers and current/older saves pass in the actual Windows player. Compatible saves are preserved.*
 
 ## See it in game
 

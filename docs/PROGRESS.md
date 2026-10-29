@@ -2,7 +2,13 @@
 
 ## Local fire panic, paced magnet and XP marker — 2026-10-29
 
-[Authoritative requirements](ELEMENTS.md#local-fire-panic--2026-10-29). F1 Complete local panic behavior and F2 Magnet pacing and XP marker are COMPLETE; F3 Final delivery is ACTIVE. Native1 reproduces stored outward momentum,3–5 verify the complete local-circle change, byte-bound Continue and unchanged fire damage/propagation. Native6 reproduces the0.3-second magnet burst;7–10 verify122 native orbs, distance/cluster pacing, unchanged XP, pause/normal pickup/pool ownership, saved rewards, both-style/viewports, full-health/exhausted/old-credit conversions and all seven content types. No blocker or tracked deferral. Required retained evidence: `D:/Projects/20MTD-Modernization-evidence/fire-panic-20261029`. Disposable native/.NET work: `D:/Temp/20mtd-fire-panic-20261029` (small-file I/O exception). Live Steam/profile/settings/phone remain protected.
+[Authoritative requirements](ELEMENTS.md#local-fire-panic--2026-10-29). F1 Complete local panic behavior, F2 Magnet pacing and XP marker and F3 Final delivery are COMPLETE. F01–F06 are satisfied; no blocker or tracked deferral.
+
+Normal [v1.3.6](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.6) is published from `c336072f34890866c8e30141d2ff3fe8c9357796`. Independently downloaded ZIP SHA-256: `12049e9055e09f3b87c809549e3295c9b46237f0fa7e67f89206419163bfe605`. All 81 public members verify. Only the production DLL changes among614 update targets;593 prepared assets and613 other targets remain unchanged. Updater0.2.0/schema2/save-epoch1 stay compatible without a reset.
+
+Exact packaged S6/run-1–5 pass local panic and native lifecycle, byte-bound public1.3.5 Continue,122 native XP orbs/dense-ring pacing and exact XP, current reward Continue, all seven content markers, old-credit conversion, boss separation, both artwork styles and viewport/zoom checks. Source native3–5 additionally retain complete fire damage/propagation/fireball/healing arithmetic;7–10 cover full-health/exhausted conversions. Copied install/rollback verifies614 owned targets and142 stock files. Live Steam/profile/config and phone remain unchanged.
+
+Reviewed cleanup transaction `2be078114d6a7072dc90bda9e8cf5f17` is applied: {'deleted': 1455}; 319214099 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/fire-panic-20261029`.
 
 ## Shared rune head start and executive summary — 2026-10-29
 
