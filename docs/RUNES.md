@@ -12,7 +12,7 @@ Authoritative follow-up for the obsolete currency counter still visible in chara
 | Stage | Status | Acceptance |
 |---|---|---|
 | R1 Shared selection header | COMPLETE | Native18 uses normal Unity rendering on an isolated non-input desktop: all six character/weapon renders at square/4:3/16:9 visibly pass. Full badge removal, left-aligned native tab, controller/pointer/rune/title re-entry and preserved credits/ownership pass. The desktop closes after process exit. No blocker or deferral. |
-| R2 Final delivery | ACTIVE | Target1.3.2; updater0.2.0/epoch1 retained. Exact packaged normal-render UI/controller/rune checks, install/rollback, publication/download and reviewed cleanup remain. Earlier batch captures are diagnostic only. No external blocker or deferral. |
+| R2 Final delivery | COMPLETE | Normal public1.3.2 from2ae0269; exact packaged selectors at900×900,1024×768 and1280×720, controller menus and legacy rune preservation pass. Copied installation/rollback, independent public download/source/hash checks and reviewed scratch cleanup pass. Updater0.2.0/epoch1 retained; live Steam/profile/phone untouched. |
 
 Storage: `D:/Temp/20mtd-roster-header-20261029` is the registered .NET/native small-file I/O exception. Current required evidence/deliverables belong in `D:/Projects/20MTD-Modernization-evidence/roster-header-20261029`. Existing shared native inputs stay in place. No tracked deferrals.
 

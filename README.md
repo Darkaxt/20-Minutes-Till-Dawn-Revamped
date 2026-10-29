@@ -174,7 +174,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0 to1.3.1 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0/1.3.1 to1.3.2 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -297,7 +297,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The published **1.3.1** package passes native tier progression/ratios, animated contours, actual exploration contents and credit removal, current/older Continue, all-mode/Custom isolation, complete controller menus and rune reward/save compatibility. Its copied installation and exact rollback preserve stock files; the independently downloaded release matches the published source and hashes. Updater0.2.0/save-epoch1 remains compatible without another reset after1.3.0. [Final delivery evidence](docs/PROGRESS.md).
+The published **1.3.2** package verifies the clean, left-aligned selection header in square,4:3 and16:9 native views, controller/pointer/rune navigation and preserved credits/character rune ranks. Complete controller menus and legacy rune compatibility also pass against the exact packaged DLL. Copied installation/rollback and independently downloaded source/package hashes are verified. The1.3.1 elite/exploration changes remain unchanged. Updater0.2.0/save-epoch1 remains compatible without another reset after1.3.0. [Final delivery evidence](docs/PROGRESS.md).
 
 The published **1.2.1** package passes the elite-size native workflows, both artwork modes, exact pool restoration, current/prior Continue and source modes/Custom. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md).
 
