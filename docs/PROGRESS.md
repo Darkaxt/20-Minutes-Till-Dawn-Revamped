@@ -11,6 +11,8 @@
 
 Q1-acceptance.json, Q2-acceptance.json and Q3-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. Q3 run19 was cancelled after the resumed fixture player died during sustained Eye fire; run20 reapplies fixture invincibility and passes the whole Continue workflow. Neither required a production workaround. Live Steam/profile/phone installations remain untouched. No release has been published for these intermediate stages.
 
+Q4's first packaged map sweep (S6/run5) exposed an invalid geometry oracle: a random wave can select another prefab and native facing can flip X. The fixture now records ordinary scales for every actual pool choice and compares dimensions with the selected prefab, independently of facing sign. Production code is unchanged. The corrected full package is undergoing final native verification before publication.
+
 ## Character runes and updater transition — 2026-10-28
 
 P1, P2 and P3 are COMPLETE. Normal [game1.3.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0) and signed [updater0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) were published from `29951ac176f74a8fc08f0049adb4ff91f6e48468`. [Authoritative requirements and stage ledger](RUNES.md).
