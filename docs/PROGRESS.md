@@ -6,9 +6,27 @@
 |---|---|---|---|
 | I1 Reward presentation | COMPLETE | Native3,5,6,7 verify exact heart/soul/XP sources, native tint, seven reward types, dynamic XP replacements, real collection amounts/max HP, both styles/viewports/zoom, current/prior Continue and boss separation. | None. |
 | I2 Rune presentation and Score labels | COMPLETE | Native10/14/16/17/18/20 verify longer sequential fanfare, descriptions, all styles/viewports, real stat/effect acceptance, held-input exclusion, decline, current/public1.3.1 Continue, native Score/results and starting runes in Endless. I2-acceptance.json pins the source. | None. |
-| I3 Combined delivery | ACTIVE | Established release path and updater0.2.0/epoch1 retained. | Exact final package, copied install/rollback, normal public1.3.3, independent download, final docs and reviewed cleanup. |
+| I3 Combined delivery | COMPLETE | Normal public1.3.3 frombcb7276; exact packaged icons, dynamic previews, actual rune effects/decisions, Standard/Endless, current/public1.3.1 Continue, Score/results and controller menus pass. Copied install/rollback, independent public source/hash read-back and reviewed cleanup pass. Updater0.2.0/epoch1 retained; live Steam/profile/phone untouched. | None. |
 
 I1-acceptance.json and native evidence are retained in `D:/Projects/20MTD-Modernization-evidence/reward-icons-20261029`. Diagnostic1 inventories native pickup assets; its normal-render overlay image is not acceptance evidence. Diagnostic2 used a nonexistent prefab name and diagnostic4 used the wrong save DTO parser; both fixtures were corrected, with no production save-parser changes. Actual pointer/glow renders use the established explicit Windows camera/UI capture. The changes reuse the existing chest/marker owners; collection predicates, reward weights/amounts, saved primary rolls and RNG are preserved. Live Steam/profile/phone installations remain untouched.
+
+Normal [v1.3.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.3) was published from `bcb72760cc044805483eaf9f66a36b8e8134a5e3`. Its independently retrieved ZIP has SHA-256 `529c4fe444a8796218d9665fb738729e662b1d5030dec01be1cd7b00e286fada`; all74 public members and the unchanged schema2/minimum-updater0.2.0/save-epoch1 contract pass. Only the mod DLL changes among614 update targets; all593 prepared assets and613 other targets remain unchanged. The copied install/rollback preserves142 stock files.
+
+| Exact packaged workflow | Evidence | Result |
+|---|---|---|
+| reward-icons-fresh | S6/run-1 | PASS |
+| reward-icons-continue | S6/run-2 | PASS |
+| exploration-contents | S6/run-3 | PASS |
+| exploration-prior | S6/run-4 | PASS |
+| rune-fanfare-fresh | S6/run-5 | PASS |
+| rune-fanfare-continue | S6/run-6 | PASS |
+| rune-fanfare-endless | S6/run-7 | PASS |
+| rune-fanfare-endless-continue | S6/run-8 | PASS |
+| rune-rewards-continue | S6/run-10 | PASS |
+| score-presentation | S6/run-11 | PASS |
+| controller-ui-fixed | S6/run-12 | PASS |
+
+I1-acceptance.json, I2-acceptance.json and final I3-acceptance.json bind source, behavior and delivery. Native source diagnostics11–13 concerned fixture Canvas readiness/input-device selection;15 queried the wrong UI hierarchy;19 used an unshipped prototype checkpoint. Corrected checks use actual native readiness, explicit test-device switching and the genuine public1.3.1 checkpoint, without production workarounds. Packaged S6/run9 correctly rejected duplicate permanent grants because an earlier QA replay had already journaled its second boss. The corrected fixture anchors only the isolated QA journal to the retained checkpoint; successful S6/run10 resumes the same package, with no DLL or production history change. All task scratch at `D:/Temp/20mtd-reward-icons-20261029` is absent after reviewed cleanup: 314969850 logical bytes removed. Retained current deliverables and evidence remain in the required evidence directory. No blocker or tracked deferral remains.
 
 ## Selection currency badge and Runes tab — 2026-10-29
 

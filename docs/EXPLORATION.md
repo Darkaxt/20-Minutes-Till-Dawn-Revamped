@@ -12,7 +12,7 @@ Authoritative follow-up, already authorized by the request to audit reward icons
 |---|---|---|
 | I1 Reward presentation | COMPLETE | I01–I02 and source/runtime I03 pass native3,5,6,7: exact heart/soul/XP artwork and tint, all seven rewards, full/damaged and exhausted-upgrade previews, original collection amounts/max HP, both styles/viewports/zoom, current/prior Continue and boss separation. I1-acceptance.json binds the sources. No blocker or deferral. |
 | I2 Rune reward presentation and Score labels | COMPLETE | Native10/14/16/17/18/20 verify fanfare/descriptions, real accepted/declined effects, duplicate/active/capped rules, held input, controller/pointer, current/public1.3.1 Continue, Score/results and explicitly enabled Endless starting runes. I2-acceptance.json binds the source. No blocker or deferral. |
-| I3 Final delivery | ACTIVE | I03 and rune-presentation exact-package checks, install/rollback, publication/download, documentation synchronization and reviewed cleanup. One combined release after I1 and I2. |
+| I3 Final delivery | COMPLETE | Normal public1.3.3 frombcb7276; exact packaged icons, dynamic previews, actual rune effects/decisions, Standard/Endless, current/public1.3.1 Continue, Score/results and controller menus pass. Copied install/rollback, independent public source/hash read-back and reviewed cleanup pass. Updater0.2.0/epoch1 retained; live Steam/profile/phone untouched. |
 
 Storage: `D:/Temp/20mtd-reward-icons-20261029` is the exact .NET/native small-file I/O exception. Retained required evidence and deliverables use `D:/Projects/20MTD-Modernization-evidence/reward-icons-20261029`. Existing shared inputs retain their paths.
 

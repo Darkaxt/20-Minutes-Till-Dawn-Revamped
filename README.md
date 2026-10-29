@@ -307,7 +307,7 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The published **1.3.2** package verifies the clean, left-aligned selection header in square,4:3 and16:9 native views, controller/pointer/rune navigation and preserved credits/character rune ranks. Complete controller menus and legacy rune compatibility also pass against the exact packaged DLL. Copied installation/rollback and independently downloaded source/package hashes are verified. The1.3.1 elite/exploration changes remain unchanged. Updater0.2.0/save-epoch1 remains compatible without another reset after1.3.0. [Final delivery evidence](docs/PROGRESS.md).
+The published **1.3.3** package verifies native reward icons and truthful replacement previews, longer rune fanfare/descriptions, actual accepted and declined current-run effects, starting runes in Endless, current/public1.3.1 Continue, Score/results and complete controller menus. Both artwork modes and square/4:3/16:9 views pass. Copied installation/rollback and independently downloaded source/package hashes are verified. Updater0.2.0/save-epoch1 remains compatible without another reset after1.3.0. [Final delivery evidence](docs/PROGRESS.md).
 
 The published **1.2.1** package passes the elite-size native workflows, both artwork modes, exact pool restoration, current/prior Continue and source modes/Custom. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md).
 

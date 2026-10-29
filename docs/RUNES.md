@@ -13,7 +13,7 @@ U02 is an explicit user-authorized exception to P01's original rule that newly e
 
 Native inventory8 identified the shipped Endless restriction on the initial rune loadout. The user explicitly requested its removal: enabled character runes must apply at the start of Endless and on Continue, just as in Standard. This is an intentional Revamped rule change. “New effect” means absent from the active battle, rather than only permanent rank zero. The offered rank is the last resulting rank awarded for that rune in the current popup, with one decision per rune.
 
-The authoritative stage ledger is in [EXPLORATION.md](EXPLORATION.md#reward-icon-correction--2026-10-29): I1 icons and I2 rune presentation/Score labels are COMPLETE; I3 combined delivery is ACTIVE. Native10/14/16/17/18/20 cover U01–U04, real current-run activation and current/public1.3.1 Continue. No blocker, tracked deferral, new approval checkpoint or intermediate release.
+The authoritative stage ledger is in [EXPLORATION.md](EXPLORATION.md#reward-icon-correction--2026-10-29): I1 icons and I2 rune presentation/Score labels are COMPLETE; I3 combined delivery is COMPLETE. Normal public1.3.3, exact packaged workflows, copied install/rollback, independent download and reviewed cleanup are verified in I3-acceptance.json. Native10/14/16/17/18/20 cover U01–U04, real current-run activation and current/public1.3.1 Continue. No blocker, tracked deferral, new approval checkpoint or intermediate release.
 
 ## Selection-header correction — 2026-10-29
 
