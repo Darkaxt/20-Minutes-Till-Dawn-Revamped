@@ -160,7 +160,7 @@ public partial class RuntimeChecks
   var first=ElementEnemy(origin);var next=ElementEnemy(origin+Vector2.up*w*1.5f);var leaf=ElementEnemy(origin+Vector2.up*w*3);
   foreach(var h in new[]{first,next,leaf})h.GetComponent<MoveComponent2D>().enabled=false;
   BurnSystem.SharedInstance.Burn(first.gameObject,30);yield return null;var state=AndroidBurnState.Get(BurnSystem.SharedInstance);var burn=state.Find(first.gameObject);
-  Require(Control(first).Fear>0&&Control(first).SlowFraction==.25f,"fresh ignition starts slow retreat");float fear=Control(first).Fear;BurnSystem.SharedInstance.Burn(first.gameObject,3);Require(Control(first).Fear==fear&&burn.Damage==33,"reapplication accumulates burn without restarting fear");
+  Require(Control(first).Fear>0&&Control(first).SlowFraction==.25f,"fresh ignition starts local panic and slow");float fear=Control(first).Fear;BurnSystem.SharedInstance.Burn(first.gameObject,3);Require(Control(first).Fear==fear&&burn.Damage==33,"reapplication accumulates burn without restarting panic");
   while(state.Find(next.gameObject)==null)yield return null;CombatClose(state.Find(next.gameObject).Damage,23.1f,"first spread retains70-percent underlying accumulated potency");
   while(state.Find(leaf.gameObject)==null)yield return null;CombatClose(state.Find(leaf.gameObject).Damage,16.17f,"second propagation keeps fractional potency until final damage rounding");
   Require(Control(first).Fear==0&&Control(first).Slow<=.1f,"panic and slow expire independently of an ongoing burn");

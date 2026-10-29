@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Local fire panic, paced magnet and XP marker — 2026-10-29
+
+[Authoritative requirements](ELEMENTS.md#local-fire-panic--2026-10-29). F1 Complete local panic behavior and F2 Magnet pacing and XP marker are COMPLETE; F3 Final delivery is ACTIVE. Native1 reproduces stored outward momentum,3–5 verify the complete local-circle change, byte-bound Continue and unchanged fire damage/propagation. Native6 reproduces the0.3-second magnet burst;7–10 verify122 native orbs, distance/cluster pacing, unchanged XP, pause/normal pickup/pool ownership, saved rewards, both-style/viewports, full-health/exhausted/old-credit conversions and all seven content types. No blocker or tracked deferral. Required retained evidence: `D:/Projects/20MTD-Modernization-evidence/fire-panic-20261029`. Disposable native/.NET work: `D:/Temp/20mtd-fire-panic-20261029` (small-file I/O exception). Live Steam/profile/settings/phone remain protected.
+
 ## Shared rune head start and executive summary — 2026-10-29
 
 [Authoritative requirements](RUNES.md#shared-rune-head-start--2026-10-29). H1 Shared rune progression and H2 Executive README and final delivery are COMPLETE. H01–H05 are satisfied; no blocker or tracked deferral. H1-acceptance.json and H2-acceptance.json bind implementation, native workflows and delivery.

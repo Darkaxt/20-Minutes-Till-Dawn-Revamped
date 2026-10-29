@@ -1,5 +1,11 @@
 # Exploration chests
 
+## Paced magnet and orb marker — 2026-10-29
+
+[Current authoritative follow-up](ELEMENTS.md#local-fire-panic--2026-10-29), F05–F06: the chest magnet now starts attraction as a wave at12 world units per combat second. The normal0.3-second flight follows each orb's delay. Equal-distance clusters start at least1/60 second apart per magnet reward, keeping a dense ring from collecting on one frame. Nearby ordinary pickup may claim a waiting orb sooner; an orb already in flight is not restarted by another chest. Pause freezes the wave and pool return clears it. All original XP and pickup callbacks remain intact; no new ground-orb persistence is introduced.
+
+XP rewards now use a three-orb pixel cluster, shaded in the native pickup tint, rather than the cross-shaped SmallXP sprite. This supersedes I01's original XP-icon choice below. Actual ground XP, healing/soul-heart art and reward amounts are unchanged. The same cluster represents full-health/exhausted-upgrade XP conversions and old credit rewards. The battle owner releases its generated sprite/texture on exit.
+
 ## Reward icon correction — 2026-10-29
 
 Authoritative follow-up, already authorized by the request to audit reward icons and reuse native heart/soul-heart pickups:
@@ -28,7 +34,7 @@ The system draws a new wave every **60–90 seconds of combat**. Pauses and upgr
 |---|---:|---|
 | Experience |45|30% of the current level's full XP requirement, with earned XP bonuses and the native level-up flow |
 | Healing |15|One red heart; the same percentage XP reward instead when health is full |
-| Magnet |12|Existing XP pickups fly to the player using their normal collection behavior |
+| Magnet |12|A distance-based attraction wave, followed by each pickup's normal flight and unchanged XP collection |
 | Freeze |10|Three-second native enemy freeze, retaining boss resistance and immunities |
 | Frenzy |8|+25% bullet damage, summon damage and fire rate for15 combat seconds; another refreshes its duration |
 | Upgrade |8|An eligible normal upgrade shown in the native Take/Leave menu |

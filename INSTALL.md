@@ -1,6 +1,6 @@
-# Install 1.3.5
+# Install 1.3.6
 
-Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.4 installation to1.3.5 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
+Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.5 installation to1.3.6 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 

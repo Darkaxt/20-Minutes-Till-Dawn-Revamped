@@ -118,6 +118,8 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="combat-chest-handoff"){yield return CheckChestHandoff();yield break;}
         if(testMode=="sprite-status-visuals"){yield return CheckElementVisuals();yield break;}
         if(testMode.StartsWith("shared-runes-")){yield return CheckSharedRunes(testMode);yield break;}
+        if(testMode.StartsWith("fire-panic-")){yield return CheckFirePanic(testMode);yield break;}
+        if(testMode.StartsWith("magnet-pacing-")){yield return CheckMagnetPacing(testMode);yield break;}
         if(testMode.StartsWith("roster-header-")){yield return CheckRosterHeader(title,testMode.EndsWith("probe"));yield break;}
         if(testMode=="readme-screenshots"){yield return CheckReadmeScreenshots(title);yield break;}
         if(testMode.StartsWith("rune-rewards-")){yield return CheckRuneRewards(testMode);yield break;}

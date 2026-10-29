@@ -1,11 +1,30 @@
 # Elemental roles
 
+## Local fire panic — 2026-10-29
+
+The user reports that fire retreat sends enemies almost off screen and requests erratic running, such as circles. This authorizes a focused replacement of that movement, superseding the original outward-retreat rule below.
+
+- F01: Fresh ordinary-enemy ignition produces a short, local looping panic instead of sustained outward travel. Keep the existing 0.75-second panic and 25% two-second slow. Use the ignition heading and opposite turn directions across enemies, with an uneven turn rate, rather than synchronized straight retreat. Movement must remain local at both ordinary and faster native speeds.
+- F02: Panic affects applied displacement only; it must not overwrite stored native pursuit velocity. Normal AI pursuit resumes when panic ends. Preserve native stun/freeze priority, boss slow-only behavior, reapplication without restarting panic, propagation potency, damage, modifiers and visuals. Pool reuse resets all panic-local state; pause stops its progress. No new saved enemy state, RNG consumption, tuning setting or framework.
+- F03: Verify actual native movement/path extent and turning, immediate pursuit recovery, simultaneous enemies, no repeated panic, pause, freeze/stun, boss behavior, pool reuse, current/prior Continue and existing fire damage/propagation. Use an isolated non-input Windows desktop; retain actual movement samples and screenshots. Controlled fixtures do not establish natural full-run balance.
+- F04: Update gameplay documentation and README; deliver one normal verified release through the established Windows/DroidDeck updater channel after F05–F06 below. Preserve schema2/save-epoch1/updater0.2.0 compatibility, live Steam/profile/settings and phone state. Verify the exact committed package, install/rollback, public source/tag/assets/download and clean task scratch.
+- F05 (user-added): The exploration magnet reward must stagger XP attraction by orb distance, giving distant orbs a proportional delay instead of pulling the entire map into the player within roughly two seconds. Implement the wave at12 world units/second followed by the native0.3-second flight; equal-distance clusters receive at least1/60 combat second between starts, avoiding one arrival burst. A normal nearby pickup may claim a still-waiting orb immediately. Preserve XP value, ordinary pickup range, pause, pooled-orb reuse, other magnet consumers and Continue. Verify near/far native orbs and the complete actual reward collection, without discarding earned XP or frame-budget timeouts. These are the requested gameplay delays, not execution deadlines; existing transient ground-pickup save semantics remain unchanged.
+- F06 (user-added): Replace the XP exploration reward's cross-like edge marker with a recognizable cluster of larger orb dots in the native XP palette, consistent between preview and collected reward. Healing and other reward markers stay distinct. Verify actual rendered edge markers in both artwork styles/viewports and truthful full-health/old-credit conversions.
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| F1 Complete local panic behavior | COMPLETE | F01–F03 pass native3–5: actual normal/fast local paths, stored pursuit/recovery, opposite simultaneous turns, pause, refresh, stun/freeze, boss/pool ownership, byte-bound Continue and existing fire damage/propagation/fireball/heal checks. F1-acceptance.json binds source and evidence. Root cause was overwritten move.vector plus suspended pursuit. | None. Native1 reproduces the old stored-velocity defect; native2 passes the first implementation. Closure review: local displacement remains in the existing status owner; no new movement subsystem or saved state. |
+| F2 Magnet pacing and XP marker | COMPLETE | F05–F06 pass native7–10:122 real orbs, linear near/far delay and dense-ring pacing, exact XP, normal/pending/pool paths, native pause, saved reward, full-health/exhausted and legacy-credit previews, seven content types, boss separation, both styles/viewports/zoom and teardown. F2-acceptance.json plus native10 bind evidence. | None. Native6 reproduces the simultaneous0.3-second magnet burst. Closure review: pending flight belongs to AndroidPickup; wave ordering and the generated symbol belong to the existing ExplorationRun. No new scheduler subsystem or ground-pickup persistence. |
+| F3 Final delivery | ACTIVE | F1/F2 complete; existing release/updater path retained. | F04 final documentation, exact committed package/public verification and cleanup. No external blocker or deferral. |
+
+Temporary native/.NET small-file I/O uses `D:/Temp/20mtd-fire-panic-20261029`. Required movement evidence, captures and final packages use `D:/Projects/20MTD-Modernization-evidence/fire-panic-20261029`. Existing project/shared-input bindings remain unchanged.
+
 These are user-requested Revamped balance changes, superseding the corresponding Android rules. The ice branch remains unchanged.
 
 | Element | Role | Gameplay |
 |---|---|---|
 | Lightning | Area stun | 22 base damage; small splash with linear 100%–35% damage falloff. Ordinary enemies are stunned for two combat seconds. Another strike refreshes the stun. |
-| Fire | Damage over time | Direct burns accumulate. Fresh ignition causes 0.75 seconds of retreat and a 25% slow for two seconds. Each tick can ignite the nearest unburned neighbor at 70% potency. |
+| Fire | Damage over time | Direct burns accumulate. Fresh ignition causes 0.75 seconds of uneven local circling and a 25% slow for two seconds, without replacing stored pursuit velocity. Each tick can ignite the nearest unburned neighbor at 70% potency. |
 | Wind | Defensive displacement | Gales gather enemies and steer hostile shots outward. Eye pulses push enemies and scatter shots; Mastery makes enemies pursue and aim at the last observed player position. |
 | Ice | Existing freeze and health damage | Existing freeze, Frostbite and Shatter behavior is retained. Electrical stun does not count as freezing. |
 

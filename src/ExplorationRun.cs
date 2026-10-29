@@ -30,6 +30,7 @@ public sealed class ExplorationRun:MonoBehaviour
  public readonly List<ExplorationChest> Chests=new List<ExplorationChest>();
  public ExplorationDrop PendingReward;
  GameController game;bool frenzyApplied;TMP_Text notice;float noticeRemaining;
+ Sprite xpMarker;Texture2D xpMarkerTexture;
  static readonly StatType[] FrenzyStats={StatType.BulletDamage,StatType.SummonDamage,StatType.FireRate};
  public static ExplorationReward RewardForRoll(int roll)
  {
@@ -149,12 +150,39 @@ public sealed class ExplorationRun:MonoBehaviour
  =>shown==ExplorationReward.Experience||shown==ExplorationReward.Healing?PickupArt(shown).color:Color.white;
  internal Sprite ContentIcon(ExplorationDrop drop,ExplorationReward shown)
  {
-  if(shown==ExplorationReward.Experience||shown==ExplorationReward.Healing)return PickupArt(shown).sprite;
+  if(shown==ExplorationReward.Experience)return ExperienceMarker();
+  if(shown==ExplorationReward.Healing)return PickupArt(shown).sprite;
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();
   if(shown==ExplorationReward.Upgrade||shown==ExplorationReward.CharacterUpgrade)
   return powers.First(p=>RunResume.Key(p)==drop.power).icon;
   string key=shown==ExplorationReward.Magnet?"Magnetism":shown==ExplorationReward.Freeze?"FrostMage":"RapidFire";
   return powers.First(p=>p.name==key).icon;
+ }
+ Sprite ExperienceMarker()
+ {
+  if(xpMarker!=null)return xpMarker;
+  // Three pixel-rounded XP orbs, tinted by the native pickup palette. This
+  // owned HUD symbol never edits the actual pickup sprite/atlas or its value.
+  const int width=20,height=18;var pixels=new Color[width*height];
+  foreach(var center in new[]{new Vector2(9.5f,12.5f),new Vector2(5,5),new Vector2(14,5)})
+   for(int y=0;y<height;y++)for(int x=0;x<width;x++)
+   {
+    var offset=new Vector2(x,y)-center;float distance=offset.sqrMagnitude;if(distance>18)continue;
+    float shade=distance>10?.42f:offset.x<0&&offset.y>0?1f:.78f;pixels[y*width+x]=new Color(shade,shade,shade,1);
+   }
+  xpMarkerTexture=new Texture2D(width,height,TextureFormat.RGBA32,false){name="ExplorationXPOrbs",filterMode=FilterMode.Point,wrapMode=TextureWrapMode.Clamp};
+  xpMarkerTexture.SetPixels(pixels);xpMarkerTexture.Apply(false,true);
+  xpMarker=Sprite.Create(xpMarkerTexture,new Rect(0,0,width,height),new Vector2(.5f,.5f),16);xpMarker.name="ExplorationXPOrbs";return xpMarker;
+ }
+ void Magnet()
+ {
+  var player=PlayerController.Instance;float previous=-1f/60;
+  var pickups=Object.FindObjectsOfType<XPPickup>().Select(x=>new{Pickup=x.GetComponent<AndroidPickup>(),Distance=Vector2.Distance(x.transform.position,player.transform.position)}).OrderBy(x=>x.Distance);
+  foreach(var orb in pickups)
+  {
+   float delay=Mathf.Max(orb.Distance/12,previous+1f/60);
+   if(orb.Pickup.MagnetPick(player.gameObject,delay))previous=delay;
+  }
  }
  internal void Collect(ExplorationChest chest)
  {
@@ -166,7 +194,7 @@ public sealed class ExplorationRun:MonoBehaviour
    case ExplorationReward.Experience:
    case ExplorationReward.Credits:Experience();break;
    case ExplorationReward.Healing:if(player.playerHealth.hp<player.playerHealth.maxHP){player.playerHealth.Heal(1);Notify("Healed 1 heart");}else Experience();break;
-   case ExplorationReward.Magnet:foreach(var xp in Object.FindObjectsOfType<XPPickup>())xp.GetComponent<AndroidPickup>().TargetPick(player.gameObject);Notify("XP magnet");break;
+   case ExplorationReward.Magnet:Magnet();Notify("XP magnet");break;
    case ExplorationReward.Freeze:foreach(var ai in Object.FindObjectsOfType<AIComponent>().Where(a=>a.gameObject.layer==(int)TagLayerUtil.Enemy))AndroidFreezeApplication.Apply(FreezeSystem.SharedInstance,ai.gameObject,3);Notify("Freeze");break;
    case ExplorationReward.Frenzy:State.frenzy=15;SetFrenzy(true);Notify("Frenzy +25% damage / fire rate · 15s");break;
    default:
@@ -192,7 +220,7 @@ public sealed class ExplorationRun:MonoBehaviour
   if(notice==null){var hud=StatsOverlay.Instance;notice=StatsOverlay.Text(hud.Panel.transform,"ExplorationRewardNotice",hud.Font,"",16,Vector2.zero,new Vector2(600,28));StatsOverlay.Rect(notice.gameObject,hud.Panel.transform,new Vector2(.5f,0),new Vector2(.5f,0),new Vector2(0,75),new Vector2(600,28));notice.alignment=TextAlignmentOptions.Center;notice.color=Mint;}
   notice.text=text;noticeRemaining=3;
  }
- void OnDestroy(){if(notice!=null)Object.Destroy(notice.gameObject);if(Instance==this)Instance=null;}
+ void OnDestroy(){if(notice!=null)Object.Destroy(notice.gameObject);if(xpMarker!=null)Destroy(xpMarker);if(xpMarkerTexture!=null)Destroy(xpMarkerTexture);if(Instance==this)Instance=null;}
 }
 public sealed class ExplorationChest:MonoBehaviour
 {

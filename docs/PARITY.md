@@ -82,3 +82,7 @@ The approved 23-family review produced **22 corrections and one verified absent 
 Glass's demonstrated Windows warm-Continue multiplication is corrected in 1.1.2. Moth cadence, the capped Kunoichi writer and Ammo's source cleanup spelling retain their recovered behavior; no speculative balance changes were added.
 
 The requested [redirected-flow dead-code audit](DEAD-CODE.md) found native bodies skipped by live Harmony replacements and per-owner recipes superseded by Android graphs. It established no definitely removable mod class/method. Native entry points, reused helpers and legacy readers remain rooted. No dead-code deletion was performed.
+
+## Local panic and magnet pacing — 2026-10-29
+
+The user requested local circling instead of fire retreat, a distance-delayed exploration magnet and a three-orb XP marker. These are intentional Revamped refinements, not new Android parity imports. Native burn arithmetic, propagation, boss response and ordinary0.3-second pickup behavior retain their prior rules. See [requirements and delivery](ELEMENTS.md#local-fire-panic--2026-10-29).

@@ -33,8 +33,12 @@ The final1.1.7 interaction layout supersedes127: currentrun-131 places the nativ
 
 - `poi-glow.png`: unaltered native Windows `poi-glow-fresh` test, D:\Projects\20MTD-Modernization-evidence\poi-glow-20261027\native\S1\run-5. Controlled fixed Magnet/Freeze/Frenzy rewards and near-player positions in Sprites Reborn; native fog texture rendered before capture. Not a natural reward roll or phone screenshot. SHA-256 `9b5b4dc4d753a6e43795233a0edf3099e839c0a009fb77c4aba16375ee500431`.
 
-| [exploration-contents.png](exploration-contents.png) | `D:/Projects/20MTD-Modernization-evidence/status-shaders-20261029/native/S6/run-5/exploration-content-1280-zoom0.png` | `272887fe39a86b2cae7c8a72c8455c49d80f210626940fce1e1ec82d2ed7f5e2` |
+| [exploration-contents.png](exploration-contents.png) | `D:/Projects/20MTD-Modernization-evidence/fire-panic-20261029/native/S1/run-10/exploration-content-0-reborn.png` | `61cca6ee4cc92881b08c9790aa2c090e13034e8e17e99de1d4393f14ad935842` |
 
 ## README gallery refresh — 2026-10-29
 
 The two selector images, Custom menu and exploration contents above are refreshed with inspected unretouched evidence. Current selectors show no wallet; Custom says Score only; exploration shows Score. The older `element-wind.png`, `elite-aura.png`, `elite-tiers.png`, `poi-glow.png`, `results-controller.png` illustrations retain Credits/Earned labels and are no longer embedded in the current README. Their files and original provenance remain historical evidence. The current sprite-status capture already illustrates wind cues and an enlarged elite. No runtime feature was removed or changed.
+
+## Local panic and paced XP update
+
+`exploration-contents.png` is an unretouched native render of the new three-orb XP marker beside the red-heart and magnet symbols, with the original boss pointer. Controlled content fixtures verify all seven reward types, conversions, viewports and both artwork styles. Ground XP artwork is unchanged.

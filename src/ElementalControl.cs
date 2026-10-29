@@ -10,17 +10,24 @@ public sealed class ElementalControl:MonoBehaviour
  internal static readonly HashSet<ElementalControl> Active=new HashSet<ElementalControl>();
  public float Stun{get;private set;}public float Fear{get;private set;}public float Slow{get;private set;}public float Dizzy{get;private set;}
  public float SlowFraction{get;private set;}
- internal AIComponent AI;Health health;Vector2 lastSeen,push;float pushRemaining;Transform aim;ElementalStatusVisual status;
+ const float PanicDuration=.75f;
+ static float nextPanicTurn=1;
+ internal AIComponent AI;Health health;Vector2 lastSeen,push,panicHeading;float pushRemaining,panicTurn;Transform aim;ElementalStatusVisual status;
  internal bool Boss=>gameObject.tag.Contains("Champion");
  internal static ElementalControl Get(GameObject actor)=>actor.GetComponent<ElementalControl>()??actor.AddComponent<ElementalControl>();
  void Awake(){AI=GetComponent<AIComponent>();health=GetComponent<Health>();}
  void OnEnable()=>Active.Add(this);
- void OnDisable(){Active.Remove(this);Stun=Fear=Slow=Dizzy=pushRemaining=0;SlowFraction=0;push=Vector2.zero;if(aim!=null)aim.gameObject.SetActive(false);if(status!=null)status.Hide();var burn=BurnSystem.SharedInstance!=null?AndroidBurnState.Get(BurnSystem.SharedInstance)?.Find(gameObject):null;if(burn!=null)burn.Release();}
+ void OnDisable(){Active.Remove(this);Stun=Fear=Slow=Dizzy=pushRemaining=0;SlowFraction=0;push=panicHeading=Vector2.zero;panicTurn=0;if(aim!=null)aim.gameObject.SetActive(false);if(status!=null)status.Hide();var burn=BurnSystem.SharedInstance!=null?AndroidBurnState.Get(BurnSystem.SharedInstance)?.Find(gameObject):null;if(burn!=null)burn.Release();}
  void OnDestroy(){Active.Remove(this);if(aim!=null)Destroy(aim.gameObject);}
  public bool Electrified=>isActiveAndEnabled&&health!=null&&!health.isDead&&Stun>0;
  internal void Electrocute(){if(AI!=null){Stun=2*(Boss?.2f:1);RuneMechanics.ElementalInflict(gameObject);}}
  internal void Ignite()
- {if(AI==null)return;Fear=Boss?0:.75f;Slow=2*(Boss?.2f:1);SlowFraction=Boss?.1f:.25f;}
+ {
+  if(AI==null)return;Fear=Boss?0:PanicDuration;Slow=2*(Boss?.2f:1);SlowFraction=Boss?.1f:.25f;
+  panicHeading=((Vector2)(transform.position-PlayerController.Instance.transform.position)).normalized;
+  if(panicHeading==Vector2.zero)panicHeading=Vector2.right;
+  if(Fear>0){panicTurn=nextPanicTurn;nextPanicTurn=-nextPanicTurn;}
+ }
  internal void Disorient()
  {if(AI==null)return;Dizzy=1.5f*(Boss?.2f:1);lastSeen=PlayerController.Instance.transform.position;if(aim!=null){aim.position=lastSeen;aim.gameObject.SetActive(true);}RuneMechanics.ElementalInflict(gameObject);}
  internal Vector2 Perceived(Vector2 actual)=>Dizzy>0?lastSeen:actual;
@@ -45,8 +52,17 @@ public sealed class ElementalControl:MonoBehaviour
  internal Vector2 Movement(MoveComponent2D move,float dt)
  {
   if(Stun>0||AI.frozen){move.vector=Vector2.zero;return Vector2.zero;}
-  if(Fear>0)move.vector=((Vector2)(transform.position-PlayerController.Instance.transform.position)).normalized*AI.maxMoveSpeed;
-  Vector2 velocity=move.vector*(Slow>0?1-SlowFraction:1);
+  Vector2 velocity=move.vector;
+  if(Fear>0)
+  {
+   // One uneven local loop, anchored to ignition rather than chasing a moving
+   // player outwards. Preserve the native pursuit vector for immediate recovery.
+   float phase=(1-Fear/PanicDuration)*Mathf.PI*2;
+   float angle=panicTurn*(phase+.25f*Mathf.Sin(phase*2));
+   float sine=Mathf.Sin(angle),cosine=Mathf.Cos(angle);
+   velocity=new Vector2(panicHeading.x*cosine-panicHeading.y*sine,panicHeading.x*sine+panicHeading.y*cosine)*AI.maxMoveSpeed;
+  }
+  velocity*=Slow>0?1-SlowFraction:1;
   Vector2 extra=pushRemaining>0?push:Vector2.zero;extra+=ElementalWind.Drift(transform.position);
   if(extra!=Vector2.zero)
   {

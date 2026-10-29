@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.6](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.6) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -15,7 +15,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
-| **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief retreat/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
+| **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
 | **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Exploration and modes** | Up to three weighted exploration chests offer meaningful XP, healing, utility and upgrades at varied reachable distances. Content icons, distance pointers and nearby colors identify them; indicators stay until the chest is clear of the HUD. Challenge and native Custom menus expand play options; Custom imports mode defaults and uses obtained content without permanent unlock rewards. |
 | **Controls and continuity** | Controller navigation and focus across native menus, locked-content inspection, opaque Options, cleaner results and Retry. Save & return / Continue reconstructs supported runs, including legacy checkpoints. Zoom and display settings support different screen shapes while the HUD keeps its size. |
@@ -34,7 +34,7 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 
 ### Elemental roles
 
-Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bounce. Energized grants reload speed from visible electrocuted enemies. Fire spreads weaker burns, causes brief slow retreat and gives Fire Starter an explosion. Wind gathers enemies, scatters hostile shots and disorients their aiming; ice keeps its existing rules. [Exact values and effects](docs/ELEMENTS.md).
+Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bounce. Energized grants reload speed from visible electrocuted enemies. Fire spreads weaker burns, causes brief local circling and slow and gives Fire Starter an explosion. Wind gathers enemies, scatters hostile shots and disorients their aiming; ice keeps its existing rules. [Exact values and effects](docs/ELEMENTS.md).
 
 ![Lightning splash and chain cues in the Windows game](docs/images/element-lightning.png)
 
@@ -100,13 +100,15 @@ When one target gains an attribute and loses another, it appears **once under Mi
 
 Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
 
+Chest magnets send an attraction wave outward at **12 game units per combat second**, followed by each orb’s normal **0.3-second** flight. Equal-distance clusters are spaced across frames; nearby ordinary pickups can claim waiting orbs sooner. XP amounts are unchanged, and pause freezes the wave.
+
 Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, healing, magnet, freeze, frenzy and eligible native upgrades. **Exploration chests no longer award credits.**
 
 Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. XP chests give **30% of the current level's full requirement**, including earned XP bonuses. Edge indicators show the **actual contents**, including the exact stored upgrade icon; the number is **distance in game units**. Boss treasure retains its gold chest pointer, independent of the three-chest cap. Rewards, positions and timers survive Continue. Old unopened credit chests become XP; credits already earned before updating retain their normal payout.
 
 ![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
 
-XP indicators reuse the native green experience pickup. Healing uses the native red-heart pickup, rather than the maximum-health upgrade; soul-heart artwork remains reserved for soul-heart rewards. At full red health, healing chests preview their XP replacement. An exhausted stored upgrade also switches its preview to XP without rerolling the chest.
+XP indicators show a cluster of three rounded orbs shaded in the native XP tint, replacing the cross-shaped pickup symbol. Healing uses the native red-heart pickup, rather than the maximum-health upgrade; soul-heart artwork remains reserved for soul-heart rewards. At full red health, healing chests preview their XP replacement. An exhausted stored upgrade also switches its preview to XP without rerolling the chest.
 
 *Actual native Windows content/geometry fixture. All seven reward types, both artwork modes, square/4:3/16:9, zoom and current/older Continue are checked. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. [Reward weights and rules](docs/EXPLORATION.md).*
 
@@ -174,7 +176,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.5 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5).
+1. Download and extract the [v1.3.6 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.6).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -184,7 +186,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0–1.3.4 to1.3.5 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0–1.3.5 to1.3.6 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -209,6 +211,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.6 — Local fire panic and paced XP
+
+**Fixed:** burning enemies loop locally and retain their pursuit direction instead of running away with stale momentum. **Improved:** chest magnets attract XP in a distance-based wave, pacing dense groups across frames; ordinary pickup and XP amounts remain unchanged. XP rewards now show a three-orb cluster. No save reset. [Release notes](release/NOTES-1.3.6.md) · [Contracts and verification](docs/ELEMENTS.md#local-fire-panic--2026-10-29).
 
 ### v1.3.5 — Shared rune head starts
 

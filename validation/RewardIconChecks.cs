@@ -39,6 +39,7 @@ public partial class RuntimeChecks
   StopFixtureSpawning();GameTimer.SharedInstance.Stop();var run=game.GetComponent<ExplorationRun>();while(run.State==null)yield return null;
   var player=PlayerController.Instance;var health=player.playerHealth;
   var xp=ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].transform.Find("Bounce").GetComponent<SpriteRenderer>();
+  var xpSymbol=run.ContentIcon(new ExplorationDrop{reward=ExplorationReward.Experience});Require(xpSymbol.name=="ExplorationXPOrbs","XP reward uses the requested orb cluster");
   var heart=Resources.FindObjectsOfTypeAll<HPPickup>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_HeartPickup").transform.Find("Bounce").GetComponent<SpriteRenderer>();
   var soul=Resources.FindObjectsOfTypeAll<SHPPickup>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_SoulHeartPickup").transform.Find("Bounce").GetComponent<SpriteRenderer>();
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();var vitality=powers.First(p=>p.name=="Vitality");
@@ -50,7 +51,7 @@ public partial class RuntimeChecks
    Require(input.exploration.drops.Count==2&&run.State.drops.Count==2&&run.State.random==input.exploration.random,"fresh process retains the two fixed rewards and their RNG");
    foreach(var before in input.exploration.drops){var now=run.State.drops.Single(d=>d.id==before.id);Require(now.reward==before.reward&&now.x==before.x&&now.y==before.y&&now.power==before.power,"Continue preserves primary reward, exact position and selected upgrade without rerolling");}
    var healing=run.Chests.Single(c=>c.Drop.reward==ExplorationReward.Healing);var exhausted=run.Chests.Single(c=>c.Drop.reward==ExplorationReward.Upgrade);
-   Require(health.hp==health.maxHP,"saved full red health restores");yield return RewardIconReady(healing,xp.sprite,xp.color);yield return RewardIconReady(exhausted,xp.sprite,xp.color);RewardPreviewColor(healing,ExplorationReward.Experience);RewardPreviewColor(exhausted,ExplorationReward.Experience);
+   Require(health.hp==health.maxHP,"saved full red health restores");yield return RewardIconReady(healing,xpSymbol,xp.color);yield return RewardIconReady(exhausted,xpSymbol,xp.color);RewardPreviewColor(healing,ExplorationReward.Experience);RewardPreviewColor(exhausted,ExplorationReward.Experience);
    health.hp--;yield return RewardIconReady(healing,heart.sprite,heart.color);RewardPreviewColor(healing,ExplorationReward.Healing);
    int max=health.maxHP,soulHP=health.shp;yield return ExplorationContact(healing,game);
    Require(health.hp==max&&health.maxHP==max&&health.shp==soulHP,"continued healing restores one missing red heart without max/soul-heart changes");
@@ -67,9 +68,9 @@ public partial class RuntimeChecks
   foreach(bool reborn in new[]{false,true})
   {
    if(ColorfulStyle.Instance.Enabled!=reborn)ColorfulStyle.Instance.Toggle();
-   health.hp=maxHP-1;yield return RewardIconReady(healingChest,heart.sprite,heart.color);yield return RewardIconReady(xpChest,xp.sprite,xp.color);yield return RewardIconReady(upgradeChest,power.icon,Color.white);RewardPreviewColor(healingChest,ExplorationReward.Healing);
+   health.hp=maxHP-1;yield return RewardIconReady(healingChest,heart.sprite,heart.color);yield return RewardIconReady(xpChest,xpSymbol,xp.color);yield return RewardIconReady(upgradeChest,power.icon,Color.white);RewardPreviewColor(healingChest,ExplorationReward.Healing);
    ExplorationMarkerBounds(run);yield return Capture("reward-icons-damaged-"+(reborn?"reborn":"original")+".png");
-   health.Heal(1);yield return RewardIconReady(healingChest,xp.sprite,xp.color);RewardPreviewColor(healingChest,ExplorationReward.Experience);
+   health.Heal(1);yield return RewardIconReady(healingChest,xpSymbol,xp.color);RewardPreviewColor(healingChest,ExplorationReward.Experience);
    Require(healingChest.Drop.reward==ExplorationReward.Healing,"full-health XP preview does not rewrite the stored healing roll");
    yield return Capture("reward-icons-full-"+(reborn?"reborn":"original")+".png");
   }
@@ -80,8 +81,8 @@ public partial class RuntimeChecks
   }
   CameraZoom.Value=0;player.SetPosition(healingChest.transform.position+Vector3.right*2);health.hp=maxHP-1;yield return RewardIconReady(healingChest,heart.sprite,heart.color);yield return null;
   Require(healingChest.GetComponent<ExplorationChestVisual>().Strength>.99f,"nearby healing chest reaches its full content glow");RewardPreviewColor(healingChest,ExplorationReward.Healing);PoiVisualContract(healingChest);yield return Capture("reward-glow-healing.png");
-  health.Heal(1);yield return RewardIconReady(healingChest,xp.sprite,xp.color);RewardPreviewColor(healingChest,ExplorationReward.Experience);PoiVisualContract(healingChest);yield return Capture("reward-glow-full-xp.png");
-  player.playerPerks.Equip(power);game.powerupGenerator.RemoveFromPool(power);yield return RewardIconReady(upgradeChest,xp.sprite,xp.color);RewardPreviewColor(upgradeChest,ExplorationReward.Experience);
+  health.Heal(1);yield return RewardIconReady(healingChest,xpSymbol,xp.color);RewardPreviewColor(healingChest,ExplorationReward.Experience);PoiVisualContract(healingChest);yield return Capture("reward-glow-full-xp.png");
+  player.playerPerks.Equip(power);game.powerupGenerator.RemoveFromPool(power);yield return RewardIconReady(upgradeChest,xpSymbol,xp.color);RewardPreviewColor(upgradeChest,ExplorationReward.Experience);
   Require(upgradeChest.Drop.reward==ExplorationReward.Upgrade&&upgradeChest.Drop.power==RunResume.Key(power),"exhausted upgrade preview preserves its original fixed upgrade and primary roll");
   Require(run.State.random==random&&run.State.nextId==nextId&&run.State.drops.Count==3&&PointsTracker.pts==wallet,"presentation changes do not draw RNG, spawn/claim rewards or alter credits");
   SetPhase("reward-icons-collections");maxHP=health.maxHP;soulHealth=health.shp;health.hp=maxHP;

@@ -21,7 +21,7 @@ public partial class RuntimeChecks
   Require(!counts.ContainsKey(ExplorationReward.Credits)&&counts.Count==7&&counts[ExplorationReward.Experience]==45,"all100 weighted rolls exclude credits and transfer their20-percent share to XP");
   Require(counts[ExplorationReward.Healing]==15&&counts[ExplorationReward.Magnet]==12&&counts[ExplorationReward.Freeze]==10&&counts[ExplorationReward.Frenzy]==8&&counts[ExplorationReward.Upgrade]==8&&counts[ExplorationReward.CharacterUpgrade]==2,"all other reward weights retain their exact prior shares");
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();var upgrade=((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{false})).First();var character=((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{true})).First();
-  var xp=ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].GetComponentInChildren<SpriteRenderer>(true).sprite;
+  var xp=run.ContentIcon(new ExplorationDrop{reward=ExplorationReward.Experience});Require(xp.name=="ExplorationXPOrbs","XP preview uses the rounded orb cluster");
   PlayerController.Instance.playerHealth.hp=PlayerController.Instance.playerHealth.maxHP-1;
   var heart=Resources.FindObjectsOfTypeAll<HPPickup>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_HeartPickup").transform.Find("Bounce").GetComponent<SpriteRenderer>().sprite;
   var kinds=new[]{ExplorationReward.Experience,ExplorationReward.Healing,ExplorationReward.Magnet,ExplorationReward.Freeze,ExplorationReward.Frenzy,ExplorationReward.Upgrade,ExplorationReward.CharacterUpgrade};
