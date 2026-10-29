@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.1) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.2](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.2) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -140,6 +140,10 @@ Browsing shows a natural unlock sentence. Confirm/click a locked character or we
 
 Runes belong to each character and are earned automatically from arena bosses. Credits, hold-to-buy and column purchase prerequisites are removed. Press an earned rune to enable or disable it; multiple runes in the same row can remain active. The five-rank cap remains, and existing Windows purchased ranks seed each character once.
 
+Character and weapon selection omit the obsolete currency badge. The Runes tab sits at the left edge of the header, with its native background, prompt and show/hide animation.
+
+![Character selection with the Runes tab aligned left and no currency badge](docs/images/selection-header-character.png)
+
 Forest's total lottery draws rise from **1 → 3 → 6 → 10** at Darkness **0 / 4 / 8 / 12**. Temple uses Darkness+4; Pumpkin Patch uses +2. The first arena boss awards half, rounded down; the second receives the remainder. Quickplay's single arena boss receives the full allotment. Endless awards again for each boss pair; Challenge awards once, and Custom is excluded. [Exact row table and interactions](docs/RUNES.md).
 
 ![Rune rewards reveal each lottery slot in order inside one opaque popup](docs/images/rune-lottery.png)
@@ -160,7 +164,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.1).
+1. Download and extract the [v1.3.2 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.2).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -194,6 +198,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.2 — Clean selection header
+
+**Fixed:** the obsolete currency badge left behind on character/weapon selection. **Improved:** the complete Runes tab now aligns to the left and retains its native animation, artwork/prompt and controller/mouse hit area. Credits and character rune progress remain unchanged. **Ported:** no additional Android behavior. Updater0.2.0/save-epoch1 remains compatible. [Release notes](release/NOTES-1.3.2.md) · [Verification](docs/PROGRESS.md).
 
 ### v1.3.1 — Animated elite contours, Endless tiers and exploration contents
 

@@ -1,5 +1,16 @@
 # Current Android gameplay completion
 
+## Selection currency badge and Runes tab — 2026-10-29
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| R1 Shared selection header | COMPLETE | Native10 verifies full badge removal, left-aligned tab/background/prompt through native transitions, character/weapon/rune routes, controller/pointer/Back/title re-entry, all three viewports and unchanged credits/progression. | None. |
+| R2 Final delivery | ACTIVE | Target1.3.2; updater0.2.0/epoch1 retained. | Exact package/UI/controller/rune checks, copied install/rollback, public download and reviewed cleanup remain. Internal acceptance work; no external blocker or deferral. |
+
+[Authoritative requirements](RUNES.md#selection-header-correction--2026-10-29). Native1 identifies the purchase-era `PointsDisplay` in the shared selector. Native2 reproduces the missing-removal failure; native3 exposed the wrong Panel-class hook, which was replaced with the actual `UIExtensions.Panel` owner. Probe7 identifies the tab's native cached transition position. Earlier diagnostic fixtures were corrected for animation readiness, composed navigation scope and first controller recovery input. Native10 completes the required round trip, six captures and title re-entry; a redundant second mixed-input cycle from diagnostic9 is not claimed as verified. No gameplay workaround was added.
+
+R1-acceptance.json is retained under `D:/Projects/20MTD-Modernization-evidence/roster-header-20261029`. The existing native panel/group owns the correction; no new canvas, input system or update loop is needed. Only selection presentation changes; live Steam/profile/phone installations remain untouched. Disposable .NET/native output uses the registered `D:/Temp/20mtd-roster-header-20261029` I/O exception.
+
 ## Elite contours, exploration contents and Endless tiers — 2026-10-29
 
 | Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |

@@ -1,4 +1,4 @@
-# Install 1.3.1
+# Install 1.3.2
 
 Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0 installation to1.3.1 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
 

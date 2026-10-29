@@ -68,7 +68,8 @@ public partial class RuntimeChecks
    {
     foreach(var viewport in new[]{new Vector2Int(900,900),new Vector2Int(1024,768),new Vector2Int(1280,720)})
     {
-     Screen.SetResolution(viewport.x,viewport.y,false);yield return WaitDisplay(viewport.x,viewport.y);HeaderContract(title);yield return Capture("weapon-header-"+viewport.x+".png");
+     yield return MenuMove(pad,title.gunMenu.GetComponentInParent<Canvas>().rootCanvas.transform,Entries(title.gunMenu)[0].button);
+     Screen.SetResolution(viewport.x,viewport.y,false);yield return WaitDisplay(viewport.x,viewport.y);yield return HeaderReady(title,title.gunMenu);HeaderContract(title);yield return Capture("weapon-header-"+viewport.x+".png");
      yield return PadClick(pad,title.characterMenu.GetComponentInParent<Canvas>().rootCanvas.transform,title.loadoutBackButton);yield return HeaderReady(title,title.characterMenu);HeaderContract(title);yield return Capture("character-header-"+viewport.x+".png");
      yield return PadClick(pad,title.characterMenu.GetComponentInParent<Canvas>().rootCanvas.transform,Entries(title.characterMenu)[0].button);yield return HeaderReady(title,title.gunMenu);
     }
