@@ -148,6 +148,25 @@ class CharacterRuneMenu
  static IEnumerable<MethodBase> TargetMethods()=>new[]{AccessTools.Method(typeof(RuneMenuCharacterState),"Enter"),AccessTools.Method(typeof(RuneMenuGunState),"Enter")};
  static void Prefix()=>RuneProgression.Project();
 }
+[HarmonyPatch(typeof(flanne.UIExtensions.Panel),nameof(flanne.UIExtensions.Panel.Show))]
+class RuneSelectionHeader
+{
+ // Move the complete tab, including its artwork and prompt, in the native
+ // transition's coordinates so Show/Hide keeps the left-aligned placement.
+ static void Prefix(flanne.UIExtensions.Panel __instance)
+ {
+  var title=Progression.Title;if(title==null||__instance!=title.selectPanel)return;
+  var badge=(RectTransform)__instance.GetComponentInChildren<PointsUI>(true).transform;
+  var tab=(RectTransform)title.runesButton.transform.parent;
+  float x=badge.anchoredPosition.x+badge.rect.xMin-tab.rect.xMin;
+  var transition=tab.GetComponent<flanne.UIExtensions.MoveTransition>();
+  var start=(Vector3)AccessTools.Field(transition.GetType(),"_startPosition").GetValue(transition);start.x=x;Plugin.SetField(transition,"_startPosition",start);
+  tab.anchoredPosition=new Vector2(x,tab.anchoredPosition.y);
+ }
+ // Character, weapon and rune navigation share this native purchase-era badge.
+ static void Postfix(flanne.UIExtensions.Panel __instance)
+ {if(Progression.Title!=null&&__instance==Progression.Title.selectPanel)__instance.GetComponentInChildren<PointsUI>(true).gameObject.SetActive(false);}
+}
 [HarmonyPatch(typeof(TransitionToRetryState),nameof(TransitionToRetryState.Enter))]
 class CharacterRunesOnRetry
 {

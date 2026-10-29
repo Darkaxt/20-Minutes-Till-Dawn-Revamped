@@ -1,5 +1,21 @@
 # Character runes and boss rewards
 
+## Selection-header correction — 2026-10-29
+
+Authoritative follow-up for the obsolete currency counter still visible in character/weapon selection:
+
+- R01: Remove the shared selection panel's entire currency badge (amount, icon and backing). It remains absent across character/weapon browsing, their rune menus and repeated entry. Keep the native Runes/Back controls and controller/pointer routes usable; do not hide their shared parent panel or override focus every frame.
+- R02: Preserve stored credits, normal in-run/results accounting, milestone unlocks and character rune ranks/toggles. The scope is the obsolete selection-header presentation.
+- R03: Verify actual rendered character/weapon headers at square,4:3 and16:9 sizes, native controller/pointer navigation and re-entry. Commit/synchronize and publish normal game1.3.2 through the existing release path, verify the exact packaged UI, copied installation/rollback and independent public download, retain updater0.2.0/epoch1 and clean task scratch. Preserve the live Steam/profile/phone installations.
+- R04 (explicit user addition): Move the complete Runes tab to the selector's left-hand header position formerly occupied by the currency badge, including its background and prompt arrow. Preserve native show/hide animation and controller/pointer hit areas across re-entry and the supported aspect ratios.
+
+| Stage | Status | Acceptance |
+|---|---|---|
+| R1 Shared selection header | COMPLETE | R01–R02,R04 and source UI checks in R03 pass native10: complete badge absent, tab/prompt/background left-aligned through native animation, both rune entry points, controller/pointer/Back/main-menu re-entry, three viewports and unchanged credits/progression. R1-acceptance.json binds inputs. No blocker or deferral. |
+| R2 Final delivery | ACTIVE | R03: exact package/native UI, install/rollback, publication/download and cleanup. No external blocker or deferral. |
+
+Storage: `D:/Temp/20mtd-roster-header-20261029` is the registered .NET/native small-file I/O exception. Current required evidence/deliverables belong in `D:/Projects/20MTD-Modernization-evidence/roster-header-20261029`. Existing shared native inputs stay in place. No tracked deferrals.
+
 Authoritative specification for the rune transition, authorized 2026-10-28.
 This document describes the requested replacement; implementation and delivery are tracked below.
 

@@ -55,7 +55,7 @@ public partial class RuntimeChecks:MonoBehaviour
     {
         if(File.Exists(Path.Combine(ResultDir,"cancel.request"))){SetPhase("CANCELLED");Application.Quit(3);return;}
         var p=PlayerController.Instance;if(p==null)p=null;var g=Object.FindObjectOfType<GameController>();
-        string native=(g?.CurrentState?.GetType().Name ?? "title")+"|"+(p?.CurrentState?.GetType().Name ?? "no-player")+"|"+(p?.gun?.gunData?.name ?? "no-gun")+"|"+(p?.gun?.shooters?.FirstOrDefault()?.GetType().Name ?? "no-shooter")+"|"+((p?.gun?.shooters?.FirstOrDefault() as PortedShooter)?.Ready.ToString() ?? "not-ported");
+        string native=(g?.CurrentState?.GetType().Name ?? Object.FindObjectOfType<TitleScreenController>()?.CurrentState?.GetType().Name ?? "title")+"|"+(p?.CurrentState?.GetType().Name ?? "no-player")+"|"+(p?.gun?.gunData?.name ?? "no-gun")+"|"+(p?.gun?.shooters?.FirstOrDefault()?.GetType().Name ?? "no-shooter")+"|"+((p?.gun?.shooters?.FirstOrDefault() as PortedShooter)?.Ready.ToString() ?? "not-ported");
         if(native!=previousNativeState){previousNativeState=native;Log("native-state",native);}
     }
     public static void Log(string kind,object data)
@@ -111,6 +111,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode.StartsWith("roster-header-")){yield return CheckRosterHeader(title,testMode.EndsWith("probe"));yield break;}
         if(testMode.StartsWith("rune-rewards-")){yield return CheckRuneRewards(testMode);yield break;}
         if(testMode.StartsWith("elements-")){yield return CheckElements(testMode);yield break;}
         if(testMode.StartsWith("elites-")){yield return CheckElites(testMode);yield break;}
