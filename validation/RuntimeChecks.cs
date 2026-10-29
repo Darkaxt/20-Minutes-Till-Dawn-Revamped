@@ -123,6 +123,12 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="lock-native-inspect"){yield return InspectNativeLock();yield break;}
         if(testMode.StartsWith("mode-clear-")){yield return CheckModeClearRecords(testMode);yield break;}
         if(testMode.StartsWith("stillness-")){yield return CheckStillness(testMode);yield break;}
+        if(testMode=="exploration-icon-audit"){yield return CheckRewardIconAudit();yield break;}
+        if(testMode.StartsWith("rune-fanfare-")){yield return CheckRuneFanfare(testMode);yield break;}
+        if(testMode=="score-presentation"){yield return CheckScorePresentation();yield break;}
+        if(testMode=="rune-presentation-audit"){yield return CheckRunePresentationAudit();yield break;}
+        if(testMode=="score-presentation-audit"){yield return CheckScorePresentationAudit();yield break;}
+        if(testMode=="reward-icons-fresh"||testMode=="reward-icons-continue"){yield return CheckRewardIcons(testMode.EndsWith("continue"));yield break;}
         if(testMode=="exploration-contents"){yield return CheckExplorationContents();yield break;}
         if(testMode=="exploration-contract"){yield return CheckExplorationContract();yield break;}
         if(testMode=="exploration-prior"){yield return CheckExploration("exploration-continue");yield break;}

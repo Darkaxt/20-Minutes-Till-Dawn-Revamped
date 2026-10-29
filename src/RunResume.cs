@@ -91,7 +91,7 @@ public static partial class RunResume
  public static bool CanSave()
  {
   var r=RunRecorder.Instance;var game=r?.GetComponent<GameController>();var p=PlayerController.Instance;
-  return !Restoring&&!ResumeRuntime.RevivalInProgress&&r!=null&&!r.Finished&&p!=null&&p.playerHealth.hp>0&&SelectedMap.MapData!=null&&
+  return !Restoring&&!ResumeRuntime.RevivalInProgress&&RuneRewardRun.Instance?.Applying!=true&&r!=null&&!r.Finished&&p!=null&&p.playerHealth.hp>0&&SelectedMap.MapData!=null&&
    (game.CurrentState is CombatState||game.CurrentState is PauseState||game.CurrentState is OptionsState||game.CurrentState is SynergyUIState||game.CurrentState is RuneRewardState);
  }
  public static void Save()

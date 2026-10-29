@@ -1,5 +1,15 @@
 # Current Android gameplay completion
 
+## Reward icons, rune presentation and Score labels — 2026-10-29
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| I1 Reward presentation | COMPLETE | Native3,5,6,7 verify exact heart/soul/XP sources, native tint, seven reward types, dynamic XP replacements, real collection amounts/max HP, both styles/viewports/zoom, current/prior Continue and boss separation. | None. |
+| I2 Rune presentation and Score labels | COMPLETE | Native10/14/16/17/18/20 verify longer sequential fanfare, descriptions, all styles/viewports, real stat/effect acceptance, held-input exclusion, decline, current/public1.3.1 Continue, native Score/results and starting runes in Endless. I2-acceptance.json pins the source. | None. |
+| I3 Combined delivery | ACTIVE | Established release path and updater0.2.0/epoch1 retained. | Exact final package, copied install/rollback, normal public1.3.3, independent download, final docs and reviewed cleanup. |
+
+I1-acceptance.json and native evidence are retained in `D:/Projects/20MTD-Modernization-evidence/reward-icons-20261029`. Diagnostic1 inventories native pickup assets; its normal-render overlay image is not acceptance evidence. Diagnostic2 used a nonexistent prefab name and diagnostic4 used the wrong save DTO parser; both fixtures were corrected, with no production save-parser changes. Actual pointer/glow renders use the established explicit Windows camera/UI capture. The changes reuse the existing chest/marker owners; collection predicates, reward weights/amounts, saved primary rolls and RNG are preserved. Live Steam/profile/phone installations remain untouched.
+
 ## Selection currency badge and Runes tab — 2026-10-29
 
 | Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |

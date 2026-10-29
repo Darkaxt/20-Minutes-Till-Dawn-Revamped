@@ -11,9 +11,8 @@ internal static class AndroidRuneStartup
 {
  internal static void Apply()
  {
-  // Native runesDisabled is the inverse of source runeEnable on the owned
-  // maps. Keep native selected-rune storage and the user's progression rules.
-  if(SelectedMap.MapData.runesDisabled)return;
+  // Revamped's character loadout applies in every mode, including Endless.
+  // This explicitly replaces the shipped Endless starting-rune restriction.
   var selected=Loadout.RuneSelection;
   // This is the existing native selection contract: null means no selection.
   if(selected==null)return;

@@ -63,7 +63,7 @@ public static class CustomMode
   var toggles=ChallengeMode.Toggles(menu);var found=toggles.FirstOrDefault(t=>t.GetComponent<flanne.UI.MapEntry>().data.name=="RevampedCustomMode");
   if(found!=null){MenuMap=found.GetComponent<flanne.UI.MapEntry>().data;return;}
   if(MenuMap==null){MenuMap=Object.Instantiate(ChallengeMode.Map);MenuMap.name="RevampedCustomMode";Object.DontDestroyOnLoad(MenuMap);MenuMap.nameStringID="revamped_custom_name";MenuMap.descriptionStringID="revamped_custom_description";}
-  Plugin.Text["revamped_custom_name"]="Custom";Plugin.Text["revamped_custom_description"]="Choose your rules. Earn credits; unlocks and achievements are disabled. Only obtained content is available.";
+  Plugin.Text["revamped_custom_name"]="Custom";Plugin.Text["revamped_custom_description"]="Choose your rules. Earn score; unlocks and achievements are disabled. Only obtained content is available.";
   var copy=Object.Instantiate(toggles.Last().gameObject,toggles.Last().transform.parent);copy.name="RevampedCustomMode";var toggle=copy.GetComponent<Toggle>();toggle.isOn=false;copy.GetComponent<flanne.UI.MapEntry>().data=MenuMap;
   Plugin.SetField(menu,"toggles",toggles.Concat(new[]{toggle}).ToArray());
   var element=copy.GetComponent<LayoutElement>()??copy.AddComponent<LayoutElement>();element.minWidth=0;element.preferredWidth=1;element.flexibleWidth=1;
@@ -189,7 +189,7 @@ class CustomRunLabel:MonoBehaviour
   root.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;root.GetComponent<Canvas>().sortingOrder=19;
   var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);
   var font=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().First(t=>t.font!=null&&t.gameObject.scene.IsValid()).font;
-  var label=StatsOverlay.Text(root.transform,"CustomCreditsOnly",font,"CUSTOM · Credits only",17,Vector2.zero,new Vector2(300,26));label.alignment=TMPro.TextAlignmentOptions.Center;label.color=StatsOverlay.Green;
+  var label=StatsOverlay.Text(root.transform,"CustomCreditsOnly",font,"CUSTOM · Score only",17,Vector2.zero,new Vector2(300,26));label.alignment=TMPro.TextAlignmentOptions.Center;label.color=StatsOverlay.Green;
   StatsOverlay.Rect(label.gameObject,root.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-72),new Vector2(300,26));
  }
  void Update(){if(root!=null)root.SetActive(GetComponent<GameController>().CurrentState is CombatState&&!PauseController.isPaused);}

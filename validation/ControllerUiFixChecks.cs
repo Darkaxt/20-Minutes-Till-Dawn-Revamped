@@ -22,9 +22,13 @@ public partial class RuntimeChecks
  {yield return MenuMove(pad,root,button);yield return SelectorPad(pad,GamepadButton.South);}
  IEnumerator MenuPointer(Selectable control)
  {
+  // A newly enabled Graphic joins the native raycast list during its Canvas
+  // rebuild. Interactable alone is not rendered pointer readiness.
+  while(control.GetComponent<Graphic>()?.depth<0)yield return null;
   Canvas.ForceUpdateCanvases();var rect=control.GetComponent<RectTransform>();var canvas=control.GetComponentInParent<Canvas>().rootCanvas;
   Vector2 point=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.TransformPoint(rect.rect.center));
   var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current){position=point},hits);
+  if(hits.Count==0||hits[0].gameObject.GetComponentInParent<Selectable>()!=control)Log("pointer-raycast-diagnostic",control.name+" point="+point+" depth="+control.GetComponent<Graphic>()?.depth+" hits="+string.Join(",",hits.Select(h=>h.gameObject.name+":"+h.depth+":"+h.sortingOrder)));
   Require(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Selectable>()==control,"actual pointer raycast reaches "+control.name);
   InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point});yield return null;yield return null;
   InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point}.WithButton(MouseButton.Left));yield return null;

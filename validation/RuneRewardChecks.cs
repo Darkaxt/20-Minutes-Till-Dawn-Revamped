@@ -28,6 +28,13 @@ public partial class RuntimeChecks
  IEnumerator RuneConfirm(GameController game)
  {
   while(!Object.FindObjectOfType<RuneConversionVisual>().Ready)yield return null;
+  // Older reward tests deliberately retain their battle-start loadout. New
+  // awards offer activation, which this regression explicitly declines.
+  while(game.GetComponentsInChildren<Button>().Any(b=>b.name=="RuneRewardDecline"))
+  {
+   var decline=game.GetComponentsInChildren<Button>().Single(b=>b.name=="RuneRewardDecline");Click(decline);yield return null;
+  }
+  while(!game.GetComponentsInChildren<Button>().Any(b=>b.name=="RuneRewardContinue"))yield return null;
   var button=game.GetComponentsInChildren<Button>().Single(b=>b.name=="RuneRewardContinue");
   Require(EventSystem.current.currentSelectedGameObject==button.gameObject,"rune reward owns actual native focus");
   if(runePad==null)runePad=InputSystem.AddDevice<Gamepad>("RuneRewardController");game.playerInput.SwitchCurrentControlScheme("Gamepad",runePad);game.playerInput.neverAutoSwitchControlSchemes=true;

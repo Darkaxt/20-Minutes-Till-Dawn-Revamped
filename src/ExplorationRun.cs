@@ -129,18 +129,31 @@ public sealed class ExplorationRun:MonoBehaviour
   var renderer=go.GetComponent<SpriteRenderer>();var original=template.GetComponentInChildren<SpriteRenderer>();renderer.sprite=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(template);renderer.color=Mint;renderer.sortingLayerID=original.sortingLayerID;renderer.sortingOrder=original.sortingOrder;
   var collider=go.GetComponent<BoxCollider2D>();collider.isTrigger=true;collider.size=(Vector2)renderer.sprite.bounds.size*.8f;
   var chest=go.AddComponent<ExplorationChest>();chest.Owner=this;chest.Drop=drop;Chests.Add(chest);
+  var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;
   ExplorationChestVisual.Attach(chest,template);
-  var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;marker.Icon=ContentIcon(drop);
   return chest;
  }
  public Sprite ContentIcon(ExplorationDrop drop)
+  =>ContentIcon(drop,ShownReward(drop));
+ internal ExplorationReward ShownReward(ExplorationDrop drop)
  {
-  var experience=ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].GetComponentInChildren<SpriteRenderer>(true).sprite;
-  if(drop.reward==ExplorationReward.Experience||drop.reward==ExplorationReward.Credits)return experience;
+  if(drop.reward==ExplorationReward.Credits)return ExplorationReward.Experience;
+  var health=PlayerController.Instance.playerHealth;
+  if(drop.reward==ExplorationReward.Healing&&health.hp>=health.maxHP)return ExplorationReward.Experience;
+  if((drop.reward==ExplorationReward.Upgrade||drop.reward==ExplorationReward.CharacterUpgrade)&&!Eligible(drop.reward==ExplorationReward.CharacterUpgrade).Any(p=>RunResume.Key(p)==drop.power))return ExplorationReward.Experience;
+  return drop.reward;
+ }
+ static SpriteRenderer PickupArt(ExplorationReward reward)
+ =>(reward==ExplorationReward.Healing?Resources.FindObjectsOfTypeAll<HPPickup>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_HeartPickup").transform:ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].transform).Find("Bounce").GetComponent<SpriteRenderer>();
+ internal static Color ContentTint(ExplorationReward shown)
+ =>shown==ExplorationReward.Experience||shown==ExplorationReward.Healing?PickupArt(shown).color:Color.white;
+ internal Sprite ContentIcon(ExplorationDrop drop,ExplorationReward shown)
+ {
+  if(shown==ExplorationReward.Experience||shown==ExplorationReward.Healing)return PickupArt(shown).sprite;
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();
-  if(drop.reward==ExplorationReward.Upgrade||drop.reward==ExplorationReward.CharacterUpgrade)
-  {var power=powers.FirstOrDefault(p=>RunResume.Key(p)==drop.power);return power==null?experience:power.icon;}
-  string key=drop.reward==ExplorationReward.Healing?"Vitality":drop.reward==ExplorationReward.Magnet?"Magnetism":drop.reward==ExplorationReward.Freeze?"FrostMage":"RapidFire";
+  if(shown==ExplorationReward.Upgrade||shown==ExplorationReward.CharacterUpgrade)
+  return powers.First(p=>RunResume.Key(p)==drop.power).icon;
+  string key=shown==ExplorationReward.Magnet?"Magnetism":shown==ExplorationReward.Freeze?"FrostMage":"RapidFire";
   return powers.First(p=>p.name==key).icon;
  }
  internal void Collect(ExplorationChest chest)
@@ -152,7 +165,7 @@ public sealed class ExplorationRun:MonoBehaviour
   {
    case ExplorationReward.Experience:
    case ExplorationReward.Credits:Experience();break;
-   case ExplorationReward.Healing:if(player.playerHealth.hp<player.playerHealth.maxHP){player.playerHealth.Heal(1);Notify("+1 heart");}else Experience();break;
+   case ExplorationReward.Healing:if(player.playerHealth.hp<player.playerHealth.maxHP){player.playerHealth.Heal(1);Notify("Healed 1 heart");}else Experience();break;
    case ExplorationReward.Magnet:foreach(var xp in Object.FindObjectsOfType<XPPickup>())xp.GetComponent<AndroidPickup>().TargetPick(player.gameObject);Notify("XP magnet");break;
    case ExplorationReward.Freeze:foreach(var ai in Object.FindObjectsOfType<AIComponent>().Where(a=>a.gameObject.layer==(int)TagLayerUtil.Enemy))AndroidFreezeApplication.Apply(FreezeSystem.SharedInstance,ai.gameObject,3);Notify("Freeze");break;
    case ExplorationReward.Frenzy:State.frenzy=15;SetFrenzy(true);Notify("Frenzy +25% damage / fire rate · 15s");break;
@@ -184,6 +197,20 @@ public sealed class ExplorationRun:MonoBehaviour
 public sealed class ExplorationChest:MonoBehaviour
 {
  public ExplorationRun Owner;public ExplorationDrop Drop;public bool Claimed;
+ internal ExplorationReward ShownReward{get;private set;}bool presentationSet;
+ internal ExplorationReward RefreshPresentation()
+ {
+  var shown=Owner.ShownReward(Drop);
+  if(presentationSet&&shown==ShownReward)return shown;
+  ShownReward=shown;presentationSet=true;
+  var marker=GetComponent<ChestDirectionIndicator>();marker.Icon=Owner.ContentIcon(Drop,shown);marker.IconTint=ExplorationRun.ContentTint(shown);
+  if(marker.Marker!=null)
+  {
+   var image=marker.Marker.GetComponent<UnityEngine.UI.Image>();image.sprite=marker.Icon;image.color=marker.IconTint;
+   marker.Arrow.GetComponent<TMP_Text>().color=ExplorationChestVisual.RewardColor(shown);
+  }
+  return shown;
+ }
  void OnTriggerEnter2D(Collider2D other){if(other.CompareTag("Player"))Owner.Collect(this);}
 }
 public sealed class ExplorationRewardState:GameState

@@ -66,7 +66,7 @@ public partial class RuntimeChecks
    Require(label.text==expected.ToString(),"edge distance is the actual rounded player/world-target distance");
    foreach(var graphic in target.Marker.GetComponentsInChildren<Graphic>())
    {var corners=new Vector3[4];graphic.rectTransform.GetWorldCorners(corners);var points=corners.Select(p=>RectTransformUtility.WorldToScreenPoint(null,p)).ToArray();Log("marker-geometry",graphic.name+" safe="+safe+" bounds="+string.Join(";",points.Select(p=>p.ToString()))+" raycast="+graphic.raycastTarget+" root="+StatsOverlay.Instance.Panel.GetComponent<RectTransform>().rect);Require(points.All(p=>safe.Contains(p))&&!graphic.raycastTarget,"complete icon/arrow/distance fits safe area without taking input");}
-   Require(target.Marker.GetComponent<Image>().color==Color.white,"marker preserves the actual icon's artwork colours");
+   Require(target.Marker.GetComponent<Image>().color==target.IconTint,"marker preserves the actual icon's native artwork tint");
    if(target.Exploration)Require(target.Marker.GetComponent<Image>().sprite==run.ContentIcon(target.GetComponent<ExplorationChest>().Drop),"exploration pointer shows its fixed content icon");
   }
   for(int a=0;a<markers.Length;a++)for(int b=a+1;b<markers.Length;b++)Require(Vector2.Distance(HudPoint(markers[a].Marker),HudPoint(markers[b].Marker))>=65*markers[a].Marker.lossyScale.x,"simultaneous edge markers are separated, including coincident directions");

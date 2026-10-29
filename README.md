@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.2](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.2) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.3) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -68,11 +68,11 @@ The metrics omit Max HP and Magazine: the native hearts and ammo counter already
 
 **F2** or native Options cycles **Off → Little → Extended** metrics. Little shows calculated values only; pastel green means improved and pastel red means worse, including shorter reload times in green. Extended also shows base and net bonus. Off hides metrics while keeping selected skills visible. Charge/conditional effects remain excluded from these base comparisons.
 
-The original timer sits at top center below the level bar, with credits earned this run beneath it. Credits use the game's current reward calculation and do not change the wallet.
+The original timer sits at top center below the level bar, with **Score** beneath it. It reads the game's current run calculation; the results screen shows **Total Score** for the completed run.
 
-![Transparent HUD with centered attributes on the left and acquired upgrade-path rows on the right](docs/images/hud-build.png)
+![Current transparent Windows HUD with centered attributes and Score below the timer](docs/images/hud-build.png)
 
-*Actual1280×720 Windows capture with twelve metric rows and controlled Lilith/Ghost Friend/stat upgrades. Also verified at900×900,1024×768 and through Continue; not a natural progression run.*
+*Actual1280×720 Windows capture of the Score HUD with a controlled enemy-count fixture. Collected upgrade-path rows are verified separately; this is not a natural progression run.*
 
 ### See the upgrade path and its role in your build
 
@@ -103,6 +103,8 @@ Mint chests appear every **60–90 combat seconds**, with at most **three uncoll
 Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. XP chests give **30% of the current level's full requirement**, including earned XP bonuses. Edge indicators show the **actual contents**, including the exact stored upgrade icon; the number is **distance in game units**. Boss treasure retains its gold chest pointer, independent of the three-chest cap. Rewards, positions and timers survive Continue. Old unopened credit chests become XP; credits already earned before updating retain their normal payout.
 
 ![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
+
+XP indicators reuse the native green experience pickup. Healing uses the native red-heart pickup, rather than the maximum-health upgrade; soul-heart artwork remains reserved for soul-heart rewards. At full red health, healing chests preview their XP replacement. An exhausted stored upgrade also switches its preview to XP without rerolling the chest.
 
 *Actual native Windows content/geometry fixture. All seven reward types, both artwork modes, square/4:3/16:9, zoom and current/older Continue are checked. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. [Reward weights and rules](docs/EXPLORATION.md).*
 
@@ -146,15 +148,19 @@ Character and weapon selection omit the obsolete currency badge. The Runes tab s
 
 Forest's total lottery draws rise from **1 → 3 → 6 → 10** at Darkness **0 / 4 / 8 / 12**. Temple uses Darkness+4; Pumpkin Patch uses +2. The first arena boss awards half, rounded down; the second receives the remainder. Quickplay's single arena boss receives the full allotment. Endless awards again for each boss pair; Challenge awards once, and Custom is excluded. [Exact row table and interactions](docs/RUNES.md).
 
-![Rune rewards reveal each lottery slot in order inside one opaque popup](docs/images/rune-lottery.png)
+![Rune rewards show descriptions and an explicit current-run activation choice](docs/images/rune-lottery.png)
 
-Each stopped slot shows its saved result. Once all slots are revealed, capped runes burn into XP gems inside the popup: a discarded tier-1 rune is half a level, tier-2 is one level, and so on. Earned ranks improve the character's next runs. Continue preserves outcomes and compensation without rerolls.
+Each slot rolls for four seconds, slows and celebrates its saved result with native chest sounds. The selected rune's name, rank and effect description remain available with controller or pointer. Once all slots are revealed, capped runes burn into XP gems inside the popup: a discarded tier-1 rune is half a level, tier-2 is one level, and so on.
+
+A newly awarded effect offers **Enable this run / Not now**. Accept applies its final awarded rank once; decline preserves the current build. Already active runes keep their battle-start rank. Permanent ranks improve future runs, and Continue preserves outcomes, activation decisions and compensation without rerolls.
+
+Enabled character runes also work at the start of **Endless**; Revamped removes the shipped mode's starting-rune restriction.
 
 ![Permanent character rune ranks remain visible after the lottery](docs/images/rune-awards.png)
 
 ### Build a Custom run
 
-Use the game's own menus to adjust the run, weapon, attributes, enemies, summons, upgrades and objects. **Load mode defaults** imports the selected mode's real settings. Only obtained content is available. Custom runs award **credits only**: no unlocks, achievements or leaderboard submissions.
+Use the game's own menus to adjust the run, weapon, attributes, enemies, summons, upgrades and objects. **Load mode defaults** imports the selected mode's real settings. Only obtained content is available. Custom runs award **score only**: no unlocks, achievements or leaderboard submissions.
 
 ![Native Custom game menu with Run, Weapon, Attributes, Enemies, Summons, Upgrades and Objects tabs and Load mode defaults](docs/images/custom-mode-defaults.png)
 
@@ -164,7 +170,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.2 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.2).
+1. Download and extract the [v1.3.3 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.3).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -174,7 +180,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0/1.3.1 to1.3.2 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0/1.3.1/1.3.2 to1.3.3 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -198,6 +204,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.3 — Rune celebrations and readable rewards
+
+**Improved:** longer rune roulette, native fanfare, browsable descriptions and explicit current-run activation choices. **Changed:** starting character runes work in Endless. **Fixed:** native XP/heart reward icons and truthful replacement previews. **Updated:** Score throughout the UI and Total Score on results. No additional Android port; updater0.2.0/epoch1 and existing saves remain compatible. [Release notes](release/NOTES-1.3.3.md) · [Verification](docs/PROGRESS.md).
 
 ### v1.3.2 — Clean selection header
 

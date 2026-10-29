@@ -13,7 +13,7 @@ namespace TwentyMinutes.Modernization;
 public sealed class ChestDirectionIndicator:MonoBehaviour
 {
  internal static readonly List<ChestDirectionIndicator> Active=new List<ChestDirectionIndicator>();
- public Sprite Icon;public bool Exploration;
+ public Sprite Icon;public Color IconTint=Color.white;public bool Exploration;
  public RectTransform Marker;internal TMP_Text DistanceText;internal RectTransform Arrow;
  ChestPickup chest;
  void Awake(){chest=GetComponent<ChestPickup>();if(chest!=null)Icon=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(chest);}
@@ -27,8 +27,8 @@ public sealed class ChestDirectionIndicator:MonoBehaviour
  internal void Build(StatsOverlay hud)
  {
   Marker=StatsOverlay.Rect(new GameObject(Exploration?"ExplorationChestDirection":"BossChestDirection",typeof(RectTransform),typeof(Image)),hud.Panel.transform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(28,28));
-  var image=Marker.GetComponent<Image>();image.sprite=Icon;image.preserveAspect=true;image.raycastTarget=false;image.color=Color.white;
-  var arrow=StatsOverlay.Text(Marker,"Direction",hud.Font,"›",20,Vector2.zero,new Vector2(20,20));arrow.alignment=TextAlignmentOptions.Center;arrow.color=Exploration?ExplorationChestVisual.RewardColor(GetComponent<ExplorationChest>().Drop.reward):Color.white;
+  var image=Marker.GetComponent<Image>();image.sprite=Icon;image.preserveAspect=true;image.raycastTarget=false;image.color=IconTint;
+  var arrow=StatsOverlay.Text(Marker,"Direction",hud.Font,"›",20,Vector2.zero,new Vector2(20,20));arrow.alignment=TextAlignmentOptions.Center;arrow.color=Exploration?ExplorationChestVisual.RewardColor(GetComponent<ExplorationChest>().ShownReward):Color.white;
   Arrow=StatsOverlay.Rect(arrow.gameObject,Marker,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(20,20));
   DistanceText=StatsOverlay.Text(Marker,"Distance",hud.Font,"",12,Vector2.zero,new Vector2(64,16));DistanceText.alignment=TextAlignmentOptions.Center;DistanceText.color=StatsOverlay.Cream;
   StatsOverlay.Rect(DistanceText.gameObject,Marker,new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Vector2(0,-43),new Vector2(64,16));

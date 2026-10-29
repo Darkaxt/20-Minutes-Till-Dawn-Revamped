@@ -89,7 +89,7 @@ public partial class RuntimeChecks
   Screen.SetResolution(1280,720,false);yield return WaitDisplay(1280,720);CheckHudBounds(hud,game);
   int wallet=PointsTracker.pts;Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",117);yield return null;
   var score=game.hud.GetComponentsInChildren<TMP_Text>(true).Single(t=>t.name=="RunCredits");
-  Require(score.text=="Credits: "+ScoreCalculator.SharedInstance.GetScore().totalScore.ToString("N0"),"live credits use the game's current run reward calculation");Require(PointsTracker.pts==wallet,"displaying earned credits never changes the wallet");
+  Require(score.text=="Score: "+ScoreCalculator.SharedInstance.GetScore().totalScore.ToString("N0"),"live Score uses the game's current run score calculation");Require(PointsTracker.pts==wallet,"displaying score never changes the stored balance");
   yield return Capture(continued?"hud-little-continued.png":"hud-little-16x9.png");
   PauseController.SharedInstance.Pause();game.ChangeState<PauseState>();yield return null;yield return PadClick(pad,game.pauseMenu.transform,game.optionsButton);while(!Active(game.optionsMenu))yield return null;
   var setting=DisplayButton(game.optionsMenu,"StatsSetting");

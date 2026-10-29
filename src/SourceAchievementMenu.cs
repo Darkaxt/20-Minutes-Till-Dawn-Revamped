@@ -64,11 +64,11 @@ public sealed class SourceAchievementMenu:MonoBehaviour
   {
    var reward=SourceAchievementRewards.Data.rewards[i];float x=24+i*520;
    view.Icon(view.box,"RewardIcon"+reward.id,reward.Icon,new Vector2(x,-104),40);
-   StatsOverlay.Text(view.box,"RewardAmount"+reward.id,view.font,reward.amount.ToString("N0")+" credits",22,new Vector2(x+50,-101),new Vector2(250,30));
+   StatsOverlay.Text(view.box,"RewardAmount"+reward.id,view.font,reward.amount.ToString("N0")+" score",22,new Vector2(x+50,-101),new Vector2(250,30));
    StatsOverlay.Text(view.box,"RewardThreshold"+reward.id,view.font,reward.count+" achievements",17,new Vector2(x+50,-132),new Vector2(250,26));
    view.claims.Add(view.Button("Claim"+reward.id,"Claim",new Vector2(x+308,-110),new Vector2(180,44),()=>
    {
-    SourceAchievementRewards.Claim(reward);view.message.text="Collected "+reward.amount.ToString("N0")+" credits.";view.Refresh();view.back.Select();
+    SourceAchievementRewards.Claim(reward);view.message.text="Added "+reward.amount.ToString("N0")+" to your score.";view.Refresh();view.back.Select();
    }));
   }
   for(int i=0;i<view.rows.Length;i++)
@@ -123,7 +123,7 @@ public sealed class SourceAchievementMenu:MonoBehaviour
    var nav=active[i].navigation;nav.mode=Navigation.Mode.Explicit;nav.selectOnLeft=nav.selectOnUp=active[(i+active.Length-1)%active.Length];nav.selectOnRight=nav.selectOnDown=active[(i+1)%active.Length];active[i].navigation=nav;
   }
  }
- void UpdateBalance(object sender,int value){balance.text="Credits "+PointsTracker.pts.ToString("N0");}
+ void UpdateBalance(object sender,int value){balance.text="Score "+PointsTracker.pts.ToString("N0");}
  void ReceivedStats(SteamId account,Result result){if(result==Result.OK){SourceAchievementRewards.ImportSteam();Refresh();}}
  void Cancel(InputAction.CallbackContext context)=>Close();
  void Close(){gameObject.SetActive(false);title.mainMenu.interactable=true;NativeSelection.GunEntriesFor(title.mainMenu)[entryIndex].button.Select();}

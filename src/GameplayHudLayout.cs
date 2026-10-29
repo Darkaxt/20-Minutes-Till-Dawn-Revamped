@@ -23,14 +23,14 @@ public sealed class GameplayHudLayout:MonoBehaviour
   time.fontSize=32;time.alignment=TextAlignmentOptions.Center;
   StatsOverlay.Rect(objective.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-116),new Vector2(400,26));
   objective.fontSize=18;objective.alignment=TextAlignmentOptions.Center;
-  credits=StatsOverlay.Text(game.hud.transform,"RunCredits",time.font,"Credits: 0",20,Vector2.zero,new Vector2(400,28));
+  credits=StatsOverlay.Text(game.hud.transform,"RunCredits",time.font,"Score: 0",20,Vector2.zero,new Vector2(400,28));
   StatsOverlay.Rect(credits.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-88),new Vector2(400,28));credits.alignment=TextAlignmentOptions.Center;
   clock=new[]{time,credits,objective}.Select(t=>t.gameObject.AddComponent<CanvasGroup>()).ToArray();
  }
  void LateUpdate()
  {
   int value=ScoreCalculator.SharedInstance.GetScore().totalScore;
-  if(value!=previousCredits){previousCredits=value;credits.text="Credits: "+value.ToString("N0");}
+  if(value!=previousCredits){previousCredits=value;credits.text="Score: "+value.ToString("N0");}
   bool choosing=owner.CurrentState is PowerupMenuState||owner.CurrentState is DevilDealState||owner.CurrentState is ChestState||owner.CurrentState is ExplorationRewardState||owner.CurrentState is RuneRewardState;
   foreach(var group in clock)group.alpha=choosing?0:1;
  }

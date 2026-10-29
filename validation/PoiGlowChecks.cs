@@ -49,9 +49,9 @@ public partial class RuntimeChecks
   float expected=Mathf.Clamp01((8-Vector2.Distance(chest.transform.position,PlayerController.Instance.transform.position))/6);
   CombatClose(visual.Strength,expected,"glow follows actual player distance");
   var glow=chest.GetComponentsInChildren<SpriteRenderer>(true).Where(r=>r.name.StartsWith("RewardGlow")).ToArray();Require(glow.Length==3,"three restrained native-circle layers form the glow");
-  var color=ExplorationChestVisual.RewardColor(chest.Drop.reward);
+  var color=ExplorationChestVisual.RewardColor(RewardShown(chest));
   foreach(var renderer in glow)Require(renderer.enabled==(expected>0)&&renderer.color.r==color.r&&renderer.color.g==color.g&&renderer.color.b==color.b&&renderer.color.a<=.1201f&&renderer.gameObject.layer==template.transform.Find("Arrow").gameObject.layer,"reward glow uses the native visible-in-fog layer without changing native fog channels");
-  var marker=chest.GetComponent<ChestDirectionIndicator>();if(marker.Marker!=null)Require(marker.Marker.GetComponent<UnityEngine.UI.Image>().color==Color.white&&marker.Marker.GetComponent<UnityEngine.UI.Image>().sprite==chest.Owner.ContentIcon(chest.Drop),"edge pointer shows its actual reward artwork without mint tint");
+  var marker=chest.GetComponent<ChestDirectionIndicator>();if(marker.Marker!=null)Require(marker.Marker.GetComponent<UnityEngine.UI.Image>().color==marker.IconTint&&marker.Marker.GetComponent<UnityEngine.UI.Image>().sprite==chest.Owner.ContentIcon(chest.Drop),"edge pointer shows its actual reward artwork and native pickup tint");
  }
  IEnumerator PoiCapture(string name)
  {

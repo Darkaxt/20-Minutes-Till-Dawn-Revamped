@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
+using System.Runtime.Serialization;
 using HarmonyLib;
 using UnityEngine;
 using flanne;
@@ -11,7 +13,13 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization;
 
 [Serializable]public sealed class RuneRewardDraw{public string rune;public int tier,rank;public bool capped;}
-[Serializable]public sealed class RuneBossReward{public int boss,phase,revealed;public List<RuneRewardDraw> draws=new List<RuneRewardDraw>();}
+[Serializable]public sealed class RuneActivationChoice{public string rune;public int rank;public bool enabled;}
+[Serializable,DataContract]public sealed class RuneBossReward
+{
+ [DataMember(IsRequired=true)]public int boss,phase,revealed;
+ [DataMember(IsRequired=true)]public List<RuneRewardDraw> draws=new List<RuneRewardDraw>();
+ [DataMember]public List<RuneActivationChoice> choices;
+}
 [Serializable]public sealed class RuneRewardSchedule{public int pair;public List<int> rows=new List<int>();}
 [Serializable]public sealed class RuneRewardHistory{public string run;public List<RuneBossReward> bosses=new List<RuneBossReward>();}
 [Serializable]public sealed class RuneRewardStateData
@@ -24,7 +32,7 @@ public sealed class RuneRewardRun:MonoBehaviour
   new[]{"ShockwaveRuneData","ElementalBarrageRuneData","CloseCombatRuneData","MomentumRuneData","AgilityRuneData","SeismicRuneData"},
   new[]{"GlassCannonRuneData","WildMagicRuneData","GunGlyphRuneData","BlessingRuneData","HealingRuneData","PremonitionData"},
   new[]{"CadenceRuneData","EtherealMagRuneData","DedicationRuneData","GrowthRuneData","BodyAndSoulData","WindWallData"}};
- public RuneRewardStateData State;GameController game;
+ public RuneRewardStateData State;GameController game;internal bool Applying{get;private set;}
  public static RuneRewardRun Instance;
  void Awake(){game=GetComponent<GameController>();Instance=this;}
  void OnDestroy(){if(Instance==this)Instance=null;}
@@ -59,6 +67,36 @@ public sealed class RuneRewardRun:MonoBehaviour
   if(!Guid.TryParseExact(state.id,"N",out _)||state.schedules==null||state.schedules.Count==0||state.schedules.Any(s=>s==null||s.pair<0||s.rows==null||s.rows.Any(t=>t<1||t>4))||state.schedules.Select(s=>s.pair).Distinct().Count()!=state.schedules.Count||state.rewards==null||state.xpLevels<0||float.IsNaN(state.xpLevels)||float.IsInfinity(state.xpLevels)||state.levelEvent<0||
    state.rewards.Any(r=>r==null||r.boss<0||r.phase<0||r.phase>2||r.draws==null||r.revealed<0||r.revealed>r.draws.Count||r.draws.Any(d=>d==null||d.tier<1||d.tier>4||!Candidates[d.tier-1].Contains(d.rune)||d.rank<1||d.rank>5))||state.rewards.Select(r=>r.boss).Distinct().Count()!=state.rewards.Count)
    throw new InvalidOperationException("Invalid rune reward checkpoint; it has been preserved.");
+  foreach(var reward in state.rewards)if(reward.choices!=null&&(reward.choices.Any(c=>c==null)||reward.choices.Select(c=>c.rune).Distinct().Count()!=reward.choices.Count||reward.choices.Any(c=>!reward.draws.Any(d=>!d.capped&&d.rune==c.rune)||c.rank!=reward.draws.Where(d=>!d.capped&&d.rune==c.rune).Max(d=>d.rank))))throw new InvalidOperationException("Invalid rune activation choices in checkpoint; it has been preserved.");
+ }
+ internal int ActiveRank(string name)
+ {
+  return Loadout.RuneSelection?.Where(r=>r.name==name).Select(r=>r.level).FirstOrDefault()??0;
+ }
+ internal RuneRewardDraw PendingChoice(RuneBossReward reward)
+ =>reward.draws.Where(d=>!d.capped).GroupBy(d=>d.rune).Select(g=>g.OrderByDescending(d=>d.rank).First()).FirstOrDefault(d=>ActiveRank(d.rune)==0&&!(reward.choices?.Any(c=>c.rune==d.rune)??false));
+ internal IEnumerator Choose(RuneBossReward reward,RuneRewardDraw draw,bool enabled,Action finished)
+ {
+  if(Applying||PendingChoice(reward)?.rune!=draw.rune)yield break;
+  Applying=true;
+  try
+  {
+   if(enabled)
+   {
+    var copy=RunResume.CopyRune(RuneProgression.Definition(draw.rune));copy.level=draw.rank;
+    if(Loadout.RuneSelection==null)Loadout.RuneSelection=new List<RuneData>();
+    Loadout.RuneSelection.RemoveAll(r=>r.name==draw.rune);Loadout.RuneSelection.Add(copy);
+    copy.Apply(PlayerController.Instance);
+    // Native effect components initialize in Start before their runtime state
+    // can be captured. This is the same lifecycle boundary as Continue rebuild.
+    yield return null;
+   }
+   if(reward.choices==null)reward.choices=new List<RuneActivationChoice>();
+   reward.choices.Add(new RuneActivationChoice{rune=draw.rune,rank=draw.rank,enabled=enabled});
+  }
+  finally{Applying=false;}
+  StatsOverlay.Instance.Dirty();RunResume.Save();
+  Plugin.Trace("rune-reward-choice",new{draw.rune,draw.rank,enabled});finished();
  }
  // Called only from the existing scheduled-encounter identity owner, before
  // the dead actor is returned to its pool. Elites/minibosses cannot enter here.

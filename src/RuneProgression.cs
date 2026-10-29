@@ -17,11 +17,13 @@ namespace TwentyMinutes.Modernization;
 {public string character;public List<RunResume.RuneRank> ranks=new List<RunResume.RuneRank>();public List<string> enabled=new List<string>();}
 
 // Character profiles own permanent ranks. Native UI data is their projection;
-// battles use independent RuneData clones and never gain retroactive ranks.
+// Battles use independent RuneData clones. An awarded, previously inactive
+// rune joins the current battle only through its explicit reward choice.
 public static class RuneProgression
 {
  static string projected;
  static Dictionary<string,RuneData> definitions;
+ internal static RuneData Definition(string name)=>definitions[name];
  public static RuneRowUI[] Rows(RuneTreeUI tree)=>(RuneRowUI[])AccessTools.Field(typeof(RuneTreeUI),"rows").GetValue(tree);
  public static RuneUnlocker[] Entries(RuneRowUI row)=>(RuneUnlocker[])AccessTools.Field(typeof(RuneRowUI),"runes").GetValue(row);
  public static Toggle Toggle(RuneUnlocker rune)=>(Toggle)AccessTools.Field(typeof(RuneUnlocker),"toggle").GetValue(rune);

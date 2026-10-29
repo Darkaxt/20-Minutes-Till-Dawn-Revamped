@@ -14,6 +14,7 @@ public partial class RuntimeChecks
 {
  IEnumerator CheckExplorationContents()
  {
+  Log("native-pickup-types",string.Join(",",typeof(HPPickup).Assembly.GetTypes().Where(t=>t.Namespace=="flanne.Pickups"&&typeof(MonoBehaviour).IsAssignableFrom(t)).Select(t=>t.Name).OrderBy(n=>n)));
   RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();var run=game.GetComponent<ExplorationRun>();while(run.State==null)yield return null;
   var counts=Enumerable.Range(0,100).Select(ExplorationRun.RewardForRoll).GroupBy(r=>r).ToDictionary(g=>g.Key,g=>g.Count());
@@ -21,8 +22,10 @@ public partial class RuntimeChecks
   Require(counts[ExplorationReward.Healing]==15&&counts[ExplorationReward.Magnet]==12&&counts[ExplorationReward.Freeze]==10&&counts[ExplorationReward.Frenzy]==8&&counts[ExplorationReward.Upgrade]==8&&counts[ExplorationReward.CharacterUpgrade]==2,"all other reward weights retain their exact prior shares");
   var powers=Resources.FindObjectsOfTypeAll<Powerup>();var upgrade=((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{false})).First();var character=((List<Powerup>)AccessTools.Method(typeof(ExplorationRun),"Eligible").Invoke(run,new object[]{true})).First();
   var xp=ObjectPooler.SharedInstance.pooledObjectsDictionary["SmallXP"][0].GetComponentInChildren<SpriteRenderer>(true).sprite;
+  PlayerController.Instance.playerHealth.hp=PlayerController.Instance.playerHealth.maxHP-1;
+  var heart=Resources.FindObjectsOfTypeAll<HPPickup>().Single(p=>!p.gameObject.scene.IsValid()&&p.name=="PF_HeartPickup").transform.Find("Bounce").GetComponent<SpriteRenderer>().sprite;
   var kinds=new[]{ExplorationReward.Experience,ExplorationReward.Healing,ExplorationReward.Magnet,ExplorationReward.Freeze,ExplorationReward.Frenzy,ExplorationReward.Upgrade,ExplorationReward.CharacterUpgrade};
-  var expected=new[]{xp,powers.First(p=>p.name=="Vitality").icon,powers.First(p=>p.name=="Magnetism").icon,powers.First(p=>p.name=="FrostMage").icon,powers.First(p=>p.name=="RapidFire").icon,upgrade.icon,character.icon};
+  var expected=new[]{xp,heart,powers.First(p=>p.name=="Magnetism").icon,powers.First(p=>p.name=="FrostMage").icon,powers.First(p=>p.name=="RapidFire").icon,upgrade.icon,character.icon};
   Vector3 origin=PlayerController.Instance.transform.position;var directions=new[]{new Vector2(80,0),new Vector2(-60,60),new Vector2(-50,-80)};
   var boss=ObjectPooler.SharedInstance.GetPooledObject("Chest");boss.transform.position=origin+new Vector3(70,-10);
   var bossPointer=boss.GetComponent<ChestDirectionIndicator>();var bossIcon=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(boss.GetComponent<ChestPickup>());
@@ -40,7 +43,7 @@ public partial class RuntimeChecks
     for(int i=0;i<chests.Count;i++)
     {
      var marker=chests[i].GetComponent<ChestDirectionIndicator>();Require(marker.Marker!=null&&marker.Marker.gameObject.activeSelf,"offscreen content has a live marker");var image=marker.Marker.GetComponent<Image>();
-     Require(marker.Icon==expected[batch*3+i]&&image.sprite==marker.Icon&&image.color==Color.white,"actual edge image shows the exact native content sprite: "+chests[i].Drop.reward);
+     Require(marker.Icon==expected[batch*3+i]&&image.sprite==marker.Icon&&image.color==marker.IconTint,"actual edge image shows the exact native content sprite and tint: "+chests[i].Drop.reward);
      Require(marker.Icon!=chests[i].GetComponent<SpriteRenderer>().sprite,"non-boss pointer no longer uses the chest artwork");
     }
     Require(bossPointer.Icon==bossIcon&&bossPointer.Marker.GetComponent<Image>().sprite==bossIcon,"native boss treasure retains its distinct chest pointer");

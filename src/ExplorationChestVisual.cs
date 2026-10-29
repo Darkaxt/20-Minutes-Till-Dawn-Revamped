@@ -46,7 +46,7 @@ public sealed class ExplorationChestVisual:MonoBehaviour
  {
   var player=flanne.PlayerController.Instance;
   Strength=player==null?0:Mathf.Clamp01((RevealDistance-Vector2.Distance(transform.position,player.transform.position))/(RevealDistance-FullDistance));
-  var color=RewardColor(chest.Drop.reward);body.color=Color.Lerp(ExplorationRun.Mint,color,Strength);
+  var color=RewardColor(chest.RefreshPresentation());body.color=Color.Lerp(ExplorationRun.Mint,color,Strength);
   for(int i=0;i<glow.Length;i++)
   {
    var renderer=glow[i];renderer.enabled=Strength>0;

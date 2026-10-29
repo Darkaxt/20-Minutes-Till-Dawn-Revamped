@@ -1,5 +1,20 @@
 # Character runes and boss rewards
 
+## Reward presentation follow-up — 2026-10-29
+
+Authorized addition to the active reward-icon update; implementation follows that update's I1 stage and shares its final release.
+
+- U01: Give each lottery result a longer, celebratory reveal with a visible slowdown/settle, native visual/audio feedback, the rune's name, resulting rank and truthful effect description. Preserve the fixed saved lottery outcome, boss split, capped-rune burning and in-popup XP conversion. The description remains readable after the roll rather than disappearing with the animation.
+- U02: For a non-capped awarded rune that is not active in the current battle, ask whether to enable it for this playthrough. Deduplicate repeated awards of one rune within the same popup. Accept applies the rune to the current battle using its native/source-compatible activation and exact granted rank; decline leaves the battle loadout unchanged. Permanent character ranks and future-loadout selections keep their established progression rules. Already active rune effects keep their battle-start rank unless this explicit new-effect choice applies. Capped/converted draws do not offer activation.
+- U03: Controller and pointer must reach the description, activation decisions and Continue without accidentally accepting a choice while the roll ends. Save/Continue preserves revealed outcomes and decisions, and neither repeats permanent grants, current-run rune application nor XP conversion. Verify a real stat rune and effect rune, accept/decline/duplicates, current/prior saves, capped rewards, both styles and representative viewports. Document the result and publish it with the icon correction after the whole scope is verified.
+- U04 (explicit subsequent additions): Replace player-visible Credits labels with Score in the HUD and remaining game UI, notices and current help text. Replace the results screen's Earned summary with Total Score, showing the completed run's total. Preserve stored currency/score fields, payout arithmetic, updater compatibility and save schemas. Audit native/mod UI sources for surviving labels and verify rendered examples; historical changelog quotations and internal wire identifiers need not be renamed.
+
+U02 is an explicit user-authorized exception to P01's original rule that newly earned rune ranks never affect an ongoing run. It authorizes only an offered, accepted new-effect activation; automatic rank upgrades of already active battle runes remain excluded.
+
+Native inventory8 identified the shipped Endless restriction on the initial rune loadout. The user explicitly requested its removal: enabled character runes must apply at the start of Endless and on Continue, just as in Standard. This is an intentional Revamped rule change. “New effect” means absent from the active battle, rather than only permanent rank zero. The offered rank is the last resulting rank awarded for that rune in the current popup, with one decision per rune.
+
+The authoritative stage ledger is in [EXPLORATION.md](EXPLORATION.md#reward-icon-correction--2026-10-29): I1 icons and I2 rune presentation/Score labels are COMPLETE; I3 combined delivery is ACTIVE. Native10/14/16/17/18/20 cover U01–U04, real current-run activation and current/public1.3.1 Continue. No blocker, tracked deferral, new approval checkpoint or intermediate release.
+
 ## Selection-header correction — 2026-10-29
 
 Authoritative follow-up for the obsolete currency counter still visible in character/weapon selection:

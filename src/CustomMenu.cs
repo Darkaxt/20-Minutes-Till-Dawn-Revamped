@@ -32,7 +32,7 @@ public class CustomMenu:MonoBehaviour
   menu.font=Resources.FindObjectsOfTypeAll<TMP_Text>().First(t=>t.font!=null&&t.gameObject.scene.IsValid()).font;
   menu.box=StatsOverlay.Box(root.transform,"CustomOpaquePanel",new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(1060,600),new Color(.15f,.13f,.19f,1)).transform;
   StatsOverlay.Text(menu.box,"CustomHeading",menu.font,"CUSTOM GAME",28,new Vector2(24,-18),new Vector2(1012,36)).color=StatsOverlay.Coral;
-  StatsOverlay.Text(menu.box,"CustomRules",menu.font,"Credits only · No unlocks or achievements · Obtained content",18,new Vector2(24,-56),new Vector2(1012,26));
+  StatsOverlay.Text(menu.box,"CustomRules",menu.font,"Score only · No unlocks or achievements · Obtained content",18,new Vector2(24,-56),new Vector2(1012,26));
   menu.status=StatsOverlay.Text(menu.box,"CustomStatus",menu.font,"",16,new Vector2(24,-482),new Vector2(1012,40));menu.status.color=StatsOverlay.Green;
   menu.cancel=input.FindAction("UI/Cancel");menu.cancel.canceled+=menu.OnCancel;menu.Refresh();
  }
@@ -65,7 +65,7 @@ public class CustomMenu:MonoBehaviour
     Command("Load "+CustomMode.ModeName(map)+" defaults",()=>
     {
      if(CustomMode.Active&&CustomMode.Current.map!=target.name)
-     {pendingPreset=target;status.text="Starts a new run at Darkness0 / Challenge1. Current run credits are retained; the current build ends.";page=0;Refresh();return;}
+     {pendingPreset=target;status.text="Starts a new run at Darkness0 / Challenge1. Current run score is retained; the current build ends.";page=0;Refresh();return;}
      CustomMode.LoadDefaults(target);presets=false;page=0;status.text=CustomMode.Active?"Defaults restored. Your current build, difficulty and clock are retained.":CustomMode.ModeName(target)+" defaults loaded. Darkness0 / Challenge1; no Custom overrides.";Refresh();
     });
    }
