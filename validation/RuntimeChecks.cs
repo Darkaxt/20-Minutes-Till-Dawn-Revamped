@@ -117,6 +117,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="combat-visibility-chests"){yield return CheckChestVisibility();yield break;}
         if(testMode=="combat-chest-handoff"){yield return CheckChestHandoff();yield break;}
         if(testMode=="sprite-status-visuals"){yield return CheckElementVisuals();yield break;}
+        if(testMode.StartsWith("shared-runes-")){yield return CheckSharedRunes(testMode);yield break;}
         if(testMode.StartsWith("roster-header-")){yield return CheckRosterHeader(title,testMode.EndsWith("probe"));yield break;}
         if(testMode.StartsWith("rune-rewards-")){yield return CheckRuneRewards(testMode);yield break;}
         if(testMode.StartsWith("elements-")){yield return CheckElements(testMode);yield break;}

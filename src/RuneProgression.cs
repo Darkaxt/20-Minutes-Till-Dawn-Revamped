@@ -45,6 +45,18 @@ public static class RuneProgression
    state.runeSeed=entries.Select((r,i)=>new RunResume.RuneRank{name=((RuneUnlocker)r).rune.data.name,rank=levels[i]}).ToList();
    state.runeSeedEnabled=state.enabledRunes==null?LegacySelections():new List<string>(state.enabledRunes);
   }
+  ApplySharedMinimums();
+ }
+ public static int SharedMinimum(string name)
+  =>Math.Min(4,Progression.State.characterRunes.Where(p=>p.ranks.Any(r=>r.name==name&&r.rank==5)).Select(p=>p.character).Distinct().Count());
+ internal static void ApplySharedMinimums()
+ {
+  // Personal rank five is the mastery record. The shared floor stops at four,
+  // so this projection cannot create another mastery or compound on reload.
+  var profiles=Progression.State.characterRunes;
+  var minimums=profiles.SelectMany(p=>p.ranks).Where(r=>r.rank==5).Select(r=>r.name).Distinct().ToDictionary(name=>name,SharedMinimum);
+  foreach(var profile in profiles)foreach(var rank in profile.ranks)
+   if(minimums.TryGetValue(rank.name,out int minimum)&&rank.rank<minimum)rank.rank=minimum;
  }
  static List<string> LegacySelections()
  {
@@ -60,6 +72,7 @@ public static class RuneProgression
   {
    profile=new RuneProfile{character=character,ranks=state.runeSeed.Select(r=>new RunResume.RuneRank{name=r.name,rank=r.rank}).ToList(),enabled=new List<string>(state.runeSeedEnabled)};
    state.characterRunes.Add(profile);
+   ApplySharedMinimums();
   }
   return profile;
  }
@@ -110,11 +123,12 @@ public static class RuneProgression
  }
  public static void Describe(RuneDescription description)
  {
-  var data=description.data;if(data==null||Progression.Title==null)return;
+  var data=description.data;if(data==null||Progression.Title==null||Progression.State==null)return;
   var cost=(TMP_Text)AccessTools.Field(typeof(RuneDescription),"costTMP").GetValue(description);cost.text="";cost.transform.parent.gameObject.SetActive(false);
   var text=(TMP_Text)AccessTools.Field(typeof(RuneDescription),"descriptionTMP").GetValue(description);
   var rune=All().Single(r=>r.rune.data==data);
   text.text+="<br><br>Rank "+data.level+" / "+Maximum(rune)+(data.level==0?" · Earn from arena bosses":rune.toggleOn?" · Enabled":" · Disabled");
+  text.text+="<br>Shared minimum: "+SharedMinimum(data.name)+" / 4";
  }
 }
 [HarmonyPatch(typeof(RuneTreeUI),"Start")]

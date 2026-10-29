@@ -4,19 +4,29 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.4) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+
+## Executive summary
+
+Revamped brings the audited Android8.6 gameplay additions to the purchased Windows game, then improves progression, combat variety, build information and controller play. The work delivered so far includes:
+
+| Area | Delivered improvements |
+|---|---|
+| **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
+| **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
+| **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank1, then2,3 and4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
+| **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief retreat/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
+| **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
+| **Exploration and modes** | Up to three weighted exploration chests offer meaningful XP, healing, utility and upgrades at varied reachable distances. Content icons, distance pointers and nearby colors identify them; indicators stay until the chest is clear of the HUD. Challenge and native Custom menus expand play options; Custom imports mode defaults and uses obtained content without permanent unlock rewards. |
+| **Controls and continuity** | Controller navigation and focus across native menus, locked-content inspection, opaque Options, cleaner results and Retry. Save & return / Continue reconstructs supported runs, including legacy checkpoints. Zoom and display settings support different screen shapes while the HUD keeps its size. |
+| **Presentation and reliability** | Selectable Sprites Reborn artwork with consistent projectile colors; corrected phoenix/facing visuals; sprite-masked fire, lightning and wind cues. Pixel-art maintenance credit and promotional-panel removal. Corrections cover damage signs, stacking, temporary buffs, shield/cooldown arithmetic, Shatter, collisions, pooled actors/effects and duplicate save/reward application. |
+| **Windows and phone delivery** | Versioned Windows packages with owned-file install/rollback, plus DroidDeck support and an Android updater that locates the game, verifies GitHub releases and preserves compatible progress. The game remains the Windows mod running through DroidDeck. |
+
+The gameplay reference is **Android 8.6 / versionCode 1093**. All identified required gameplay differences in the completed comparison are integrated. Ads, purchases and other monetization are excluded. Revamped's progression, HUD, Custom mode and desktop controls are intentional additions. [Exact parity scope and source quirks](docs/PARITY.md) · [Bug-correction contracts](docs/BUGFIXES.md).
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
 *Actual Windows test capture. The maintenance credit is part of the pixel artwork; the Emberpath promotional panel is removed.*
-
-## What changes
-
-- **Added for Revamped:** transparent stats and skill HUD; thirty milestone unlocks and notifications; character rune rewards from arena bosses; Save & return / Continue; native Custom settings and mode-default loading; weighted exploration chests and shared edge pointers; optional artwork recolours.
-- **Ported from Android 8.6:** Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; existing character abilities, combat, status effects, summons, stacking, cooldowns, shooting, event ordering, scenario schedules and mode behavior.
-- **Fixed after the anomaly review:** repeated Continue bonuses, damage signs, frozen-only Shatter, temporary-buff accounting, pooled-effect reuse, exhausted reward menus, encounter/contact defects, character/summon lifetimes and inaccurate descriptions. The changelog below separates each release's ports and corrections.
-
-The gameplay reference is **Android 8.6 / versionCode 1093**. All identified required gameplay differences in the completed comparison are integrated. Ads, purchases and other monetization are excluded. Revamped's progression, HUD, Custom mode and desktop controls are intentional additions. [Exact parity scope and source quirks](docs/PARITY.md) · [Bug-correction contracts](docs/BUGFIXES.md).
 
 ## See it in game
 
@@ -140,7 +150,13 @@ Browsing shows a natural unlock sentence. Confirm/click a locked character or we
 
 ### Earn character runes from arena bosses
 
-Runes belong to each character and are earned automatically from arena bosses. Credits, hold-to-buy and column purchase prerequisites are removed. Press an earned rune to enable or disable it; multiple runes in the same row can remain active. The five-rank cap remains, and existing Windows purchased ranks seed each character once.
+Runes are earned automatically from arena bosses. Credits, hold-to-buy and column purchase prerequisites are removed. Press an earned rune to enable or disable it; multiple runes in the same row can remain active. The five-rank cap remains, and existing Windows purchased ranks seed each character once.
+
+**Mastery gives the other characters a head start.** Each distinct character reaching rank5 raises that rune's shared minimum by one, capped at4. The remaining characters inherit rank1,2,3,then4; existing higher ranks stay intact. This is a minimum, not an added rank: another character at rank4 stays at4. Every character earns its own fifth rank through the boss lottery. Existing mastery counts retroactively and characters first played later inherit the same minimum. Enabled selections stay personal, and an ongoing battle keeps its established rune effects.
+
+![Native rune menu showing personal rank five and the roster's shared minimum of four](docs/images/rune-shared-minimum.png)
+
+*Actual Windows controller capture with controlled prior progress and real boss grants. All24 descriptions, square/4:3/16:9, both artwork styles, capped XP, current/older Continue, pre-boss replay and Retry are verified. [Shared-rune contract](docs/RUNES.md#shared-rune-head-start--2026-10-29).*
 
 Character and weapon selection omit the obsolete currency badge. The Runes tab sits at the left edge of the header, with its native background, prompt and show/hide animation.
 
@@ -170,7 +186,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.4 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.4).
+1. Download and extract the [v1.3.5 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -180,7 +196,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0–1.3.3 to1.3.4 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0–1.3.4 to1.3.5 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -196,6 +212,7 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 | Toggle auto-targeting | Space; native controller equivalent |
 | Off / Little / Extended metrics | F2 or Options; skills stay visible |
 | Widen the world view | Options → Zoom out |
+| Show or hide damage numbers | Options → Damage numbers |
 | Collected skill paths | Automatic rows; all acquired icons stay visible |
 | Suspend a run | Pause → Save & return; Continue resumes it |
 | Configure a Custom run | Custom selection; live settings from Pause |
@@ -204,6 +221,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.5 — Shared rune head starts
+
+**Added:** mastering a rune raises its minimum rank across the other characters, capped at4. Existing higher progress and enabled choices stay intact; each character earns its own fifth rank. Existing mastery and future characters are supported without another save reset. **Updated:** an executive summary of all delivered improvements now opens the README. [Release notes](release/NOTES-1.3.5.md) · [Rune contracts and verification](docs/RUNES.md#shared-rune-head-start--2026-10-29).
 
 ### v1.3.4 — Visible combat and sprite status effects
 

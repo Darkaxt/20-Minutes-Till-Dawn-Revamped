@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Shared rune head start and executive summary — 2026-10-29
+
+[Authoritative requirements](RUNES.md#shared-rune-head-start--2026-10-29). H1 Shared rune progression is COMPLETE; H2 Executive README and final delivery is ACTIVE. Native6–10 verify the complete boss-to-roster flow, minima1–4/cap/personal5, non-additive partial/new/retroactive profiles, actual battle/Retry damage, capped XP, native controller/all24 descriptions and current/pre-boss/public1.3.4 Continue. H1-acceptance.json binds the source. Existing enabled selections and ongoing battle loadouts remain unchanged. No blocker or tracked deferral.
+
+Disposable native/.NET work uses `D:/Temp/20mtd-shared-runes-20261029`; retained evidence/deliverables use `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`. Live Steam/profile/settings and phone are protected.
+
 ## Combat visibility and sprite status shaders — 2026-10-29
 
 [Authoritative requirements and stage ledger](VISUALS.md). V1 Combat visibility, V2 Sprite status shaders and V3 Final delivery are COMPLETE. Native5–6 verify damage numbers/native Options/Continue; native14 reproduces the chest-center handoff hiding beneath the skills HUD, and native15 verifies whole-artwork/unobscured handoff across styles, viewports and zoom. Native13 verifies actual GPU masked pixels, concurrent effects on an enlarged elite, lifetime/pause/pool/teardown. The exact committed package additionally verifies native Freeze and the retained gameplay consumers. Existing elemental balance, runes, progression and rewards remain unchanged. No blocker or tracked deferral.

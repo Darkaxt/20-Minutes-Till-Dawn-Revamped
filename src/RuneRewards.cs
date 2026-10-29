@@ -117,7 +117,9 @@ public sealed class RuneRewardRun:MonoBehaviour
     if(!capped){rank.rank++;if(!profile.enabled.Contains(name))profile.enabled.Add(name);}
     result.draws.Add(new RuneRewardDraw{rune=name,tier=tier,rank=rank.rank,capped=capped});
    }
-   journal.runeHistory.bosses.Add(result);Progression.Save();
+   // Commit the personal grant, roster minimum and idempotent boss outcome in
+   // the same existing atomic journal write. Battle rune copies stay unchanged.
+   RuneProgression.ApplySharedMinimums();journal.runeHistory.bosses.Add(result);Progression.Save();
   }
   // Presentation/delivery belongs to the run checkpoint, permanent grants to
   // the idempotent journal entry. Reopening an older checkpoint never rerolls.

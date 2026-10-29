@@ -1,5 +1,9 @@
 # Android gameplay anomaly ledger
 
+## Shared rune progression refinement — 2026-10-29
+
+The user explicitly replaced fully separate character ranks with a shared minimum per rune, capped at4. Personal rank5 records provide the count, with each distinct character contributing once; no extra mastery counter or additive bonus is stored. Load, future profile creation and actual boss grants project the minimum while preserving higher ranks, enabled choices and existing battle copies. This is an intentional progression change, not an Android defect. Native6–10 verify actual grants, partial/future/retroactive profiles, cap/personal5, exact current/pre-boss/public1.3.4 Continue, capped XP and actual Retry effects. Diagnostic2/3 failures were fixture entry/measurement errors; no production focus or tooltip-layout workaround was added.
+
 ## Combat visibility correction — 2026-10-29
 
 - **A223 superseded by the reported visibility defect:** Android's FPS sampler writes `ShowDamagePopup=0` after eight qualifying samples and never restores it. Native diagnostic4 reproduces that write and suppression of a real hit. The sampler is removed; a persistent native Options choice defaults On, supports controller/pointer and ignores the ambiguous old automatic flag. Damage/pooling/zoom arithmetic is unchanged. This is an explicitly requested visibility correction, rather than a missing port.

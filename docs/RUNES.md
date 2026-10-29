@@ -1,5 +1,24 @@
 # Character runes and boss rewards
 
+## Shared rune head start — 2026-10-29
+
+Authorized by the agreed minimum-rank design and the request to implement it with an executive README summary.
+
+- H01: For each rune, its shared minimum is the number of distinct character profiles owning rank5, capped at4. Raise every lower rank to that minimum; preserve ranks already above it. This is a minimum, never an additive bonus. Completing A establishes rank1, B rank2, C rank3 and D rank4 for the remaining roster. Every character earns its own fifth rank; subsequent completions cannot raise the shared minimum beyond4.
+- H02: Integrate the minimum with actual boss lottery grants, existing-profile loading, future/locked characters, native rune descriptions/menu projection, run startup and Retry. Existing rank5 profiles count retroactively, once per character/rune. Derive the minimum from existing permanent ranks rather than adding a duplicate mastery journal. Preserve each character's enabled selections, seed ownership, rewards/RNG/XP conversion and unrelated runes. Shared ranks do not enable effects automatically or mutate an existing battle; accepted new-effect rewards retain their established activation contract.
+- H03: Preserve atomic permanent-profile/reward-journal persistence and exact interrupted/old/current Continue behavior. Reload and repeated boss callbacks must not increment or compound a shared minimum. Retain updater0.2.0/schema2/save-epoch1 compatibility with no new reset.
+- H04: Verify the complete native boss-to-roster flow, non-additive preservation of partial progress, minimum1–4/cap/personal5, existing/new characters and retrofit, native controller descriptions/toggles, actual next-run/Retry effects, ongoing-loadout preservation, capped XP and fresh-process current/public1.3.4 Continue. Use the isolated/windowless Windows harness.
+- H05: Put an executive summary of all delivered improvements near the beginning of the README, covering Android ports, progression/runes, combat/elements/elites, HUD/build information, exploration, controller/save/Custom workflows, artwork and Windows/DroidDeck delivery. Preserve detailed ledgers/screenshots/changelog. Commit/synchronize and publish one verified normal release after the full scope, check exact packaged behavior/install/rollback/public hashes and clean task scratch. Preserve live Steam/profile/settings/phone state.
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| H1 Shared rune progression | COMPLETE | Native6–10 verify actual boss grants/minima1–4, non-additive partial/new profiles, personal fifth ranks, actual damage/Retry, capped XP, controller/all24 descriptions, current/pre-boss/public1.3.4 Continue and retroactive profiles. H1-acceptance.json binds sources and evidence. | None. Diagnostic1 reproduces the missing feature;2 entered the controller graph from the mouse path;3 compared text with its intentionally zero-height anchor.4–5 diagnose and correct the fixture measurement; no production focus/layout workaround was added. |
+| H2 Executive README and final delivery | ACTIVE | H1 complete; existing normal release/updater path retained. | H05: executive summary, final committed package, public verification and cleanup. |
+
+Disposable .NET/native work uses the exact registered `D:/Temp/20mtd-shared-runes-20261029` small-file I/O exception. Required retained evidence and deliverables belong in `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`. Existing project/shared-input bindings remain unchanged.
+
+H01 supersedes P01's fully separate ranks: each character keeps its personal fifth rank and enabled selections, while a shared minimum reduces repetition. Permanent rank5 records remain the sole mastery source; the minimum is a projection at existing load, profile-creation and boss-grant boundaries. Existing battle copies and the atomic reward journal retain their ownership. No additional persistence, migration counter or grant pipeline is needed.
+
 ## Reward presentation follow-up — 2026-10-29
 
 Authorized addition to the active reward-icon update; implementation follows that update's I1 stage and shares its final release.
