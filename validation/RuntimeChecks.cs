@@ -90,6 +90,7 @@ public partial class RuntimeChecks:MonoBehaviour
         fixtureMouse=InputSystem.AddDevice<Mouse>("ChargeSpikeMouse");
         fixtureKeyboard=InputSystem.AddDevice<Keyboard>("ChargeSpikeKeyboard");
         AudioListener.volume=0f;
+        if(Environment.GetEnvironmentVariable("MODERNIZATION_NATIVE_RENDER")=="1")Application.runInBackground=true;
         InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
         Log("input-fixture","Synthetic devices ignore desktop focus; no OS input injection");
         var routine=Run();
@@ -569,6 +570,13 @@ public partial class RuntimeChecks:MonoBehaviour
     [Serializable]class UiNode{public string id,text,role;public bool active,interactable;public float[] bounds;}
     IEnumerator Capture(string file)
     {
+        if(Environment.GetEnvironmentVariable("MODERNIZATION_NATIVE_RENDER")=="1")
+        {
+            yield return new WaitForEndOfFrame();
+            var frame=ScreenCapture.CaptureScreenshotAsTexture();
+            File.WriteAllBytes(Path.Combine(ResultDir,file),frame.EncodeToPNG());Object.Destroy(frame);
+            Log("native-frame-capture",file);yield break;
+        }
         // Batch players have no usable backbuffer. Render the native cameras and
         // overlay canvases explicitly into a GPU texture, without a desktop window.
         yield return null;
@@ -592,12 +600,9 @@ public partial class RuntimeChecks:MonoBehaviour
             for(int i=0;i<cameras.Length;i++){cameras[i].targetTexture=rt;cameras[i].rect=new Rect(0,0,1,1);cameras[i].orthographicSize=previousOrtho[i];Log("offscreen-camera",cameras[i].name+" layers="+cameras[i].cullingMask);}
             camera.targetTexture=rt;
             for(int i=0;i<overlays.Length;i++){overlays[i].renderMode=RenderMode.ScreenSpaceCamera;overlays[i].worldCamera=camera;overlays[i].planeDistance=camera.nearClipPlane+.1f;}
-            // Static header/footer graphics otherwise retain their previous
-            // canvas mesh when batch capture changes the camera target/projection.
-            foreach(var graphic in Object.FindObjectsOfType<Graphic>())graphic.SetAllDirty();
             Canvas.ForceUpdateCanvases();
             foreach(var c in cameras)c.Render();
-            if(overlays.Length>0)camera.Render();
+            camera.Render();
             RenderTexture.active=rt;var t=new Texture2D(width,height,TextureFormat.RGB24,false);t.ReadPixels(new Rect(0,0,width,height),0,0);t.Apply();
             File.WriteAllBytes(Path.Combine(ResultDir,file),t.EncodeToPNG());Object.Destroy(t);
             Log("offscreen-capture",file);
