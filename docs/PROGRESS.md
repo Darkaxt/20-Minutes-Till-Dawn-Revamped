@@ -7,11 +7,26 @@
 | Q1 Complete elite presentation | COMPLETE | Native6–10 verify eleven types, actual Boomer facing/size/windup, animated outside-alpha contour, both styles/viewports, pool/death/XP/Eye cadence and current/prior Continue. | None. |
 | Q2 Exploration reward and pointer correction | COMPLETE | Native11–14,16–17 verify seven actual content icons, no new credits, actual old unopened-credit conversion with earned totals preserved, current Continue, all maps/Custom and nearby visibility. | None. |
 | Q3 Endless elite tiers | COMPLETE | Native18,20–25 verify actual50 Elite/five Elite+ defeats, priority and compounded ratios, exact pending Continue/new-run reset, all-mode isolation, ordinary reuse and eleven-type contour regression. | None. |
-| Q4 Final delivery | ACTIVE | Target game1.3.1, updater0.2.0/epoch1 unchanged. | Final metadata/package/native copied-install/rollback/public download and cleanup remain; internal advancement blocker, resolvable in this stage. No external blocker or deferral. |
+| Q4 Final delivery | COMPLETE | Normal public1.3.1, exact packaged native workflows, copied install/rollback, independent download/hash/source checks and reviewed cleanup pass. Updater0.2.0/epoch1 unchanged. | None. |
 
-Q1-acceptance.json, Q2-acceptance.json and Q3-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. Q3 run19 was cancelled after the resumed fixture player died during sustained Eye fire; run20 reapplies fixture invincibility and passes the whole Continue workflow. Neither required a production workaround. Live Steam/profile/phone installations remain untouched. No release has been published for these intermediate stages.
+Q1-acceptance.json, Q2-acceptance.json and Q3-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. Q3 run19 was cancelled after the resumed fixture player died during sustained Eye fire; run20 reapplies fixture invincibility and passes the whole Continue workflow. Neither required a production workaround. Live Steam/profile/phone installations remain untouched; publication is the delivery boundary.
 
-Q4's first packaged map sweep (S6/run5) exposed an invalid geometry oracle: a random wave can select another prefab and native facing can flip X. The fixture now records ordinary scales for every actual pool choice and compares dimensions with the selected prefab, independently of facing sign. Production code is unchanged. The corrected full package is undergoing final native verification before publication.
+Q4's first packaged map sweep (S6/run5) exposed an invalid geometry oracle: a random wave can select another prefab and native facing can flip X. The fixture now records ordinary scales for every actual pool choice and compares dimensions with the selected prefab, independently of facing sign. Production code is unchanged; the corrected packaged sweep passes in S6/run10.
+
+Normal [v1.3.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.1) was published2026-10-29T00:36:06Z from `d156068b17a09ecdb6b537305a137a873edbb69e`. The independently downloaded ZIP has SHA-256 `33195f72efbc1e8632479de4762d1ca20a2f358924f9acce7e942749e5a1347a`; its production DLL is `ada6cd09bd6b503127cee71db5e139df13425a18963549d1671e1ef3ea823a1f`, assembly version1.3.1.0. All70 package members, the normal publication state, tag/source and614 update targets pass. The same613 loader/assets files and593 prepared assets are retained; only the mod DLL changes. Schema2/minimum-updater0.2.0/save-epoch1 remains compatible, without another reset after the rune transition.
+
+| Exact packaged workflow | Evidence | Result |
+|---|---|---|
+| Actual tier defeats/ratios and exact pending Continue | S6/run6–7 | PASS |
+| Eleven regular types, animated contours, both styles/three viewports, pool restoration | S6/run8 | PASS |
+| Actual older cadence and all-mode/Custom tier isolation | S6/run9–10 | PASS |
+| Seven content icons, boss separation, zoom/styles/viewports and no credit draws | S6/run11 | PASS |
+| Actual collection, byte-bound current Continue and actual older credit-drop conversion/payout | S6/run12–14 | PASS |
+| All-map exploration/Custom ownership and nearby visibility | S6/run15–16 | PASS |
+| Complete controller menus, Options, Custom, runes and Continue dialogs | S6/run17 | PASS |
+| Rune reward lottery/XP and byte-bound pending Continue | S6/run18–19 | PASS |
+
+The copied installation verifies614 owned files and rollback removes those exact614 while preserving142 stock originals. Source/asset applicability and independent download read-back are retained in candidate-acceptance.json, published-delivery.json and Q4-delivery-verification.json. After all owned consumers exited, reviewed cleanup `fd41ff07b65089236354bdb9b6fcad15` removed2317 members /459891628 logical bytes; the exact disposable root is absent. Current deliverables and required evidence remain in the retained project evidence directory. No blocker or tracked deferral remains.
 
 ## Character runes and updater transition — 2026-10-28
 

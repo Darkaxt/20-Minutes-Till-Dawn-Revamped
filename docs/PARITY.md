@@ -4,6 +4,8 @@ Detailed comparison retained from the pre-gallery README. Subsequent ports, corr
 
 ## Android 8.6 parity ledger
 
+The requested1.3.1 [elite contours and Endless tiers](ELEMENTS.md#enhanced-regular-enemies), [credit-free exploration and actual content pointers](EXPLORATION.md) are Revamped additions/corrections. They do not add Android ports or monetization. Their complete packaged runtime, current/older saves and public delivery are verified in [PROGRESS.md](PROGRESS.md).
+
 The requested [character rune progression](RUNES.md) replaces the previous credit purchase rules. Wild Magic now restarts Curse/Smite, Elemental Barrage recognizes the redesigned electrical/wind control effects, and Dedication counts offensive summon families. These are explicitly requested refinements following the elemental redesign, rather than unported Android behavior.
 
 The subsequently approved [elemental redesign](ELEMENTS.md) intentionally changes lightning splash/stun/chaining, Energized, fire propagation/explosions and defensive wind control. These changes supersede those Android contracts; they are user-requested refinements rather than missing ports. Ice remains unchanged. Current verification and final delivery are tracked in [PROGRESS.md](PROGRESS.md).
