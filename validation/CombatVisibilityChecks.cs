@@ -52,7 +52,7 @@ public partial class RuntimeChecks
    hidden.transform.position=Camera.main.ViewportToWorldPoint(new Vector3(.999f,.6f,10));var clipped=hidden.transform.position;clipped.z=0;hidden.transform.position=clipped;yield return null;yield return null;Require(pointer.Marker.gameObject.activeSelf,"partially clipped chest keeps its indicator until the whole world artwork is visible");
    yield return Capture("chest-handoff-"+size.x+"-"+(reborn?"reborn":"original")+"-"+zoom+".png");RemovePoiFixture(run);
   }
-  SetPhase("PASS");Log("complete","Continued game: exploration approach/retreat/contact, native fog/world sprite and edge lifecycle across three viewports, both palettes and both zoom extremes. No timeout or premature disappearance reproduced; no speculative production change.");Application.Quit(0);
+  SetPhase("PASS");Log("complete","Continued game: exploration approach/retreat/contact, native fog/world sprite and whole-artwork/HUD-clear handoff across three viewports, both palettes and both zoom extremes. No chest expiry or reward/lifecycle change.");Application.Quit(0);
  }
  IEnumerator CheckCombatVisibilityProbe()
  {

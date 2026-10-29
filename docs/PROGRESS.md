@@ -2,9 +2,21 @@
 
 ## Combat visibility and sprite status shaders — 2026-10-29
 
-[Authoritative requirements and stage ledger](VISUALS.md). V1 Combat visibility is COMPLETE: runs5–6 verify damage numbers/native Options/Continue; native14 reproduces the chest-center handoff hiding beneath the skills HUD, and native15 verifies whole-artwork/unobscured handoff across styles, viewports and zoom. V2 Sprite status shaders is COMPLETE (run13: actual GPU masked pixels, concurrent effects on an enlarged elite, lifetime/pause/pool/teardown). V3 Final delivery is ACTIVE. Existing elemental balance, runes, progression and rewards remain unchanged. No external blocker or tracked deferral.
+[Authoritative requirements and stage ledger](VISUALS.md). V1 Combat visibility, V2 Sprite status shaders and V3 Final delivery are COMPLETE. Native5–6 verify damage numbers/native Options/Continue; native14 reproduces the chest-center handoff hiding beneath the skills HUD, and native15 verifies whole-artwork/unobscured handoff across styles, viewports and zoom. Native13 verifies actual GPU masked pixels, concurrent effects on an enlarged elite, lifetime/pause/pool/teardown. The exact committed package additionally verifies native Freeze and the retained gameplay consumers. Existing elemental balance, runes, progression and rewards remain unchanged. No blocker or tracked deferral.
 
-Temporary native/.NET/shader work uses the registered `D:/Temp/20mtd-status-shaders-20261029` small-file I/O exception; required retained evidence belongs in `D:/Projects/20MTD-Modernization-evidence/status-shaders-20261029`. Live Steam/profile/phone state remains protected.
+Normal [v1.3.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.4) was published from `c597bfb5c74a68a86bee43507f1ee3875c42fa3c`. The independently downloaded ZIP has SHA-256 `7de19b5040d49073e02c43baa56e0b061b0f929b3798ab6bac0046b494168f1f`. All78 public members verify. Only the production DLL changes among614 update targets; all593 prepared assets and613 other targets remain unchanged. Updater0.2.0/schema2/save-epoch1 remain compatible without another reset.
+
+| Exact packaged normal-render workflow | Evidence | Result |
+|---|---|---|
+| Real damage, explicit native Options/controller/pointer and zoom/style/viewport matrix | S6/run-1 | PASS |
+| Byte-bound fresh-process Continue and persisted manual choice | S6/run-2 | PASS |
+| Public1.3.3 checkpoint, chest HUD/clipping handoff and actual contact | S6/run-3 | PASS |
+| Public1.3.3 checkpoint, actual GPU alpha-masked effects, elite/pause/expiry/pool/teardown | S6/run-4 | PASS |
+| Seven content previews and native boss marker separation | S6/run-5 | PASS |
+| Complete composed native controller/Options/Custom/Continue error routes | S6/run-6 | PASS |
+| Native Freeze with mixed statuses, acquired reload consumer and prior Continue/restart | S6/run-7 | PASS |
+
+Both copied installations roll back614 exact owned files and preserve142 stock files. Independent source/tag/latest/asset/hash checks pass. Required retained receipts, renders and the versioned deliverable belong in `D:/Projects/20MTD-Modernization-evidence/status-shaders-20261029`. Transaction `89bebc31787cdd19e930d620af8eeaf0` removes all1456 reviewed temporary members,315575538 logical bytes; `D:/Temp/20mtd-status-shaders-20261029` is absent. Live Steam/profile/settings and phone remain unchanged. `V3-acceptance.json` binds final reconciliation and delivery.
 
 ## Reward icons, rune presentation and Score labels — 2026-10-29
 

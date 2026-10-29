@@ -180,7 +180,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0/1.3.1/1.3.2 to1.3.3 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0–1.3.3 to1.3.4 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -311,7 +311,9 @@ Verified with actual controller and mouse input in the isolated Windows player a
 
 ## Verification and limits
 
-The published **1.3.3** package verifies native reward icons and truthful replacement previews, longer rune fanfare/descriptions, actual accepted and declined current-run effects, starting runes in Endless, current/public1.3.1 Continue, Score/results and complete controller menus. Both artwork modes and square/4:3/16:9 views pass. Copied installation/rollback and independently downloaded source/package hashes are verified. Updater0.2.0/save-epoch1 remains compatible without another reset after1.3.0. [Final delivery evidence](docs/PROGRESS.md).
+The published **1.3.4** package verifies real damage numbers and their explicit native setting, current/public1.3.3 Continue, unobscured whole-chest marker handoff/contact, actual GPU-masked fire/lightning/wind effects, native Freeze/mixed effects, elite/pool lifecycle, reward icons and complete controller menus. Both artwork modes, square/4:3/16:9 and zoom0/100 pass. Copied install/rollback and the independently downloaded public source/package hashes verify. Updater0.2.0/save-epoch1 remains compatible without another reset. [Final delivery evidence](docs/PROGRESS.md).
+
+The earlier **1.3.3** package verified native reward icons and truthful replacement previews, longer rune fanfare/descriptions, actual accepted and declined current-run effects, starting runes in Endless, current/public1.3.1 Continue and Score/results. That retained verification remains applicable to unchanged gameplay.
 
 The published **1.2.1** package passes the elite-size native workflows, both artwork modes, exact pool restoration, current/prior Continue and source modes/Custom. Copied installation/rollback and independent public-download verification are recorded in [PROGRESS.md](docs/PROGRESS.md).
 
