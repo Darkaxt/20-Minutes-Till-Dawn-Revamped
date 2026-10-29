@@ -13,11 +13,17 @@ Authorized by the agreed minimum-rank design and the request to implement it wit
 | Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
 |---|---|---|---|
 | H1 Shared rune progression | COMPLETE | Native6–10 verify actual boss grants/minima1–4, non-additive partial/new profiles, personal fifth ranks, actual damage/Retry, capped XP, controller/all24 descriptions, current/pre-boss/public1.3.4 Continue and retroactive profiles. H1-acceptance.json binds sources and evidence. | None. Diagnostic1 reproduces the missing feature;2 entered the controller graph from the mouse path;3 compared text with its intentionally zero-height anchor.4–5 diagnose and correct the fixture measurement; no production focus/layout workaround was added. |
-| H2 Executive README and final delivery | ACTIVE | H1 complete; existing normal release/updater path retained. | H05: executive summary, final committed package, public verification and cleanup. |
+| H2 Executive README and final delivery | COMPLETE | Executive summary, exact committed package/native workflows, copied install/rollback, independently downloaded normal v1.3.5, updater contract and reviewed cleanup pass. | None. |
 
 Disposable .NET/native work uses the exact registered `D:/Temp/20mtd-shared-runes-20261029` small-file I/O exception. Required retained evidence and deliverables belong in `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`. Existing project/shared-input bindings remain unchanged.
 
 H01 supersedes P01's fully separate ranks: each character keeps its personal fifth rank and enabled selections, while a shared minimum reduces repetition. Permanent rank5 records remain the sole mastery source; the minimum is a projection at existing load, profile-creation and boss-grant boundaries. Existing battle copies and the atomic reward journal retain their ownership. No additional persistence, migration counter or grant pipeline is needed.
+
+Normal [v1.3.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5) is published from `ca1c7a2f59aea831df3f1c11fab4fe725568045d`. Independently downloaded ZIP SHA-256: `34dcb89674c87656cf4b05974fbe1c9d5090e8505e7920a0b46cb6c01a60b7ed`. All 80 public members verify. Only the production DLL changes among 614 update targets; 593 prepared assets and 613 other targets remain unchanged. Updater 0.2.0/schema 2/save epoch 1 remain compatible without another reset.
+
+Exact packaged normal-render S6/run-1–6 and 9 pass fresh boss-to-roster progression, byte-bound current Continue, pre-boss replay, retrofit, public 1.3.4 Continue, legacy rewards and the native controller workflow. Run-7 failed one pointer assertion; test-only event diagnostics completed S1/run-11 and the same copied player S6/run-8 without reproducing it. Run-9 passes with the original committed test restored. No production workaround or unproven root-cause claim was added. Copied install/rollback verifies all 614 owned targets and 142 stock files. Live Steam, user profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `0ac61d2303c09dc03685f572f519f8d4` is applied: {'deleted': 1436}; 315816896 logical bytes removed. The exact disposable root is absent. Required evidence and release packages remain at `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`.
 
 ## Reward presentation follow-up — 2026-10-29
 

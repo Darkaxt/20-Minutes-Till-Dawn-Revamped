@@ -8,13 +8,13 @@ A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt*
 
 ## Executive summary
 
-Revamped brings the audited Android8.6 gameplay additions to the purchased Windows game, then improves progression, combat variety, build information and controller play. The work delivered so far includes:
+Revamped brings the audited Android 8.6 gameplay additions to the purchased Windows game, then improves progression, combat variety, build information and controller play. The work delivered so far includes:
 
 | Area | Delivered improvements |
 |---|---|
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
-| **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank1, then2,3 and4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
+| **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief retreat/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
 | **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Exploration and modes** | Up to three weighted exploration chests offer meaningful XP, healing, utility and upgrades at varied reachable distances. Content icons, distance pointers and nearby colors identify them; indicators stay until the chest is clear of the HUD. Challenge and native Custom menus expand play options; Custom imports mode defaults and uses obtained content without permanent unlock rewards. |
@@ -27,6 +27,8 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
 *Actual Windows test capture. The maintenance credit is part of the pixel artwork; the Emberpath promotional panel is removed.*
+
+*v1.3.5 delivery verified: the public download matches the qualified package; shared progression, saved runs and native controller menus pass in the actual Windows player. Compatible saves are preserved.*
 
 ## See it in game
 
@@ -152,7 +154,7 @@ Browsing shows a natural unlock sentence. Confirm/click a locked character or we
 
 Runes are earned automatically from arena bosses. Credits, hold-to-buy and column purchase prerequisites are removed. Press an earned rune to enable or disable it; multiple runes in the same row can remain active. The five-rank cap remains, and existing Windows purchased ranks seed each character once.
 
-**Mastery gives the other characters a head start.** Each distinct character reaching rank5 raises that rune's shared minimum by one, capped at4. The remaining characters inherit rank1,2,3,then4; existing higher ranks stay intact. This is a minimum, not an added rank: another character at rank4 stays at4. Every character earns its own fifth rank through the boss lottery. Existing mastery counts retroactively and characters first played later inherit the same minimum. Enabled selections stay personal, and an ongoing battle keeps its established rune effects.
+**Mastery gives the other characters a head start.** Each distinct character reaching rank5 raises that rune's shared minimum by one, capped at 4. The remaining characters inherit rank1,2,3,then4; existing higher ranks stay intact. This is a minimum, not an added rank: another character at rank4 stays at4. Every character earns its own fifth rank through the boss lottery. Existing mastery counts retroactively and characters first played later inherit the same minimum. Enabled selections stay personal, and an ongoing battle keeps its established rune effects.
 
 ![Native rune menu showing personal rank five and the roster's shared minimum of four](docs/images/rune-shared-minimum.png)
 
@@ -224,7 +226,7 @@ The HUD groups acquired icons by native upgrade path, with a subtle glow for tri
 
 ### v1.3.5 — Shared rune head starts
 
-**Added:** mastering a rune raises its minimum rank across the other characters, capped at4. Existing higher progress and enabled choices stay intact; each character earns its own fifth rank. Existing mastery and future characters are supported without another save reset. **Updated:** an executive summary of all delivered improvements now opens the README. [Release notes](release/NOTES-1.3.5.md) · [Rune contracts and verification](docs/RUNES.md#shared-rune-head-start--2026-10-29).
+**Added:** mastering a rune raises its minimum rank across the other characters, capped at 4. Existing higher progress and enabled choices stay intact; each character earns its own fifth rank. Existing mastery and future characters are supported without another save reset. **Updated:** an executive summary of all delivered improvements now opens the README. [Release notes](release/NOTES-1.3.5.md) · [Rune contracts and verification](docs/RUNES.md#shared-rune-head-start--2026-10-29).
 
 ### v1.3.4 — Visible combat and sprite status effects
 

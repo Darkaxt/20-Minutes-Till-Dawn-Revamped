@@ -2,9 +2,13 @@
 
 ## Shared rune head start and executive summary — 2026-10-29
 
-[Authoritative requirements](RUNES.md#shared-rune-head-start--2026-10-29). H1 Shared rune progression is COMPLETE; H2 Executive README and final delivery is ACTIVE. Native6–10 verify the complete boss-to-roster flow, minima1–4/cap/personal5, non-additive partial/new/retroactive profiles, actual battle/Retry damage, capped XP, native controller/all24 descriptions and current/pre-boss/public1.3.4 Continue. H1-acceptance.json binds the source. Existing enabled selections and ongoing battle loadouts remain unchanged. No blocker or tracked deferral.
+[Authoritative requirements](RUNES.md#shared-rune-head-start--2026-10-29). H1 Shared rune progression and H2 Executive README and final delivery are COMPLETE. H01–H05 are satisfied; no blocker or tracked deferral. H1-acceptance.json and H2-acceptance.json bind implementation, native workflows and delivery.
 
-Disposable native/.NET work uses `D:/Temp/20mtd-shared-runes-20261029`; retained evidence/deliverables use `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`. Live Steam/profile/settings and phone are protected.
+Normal [v1.3.5](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.5) is published from `ca1c7a2f59aea831df3f1c11fab4fe725568045d`. Independently downloaded ZIP SHA-256: `34dcb89674c87656cf4b05974fbe1c9d5090e8505e7920a0b46cb6c01a60b7ed`. All 80 public members verify. Only the production DLL changes among 614 update targets; 593 prepared assets and 613 other targets remain unchanged. Updater 0.2.0/schema 2/save epoch 1 remain compatible without another reset.
+
+Exact packaged normal-render S6/run-1–6 and 9 pass fresh boss-to-roster progression, byte-bound current Continue, pre-boss replay, retrofit, public 1.3.4 Continue, legacy rewards and the native controller workflow. Run-7 failed one pointer assertion; test-only event diagnostics completed S1/run-11 and the same copied player S6/run-8 without reproducing it. Run-9 passes with the original committed test restored. No production workaround or unproven root-cause claim was added. Copied install/rollback verifies all 614 owned targets and 142 stock files. Live Steam, user profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `0ac61d2303c09dc03685f572f519f8d4` is applied: {'deleted': 1436}; 315816896 logical bytes removed. The exact disposable root is absent. Required evidence and release packages remain at `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029`.
 
 ## Combat visibility and sprite status shaders — 2026-10-29
 
