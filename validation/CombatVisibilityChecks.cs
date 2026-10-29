@@ -104,14 +104,16 @@ public partial class RuntimeChecks
    yield return SelectorPad(pad,GamepadButton.East);while(!(game.CurrentState is PauseState))yield return null;yield return PadClick(pad,game.pauseMenu.transform,game.pauseResumeButton);while(!(game.CurrentState is CombatState))yield return null;
   }
   PlayerPrefs.SetInt("ShowDamagePopup",0);
-  foreach(var size in new[]{new Vector2Int(900,900),new Vector2Int(1024,768),new Vector2Int(1280,720)})foreach(bool reborn in new[]{false,true})foreach(int zoom in new[]{0,100})
+  foreach(var size in new[]{new Vector2Int(900,900),new Vector2Int(1024,768),new Vector2Int(1280,720)})foreach(bool reborn in new[]{false,true})foreach(int zoom in new[]{0,25,50,75,100})
   {
    Screen.SetResolution(size.x,size.y,false);yield return WaitDisplay(size.x,size.y);CameraZoom.Value=zoom;if(ColorfulStyle.Instance.Enabled!=reborn)ColorfulStyle.Instance.Toggle();
    foreach(var popup in Object.FindObjectsOfType<AndroidDamagePopup>())ReturnFixtureActor(popup.gameObject);
    var victim=ElementEnemy((Vector2)p.transform.position+Vector2.right*3);victim.GetComponent<MoveComponent2D>().enabled=false;int hp=victim.HP;victim.TakeDamage(DamageType.Bullet,17);yield return null;
    var number=Object.FindObjectsOfType<AndroidDamagePopup>().Single(n=>n.GetComponent<TextMeshPro>().text=="17");var text=number.GetComponent<TextMeshPro>();
-   Require(hp-victim.HP==17&&text.renderer.enabled&&text.color.a>0&&text.gameObject.activeInHierarchy,"actual damage still displays despite legacy automatic Off; damage is unchanged");CombatClose(text.fontSize,2*(1+zoom/100f),"number glyphs retain camera zoom compensation");
-   yield return PoiCapture("damage-visible-"+size.x+"-"+(reborn?"reborn":"original")+"-"+zoom+".png");ElementClear();
+   Require(hp-victim.HP==17&&text.renderer.enabled&&text.color.a>0&&text.gameObject.activeInHierarchy,"actual damage still displays despite legacy automatic Off; damage is unchanged");CombatClose(text.fontSize,1+zoom/100f,"compact number glyphs retain half-sized camera zoom compensation");
+   text.ForceMeshUpdate();var glyph=text.textBounds;var camera=Camera.main;var bottom=camera.WorldToScreenPoint(text.transform.TransformPoint(glyph.min));var top=camera.WorldToScreenPoint(text.transform.TransformPoint(glyph.max));
+   Require(glyph.size.y>0&&top.y>bottom.y,"compact real-hit text has visible rendered glyph geometry");Log("compact-damage-glyph",size.x+"x"+size.y+" reborn="+reborn+" zoom="+zoom+" font="+text.fontSize+" glyphPixels="+(top.y-bottom.y));
+   if(zoom==0||zoom==100)yield return PoiCapture("damage-visible-"+size.x+"-"+(reborn?"reborn":"original")+"-"+zoom+".png");ElementClear();
   }
   game.pauseController.Pause();game.ChangeState<PauseState>();yield return null;yield return PadClick(pad,game.pauseMenu.transform,game.optionsButton);while(!Active(game.optionsMenu))yield return null;
   var toggle=game.optionsMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="DamageNumbersSetting");yield return PadClick(pad,game.optionsMenu.transform,toggle);Require(!Plugin.Instance.DamageNumbers.Value&&toggle.GetComponentInChildren<TMP_Text>().text=="Damage numbers: Off","native controller switches numbers Off explicitly");

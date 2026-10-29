@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.6](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.6) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -80,9 +80,13 @@ The original timer sits at top center below the level bar, with **Score** beneat
 
 *Actual1280×720 Windows capture of the Score HUD with a controlled enemy-count fixture. Collected upgrade-path rows are verified separately; this is not a natural progression run.*
 
+![Compact damage number at maximum zoom-out in the square Windows viewport](docs/images/damage-numbers-zoom.png)
+
+*Unretouched native 900×900 capture at100% zoom-out. Damage glyphs are50% smaller than before; zoom compensation, native animation and the On/Off setting remain intact.*
+
 ### See the upgrade path and its role in your build
 
-The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Enemy damage numbers stay readable while zooming out; **Options → Damage numbers** controls them explicitly and starts On. An edge icon points toward boss and exploration rewards, staying visible until the whole world chest is on screen and clear of the HUD.
+The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Compact enemy damage numbers stay readable while zooming out; **Options → Damage numbers** controls them explicitly and starts On. An edge icon points toward boss and exploration rewards, staying visible until the whole world chest is on screen and clear of the HUD.
 
 When one target gains an attribute and loses another, it appears **once under Mixed (+ / −)**. For example, Double Shot adds a projectile but lowers bullet damage. This describes the trade-off without pretending to calculate a universal net benefit.
 
@@ -176,7 +180,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.6 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.6).
+1. Download and extract the [v1.3.7 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -186,7 +190,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Use updater 0.2.0.** Updating1.3.0–1.3.5 to1.3.6 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0–1.3.6 to1.3.7 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -211,6 +215,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.7 — Compact damage numbers
+
+**Improved:** damage glyphs are50% smaller at every zoom level while retaining zoom compensation. Native animation, damage, pooling and the existing On/Off setting remain unchanged. No save reset. [Release notes](release/NOTES-1.3.7.md) · [Verification](docs/VISUALS.md#compact-damage-numbers--2026-10-30).
 
 ### v1.3.6 — Local fire panic and paced XP
 

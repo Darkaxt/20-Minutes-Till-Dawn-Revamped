@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Compact damage numbers — 2026-10-30
+
+[Authoritative requirements](VISUALS.md#compact-damage-numbers--2026-10-30). D1 Compact damage presentation is COMPLETE; D2 Final delivery is ACTIVE. Native1 reproduces the old size,2–3 verify half-sized real labels, all zoom steps/styles/viewports, recorded rendered bounds, native controls and byte-bound manual-Off Continue. No blocker or tracked deferral. Disposable work: `D:/Temp/20mtd-damage-scale-20261030`; required evidence/packages: `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`. Live Steam/profile/settings/phone protected.
+
 ## Local fire panic, paced magnet and XP marker — 2026-10-29
 
 [Authoritative requirements](ELEMENTS.md#local-fire-panic--2026-10-29). F1 Complete local panic behavior, F2 Magnet pacing and XP marker and F3 Final delivery are COMPLETE. F01–F06 are satisfied; no blocker or tracked deferral.

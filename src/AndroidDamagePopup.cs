@@ -12,10 +12,10 @@ public sealed class AndroidDamagePopup:MonoBehaviour
  void Awake(){label=GetComponent<TextMeshPro>();originalFontSize=label.fontSize;}
  void LateUpdate()
  {
-  // World geometry shrinks under camera zoom. Compensate only the glyph size;
+  // Use compact half-sized glyphs, retaining readable camera zoom compensation.
   // native motion, scale animation, fog placement and pooled expiry stay owned
   // by WorldTextPopup. Set from the original value, never multiply repeatedly.
-  float size=originalFontSize*(1+Plugin.Instance.ZoomOut.Value/100f);
+  float size=originalFontSize*.5f*(1+Plugin.Instance.ZoomOut.Value/100f);
   if(label.fontSize!=size)label.fontSize=size;
  }
  static readonly AccessTools.FieldRef<WorldTextPopup,float> Timer=AccessTools.FieldRefAccess<WorldTextPopup,float>("timer");

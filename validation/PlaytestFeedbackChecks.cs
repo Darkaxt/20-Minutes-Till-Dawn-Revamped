@@ -205,7 +205,7 @@ public partial class RuntimeChecks
    CameraZoom.Value=zoom;FeedbackCameras();var target=HitEffectTarget(maximum:100000);target.transform.position=player.transform.position+Vector3.right*2;
    int before=target.HP;target.TakeDamage(DamageType.Bullet,12);yield return null;
    var popup=Object.FindObjectsOfType<AndroidDamagePopup>().Last();var text=popup.GetComponent<TextMeshPro>();
-   CombatClose(text.fontSize,2*(1+zoom/100f),"damage glyph size compensates zoom"+zoom);Require(before>target.HP&&text.text.Length>0,"actual enemy damage produces visible numeric text");
+   CombatClose(text.fontSize,1+zoom/100f,"compact damage glyph size compensates zoom"+zoom);Require(before>target.HP&&text.text.Length>0,"actual enemy damage produces visible numeric text");
    yield return Capture("damage-zoom-"+zoom+".png");ReturnFixtureActor(target.gameObject);
   }
   CameraZoom.Value=0;FeedbackCameras();

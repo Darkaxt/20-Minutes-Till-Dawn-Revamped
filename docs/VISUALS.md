@@ -1,5 +1,20 @@
 # Combat visibility and elemental status presentation
 
+## Compact damage numbers — 2026-10-30
+
+The user reports damage numbers approaching half the character's size. Their requested correction authorizes a focused size reduction.
+
+- D01: Render damage glyphs at50% of the previous size, retaining existing camera zoom compensation at0/25/50/75/100. Derive size from the original prefab font size, so pool reuse and zoom changes cannot compound it. Keep native movement, scale/fade animation, lifetime, damage values, fog/sorting and the existing On/Off setting unchanged. Do not add another setting or automatic hiding rule.
+- D02: Verify real hit labels and recorded rendered glyph bounds at square/4:3/16:9 sizes, both artwork styles and every zoom step. Inspect representative native captures at both zoom extremes. Preserve controller/pointer toggling, manual Off and exact fresh-process Continue using the existing isolated, non-input desktop harness.
+- D03: Update README/changelog and this ledger; commit/synchronize one normal final release through the established channel, verify exact packaged native behavior, copied install/rollback and independently downloaded public source/tag/assets/hash. Retain updater0.2.0/schema2/save-epoch1 with no reset and preserve live Steam/profile/settings/phone. Clean task scratch through the installed helper.
+
+| Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
+|---|---|---|---|
+| D1 Compact damage presentation | COMPLETE | D01–D02 pass native2–3: actual17-damage labels, rendered glyph bounds across30 viewport/style/zoom combinations per process, native controller/pointer On/Off, exact manual preference and byte-bound Continue. Inspected native900-square zoom100 and1280-wide zoom0 captures. D1-acceptance.json binds sources. | None. Native1 reproduces oldfont2 versus compact1. Native movement/fade/pooling rules are unchanged. Closure review: one original-size multiplier, no new setting or state owner. |
+| D2 Final delivery | ACTIVE | D1 complete; existing normal release and updater path retained. | D03 exact committed package/public verification, documentation and cleanup. No external blocker or deferral. |
+
+Disposable .NET/native work: `D:/Temp/20mtd-damage-scale-20261030` (small-file I/O exception). Required retained evidence/packages: `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`. Existing project/input bindings remain unchanged.
+
 Authorized by the 2026-10-29 reports of placeholder elemental circles, missing damage numbers and disappearing exploration chests.
 
 - V01: Restore readable damage numbers for actual enemy hits, in both artwork modes and at all supported zoom settings, including Continue. Trace the disappearance before changing behavior. If the ported low-FPS controller is responsible, replace automatic hiding with a persistent, explicit native Options choice that supports controller and pointer; enable numbers by default and do not preserve an indistinguishable old automatic-disable flag as a deliberate choice. Keep damage arithmetic and popup pooling/lifetime unchanged.
