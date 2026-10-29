@@ -30,9 +30,16 @@ public partial class RuntimeChecks
   var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current){position=point},hits);
   if(hits.Count==0||hits[0].gameObject.GetComponentInParent<Selectable>()!=control)Log("pointer-raycast-diagnostic",control.name+" point="+point+" depth="+control.GetComponent<Graphic>()?.depth+" hits="+string.Join(",",hits.Select(h=>h.gameObject.name+":"+h.depth+":"+h.sortingOrder)));
   Require(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Selectable>()==control,"actual pointer raycast reaches "+control.name);
-  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point});yield return null;yield return null;
-  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point}.WithButton(MouseButton.Left));yield return null;
-  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point});yield return null;yield return null;
+  Require(fixtureMouse.added&&fixtureMouse.enabled,"synthetic pointer device is enabled before queuing input");
+  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point});
+  while(Vector2.Distance(fixtureMouse.position.ReadValue(),point)>.01f)yield return null;
+  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point}.WithButton(MouseButton.Left));
+  while(!fixtureMouse.leftButton.isPressed)yield return null;
+  // The UI module consumes the press during its Update after input processing.
+  yield return null;
+  InputSystem.QueueStateEvent(fixtureMouse,new MouseState{position=point});
+  while(fixtureMouse.leftButton.isPressed)yield return null;
+  yield return null;
  }
  IEnumerator TypeCustomValue(TMP_InputField input,string value)
  {

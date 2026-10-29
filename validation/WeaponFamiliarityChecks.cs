@@ -6,6 +6,7 @@ using System.Linq;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using flanne;
@@ -15,6 +16,11 @@ using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization.Validation;
 public partial class RuntimeChecks
 {
+ void FamiliarityPointerFacts(string phase)
+ {
+  var module=EventSystem.current.currentInputModule;var point=AccessTools.Property(module.GetType(),"point")?.GetValue(module) as InputActionReference;
+  Log("familiarity-pointer-"+phase,"state="+Progression.Title.CurrentState.GetType().Name+" cursor="+Cursor.lockState+" fixtureMouse="+fixtureMouse.deviceId+":"+fixtureMouse.position.ReadValue()+" enabled="+fixtureMouse.enabled+" added="+fixtureMouse.added+" currentMouse="+Mouse.current?.deviceId+":"+Mouse.current?.position.ReadValue()+" module="+module.GetType().Name+" update="+InputSystem.settings.updateMode+" pointEnabled="+point?.action?.enabled+" mask="+point?.action?.bindingMask+" point="+point?.action?.ReadValue<Vector2>()+" source="+point?.action?.activeControl?.path+" controls="+string.Join(",",point?.action?.controls.Select(c=>c.device.deviceId+":"+c.path)??Enumerable.Empty<string>())+" selected="+EventSystem.current.currentSelectedGameObject?.name+" text="+SelectorText());
+ }
  IEnumerator FamiliarityHud(string name)
  {
   StatsOverlay.Mode=MetricsView.Extended;StatsOverlay.Instance.Refresh();yield return null;
@@ -76,7 +82,8 @@ public partial class RuntimeChecks
   title=Progression.Title;var guns=NativeSelection.GunItems(title.gunMenu);int revolver=guns.FindIndex(i=>i.data.name=="RevolverData");int shotgun=guns.FindIndex(i=>i.data.name=="ShotgunData");
   SaveSystem.data.gunHighestClear[revolver]=5;SaveSystem.data.gunHighestClear[shotgun]=0;
   Require(WeaponFamiliarity.Crown(revolver)==5&&WeaponFamiliarity.Crown(shotgun)==0,"weapon crown records stay independent");
-  foreach(int rank in new[]{-1,0,5})
+  bool pointerProbe=mode.EndsWith("pointer-probe");
+  foreach(int rank in pointerProbe?new[]{0}:new[]{-1,0,5})
   {
    SaveSystem.data.gunHighestClear[revolver]=rank;
    yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
@@ -101,7 +108,9 @@ public partial class RuntimeChecks
   Require(!SelectorText().Contains("Familiarity +"),"unmastered weapon preview has no handling bonus");
   yield return MenuMove(pad,title.gunMenu.transform,Entries(title.gunMenu)[revolver].button);Require(SelectorText().Contains("Familiarity +30%"),"controller preview shows existing crown handling bonus");
   while(title.gunMenu.GetComponent<CanvasGroup>().alpha<.999f||title.selectPanel.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
-  yield return PoiCapture("weapon-familiarity-preview.png");yield return MenuPointer(Entries(title.gunMenu)[shotgun].button);Require(!SelectorText().Contains("Familiarity +"),"pointer preview changes to the other weapon's own crown");
+  yield return PoiCapture("weapon-familiarity-preview.png");FamiliarityPointerFacts("before");yield return MenuPointer(Entries(title.gunMenu)[shotgun].button);FamiliarityPointerFacts("after");
+  if(pointerProbe){yield return Capture("pointer-after.png");SetPhase("PROBE");Application.Quit(0);yield break;}
+  Require(!SelectorText().Contains("Familiarity +"),"pointer preview changes to the other weapon's own crown");
   if(title.CurrentState is ModeSelectState){while(!title.modeSelectBackButton.IsInteractable()||title.modeSelectBackButton.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.999f))yield return null;yield return PadClick(pad,title.modeSelectPanel.transform,title.modeSelectBackButton);while(!(title.CurrentState is GunSelectState)||!GunBackReady)yield return null;}
   yield return SelectorPad(pad,GamepadButton.East);while(!(title.CurrentState is CharacterSelectState))yield return null;
   while(title.characterMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
