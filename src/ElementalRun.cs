@@ -5,7 +5,7 @@ using flanne.Core;
 namespace TwentyMinutes.Modernization;
 
 // Native art and a small reusable pulse pool owned by the actual battle.
-public sealed class ElementalRun:MonoBehaviour
+public sealed partial class ElementalRun:MonoBehaviour
 {
  internal static ElementalRun Instance;internal float BodyWidth;internal bool Chain;
  GameObject pulse;Sprite circle;Material material;
@@ -38,7 +38,7 @@ public sealed class ElementalRun:MonoBehaviour
   var child=new GameObject("ElementalStatus",typeof(SpriteRenderer));child.layer=9;child.transform.SetParent(target,false);child.transform.localScale=Vector3.one*(BodyWidth*.6f/circle.bounds.extents.x);
   var renderer=child.GetComponent<SpriteRenderer>();renderer.sprite=circle;renderer.sharedMaterial=material;renderer.sortingOrder=5;return renderer;
  }
- void OnDestroy(){if(Instance==this)Instance=null;}
+ void OnDestroy(){ReleaseStatusArt();if(Instance==this)Instance=null;}
 }
 public sealed class ElementalPulse:MonoBehaviour
 {

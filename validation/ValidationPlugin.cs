@@ -42,7 +42,12 @@ class NoValidationLeaderboard
 class NoPreferenceWrites
 {
  static IEnumerable<MethodBase> TargetMethods()=>new[]{"SetInt","SetFloat","SetString"}.Select(x=>AccessTools.Method(typeof(PlayerPrefs),x));
- static bool Prefix(string key)=>Environment.GetEnvironmentVariable("MODERNIZATION_TEST").StartsWith("display-")&&(key=="Fullscreen"||key=="ResolutionIndex");
+ static bool Prefix(string key)
+ {
+  string mode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+  return mode.StartsWith("display-")&&(key=="Fullscreen"||key=="ResolutionIndex")||
+   (mode=="damage-auto-hide-probe"||mode.StartsWith("combat-visibility-"))&&key=="ShowDamagePopup";
+ }
 }
 [HarmonyPatch(typeof(OptionsSetter),nameof(OptionsSetter.Refresh))]
 class TestViewport{static void Postfix(){string mode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");if(mode.StartsWith("display-")||mode.StartsWith("hud-presentation"))return;bool large=mode.EndsWith("1080")||Environment.GetEnvironmentVariable("MODERNIZATION_VIEWPORT")=="1080";Screen.SetResolution(large?1920:1280,large?1080:720,false);}}

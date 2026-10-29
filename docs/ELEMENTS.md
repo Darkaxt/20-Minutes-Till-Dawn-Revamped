@@ -38,7 +38,7 @@ Champion control durations are 20% of ordinary durations; displacement is 25%. B
 
 Damage relative to maximum enemy health scales **wind pulse displacement only**. Electrical stun, fire retreat/slow and wind disorientation use the fixed durations above; they do not grow with damage or the victim's missing health.
 
-Lightning uses native strike artwork, blue impact/status cues and connecting arcs. Fire uses native burn artwork, an orange status cue and an impact blast. Wind retains Gale artwork with mint pulse and disorientation cues. Both artwork modes use the same geometry and rules. Effects use combat time and stop during native pause.
+Lightning uses native strike artwork and connecting arcs, with cyan/white crackles masked inside the stunned enemy's animated sprite. Fire retains native burn artwork and its impact blast, adding warm rising masked tongues/embers for the full actual burn lifetime. Wind retains Gale impact/pulse artwork with moving mint sprite streaks for disorientation. The three persistent effects no longer use fog-circle status disks; separate GPU layers allow mixed statuses. Native sprite geometry/atlas alpha, facing, fog, hit flashes and elite contours remain intact in both artwork modes. Effects use combat time and stop during native pause; expiry/pool return and scene exit release their visuals. [Presentation contract and verification](VISUALS.md).
 
 Acquisitions rebuild the new owners on Continue, including supported older checkpoints. Enemy-local control, projectiles and temporary Energized counts do not become permanent saved bonuses. Pool return clears elemental status; a new run clears the previous run's owners.
 

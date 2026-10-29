@@ -1,6 +1,6 @@
-# Install 1.3.3
+# Install 1.3.4
 
-Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0/1.3.1 installation to1.3.3 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
+Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.3 installation to1.3.4 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 
@@ -15,7 +15,7 @@ python installer/install.py verify --game "D:/Steam/steamapps/common/20MinuteTil
 
 Start the game normally through Steam. The installer checks all 142 original game files, creates an exact owned-file manifest, and rejects conflicting existing loader/mod files before changing them. Compatible existing loader files are reused and remain owned by their previous installation. Original game files, saves and settings are preserved. No test/validation assembly is included.
 
-F2/Options cycles Off/Little/Extended metrics. Collected skills stay visible in centered rows, one per acquired upgrade path; no scrolling or count labels are needed. Original artwork is the default; Options can enable the compatible Sprites Reborn treatment and its palette extension. Pause → Save & return suspends a supported run. Custom runs award score only and use obtained content. See [controls and limits](docs/CUSTOM.md) and [migration decisions](docs/MIGRATION.md).
+F2/Options cycles Off/Little/Extended metrics. **Options → Damage numbers** explicitly enables/disables hit numbers; it defaults On and survives Continue. Collected skills stay visible in centered rows, one per acquired upgrade path; no scrolling or count labels are needed. Original artwork is the default; Options can enable the compatible Sprites Reborn treatment and its palette extension. Pause → Save & return suspends a supported run. Custom runs award score only and use obtained content. See [controls and limits](docs/CUSTOM.md) and [migration decisions](docs/MIGRATION.md).
 
 ## Upgrade from an earlier Revamped installation
 

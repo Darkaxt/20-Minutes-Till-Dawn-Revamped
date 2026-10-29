@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.3.3")]
+[BepInPlugin(Id,"20MTD Modernization","1.3.4")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -26,6 +26,7 @@ public class Plugin:BaseUnityPlugin
     public ConfigEntry<MetricsView> HudMode;
     public ConfigEntry<bool> ColorfulEnabled;
     public ConfigEntry<int> ZoomOut;
+    public ConfigEntry<bool> DamageNumbers;
     public static readonly Dictionary<string,string> Text=new Dictionary<string,string>();
     public static readonly Dictionary<GunData,Evolution> Guns=new Dictionary<GunData,Evolution>();
     public static bool TryMode(GunData data,out Evolution mode)
@@ -56,6 +57,7 @@ public class Plugin:BaseUnityPlugin
         HudMode=Config.Bind("Enhancements","MetricsMode",legacyMetrics.Value?MetricsView.Extended:MetricsView.Off,"F2 cycles Off, Little and Extended metrics. Selected skill paths remain visible. Little shows final values; Extended adds base and bonus. Pastel values show benefit relative to the starting value; shorter reload time is green.");
         ColorfulEnabled=Config.Bind("Enhancements","ColorfulStyle",false,"Optional compatible Sprites Reborn art (Law / Daramos / Darkly77). Original is default. Selected over older Colorful Overhaul by measured current-build coverage.");
         ZoomOut=Config.Bind("Enhancements","CameraZoomOut",0,new ConfigDescription("Extra world view in percent. 0 retains the original camera; menus and HUD keep their normal size.",new AcceptableValueList<int>(0,25,50,75,100)));
+        DamageNumbers=Config.Bind("Enhancements","DamageNumbers",true,"Show damage numbers over enemies. Controlled through native Options; frame-rate dips never change this choice.");
         new Harmony(Id).PatchAll(typeof(Plugin).Assembly);
         Logger.LogInfo("Native gameplay modernization loaded");
         gameObject.AddComponent<StatsOverlay>();

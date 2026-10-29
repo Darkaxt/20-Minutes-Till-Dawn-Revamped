@@ -20,6 +20,8 @@ Mint-tinted chests appear beyond the visible playfield on reachable ground. They
 
 **Uncollected exploration chests do not expire.** They remain until collected or the run ends, including across later spawn waves. Save & return / Continue preserves their fixed positions and rewards.
 
+In1.3.4 the edge content indicator remains visible until the **whole chest artwork** is inside the camera viewport and clear of the native HUD, metrics and skill icons. The earlier center-only handoff could hide the pointer while the skills HUD covered the chest. This presentation correction does not remove/claim the chest or change its rewards. [Render/contact regression](VISUALS.md).
+
 The system draws a new wave every **60–90 seconds of combat**. Pauses and upgrade menus stop this clock. Common waves can contain one to three chests in different directions. Placement varies across **5–30 seconds of travel at the player's current walking speed**, mixing nearer and farther targets instead of a narrow distant ring. Viewport exclusion sets a minimum visible-edge distance; compact arenas such as Temple cap the journey at reachable walls. New placements also account for exploration chests already on the ground. Blocked placement sectors are skipped; the game does not put rewards through walls or outside map boundaries.
 
 | Primary wave draw | Weight | Reward |

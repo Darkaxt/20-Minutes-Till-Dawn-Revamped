@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.3](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.3) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.4](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.4) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -26,7 +26,7 @@ Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bo
 
 ![Lightning splash and chain cues in the Windows game](docs/images/element-lightning.png)
 
-![Fireball explosion and burning-enemy cues](docs/images/element-fire.png)
+![Sprite-masked burning, electrical and wind effects, including an enlarged elite](docs/images/element-status.png)
 
 ![Gale pulse and wind-control cues](docs/images/element-wind.png)
 
@@ -76,7 +76,7 @@ The original timer sits at top center below the level bar, with **Score** beneat
 
 ### See the upgrade path and its role in your build
 
-The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Enemy damage numbers stay readable while zooming out; an edge icon points toward off-screen boss reward chests.
+The native selection panel shows the four-node upgrade path beside the description on the left. A dedicated right column separates **Benefits / Penalties**, with aligned miniature skill and weapon icons in native hexagons and the current character’s portrait when their special ability benefits. Summon interactions and newly completed Synergy recipes use the actual build. Enemy damage numbers stay readable while zooming out; **Options → Damage numbers** controls them explicitly and starts On. An edge icon points toward boss and exploration rewards, staying visible until the whole world chest is on screen and clear of the HUD.
 
 When one target gains an attribute and loses another, it appears **once under Mixed (+ / −)**. For example, Double Shot adds a projectile but lowers bullet damage. This describes the trade-off without pretending to calculate a universal net benefit.
 
@@ -170,7 +170,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.3 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.3).
+1. Download and extract the [v1.3.4 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.4).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -204,6 +204,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.4 — Visible combat and sprite status effects
+
+**Fixed:** permanent automatic damage-number hiding; Options now provides an explicit controller-accessible On/Off choice, enabled by default. **Improved:** animated sprite-masked fire, electrical and disorientation overlays replace the status disks, and fire remains visible for its full burn lifetime. **Fixed:** chest content pointers remain until the whole world chest is on screen and clear of the HUD. Exploration chests do not expire. No balance or save-format changes; updater0.2.0 remains compatible. [Release notes](release/NOTES-1.3.4.md) · [Verification](docs/VISUALS.md).
 
 ### v1.3.3 — Rune celebrations and readable rewards
 

@@ -1,5 +1,11 @@
 # Android gameplay anomaly ledger
 
+## Combat visibility correction — 2026-10-29
+
+- **A223 superseded by the reported visibility defect:** Android's FPS sampler writes `ShowDamagePopup=0` after eight qualifying samples and never restores it. Native diagnostic4 reproduces that write and suppression of a real hit. The sampler is removed; a persistent native Options choice defaults On, supports controller/pointer and ignores the ambiguous old automatic flag. Damage/pooling/zoom arithmetic is unchanged. This is an explicitly requested visibility correction, rather than a missing port.
+- **Premature marker handoff:** the old center-only screen test hid exploration pointers underneath the skills HUD and while chest artwork was clipped. Native14 records the covered handoff; native15 verifies whole-artwork/viewport/HUD clearance across styles and zoom. The world chest remains recorded; there is no exploration timeout. Collection, RNG and rewards are unchanged.
+- **Placeholder status disks:** all three new controls reused the player fog-circle artwork; priority colouring hid concurrent effects, and fire's cue stopped with its short control timers. Actual sprite-masked GPU flow layers now follow burn/stun/disorientation independently. Native13 verifies rendered colored pixels with none outside the native alpha, plus animation/facing/elite/pause/pool/teardown. Combat rules are unchanged.
+
 ## Exploration playtest correction — 2026-10-29
 
 The requested content pointers had not replaced the generic exploration chest icons, and random credit rewards remained enabled. Exploration now displays the actual stored reward sprite with a colour-coded arrow; native boss treasure retains its chest pointer. Credits are removed from new draws, and old unopened credit drops normalize to XP before rendering/collection without rerolling position or sequence. Previously earned credit totals remain payable. Native11–14,16–17 verify the complete flow, including a real prior-release checkpoint with an unopened credit chest and2000 earned credits. This is a requested Revamped change, not an Android defect.
@@ -437,7 +443,7 @@ Multiple codes split the facets of a finding rather than classifying a whole sub
 
 | A222 | N/W | Source state Awake binds its controller then calls OnAwake. Default hook is empty; sole declared Core override initializes excluded revive reward UI. Retain native state owner, without inventing a blanket bootstrap. |
 
-| A223 | G/Q/I | Android samples FPS on a strict one-second real-time boundary, then disables existing damage numbers after eight qualifying sub20FPS samples. Preserve static sampling, per-controller flag/reset rules and source scaled-time notice; other controller geometry remains open. |
+| A223 | G/Q/I | Android samples FPS on a strict one-second real-time boundary, then permanently disables damage numbers after eight qualifying sub20FPS samples. Originally ported; superseded in1.3.4 by the requested visibility correction and explicit native On/Off option. See the current combat visibility entry above. |
 
 | A224 | G/I | Source Forest-family camera height350 versus Temple/Pumpkin450; set native gameplay camera height then floor(aspect*height) with even width at Awake. World extents/rect and extra damage-render role remain required consumer work. |
 

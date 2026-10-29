@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Combat visibility and sprite status shaders — 2026-10-29
+
+[Authoritative requirements and stage ledger](VISUALS.md). V1 Combat visibility is COMPLETE: runs5–6 verify damage numbers/native Options/Continue; native14 reproduces the chest-center handoff hiding beneath the skills HUD, and native15 verifies whole-artwork/unobscured handoff across styles, viewports and zoom. V2 Sprite status shaders is COMPLETE (run13: actual GPU masked pixels, concurrent effects on an enlarged elite, lifetime/pause/pool/teardown). V3 Final delivery is ACTIVE. Existing elemental balance, runes, progression and rewards remain unchanged. No external blocker or tracked deferral.
+
+Temporary native/.NET/shader work uses the registered `D:/Temp/20mtd-status-shaders-20261029` small-file I/O exception; required retained evidence belongs in `D:/Projects/20MTD-Modernization-evidence/status-shaders-20261029`. Live Steam/profile/phone state remains protected.
+
 ## Reward icons, rune presentation and Score labels — 2026-10-29
 
 | Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |

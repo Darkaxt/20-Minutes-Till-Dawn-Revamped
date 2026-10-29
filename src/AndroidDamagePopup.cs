@@ -37,7 +37,7 @@ public sealed class AndroidDamagePopup:MonoBehaviour
  }
  internal static void PopDamage(int amount,Transform target)
  {
-  if(PlayerPrefs.GetInt("ShowDamagePopup",1)==1)Pop(amount.ToString(),target);
+  if(Plugin.Instance.DamageNumbers.Value)Pop(amount.ToString(),target);
  }
  internal static void Pop(string text,Transform target)
  {

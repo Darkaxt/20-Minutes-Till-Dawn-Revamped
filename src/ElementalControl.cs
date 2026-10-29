@@ -10,12 +10,12 @@ public sealed class ElementalControl:MonoBehaviour
  internal static readonly HashSet<ElementalControl> Active=new HashSet<ElementalControl>();
  public float Stun{get;private set;}public float Fear{get;private set;}public float Slow{get;private set;}public float Dizzy{get;private set;}
  public float SlowFraction{get;private set;}
- internal AIComponent AI;Health health;Vector2 lastSeen,push;float pushRemaining;Transform aim;SpriteRenderer status;
+ internal AIComponent AI;Health health;Vector2 lastSeen,push;float pushRemaining;Transform aim;ElementalStatusVisual status;
  internal bool Boss=>gameObject.tag.Contains("Champion");
  internal static ElementalControl Get(GameObject actor)=>actor.GetComponent<ElementalControl>()??actor.AddComponent<ElementalControl>();
  void Awake(){AI=GetComponent<AIComponent>();health=GetComponent<Health>();}
  void OnEnable()=>Active.Add(this);
- void OnDisable(){Active.Remove(this);Stun=Fear=Slow=Dizzy=pushRemaining=0;SlowFraction=0;push=Vector2.zero;if(aim!=null)aim.gameObject.SetActive(false);if(status!=null)status.enabled=false;var burn=BurnSystem.SharedInstance!=null?AndroidBurnState.Get(BurnSystem.SharedInstance)?.Find(gameObject):null;if(burn!=null)burn.Release();}
+ void OnDisable(){Active.Remove(this);Stun=Fear=Slow=Dizzy=pushRemaining=0;SlowFraction=0;push=Vector2.zero;if(aim!=null)aim.gameObject.SetActive(false);if(status!=null)status.Hide();var burn=BurnSystem.SharedInstance!=null?AndroidBurnState.Get(BurnSystem.SharedInstance)?.Find(gameObject):null;if(burn!=null)burn.Release();}
  void OnDestroy(){Active.Remove(this);if(aim!=null)Destroy(aim.gameObject);}
  public bool Electrified=>isActiveAndEnabled&&health!=null&&!health.isDead&&Stun>0;
  internal void Electrocute(){if(AI!=null){Stun=2*(Boss?.2f:1);RuneMechanics.ElementalInflict(gameObject);}}
@@ -40,7 +40,7 @@ public sealed class ElementalControl:MonoBehaviour
  {
   float dt=Time.deltaTime;Stun=Mathf.Max(0,Stun-dt);Fear=Mathf.Max(0,Fear-dt);Slow=Mathf.Max(0,Slow-dt);Dizzy=Mathf.Max(0,Dizzy-dt);pushRemaining=Mathf.Max(0,pushRemaining-dt);
   if(Dizzy==0&&aim!=null)aim.gameObject.SetActive(false);
-  if(Stun>0||Dizzy>0||Fear>0||Slow>0){if(status==null)status=ElementalRun.Instance.Status(transform);status.enabled=true;status.color=Stun>0?new Color(.45f,.7f,1,.35f):Dizzy>0?new Color(.65f,.92f,.8f,.3f):new Color(1,.45f,.2f,Fear>0?.35f:.2f);}else if(status!=null)status.enabled=false;
+  if(status==null&&(Stun>0||Dizzy>0||Fear>0||Slow>0))status=gameObject.AddComponent<ElementalStatusVisual>();
  }
  internal Vector2 Movement(MoveComponent2D move,float dt)
  {

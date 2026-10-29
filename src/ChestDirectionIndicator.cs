@@ -40,6 +40,17 @@ public sealed class PickupDirectionLayout:MonoBehaviour
  readonly List<Vector2> occupied=new List<Vector2>();
  static Rect ScreenBounds(RectTransform view)
  {var corners=new Vector3[4];view.GetWorldCorners(corners);var points=corners.Select(p=>RectTransformUtility.WorldToScreenPoint(null,p)).ToArray();return Rect.MinMaxRect(points.Min(p=>p.x),points.Min(p=>p.y),points.Max(p=>p.x),points.Max(p=>p.y));}
+ internal static bool WorldVisible(ChestDirectionIndicator target,Camera camera,Rect safe,List<Rect> reserved)
+ {
+  var body=target.GetComponent<SpriteRenderer>();if(body==null||!body.enabled||body.sprite==null||body.color.a<=0)return false;
+  var bounds=body.bounds;var a=camera.WorldToScreenPoint(bounds.min);var b=camera.WorldToScreenPoint(bounds.max);
+  if(a.z<=0||b.z<=0)return false;
+  var rect=Rect.MinMaxRect(Mathf.Min(a.x,b.x),Mathf.Min(a.y,b.y),Mathf.Max(a.x,b.x),Mathf.Max(a.y,b.y));
+  var view=camera.pixelRect;var visible=Rect.MinMaxRect(Mathf.Max(safe.xMin,view.xMin),Mathf.Max(safe.yMin,view.yMin),Mathf.Min(safe.xMax,view.xMax),Mathf.Min(safe.yMax,view.yMax));
+  // The center entering the screen is not a visible handoff: part of the chest
+  // may still be clipped, or the metrics/skills/native HUD may cover its art.
+  return rect.xMin>=visible.xMin&&rect.xMax<=visible.xMax&&rect.yMin>=visible.yMin&&rect.yMax<=visible.yMax&&!reserved.Any(r=>r.Overlaps(rect));
+ }
  void LateUpdate()
  {
   var hud=StatsOverlay.Instance;var player=PlayerController.Instance;var camera=Camera.main;
@@ -54,7 +65,7 @@ public sealed class PickupDirectionLayout:MonoBehaviour
   foreach(var target in ChestDirectionIndicator.Active.Where(t=>t!=null&&t.gameObject.scene.IsValid()).OrderBy(t=>Vector3.Distance(t.transform.position,player.transform.position)))
   {
    var projected=camera.WorldToScreenPoint(target.transform.position);
-   bool visible=projected.z>0&&projected.x>=safe.xMin&&projected.x<=safe.xMax&&projected.y>=safe.yMin&&projected.y<=safe.yMax;
+   bool visible=WorldVisible(target,camera,safe,reserved);
    if(visible||target.Collecting){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
    if(target.Marker==null)target.Build(hud);target.Marker.gameObject.SetActive(true);
    var direction=(Vector2)projected-center;if(projected.z<0)direction=-direction;
