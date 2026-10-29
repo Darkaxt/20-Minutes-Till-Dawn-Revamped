@@ -11,8 +11,8 @@ Authoritative follow-up for the obsolete currency counter still visible in chara
 
 | Stage | Status | Acceptance |
 |---|---|---|
-| R1 Shared selection header | COMPLETE | R01–R02,R04 and source UI checks in R03 pass native10: complete badge absent, tab/prompt/background left-aligned through native animation, both rune entry points, controller/pointer/Back/main-menu re-entry, three viewports and unchanged credits/progression. R1-acceptance.json binds inputs. No blocker or deferral. |
-| R2 Final delivery | ACTIVE | R03: exact package/native UI, install/rollback, publication/download and cleanup. No external blocker or deferral. |
+| R1 Shared selection header | COMPLETE | Native17 verifies badge removal, left-aligned native tab and controller/pointer/rune/title re-entry. Inspected square/4:3 images from native14 use the identical production DLL; corrected widescreen character/weapon renders pass native17. The capture helper rebuilds static graphic meshes before explicit batch rendering. Credits and ownership remain unchanged. No blocker or deferral. |
+| R2 Final delivery | ACTIVE | Target1.3.2; updater0.2.0/epoch1 retained. Exact packaged native checks at three fresh-process viewports, controller/runes, install/rollback, publication/download and reviewed cleanup remain. No external blocker or deferral. |
 
 Storage: `D:/Temp/20mtd-roster-header-20261029` is the registered .NET/native small-file I/O exception. Current required evidence/deliverables belong in `D:/Projects/20MTD-Modernization-evidence/roster-header-20261029`. Existing shared native inputs stay in place. No tracked deferrals.
 

@@ -592,9 +592,12 @@ public partial class RuntimeChecks:MonoBehaviour
             for(int i=0;i<cameras.Length;i++){cameras[i].targetTexture=rt;cameras[i].rect=new Rect(0,0,1,1);cameras[i].orthographicSize=previousOrtho[i];Log("offscreen-camera",cameras[i].name+" layers="+cameras[i].cullingMask);}
             camera.targetTexture=rt;
             for(int i=0;i<overlays.Length;i++){overlays[i].renderMode=RenderMode.ScreenSpaceCamera;overlays[i].worldCamera=camera;overlays[i].planeDistance=camera.nearClipPlane+.1f;}
+            // Static header/footer graphics otherwise retain their previous
+            // canvas mesh when batch capture changes the camera target/projection.
+            foreach(var graphic in Object.FindObjectsOfType<Graphic>())graphic.SetAllDirty();
             Canvas.ForceUpdateCanvases();
             foreach(var c in cameras)c.Render();
-            camera.Render();
+            if(overlays.Length>0)camera.Render();
             RenderTexture.active=rt;var t=new Texture2D(width,height,TextureFormat.RGB24,false);t.ReadPixels(new Rect(0,0,width,height),0,0);t.Apply();
             File.WriteAllBytes(Path.Combine(ResultDir,file),t.EncodeToPNG());Object.Destroy(t);
             Log("offscreen-capture",file);
