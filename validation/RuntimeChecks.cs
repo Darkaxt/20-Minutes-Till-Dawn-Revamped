@@ -119,6 +119,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode=="sprite-status-visuals"){yield return CheckElementVisuals();yield break;}
         if(testMode.StartsWith("shared-runes-")){yield return CheckSharedRunes(testMode);yield break;}
         if(testMode.StartsWith("roster-header-")){yield return CheckRosterHeader(title,testMode.EndsWith("probe"));yield break;}
+        if(testMode=="readme-screenshots"){yield return CheckReadmeScreenshots(title);yield break;}
         if(testMode.StartsWith("rune-rewards-")){yield return CheckRuneRewards(testMode);yield break;}
         if(testMode.StartsWith("elements-")){yield return CheckElements(testMode);yield break;}
         if(testMode.StartsWith("elites-")){yield return CheckElites(testMode);yield break;}

@@ -40,15 +40,11 @@ Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bo
 
 ![Sprite-masked burning, electrical and wind effects, including an enlarged elite](docs/images/element-status.png)
 
-![Gale pulse and wind-control cues](docs/images/element-wind.png)
-
 *Controlled Windows fixtures show the actual new effects. Both artwork modes, native menus, mixed builds, current/older Continue and scenario transitions are verified; natural playtest balance remains for player feedback. Final exact-package and public-download acceptance is recorded in [PROGRESS.md](docs/PROGRESS.md).*
 
 ### Face enhanced regular enemies
 
 Every **200 kills** earns an Elite opportunity: **3× health and XP**, **25% larger width/height**, a thin glowing **red sprite contour**, and **50% faster firing** for elite Eyes. The contour follows the animation; native facing retains the larger dimensions, including Forest exploders.
-
-![Larger Forest exploder with a glowing sprite outline beside an ordinary exploder](docs/images/elite-aura.png)
 
 **Endless** adds Elite+ after every **10 defeated Elites**, and Elite++ after every **5 defeated Elite+** enemies. Each tier repeats the previous multipliers:
 
@@ -60,8 +56,6 @@ Every **200 kills** earns an Elite opportunity: **3× health and XP**, **25% lar
 
 Scheduled minibosses/bosses remain separate. Higher-tier claims preserve owed lower-tier promotions, and all counters survive Continue. Other modes retain ordinary Elites. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
 
-![Elite, Elite+ and Elite++ with animated red, amber and violet outlines](docs/images/elite-tiers.png)
-
 *Controlled native Windows tests use actual elite defeats and XP collection, with the ordinary kill counter advanced to exercise tier boundaries. Both artwork modes, three viewport shapes, firing intervals, saved cadence and ordinary pool reuse are verified; these captures do not establish natural full-run balance.*
 
 ### Play the Android additions with desktop controls
@@ -70,7 +64,7 @@ Charge Cannon brings three weapon evolutions. Gale and Bulwark bring their chara
 
 ![Diamond - Bulwark in the native Windows character selector, with its dash skill and portrait](docs/images/android-bulwark.png)
 
-*Windows selection test using an unlocked test profile. The displayed Bulwark description and starting HP match the prepared v1.1.2 character data.*
+*Unretouched capture using the published v1.3.5 game DLL. Only Bulwark ownership is granted for this isolated test; the current selector hides the obsolete currency badge and aligns Runes left.*
 
 ### Read your build without a panel
 
@@ -106,10 +100,6 @@ When one target gains an attribute and loses another, it appears **once under Mi
 
 Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
 
-![Nearby exploration chests reveal their content with native colored glow](docs/images/poi-glow.png)
-
-*Controlled Windows test with fixed Magnet, Freeze and Frenzy rewards in Sprites Reborn. Both artwork modes and square/4:3/16:9 views are verified.*
-
 Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, healing, magnet, freeze, frenzy and eligible native upgrades. **Exploration chests no longer award credits.**
 
 Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. XP chests give **30% of the current level's full requirement**, including earned XP bonuses. Edge indicators show the **actual contents**, including the exact stored upgrade icon; the number is **distance in game units**. Boss treasure retains its gold chest pointer, independent of the three-chest cap. Rewards, positions and timers survive Continue. Old unopened credit chests become XP; credits already earned before updating retain their normal payout.
@@ -123,10 +113,6 @@ XP indicators reuse the native green experience pickup. Healing uses the native 
 ### Finish a run with the controller
 
 Victory and death show scores, the character/weapon loadout and **Try Again / Quit To Menu**, without the redundant skill list. Results navigation stays on those two buttons. Shown menus own controller focus, including recovery on the first controller input after switching from the mouse; no frame-by-frame focus override.
-
-![Native victory results without the skill list, focused on Quit To Menu](docs/images/results-controller.png)
-
-*Windowless Windows test with an actual Forest boss defeat, controlled combat clock, native victory, controller Retry, death and Quit. The test profile's score is not a natural full-run balance result.*
 
 ### Track clears at the selected difficulty
 

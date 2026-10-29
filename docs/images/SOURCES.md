@@ -13,14 +13,14 @@ These PNGs are byte-for-byte copies of existing Windows test captures, inspected
 | [results-controller.png](results-controller.png) | `evidence/S1/run-174/results-controller.png` | `fc7e424d9eb11bfc5eee88b63b90bcfbaf3afec355328938f4701269c1a93b1c` |
 | [mixed-relations.png](mixed-relations.png) | `evidence/S1/run-174/mixed-relations-1280.png` | `1b5e9baaedb0f48a1c86ed26c9d8b4d765dd2b1e03aac4285c5f431ec8262f84` |
 | [native-options.png](native-options.png) | `evidence/S1/run-125/native-title-options-1.png` | `1b16c20c48f3cf497a4ca3d3c62c7a536294be1f71b7ed93508e1221d700a9c9` |
-| [unlock-diamond.png](unlock-diamond.png) | `evidence/S1/run-65/unlock-character-preview.png` | `9a28aef0e8613dc9b8b741b2d7377b9efb01bbe508da9d49ed2ee689347825a1` |
+| [unlock-diamond.png](unlock-diamond.png) | `D:/Projects/20MTD-Modernization-evidence/readme-images-20261029/native/S1/run-2/unlock-diamond.png` | `c1526578fbeae45e4a7a2949a7bf8685c635290894fbe50ae08b114b4923a2b7` |
 | [runes-progression.png](runes-progression.png) | `evidence/S3/run-98/rune-multiple-enabled-and-column-gates.png` | `972a6cb9ad145bcd298dfef579b74049b6aa8adb598716bc1bdea722450b3a56` |
-| [custom-mode-defaults.png](custom-mode-defaults.png) | `evidence/S4/run-523/custom-native-run-menu.png` | `862bfbfa0804efee2eb01ee9c94c53b9383befa4ccbf0a1424e81ff94a21eaf6` |
-| [android-bulwark.png](android-bulwark.png) | `evidence/S2/run-22/character-selection.png` | `0d90430cab1b15a52946e0f255556a4764e111ab710d492c6e413e1a9142f98f` |
+| [custom-mode-defaults.png](custom-mode-defaults.png) | `D:/Projects/20MTD-Modernization-evidence/shared-runes-20261029/native/S6/run-9/custom-controller-values.png` | `97ad027df4cd95181832f398584bbf7ddc7483d75e35f9bfc96abb4ed6f2ccd3` |
+| [android-bulwark.png](android-bulwark.png) | `D:/Projects/20MTD-Modernization-evidence/readme-images-20261029/native/S1/run-2/android-bulwark.png` | `923f9c4df446a3476f6058c61ce24dffd360bafcb5fd0e76904021fbcdae63b2` |
 
 Title/rune/Custom captures retain their recorded historical workflows. The current HUD is the1280×7201.1.7 workflow with controlled real Lilith/Ghost Friend/stat acquisitions; paired900×900/1024×768 and fresh-process Continue renders are inspected. The upgrade chart is the native Magic Lens selection in the current run; no natural progression claim. The native Options and concise Diamond preview are actual1920×1080 controller workflows. Source evidence remains local; proprietary game inputs and raw profiles are not distributed.
 
-The Bulwark selection capture comes from S2/run-22. Its displayed description and starting HP were compared with the current installed 1.1.2 `Assets/characters/characters.json`; both match. Its unlocked roster is a test profile.
+The Bulwark and Diamond selector captures now come from the published v1.3.5 production DLL. The validation-only fixture waits for the native title transition, selects each character through actual controller navigation, verifies the exact PointsUI owner is hidden and Runes is aligned left, then restores the isolated profile ownership. No live profile or game installation was changed.
 
 The current native Options capture includes Metrics and Zoom out with an opaque background. Fullscreen request flags are verified while the isolated renderer stays windowed, preserving the desktop. Companion HUD captures at1024×768 verify the corrected right skill column. No phone deployment/runtime of1.1.5 is claimed.
 # Android updater capture
@@ -32,3 +32,9 @@ The1.1.7 HUD and interaction captures are current127 controlled native acquisiti
 The final1.1.7 interaction layout supersedes127: currentrun-131 places the native path left beside its description and aligned Benefits/Penalties in the right column. Square/4:3/16:9 full bounds and rendered captures are verified, including character portrait and weapon penalty. Native Options125 has no Metrics shortcut suffix. All gallery files are exact unretouched evidence copies.
 
 - `poi-glow.png`: unaltered native Windows `poi-glow-fresh` test, D:\Projects\20MTD-Modernization-evidence\poi-glow-20261027\native\S1\run-5. Controlled fixed Magnet/Freeze/Frenzy rewards and near-player positions in Sprites Reborn; native fog texture rendered before capture. Not a natural reward roll or phone screenshot. SHA-256 `9b5b4dc4d753a6e43795233a0edf3099e839c0a009fb77c4aba16375ee500431`.
+
+| [exploration-contents.png](exploration-contents.png) | `D:/Projects/20MTD-Modernization-evidence/status-shaders-20261029/native/S6/run-5/exploration-content-1280-zoom0.png` | `272887fe39a86b2cae7c8a72c8455c49d80f210626940fce1e1ec82d2ed7f5e2` |
+
+## README gallery refresh — 2026-10-29
+
+The two selector images, Custom menu and exploration contents above are refreshed with inspected unretouched evidence. Current selectors show no wallet; Custom says Score only; exploration shows Score. The older `element-wind.png`, `elite-aura.png`, `elite-tiers.png`, `poi-glow.png`, `results-controller.png` illustrations retain Credits/Earned labels and are no longer embedded in the current README. Their files and original provenance remain historical evidence. The current sprite-status capture already illustrates wind cues and an enlarged elite. No runtime feature was removed or changed.
