@@ -41,6 +41,7 @@ public static partial class RunResume
   [DataMember]public AndroidEndlessState sourceEndless;
   [DataMember]public ExplorationState exploration;
   [DataMember]public int? eliteClaims;
+  [DataMember]public EliteTierProgress eliteTiers;
   [DataMember]public RuneRewardStateData runeRewards;
  }
  public static Snapshot Pending;
@@ -69,6 +70,8 @@ public static partial class RunResume
   ExplorationRun.Validate(saved.exploration);
   RuneRewardRun.Validate(saved.runeRewards);
   if(saved.eliteClaims.HasValue&&(saved.eliteClaims.Value<0||saved.eliteClaims.Value>saved.kills/200))throw new InvalidOperationException("The checkpoint's elite cadence is invalid; it has been preserved.");
+  var tiers=saved.eliteTiers;
+  if(tiers!=null&&(tiers.eliteKills<0||tiers.plusClaims<0||tiers.plusKills<0||tiers.doubleClaims<0||tiers.eliteKills>(saved.eliteClaims??saved.kills/200)||tiers.plusClaims>tiers.eliteKills/10||tiers.plusKills>tiers.plusClaims||tiers.doubleClaims>tiers.plusKills/5))throw new InvalidOperationException("The checkpoint's Endless elite tiers are invalid; it has been preserved.");
   if(saved.version==7&&saved.runtime.sourcePowerups==null)throw new InvalidOperationException("This checkpoint omitted its ordered source runtime contract; it has been preserved.");
   if(saved.version<7&&saved.runtime.sourcePowerups!=null||saved.version==7&&saved.runtime.sourcePowerups.Any(p=>!saved.acquired.Any(a=>!a.evolution&&a.key==p.key)))throw new InvalidOperationException("This checkpoint has an unsupported source runtime owner; it has been preserved.");
   if(saved.version>=5&&saved.version<7&&(saved.runtime.generators==null||saved.runtime.growth==null||saved.runtime.rituals==null||saved.runtime.unharmed==null||saved.runtime.justice==null))throw new InvalidOperationException("This source checkpoint omitted its attachment runtime contract; it has been preserved.");
@@ -118,7 +121,7 @@ public static partial class RunResume
   {state.challengeEnemies=challenge.EnemyKills;state.challengeBosses=challenge.BossKills;}
   state.exploration=r.GetComponent<ExplorationRun>().State==null?null:r.GetComponent<ExplorationRun>().Capture();
   RuneRewardRun.Instance.Ensure();state.runeRewards=RuneRewardRun.Instance.State;
-  state.eliteClaims=EliteRun.Instance.Claimed;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
+  state.eliteClaims=EliteRun.Instance.Claimed;state.eliteTiers=EliteRun.Instance.Progress;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)
  {
@@ -242,6 +245,7 @@ class RunRecorder:MonoBehaviour
   // canvas cannot own this battle subscription; the run recorder is created
   // after that clear and removed with the actual battle scene.
   Progression.EnemyDeath(sender,args);
+  if(sender is Health defeated)EliteRun.Instance.Defeated(defeated);
   if(!BossSpawnAchievementBoundary.Spawning&&sender is Health h&&Encounters.TryGetValue(h,out var encounter)){(encounter.Item1?KilledBosses:KilledElites).Add(encounter.Item2);Encounters.Remove(h);if(encounter.Item1)GetComponent<RuneRewardRun>().BossKilled(encounter.Item2);}
  }
  void Update()

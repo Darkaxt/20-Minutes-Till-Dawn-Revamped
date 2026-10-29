@@ -112,7 +112,7 @@ public sealed class AndroidAI:MonoBehaviour
     if(!ai.dontFaceDuringSpecial)Look.Invoke(Native,new object[]{ai,direction});
     if(ai.specialTimer<=0)
     {
-     var elite=ai.GetComponent<EnhancedEnemy>();float frequency=elite!=null&&elite.Enhanced&&elite.FasterEye?2f/3f:1;
+     var elite=ai.GetComponent<EnhancedEnemy>();float frequency=elite!=null&&elite.Enhanced&&elite.FasterEye?Mathf.Pow(2f/3f,elite.Tier):1;
      ai.specialTimer+=ai.specialCooldown*state.SpecialCooldownMultiplier*frequency;
      ai.specialSO.Use(ai,control!=null?control.Aim(follow):follow);
      if(!ai.dontLookAtPlayer)Look.Invoke(Native,new object[]{ai,direction});

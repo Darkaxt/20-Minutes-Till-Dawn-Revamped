@@ -6,10 +6,10 @@
 |---|---|---|---|
 | Q1 Complete elite presentation | COMPLETE | Native6–10 verify eleven types, actual Boomer facing/size/windup, animated outside-alpha contour, both styles/viewports, pool/death/XP/Eye cadence and current/prior Continue. | None. |
 | Q2 Exploration reward and pointer correction | COMPLETE | Native11–14,16–17 verify seven actual content icons, no new credits, actual old unopened-credit conversion with earned totals preserved, current Continue, all maps/Custom and nearby visibility. | None. |
-| Q3 Endless elite tiers | ACTIVE | Approved cadence and repeated multipliers are specified in ELEMENTS.md. | Tier implementation and complete native acceptance remain; internal advancement blocker, resolvable in this stage. No deferral. |
-| Q4 Final delivery | NOT STARTED | Target game1.3.1, updater0.2.0/epoch1 unchanged. | Final metadata/package/native copied-install/rollback/public download and cleanup follow Q3. No external blocker. |
+| Q3 Endless elite tiers | COMPLETE | Native18,20–25 verify actual50 Elite/five Elite+ defeats, priority and compounded ratios, exact pending Continue/new-run reset, all-mode isolation, ordinary reuse and eleven-type contour regression. | None. |
+| Q4 Final delivery | ACTIVE | Target game1.3.1, updater0.2.0/epoch1 unchanged. | Final metadata/package/native copied-install/rollback/public download and cleanup remain; internal advancement blocker, resolvable in this stage. No external blocker or deferral. |
 
-Q1-acceptance.json and Q2-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. No production placement change. Live Steam/profile/phone installations remain untouched. No release has been published for these intermediate stages.
+Q1-acceptance.json, Q2-acceptance.json and Q3-acceptance.json in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029` bind the verified source and native inputs. Q2 run15 exposed a map-fixture assumption: an obstructed first draw need not be the first placed reward; corrected run16 verifies all actual map rewards exclude credits. Q3 run19 was cancelled after the resumed fixture player died during sustained Eye fire; run20 reapplies fixture invincibility and passes the whole Continue workflow. Neither required a production workaround. Live Steam/profile/phone installations remain untouched. No release has been published for these intermediate stages.
 
 ## Character runes and updater transition — 2026-10-28
 

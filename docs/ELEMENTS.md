@@ -62,15 +62,25 @@ Authoritative requirements for the reported Forest exploder presentation:
 |---|---|---|
 | Q1 Complete elite presentation | COMPLETE | Q01–Q03 pass native6–10: eleven regular types, Boomer facing/movement/explosion windup, outside-alpha glow, animation, both styles/three viewports, pause/pool/resource teardown, real200-kill/health/XP/Eye cadence, current/prior Continue, six modes and Custom. Q1-acceptance.json binds inputs. No blocker or deferral. |
 | Q2 Exploration reward and pointer correction | COMPLETE | Q05–Q06 pass native11–14,16–17: all seven content icons, credit-free selection/actual collection, native boss separation, both styles/three viewports/zoom, byte-bound current and actual older credit-drop Continue, all maps/Custom and nearby visibility. Q2-acceptance.json binds inputs. No blocker or deferral. |
-| Q3 Endless elite tiers | ACTIVE | Q07: complete tier cadence/multipliers/cues, pool/death/XP/identity and current/prior Continue verification. |
-| Q4 Final delivery | NOT STARTED | Q04: final verified game package for all requested corrections, public delivery and cleanup follow Q3. |
+| Q3 Endless elite tiers | COMPLETE | Q07 passes native18,20–25: actual50 Elite/five Elite+ defeats, priority without consuming lower claims, compounded health/XP/size/Eye intervals, exact pending Continue/new-run reset, ordinary reuse, all-mode isolation and eleven-type contour regression. Q3-acceptance.json binds inputs. No blocker or deferral. |
+| Q4 Final delivery | ACTIVE | Q04: final metadata/package, native copied-install/rollback, independent public delivery and reviewed cleanup. |
 
 Storage: `D:/Temp/20mtd-elite-contour-20261029` is the .NET/native small-file I/O exception, registered before generation. Retained diagnostic/verification evidence and usable release artifacts belong in `D:/Projects/20MTD-Modernization-evidence/elite-contour-20261029`. Existing shared native inputs remain in place. No tracked deferrals.
 
-Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a visible red aura and **25% larger width and height**. The sprite and collision bounds scale together from that actor's original size, preserving its proportions. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
+Every 200 kills in the native run counter earns one elite opportunity. The next eligible regular wave enemy receives **3× its final spawned maximum/current health** and **3× its normal XP drops**, with a thin glowing red sprite contour and **25% larger width and height**. The sprite and collision bounds scale together from that actor's original size, preserving its proportions. Elite Eyes fire **50% more frequently**: their normal special cooldown is multiplied by 2/3. Other movement, contact damage and non-XP drops remain unchanged.
+
+Endless adds two tiers. Every **10 defeated ordinary Elites** earns an Elite+; every **5 defeated Elite+** enemies earns an Elite++. Promotion takes the next eligible regular spawn, with the highest owed tier first. A higher-tier claim does not consume a pending lower-tier opportunity, and no additional wave is spawned.
+
+| Tier | Health / XP vs ordinary | Width / height vs ordinary | Eye frequency vs ordinary | Contour |
+|---|---:|---:|---:|---|
+| Elite |3×|1.25×|1.5×|Red|
+| Elite+ |9×|1.5625×|2.25×|Amber|
+| Elite++ |27×|1.953125×|3.375×|Violet|
+
+Each tier repeats the previous tier's ratios. Explosion radius, movement/contact damage and crowd-control resistance keep their existing rules. Pool return/despawn does not count as a defeated Elite. Standard, Quickplay, Challenge, other scenarios and Custom retain ordinary Elites.
 
 This promotion is separate from the game's scheduled minibosses and bosses. Those encounters do not consume the opportunity; a promoted regular enemy still counts as one normal enemy, including in Challenge quotas. Health scaling from difficulty, modes and Custom settings is applied before the promotion.
 
-The existing run checkpoint stores how many opportunities have been claimed. A pending opportunity survives Continue, and a new run starts at zero. Older checkpoints without the new member begin at their next 200-kill boundary, retaining their partial progress without retroactively spawning elites for all previous kills. Ordinary enemy world instances follow the game's existing Continue behavior; this addition preserves the cadence rather than introducing a separate enemy-world save system.
+The existing run checkpoint stores claimed opportunities and Endless tier defeat/claim counters. Pending opportunities survive Continue, and a new run starts at zero. Older checkpoints without the higher-tier member start those new counters at zero; their ordinary elite cadence is preserved. Checkpoints predating ordinary elite claims begin at their next 200-kill boundary, retaining partial progress without a retrospective elite burst. Ordinary enemy world instances follow the game's existing Continue behavior; this addition preserves the cadence rather than introducing a separate enemy-world save system.
 
-Pool return restores the exact pre-promotion size and removes the health multiplier, red aura and faster Eye firing. Repeated promotion does not compound scale. The source returns an enemy before dispatching its drops, so its XP multiplier remains available for that death dispatch and resets on its next activation.
+Pool return restores the exact pre-promotion size and removes the health multiplier, contour and faster Eye firing. A new promotion starts from that actor's ordinary pose rather than retaining its previous tier's scale. The source returns an enemy before dispatching its drops, so its XP multiplier remains available for that death dispatch and resets on its next activation.

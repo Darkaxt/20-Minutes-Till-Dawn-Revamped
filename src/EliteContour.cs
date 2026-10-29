@@ -52,6 +52,7 @@ public sealed class EliteContour:MonoBehaviour
   if(!owner.Enhanced||body.sprite==null){outline.enabled=false;return;}
   outline.sprite=EliteRun.Instance.Contour(body.sprite);outline.flipX=body.flipX;outline.flipY=body.flipY;
   outline.sortingLayerID=body.sortingLayerID;outline.sortingOrder=body.sortingOrder+1;
-  float pulse=.9f+.1f*Mathf.Sin(Time.time*3);outline.color=new Color(pulse,.1f,.2f,body.color.a);outline.enabled=body.enabled;
+  var color=owner.Tier==3?new Color(.75f,.4f,1):owner.Tier==2?new Color(1,.55f,.1f):new Color(1,.1f,.2f);
+  float pulse=.9f+.1f*Mathf.Sin(Time.time*3);outline.color=new Color(color.r*pulse,color.g*pulse,color.b*pulse,body.color.a);outline.enabled=body.enabled;
  }
 }

@@ -84,6 +84,7 @@ public partial class RuntimeChecks
  }
  IEnumerator CheckElites(string mode)
  {
+  if(mode.StartsWith("elites-tiers-")){yield return CheckEliteTiers(mode);yield break;}
   if(mode=="elites-maps"){yield return EliteMaps();yield break;}
   if(mode=="elites-continue"||mode=="elites-prior")yield return CombatBuffContinue();
   else{RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());}
@@ -93,6 +94,7 @@ public partial class RuntimeChecks
   if(mode=="elites-fresh"){yield return EliteCadence(game);yield break;}
   if(mode=="elites-prior")
   {
+   var tiers=TierProgress;Require(tiers.eliteKills==0&&tiers.plusClaims==0&&tiers.plusKills==0&&tiers.doubleClaims==0,"actual older checkpoint initializes higher-tier progress at zero");
    Require(NativeKills==450&&EliteClaims==2&&!Enhanced(EliteSpawn()),"older checkpoint initializes at its next200-kill boundary without retrospective elite burst");ElementClear();Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",600);Require(Enhanced(EliteSpawn())&&EliteClaims==3,"legacy cadence keeps its next eligible boundary");ElementClear();yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Derived released checkpoint with450 kills and absent elite member retains forward cadence");Application.Quit(0);yield break;
   }
   Require(NativeKills==600&&EliteClaims==2,"fresh-process Continue preserves pending third opportunity exactly");
@@ -130,17 +132,20 @@ public partial class RuntimeChecks
   {
    RunResume.Invalidate();Progression.State.earned.Add("scenario:"+map);Progression.Refresh();yield return AchievementRun("Shana","RevolverData",map,prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());
    var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();var source=Object.FindObjectOfType<AndroidEndlessRun>();WorldClearSchedule(source);var session=WorldSession(source,0);string tag=((string[])WindField(WorldWaves(source)[0],"Pools"))[0];
-   var baseline=EliteSpawn(tag,session.HP);int normalMaximum=baseline.maxHP;Vector3 normalScale=baseline.transform.localScale;ReturnFixtureActor(baseline.gameObject);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",200);
+   int initialClaims=SelectedMap.MapData.endless?0:10;
+   if(initialClaims>0){Plugin.SetField(Object.FindObjectOfType<EliteRun>(),"Claimed",initialClaims);TierProgress.eliteKills=10;Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",2000);}
+   var baseline=EliteSpawn(tag,session.HP);Require(!Enhanced(baseline),"non-Endless modes ignore a controlled otherwise-earned higher-tier entitlement: "+map);int normalMaximum=baseline.maxHP;Vector3 normalScale=baseline.transform.localScale;ReturnFixtureActor(baseline.gameObject);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",(initialClaims+1)*200);
    WorldQueue(source).Enqueue(0);source.enabled=true;EnhancedEnemy enhanced;
    while((enhanced=Object.FindObjectsOfType<EnhancedEnemy>().FirstOrDefault(e=>(bool)WindField(e,"Enhanced")))==null)yield return null;source.enabled=false;
-   Require(enhanced.GetComponent<Health>().maxHP==normalMaximum*3&&EliteClaims==1,"real source Update queue promotes an ordinary wave with final health scaling in "+map);
+   Require(enhanced.GetComponent<Health>().maxHP==normalMaximum*3&&EliteClaims==initialClaims+1&&Tier(enhanced.GetComponent<Health>())==1,"real source Update queue promotes an ordinary wave with final health scaling in "+map);
    Require(enhanced.transform.localScale==new Vector3(normalScale.x*1.25f,normalScale.y*1.25f,normalScale.z),"source wave keeps the 125 percent elite size in "+map);enhanced.transform.position=PlayerController.Instance.transform.position+Vector3.right*2;yield return PoiCapture("elite-map-"+map+".png");
-   enhanced.GetComponent<Health>().TakeDamage(DamageType.Bullet,1000000);if(ChallengeRun.Instance!=null)Require(ChallengeRun.Instance.EnemyKills==1&&ChallengeRun.Instance.BossKills==0,"Challenge counts promoted ordinary enemy against enemy quota, not boss quota");
+   enhanced.GetComponent<Health>().TakeDamage(DamageType.Bullet,1000000);if(!SelectedMap.MapData.endless)Require(TierProgress.eliteKills==10&&TierProgress.plusClaims==0,"non-Endless elite deaths do not advance or claim higher tiers: "+map);if(ChallengeRun.Instance!=null)Require(ChallengeRun.Instance.EnemyKills==1&&ChallengeRun.Instance.BossKills==0,"Challenge counts promoted ordinary enemy against enemy quota, not boss quota");
    ElementClear();yield return AchievementExit(game,false);
   }
   RunResume.Invalidate();yield return OpenCustomConfiguration();Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>();CustomMode.Set("spawn:healthMultiplier",2);yield return MenuPointer(CustomButton("CustomStart"));GameController custom;
   while((custom=Object.FindObjectOfType<GameController>())==null||!(custom.CurrentState is CombatState))yield return null;StopFixtureSpawning();string ownership=Ownership();
-  var ordinary=EliteSpawn();int hp=ordinary.maxHP;ReturnFixtureActor(ordinary.gameObject);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",200);var promoted=EliteSpawn();Require(CustomMode.Active&&Enhanced(promoted)&&promoted.maxHP==hp*3,"Custom health factor applies once before elite health multiplier");promoted.TakeDamage(DamageType.Bullet,1000000);Require(Ownership()==ownership,"Custom elite death preserves its no-unlocks/no-achievements rule");ElementClear();yield return AchievementExit(custom,false);SetPhase("PASS");Log("complete","All six source mode schedules and actual Update queue, Challenge accounting, Custom configured health and progression isolation");Application.Quit(0);
+  Plugin.SetField(Object.FindObjectOfType<EliteRun>(),"Claimed",10);TierProgress.eliteKills=10;Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",2000);
+  var ordinary=EliteSpawn();int hp=ordinary.maxHP;Require(!Enhanced(ordinary),"Custom ignores a controlled otherwise-earned higher-tier entitlement");ReturnFixtureActor(ordinary.gameObject);Plugin.SetField(ScoreCalculator.SharedInstance,"_enemiesKilled",2200);var promoted=EliteSpawn();Require(CustomMode.Active&&Tier(promoted)==1&&promoted.maxHP==hp*3,"Custom health factor applies once before ordinary elite health multiplier");promoted.TakeDamage(DamageType.Bullet,1000000);Require(Ownership()==ownership&&TierProgress.eliteKills==10&&TierProgress.plusClaims==0,"Custom elite death preserves progression isolation and never earns higher tiers");ElementClear();yield return AchievementExit(custom,false);SetPhase("PASS");Log("complete","All six source mode schedules and actual Update queue, Challenge accounting, Custom configured health and higher-tier isolation");Application.Quit(0);
  }
 }
 [HarmonyPatch(typeof(flanne.AISpecials.AIShootSpecial),nameof(flanne.AISpecials.AIShootSpecial.Use))]
