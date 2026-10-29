@@ -112,6 +112,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode.StartsWith("weapon-familiarity-")){yield return CheckWeaponFamiliarity(testMode);yield break;}
         if(testMode=="combat-visibility-probe"||testMode=="damage-auto-hide-probe"){yield return CheckCombatVisibilityProbe();yield break;}
         if(testMode=="combat-visibility-fresh"||testMode=="combat-visibility-continue"){yield return CheckCombatVisibility(testMode.EndsWith("continue"));yield break;}
         if(testMode=="combat-visibility-chests"){yield return CheckChestVisibility();yield break;}

@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.8](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.8) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -15,6 +15,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
+| **Weapon familiarity** | Each weapon gains +2% reload speed, fire rate and projectile speed per highest crown level, up to +30%. Damage, spread and weapon counts stay unchanged. The existing record includes Challenge and is shared across characters. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
 | **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Exploration and modes** | Up to three weighted exploration chests offer meaningful XP, healing, utility and upgrades at varied reachable distances. Content icons, distance pointers and nearby colors identify them; indicators stay until the chest is clear of the HUD. Challenge and native Custom menus expand play options; Custom imports mode defaults and uses obtained content without permanent unlock rewards. |
@@ -28,9 +29,17 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 
 *Actual Windows test capture. The maintenance credit is part of the pixel artwork; the Emberpath promotional panel is removed.*
 
-*v1.3.7 delivery verified: the public download matches the qualified package. Compact damage glyphs, all zoom levels/styles/viewports, native controls and saved preferences pass in the actual Windows player. Compatible saves are preserved.*
+*Release acceptance covers native weapon handling, controller/pointer preview, evolution, Retry, Custom and current/older Continue. Compatible saves are preserved. Exact-package/public-download evidence is recorded in [PROGRESS.md](docs/PROGRESS.md).*
 
 ## See it in game
+
+### Grow familiar with a weapon
+
+The existing weapon crown grants a small handling improvement, shared across characters. At crown5, the three handling stats gain10%; at crown15,30%. Repeating a clear does not stack bonuses, and each weapon keeps its own spread and counts. [Exact rules](docs/WEAPONS.md).
+
+![Native weapon description showing the familiarity handling bonus](docs/images/weapon-familiarity.png)
+
+*Actual Windows controller test capture with a controlled crown15 record; live player progress is unchanged.*
 
 ### Elemental roles
 
@@ -180,7 +189,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.7 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7).
+1. Download and extract the [v1.3.8 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.8).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -215,6 +224,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.8 — Weapon familiarity
+
+**Added:** +2% reload speed, fire rate and projectile speed per highest weapon crown level. Spread, damage and integer counts stay unchanged. Native descriptions/HUD show the bonus; Continue preserves the starting rank. No save reset. [Release notes](release/NOTES-1.3.8.md) · [Rules and verification](docs/WEAPONS.md).
 
 ### v1.3.7 — Compact damage numbers
 

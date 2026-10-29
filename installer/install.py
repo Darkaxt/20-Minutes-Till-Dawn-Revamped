@@ -13,7 +13,7 @@ import zipfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
-VERSION = '1.3.7'
+VERSION = '1.3.8'
 APKM_SHA256 = 'c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f'
 MOD = pathlib.PurePosixPath('BepInEx/plugins/20MTDModernization')
 
@@ -88,7 +88,7 @@ def download(pin, work, name):
     path.parent.mkdir(exist_ok=True)
     if not path.exists():
         writing = path.with_name(path.name + '.writing')
-        with urllib.request.urlopen(urllib.request.Request(pin['url'], headers={'User-Agent': '20MTD-Revamped/1.3.7'})) as response, writing.open('wb') as output:
+        with urllib.request.urlopen(urllib.request.Request(pin['url'], headers={'User-Agent': '20MTD-Revamped/1.3.8'})) as response, writing.open('wb') as output:
             shutil.copyfileobj(response, output)
         if digest(writing) != pin['sha256']:
             raise ValueError('Downloaded dependency digest mismatch: ' + name)

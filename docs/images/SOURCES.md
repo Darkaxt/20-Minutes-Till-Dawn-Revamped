@@ -44,3 +44,5 @@ The two selector images, Custom menu and exploration contents above are refreshe
 ## Local panic and paced XP update
 
 `exploration-contents.png` is an unretouched native render of the new three-orb XP marker beside the red-heart and magnet symbols, with the original boss pointer. Controlled content fixtures verify all seven reward types, conversions, viewports and both artwork styles. Ground XP artwork is unchanged.
+
+- `weapon-familiarity.png`: isolated Windows native5, controller preview at a controlled crown15; source `weapon-familiarity-20261030/native/S1/run-5/weapon-familiarity-preview.png`. No live-profile changes.

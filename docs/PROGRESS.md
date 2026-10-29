@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Weapon familiarity — 2026-10-30
+
+[Authoritative requirements](WEAPONS.md). W1 Complete familiarity feature is COMPLETE (W01–W04). W2 Final delivery is ACTIVE (W05): versioned package, exact-package install/rollback/native verification, normal publication, independent download verification and reviewed cleanup remain. No tracked deferral.
+
+Source acceptance `W1-acceptance.json` verifies all twelve weapons, native ranks0/5/15, unchanged spread/damage/counts/size/knockback, repeated native victories, Retry, evolution/native stat composition, Custom startup, controller/pointer preview, byte-bound current/public1.3.7 Continue and visible HUD colors. Evidence: `D:/Projects/20MTD-Modernization-evidence/weapon-familiarity-20261030`. Live Steam/profile/configuration and phone are preserved.
+
 ## Compact damage numbers — 2026-10-30
 
 [Authoritative requirements](VISUALS.md#compact-damage-numbers--2026-10-30). D1 Compact damage presentation and D2 Final delivery are COMPLETE. D01–D03 satisfied; no blocker or tracked deferral.

@@ -43,6 +43,7 @@ public static partial class RunResume
   [DataMember]public int? eliteClaims;
   [DataMember]public EliteTierProgress eliteTiers;
   [DataMember]public RuneRewardStateData runeRewards;
+  [DataMember]public int? weaponFamiliarity;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -66,6 +67,7 @@ public static partial class RunResume
    saved.hordeModifiers.Length!=HordeFields.Length||saved.bossModifiers.Length!=BossFields.Length||saved.hordeModifiers.Concat(saved.bossModifiers).Any(v=>float.IsNaN(v)||float.IsInfinity(v))||
    saved.runes.Any(r=>r==null||string.IsNullOrEmpty(r.name)||r.rank<1||r.rank>5)||saved.runes.Select(r=>r.name).Distinct().Count()!=saved.runes.Count||saved.acquired.Any(a=>a==null||string.IsNullOrEmpty(a.key))||saved.pools.Any(p=>p==null||p.entries==null||p.entries.Any(e=>e==null||string.IsNullOrEmpty(e.key)))||saved.taken.Any(string.IsNullOrEmpty))
    throw new InvalidOperationException("This run checkpoint is incomplete or invalid; it has been preserved.");
+  if(saved.weaponFamiliarity.HasValue&&(saved.weaponFamiliarity<0||saved.weaponFamiliarity>15))throw new InvalidOperationException("The checkpoint's weapon familiarity rank is invalid; it has been preserved.");
   ResumeRuntime.Validate(saved.runtime);CustomMode.Validate(saved.custom);
   ExplorationRun.Validate(saved.exploration);
   RuneRewardRun.Validate(saved.runeRewards);
@@ -121,6 +123,7 @@ public static partial class RunResume
   {state.challengeEnemies=challenge.EnemyKills;state.challengeBosses=challenge.BossKills;}
   state.exploration=r.GetComponent<ExplorationRun>().State==null?null:r.GetComponent<ExplorationRun>().Capture();
   RuneRewardRun.Instance.Ensure();state.runeRewards=RuneRewardRun.Instance.State;
+  state.weaponFamiliarity=p.GetComponent<WeaponFamiliarity>().Rank;
   state.eliteClaims=EliteRun.Instance.Claimed;state.eliteTiers=EliteRun.Instance.Progress;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)

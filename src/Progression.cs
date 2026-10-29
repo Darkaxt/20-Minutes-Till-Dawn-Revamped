@@ -218,7 +218,7 @@ class MapGateGuard{static bool Prefix()=>Progression.Allowed(Progression.Title.m
 [HarmonyPatch(typeof(CharacterData),"get_description")]
 class CharacterGoal{static void Postfix(CharacterData __instance,ref string __result){__result=Progression.Description(__instance,__result);}}
 [HarmonyPatch(typeof(GunData),"get_description")]
-class WeaponGoal{static void Postfix(GunData __instance,ref string __result){__result=Progression.Description(__instance,__result);}}
+class WeaponGoal{static void Postfix(GunData __instance,ref string __result){__result=Progression.Description(__instance,WeaponFamiliarity.Description(__instance,__result));}}
 [HarmonyPatch(typeof(MapData),"get_description")]
 class MapGoal{static void Postfix(MapData __instance,ref string __result){__result=Progression.Description(__instance,__result);}}
 [HarmonyPatch]
