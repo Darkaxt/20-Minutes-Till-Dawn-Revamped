@@ -2,9 +2,13 @@
 
 ## Weapon familiarity — 2026-10-30
 
-[Authoritative requirements](WEAPONS.md). W1 Complete familiarity feature is COMPLETE (W01–W04). W2 Final delivery is ACTIVE (W05): versioned package, exact-package install/rollback/native verification, normal publication, independent download verification and reviewed cleanup remain. No tracked deferral.
+[Authoritative requirements](WEAPONS.md). W1 Complete familiarity feature and W2 Final delivery are COMPLETE. W01–W05 satisfied; no blocker or tracked deferral.
 
-Source acceptance `W1-acceptance.json` verifies all twelve weapons, native ranks0/5/15, unchanged spread/damage/counts/size/knockback, repeated native victories, Retry, evolution/native stat composition, Custom startup, controller/pointer preview, byte-bound current/public1.3.7 Continue and visible HUD colors. Evidence: `D:/Projects/20MTD-Modernization-evidence/weapon-familiarity-20261030`. Live Steam/profile/configuration and phone are preserved.
+Normal [v1.3.8](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.8) is published from `885aefd85fd049c8e747576e1d7650cc7bcf814d`. Independently retrieved ZIP SHA-256: `28070aa60ecb908af46dc4797f4cb966b077557d049b5fdd42e8786b7a340728`. All 85 public members verify. Only the production DLL changes among614 update targets;593 prepared assets and613 other targets stay unchanged. Updater0.2.0/schema2/save-epoch1 remain compatible without a reset.
+
+Exact packaged normal-render S6/run-3, run-4, run-5, run-6 pass all twelve weapons, ranks0/5/15, unchanged identity attributes, native controller/pointer preview, real victories/nonstacking, Retry, evolution/native stat composition, Custom startup, visible beneficial metrics and byte-bound current/public1.3.7 Continue. Copied install/rollback verifies614 owned targets and142 stock files. Live Steam/profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `f4192150c08b62d81ad051da93d91f66` is applied: {'deleted': 1461}; 318185944 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/weapon-familiarity-20261030`.
 
 ## Compact damage numbers — 2026-10-30
 
