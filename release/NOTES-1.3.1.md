@@ -1,0 +1,11 @@
+# 1.3.1 — Elite contours, Endless tiers and exploration contents
+
+Elites use a thin glowing outline following their animated sprite, replacing the red circle. Native facing no longer resets Forest exploders to ordinary size; artwork and collision bounds retain the intended enlargement.
+
+Endless adds Elite+ after every10 defeated Elites and Elite++ after every5 defeated Elite+ enemies. Each tier repeats the previous tier's ratios: health/XP3×,9×,27×; width/height1.25×,1.5625×,1.953125×; Eye firing frequency1.5×,2.25×,3.375×. Red, amber and violet contours distinguish them. Higher tiers use the next eligible regular spawn and preserve any owed lower-tier promotion. Scheduled minibosses and bosses remain separate; other modes retain ordinary Elites. Continue preserves exact defeat/claim counters; older runs begin the new higher-tier counters at zero.
+
+Random exploration chests no longer award credits. Their edge indicators show actual content artwork, including the exact stored upgrade, with a coloured direction arrow and the existing distance value. Boss treasure retains its chest icon. Old unopened credit chests become XP on Continue without moving or rerolling them; already earned credits retain their normal payout. Existing XP rewards remain30% of the current level requirement.
+
+These are requested Revamped changes, with no additional Android port or monetization integration. Updater0.2.0 remains compatible: schema2/save-epoch1 and the same613 asset/loader files are retained; only the mod DLL changes. Updating an already transitioned1.3.0 installation does not reset progress. Earlier installations still receive the updater's announced one-time rune-transition reset.
+
+Native checks cover actual elite defeats, HP/XP/firing intervals, all regular actor contours, both artwork modes and square/4:3/16:9, ordinary pool reuse, current/older Continue, all modes/Custom, exploration rewards and controller menus. Tests use isolated profiles and controlled operands rather than natural full-run balance playthroughs. Final exact-package, copied installation/rollback and public-download evidence is recorded in [PROGRESS.md](../docs/PROGRESS.md). Publication does not deploy to the live Steam or phone installation.

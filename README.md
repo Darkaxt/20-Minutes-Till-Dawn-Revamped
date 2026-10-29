@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.1) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -34,11 +34,23 @@ Lightning gains a small stunning splash and Mastery chains scaled by Pierce + Bo
 
 ### Face enhanced regular enemies
 
-Enhanced regular enemies add another challenge: every **200 kills** earns one elite opportunity, with **3× health and XP**, a **red aura**, **25% larger size**, and **50% faster firing** for elite Eyes. Scheduled minibosses/bosses remain distinct, and the cadence survives Continue. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
+Every **200 kills** earns an Elite opportunity: **3× health and XP**, **25% larger width/height**, a thin glowing **red sprite contour**, and **50% faster firing** for elite Eyes. The contour follows the animation; native facing retains the larger dimensions, including Forest exploders.
 
-![Larger elite Eye with a red aura beside an ordinary Eye in the Windows game](docs/images/elite-aura.png)
+![Larger Forest exploder with a glowing sprite outline beside an ordinary exploder](docs/images/elite-aura.png)
 
-*Controlled Windows test after 200 actual enemy deaths. Native XP collection, firing intervals, both artwork modes, saved cadence and normal reuse are verified.*
+**Endless** adds Elite+ after every **10 defeated Elites**, and Elite++ after every **5 defeated Elite+** enemies. Each tier repeats the previous multipliers:
+
+| Tier | Health / XP | Width / height | Eye firing frequency | Contour |
+|---|---:|---:|---:|---|
+| Elite |3×|1.25×|1.5×|Red|
+| Elite+ |9×|1.5625×|2.25×|Amber|
+| Elite++ |27×|1.953125×|3.375×|Violet|
+
+Scheduled minibosses/bosses remain separate. Higher-tier claims preserve owed lower-tier promotions, and all counters survive Continue. Other modes retain ordinary Elites. [Full rules](docs/ELEMENTS.md#enhanced-regular-enemies).
+
+![Elite, Elite+ and Elite++ with animated red, amber and violet outlines](docs/images/elite-tiers.png)
+
+*Controlled native Windows tests use actual elite defeats and XP collection, with the ordinary kill counter advanced to exercise tier boundaries. Both artwork modes, three viewport shapes, firing intervals, saved cadence and ordinary pool reuse are verified; these captures do not establish natural full-run balance.*
 
 ### Play the Android additions with desktop controls
 
@@ -80,19 +92,19 @@ When one target gains an attribute and loses another, it appears **once under Mi
 
 ### Explore for optional rewards
 
-Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, gold credits, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
+Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
 
 ![Nearby exploration chests reveal their content with native colored glow](docs/images/poi-glow.png)
 
 *Controlled Windows test with fixed Magnet, Freeze and Frenzy rewards in Sprites Reborn. Both artwork modes and square/4:3/16:9 views are verified.*
 
-Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, credits, healing, magnet, freeze, frenzy and eligible native upgrades.
+Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, healing, magnet, freeze, frenzy and eligible native upgrades. **Exploration chests no longer award credits.**
 
-Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. Credit chests give **1,000 credits**; XP chests give **30% of the current level's full requirement**, including earned XP bonuses. The marker number shows **distance in game units**. Boss chests retain gold markers, independent of the three-chest cap. Fixed reward types, positions and timers survive Continue; credits use the normal payout.
+Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. XP chests give **30% of the current level's full requirement**, including earned XP bonuses. Edge indicators show the **actual contents**, including the exact stored upgrade icon; the number is **distance in game units**. Boss treasure retains its gold chest pointer, independent of the three-chest cap. Rewards, positions and timers survive Continue. Old unopened credit chests become XP; credits already earned before updating retain their normal payout.
 
-![Three mint exploration markers in different directions,45–76 world units away](docs/images/exploration-spread.png)
+![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
 
-*Actual native Windows spawn with controlled random/clock operands. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. Not the deliberate all-east marker overlap fixture. [Reward weights and rules](docs/EXPLORATION.md).*
+*Actual native Windows content/geometry fixture. All seven reward types, both artwork modes, square/4:3/16:9, zoom and current/older Continue are checked. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. [Reward weights and rules](docs/EXPLORATION.md).*
 
 ### Finish a run with the controller
 
@@ -148,7 +160,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.0 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.0).
+1. Download and extract the [v1.3.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.1).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -158,7 +170,7 @@ The release contains the mod and installer recipes. It prepares the required art
 
 ### Update directly on Android
 
-**Install updater 0.2.0 first.** This transition resets this game's old progress and Continue save once, as shown by **Reset saves & install**. Settings and other games remain. Later updates preserve new progress. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
+**Use updater 0.2.0.** Updating1.3.0 to1.3.1 preserves progress and Continue. Updating from before the character-rune transition resets this game's old progress once, as shown by **Reset saves & install**. Settings and other games remain. Use the DroidDeck/Steam-library folder grant; the updater locates the selected game's own save prefix.
 
 Install **Revamped Updater**, connect DroidDeck once through Android Files, then check and install compatible GitHub releases. It finds the game through Steam's library catalogue and remembers the folder; no custom folder, Linux browsing, root, Shizuku or GitHub login is needed.
 
@@ -182,6 +194,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.1 — Animated elite contours, Endless tiers and exploration contents
+
+**Added:** Elite+ and Elite++ in Endless, with repeated health/XP/size/Eye-speed ratios, amber/violet contours and saved defeat/claim counters. **Fixed:** native facing resetting enlarged Forest exploders; animated outlines replace the elite circle. **Changed:** exploration chests award no credits and show actual content icons at the screen edge; old unopened credit drops become XP while already earned totals remain. **Ported:** no additional Android behavior; these are requested Revamped playtest changes. Updater0.2.0 remains compatible and the save epoch stays1, without another reset after the rune transition. [Release notes](release/NOTES-1.3.1.md) · [Verification](docs/PROGRESS.md).
 
 ### v1.3.0 — Character runes and arena-boss rewards
 
