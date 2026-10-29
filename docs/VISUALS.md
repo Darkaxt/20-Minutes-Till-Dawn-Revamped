@@ -11,7 +11,13 @@ The user reports damage numbers approaching half the character's size. Their req
 | Stage | Status | Acceptance satisfied | Remaining / blockers / deferrals |
 |---|---|---|---|
 | D1 Compact damage presentation | COMPLETE | D01–D02 pass native2–3: actual17-damage labels, rendered glyph bounds across30 viewport/style/zoom combinations per process, native controller/pointer On/Off, exact manual preference and byte-bound Continue. Inspected native900-square zoom100 and1280-wide zoom0 captures. D1-acceptance.json binds sources. | None. Native1 reproduces oldfont2 versus compact1. Native movement/fade/pooling rules are unchanged. Closure review: one original-size multiplier, no new setting or state owner. |
-| D2 Final delivery | ACTIVE | D1 complete; existing normal release and updater path retained. | D03 exact committed package/public verification, documentation and cleanup. No external blocker or deferral. |
+| D2 Final delivery | COMPLETE | D03: exact committed native package/install/rollback, normal public1.3.7 source/tag/assets/download, unchanged updater contract, documentation and reviewed cleanup pass. | None. |
+
+Normal [v1.3.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7) is published from `a87fbb401df9ddb4a9e083bdd2c820773a32aac6`. Independently downloaded ZIP SHA-256: `b175c6cd7eaa9039a03ecaffe5c6ed57db472d993c9182bd7621ec56107a9438`. All 82 public members verify. Only the production DLL changes among614 update targets;593 prepared assets and613 other targets stay unchanged. Updater0.2.0/schema2/save-epoch1 remain compatible without a reset.
+
+Exact packaged S6/run-1–2 pass actual compact hits and glyph bounds across every zoom/style/viewport combination, controller/pointer On/Off and byte-bound manual-Off Continue. Copied install/rollback verifies614 owned targets and142 stock files. Native1 reproduces the old scale;2–3 qualify the compact source and inspected screenshots. Live Steam/profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `0abb5bd2f5c25bf7cc28a9a5dc289e9e` is applied: {'deleted': 1422}; 317498945 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`.
 
 Disposable .NET/native work: `D:/Temp/20mtd-damage-scale-20261030` (small-file I/O exception). Required retained evidence/packages: `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`. Existing project/input bindings remain unchanged.
 

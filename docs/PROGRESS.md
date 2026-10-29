@@ -2,7 +2,13 @@
 
 ## Compact damage numbers — 2026-10-30
 
-[Authoritative requirements](VISUALS.md#compact-damage-numbers--2026-10-30). D1 Compact damage presentation is COMPLETE; D2 Final delivery is ACTIVE. Native1 reproduces the old size,2–3 verify half-sized real labels, all zoom steps/styles/viewports, recorded rendered bounds, native controls and byte-bound manual-Off Continue. No blocker or tracked deferral. Disposable work: `D:/Temp/20mtd-damage-scale-20261030`; required evidence/packages: `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`. Live Steam/profile/settings/phone protected.
+[Authoritative requirements](VISUALS.md#compact-damage-numbers--2026-10-30). D1 Compact damage presentation and D2 Final delivery are COMPLETE. D01–D03 satisfied; no blocker or tracked deferral.
+
+Normal [v1.3.7](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.7) is published from `a87fbb401df9ddb4a9e083bdd2c820773a32aac6`. Independently downloaded ZIP SHA-256: `b175c6cd7eaa9039a03ecaffe5c6ed57db472d993c9182bd7621ec56107a9438`. All 82 public members verify. Only the production DLL changes among614 update targets;593 prepared assets and613 other targets stay unchanged. Updater0.2.0/schema2/save-epoch1 remain compatible without a reset.
+
+Exact packaged S6/run-1–2 pass actual compact hits and glyph bounds across every zoom/style/viewport combination, controller/pointer On/Off and byte-bound manual-Off Continue. Copied install/rollback verifies614 owned targets and142 stock files. Native1 reproduces the old scale;2–3 qualify the compact source and inspected screenshots. Live Steam/profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `0abb5bd2f5c25bf7cc28a9a5dc289e9e` is applied: {'deleted': 1422}; 317498945 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030`.
 
 ## Local fire panic, paced magnet and XP marker — 2026-10-29
 
