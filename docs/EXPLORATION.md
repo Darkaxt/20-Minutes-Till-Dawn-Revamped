@@ -24,25 +24,19 @@ Storage: `D:/Temp/20mtd-reward-icons-20261029` is the exact .NET/native small-fi
 
 Mint-tinted chests appear beyond the visible playfield on reachable ground. They are separate from gold boss chests and have no ambush or penalty mechanic. A run can have **at most three uncollected exploration chests**; boss rewards keep their existing lifecycle.
 
-**Uncollected exploration chests do not expire.** They remain until collected or the run ends, including across later spawn waves. Save & return / Continue preserves their fixed positions and rewards.
+**Uncollected exploration chests do not expire.** They remain until collected or the run ends, including across cell changes. Save & return / Continue preserves their fixed positions and rewards.
 
 In1.3.4 the edge content indicator remains visible until the **whole chest artwork** is inside the camera viewport and clear of the native HUD, metrics and skill icons. The earlier center-only handoff could hide the pointer while the skills HUD covered the chest. This presentation correction does not remove/claim the chest or change its rewards. [Render/contact regression](VISUALS.md).
 
-The system draws a new wave every **60–90 seconds of combat**. Pauses and upgrade menus stop this clock. Common waves can contain one to three chests in different directions. Placement varies across **5–30 seconds of travel at the player's current walking speed**, mixing nearer and farther targets instead of a narrow distant ring. Viewport exclusion sets a minimum visible-edge distance; compact arenas such as Temple cap the journey at reachable walls. New placements also account for exploration chests already on the ground. Blocked placement sectors are skipped; the game does not put rewards through walls or outside map boundaries.
+## Honeycomb layout — 1.3.10
 
-| Primary wave draw | Weight | Reward |
-|---|---:|---|
-| Experience |45|30% of the current level's full XP requirement, with earned XP bonuses and the native level-up flow |
-| Healing |15|One red heart; the same percentage XP reward instead when health is full |
-| Magnet |12|A distance-based attraction wave, followed by each pickup's normal flight and unchanged XP collection |
-| Freeze |10|Three-second native enemy freeze, retaining boss resistance and immunities |
-| Frenzy |8|+25% bullet damage, summon damage and fire rate for15 combat seconds; another refreshes its duration |
-| Upgrade |8|An eligible normal upgrade shown in the native Take/Leave menu |
-| Character upgrade |2|An eligible character upgrade shown in the same native menu |
+[Authoritative rules and acceptance](POI-HONEYCOMB.md). Timed waves and the old total population cap are replaced by fixed, shared honeycomb vertices. Side length is36 world units. Only current-cell chests are physical; the radar shows the three nearest uncollected exploration vertices, including nearby cells. A seeded arrangement gives each unobstructed six-vertex cell one XP, one healing, one magnet, one freeze, one frenzy and one upgrade opportunity. A vertex-specific10% lottery replaces the upgrade with a character upgrade. Terrain exclusions omit vertices rather than adding higher-value replacements.
 
-The first three outcomes form the common pool. Extra chests in a common wave draw only from that pool; uncommon and rare waves contain one chest. These are **wave weights**, not the final distribution of individual chests. Exploration chests no longer award credits.
+The run saves its seed, origin, discovered contents and collected vertex identities. Backtracking and Continue do not regenerate rewards. Old optional-field checkpoints retain their previous unclaimed positions/contents, earned Score and frenzy, then adopt the grid without a reset. There is no exploration spawn clock.
 
-Permanent upgrade rewards respect current prerequisites and remaining repetitions. Their exact upgrade is chosen at spawn. If it has become unavailable before collection, the chest grants the percentage XP reward rather than rerolling or opening an empty menu. XP is calculated when collected from the current full level requirement, not the remaining XP gap. Native XP multipliers still apply. There is no content-unlock bypass. Custom retains its obtained-content and no-achievement rules.
+Reward amounts remain:30% of a full level's XP requirement; one red heart; paced magnet;3-second freeze; +25% bullet/summon damage and fire rate for15 combat seconds; or a native eligible upgrade. Exploration gives no currency. A full-health healing reward or an exhausted stored upgrade previews/grants its normal XP replacement.
+
+Permanent upgrade rewards respect current prerequisites and remaining repetitions. Their exact upgrade is chosen when the vertex is first discovered. If it has become unavailable before collection, the chest grants the percentage XP reward rather than rerolling or opening an empty menu. XP is calculated when collected from the current full level requirement, not the remaining XP gap. Native XP multipliers still apply. There is no content-unlock bypass. Custom retains its obtained-content and no-achievement rules.
 
 ## Shared pointers
 

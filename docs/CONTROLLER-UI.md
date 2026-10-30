@@ -34,3 +34,9 @@ These are native Unity input-module checks in a windowless copied Windows player
 Implementation-stage failures are retained:34–36 exposed early-created hidden controls retaining interaction;37–38 exposed a geometry check counting native labels' empty100-unit layout boxes rather than hit boxes/glyphs;39–42 corrected fixture navigation/readiness and legacy typing/Plus expectations;43 exposed automatic navigation escaping to the gameplay HUD slider, corrected with explicit Options links. Probe47 was cancelled through the owned fixture interface because a retained checkpoint opened Continue before the roster;48 supplies that fixture precondition explicitly. Failed/cancelled probes are not acceptance results.
 
 No confirmed controller finding remains pending. These bounded checks do not claim every possible game-state/input combination is bug-free.
+
+## Visible focus — 1.3.10
+
+[Authoritative scope](POI-HONEYCOMB.md). A native-parented, non-interactive cream chevron follows the EventSystem selection. Text labels use a left gap; icon-only controls use an inside-left gutter. It inherits the actual menu scale and lifetime, rather than converting world-camera UI units into overlay pixels. Native input/focus ownership is unchanged.
+
+Two independent opacity rows use the same native button, callback, focus and explicit navigation owners as the other settings. They each cycle25/50/75/100%, default100, and persist in the existing config. Bullet-like bodies use the projectile channel; player ability/summon/explosion/trail/particle visuals use the effects channel. Native8 verifies controller/pointer, GPU output, saved reload and ownership exclusions.

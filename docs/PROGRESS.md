@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Honeycomb exploration and menu focus — 2026-10-30
+
+[Authoritative requirements](POI-HONEYCOMB.md). Expanded C1 is COMPLETE: balanced cells, actual streaming/contact, north-axis rendering, native text/icon focus, byte-bound Continue, old-format transition, Mirror parameter audit and two independent GPU-verified opacity settings are verified. C2 Final delivery is ACTIVE: package/install/rollback, public readback and cleanup remain.
+
 ## Specialize triple summons — 2026-10-30
 
 [Authoritative requirements](SPECIALIZE.md). T1 Complete Specialize correction and T2 Final delivery are COMPLETE. T01–T04 satisfied at the requested evidence boundary; no blocker or tracked deferral.

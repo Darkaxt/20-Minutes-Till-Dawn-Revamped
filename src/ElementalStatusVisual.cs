@@ -108,7 +108,7 @@ public sealed class ElementalStatusVisual:MonoBehaviour
    var renderer=overlays[i];if(renderer==null)continue;renderer.enabled=active&&body.enabled&&body.color.a>0;if(!renderer.enabled)continue;
    filters[i].sharedMesh=ElementalRun.Instance.StatusMesh(body.sprite);
    renderer.transform.localScale=new Vector3(body.flipX?-1:1,body.flipY?-1:1,1);renderer.sortingLayerID=body.sortingLayerID;renderer.sortingOrder=body.sortingOrder+1+i;
-   properties.Clear();properties.SetTexture("_MainTex",body.sprite.texture);float pulse=i==1?.7f+.3f*Mathf.Sin(Time.time*27):1;properties.SetColor("_FaceColor",new Color(1,1,1,body.color.a*pulse));renderer.SetPropertyBlock(properties);
+   properties.Clear();properties.SetTexture("_MainTex",body.sprite.texture);float pulse=i==1?.7f+.3f*Mathf.Sin(Time.time*27):1;properties.SetColor("_FaceColor",new Color(1,1,1,body.color.a*pulse*PlayerVisualOpacity.Factor(PlayerVisualOpacity.Channel.Effects)));renderer.SetPropertyBlock(properties);
   }
  }
 }

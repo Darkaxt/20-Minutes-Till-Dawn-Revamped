@@ -16,7 +16,7 @@ using flanne.PerkSystem;
 using Object=UnityEngine.Object;
 
 namespace TwentyMinutes.Modernization;
-[BepInPlugin(Id,"20MTD Modernization","1.3.9")]
+[BepInPlugin(Id,"20MTD Modernization","1.3.10")]
 public class Plugin:BaseUnityPlugin
 {
     public const string Id="local.20mtd.modernization";
@@ -27,6 +27,7 @@ public class Plugin:BaseUnityPlugin
     public ConfigEntry<bool> ColorfulEnabled;
     public ConfigEntry<int> ZoomOut;
     public ConfigEntry<bool> DamageNumbers;
+    public ConfigEntry<int> ProjectileOpacity,EffectsOpacity;
     public static readonly Dictionary<string,string> Text=new Dictionary<string,string>();
     public static readonly Dictionary<GunData,Evolution> Guns=new Dictionary<GunData,Evolution>();
     public static bool TryMode(GunData data,out Evolution mode)
@@ -64,6 +65,9 @@ public class Plugin:BaseUnityPlugin
         gameObject.AddComponent<ColorfulStyle>();
         gameObject.AddComponent<TitleArtwork>();
         gameObject.AddComponent<UnlockNotifications>();
+        gameObject.AddComponent<MenuFocusArrow>();
+        ProjectileOpacity=Config.Bind("Enhancements","PlayerProjectileOpacity",100,new ConfigDescription("Player bullet/fireball/summon-projectile opacity percent; visual only. Hostile shots are unchanged.",new AcceptableValueList<int>(25,50,75,100)));
+        EffectsOpacity=Config.Bind("Enhancements","PlayerEffectsOpacity",100,new ConfigDescription("Player ability/summon/explosion/trail/particle opacity percent; character, enemies, HUD and vision are unchanged.",new AcceptableValueList<int>(25,50,75,100)));
     }
     public void LoggerForArtwork(string message)=>Logger.LogInfo(message);
     public static void SetField(object target,string field,object value)=>AccessTools.Field(target.GetType(),field).SetValue(target,value);

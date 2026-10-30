@@ -13,7 +13,7 @@ namespace TwentyMinutes.Modernization;
 public sealed class ChestDirectionIndicator:MonoBehaviour
 {
  internal static readonly List<ChestDirectionIndicator> Active=new List<ChestDirectionIndicator>();
- public Sprite Icon;public Color IconTint=Color.white;public bool Exploration;
+ public Sprite Icon;public Color IconTint=Color.white;public bool Exploration;public bool Radar=true;
  public RectTransform Marker;internal TMP_Text DistanceText;internal RectTransform Arrow;
  ChestPickup chest;
  void Awake(){chest=GetComponent<ChestPickup>();if(chest!=null)Icon=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(chest);}
@@ -51,6 +51,18 @@ public sealed class PickupDirectionLayout:MonoBehaviour
   // may still be clipped, or the metrics/skills/native HUD may cover its art.
   return rect.xMin>=visible.xMin&&rect.xMax<=visible.xMax&&rect.yMin>=visible.yMin&&rect.yMax<=visible.yMax&&!reserved.Any(r=>r.Overlaps(rect));
  }
+ public static Vector2 EdgePoint(Vector2 direction,Rect edge,List<Rect> reserved,List<Vector2> occupied,float scale)
+ {
+  var half=edge.size*.5f;var center=edge.center;
+  bool horizontal=Mathf.Abs(direction.y)*half.x>=Mathf.Abs(direction.x)*half.y;
+  float factor=horizontal?half.y/Mathf.Abs(direction.y):half.x/Mathf.Abs(direction.x);
+  var desired=center+direction*factor;var points=new List<Vector2>{desired};
+  float length=horizontal?edge.width:edge.height,spacing=96*scale;int steps=Mathf.Max(1,Mathf.CeilToInt(length/(16*scale)));
+  for(int i=0;i<=steps;i++)points.Add(horizontal?new Vector2(Mathf.Lerp(edge.xMin,edge.xMax,(float)i/steps),desired.y):new Vector2(desired.x,Mathf.Lerp(edge.yMin,edge.yMax,(float)i/steps)));
+  // Collision avoidance changes the position along the true direction's edge,
+  // never the edge itself. Timer/XP reservations cannot turn north into east.
+  return points.OrderBy(p=>reserved.Count(r=>r.Overlaps(new Rect(p.x-36*scale,p.y-52*scale,72*scale,88*scale)))*10000000+occupied.Count(other=>Vector2.Distance(other,p)<spacing)*1000000+Vector2.SqrMagnitude(p-desired)).ThenBy(p=>p.x).ThenBy(p=>p.y).First();
+ }
  void LateUpdate()
  {
   var hud=StatsOverlay.Instance;var player=PlayerController.Instance;var camera=Camera.main;
@@ -64,17 +76,14 @@ public sealed class PickupDirectionLayout:MonoBehaviour
   occupied.Clear();
   foreach(var target in ChestDirectionIndicator.Active.Where(t=>t!=null&&t.gameObject.scene.IsValid()).OrderBy(t=>Vector3.Distance(t.transform.position,player.transform.position)))
   {
+   if(!target.Radar){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
    var projected=camera.WorldToScreenPoint(target.transform.position);
    bool visible=WorldVisible(target,camera,safe,reserved);
    if(visible||target.Collecting){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
    if(target.Marker==null)target.Build(hud);target.Marker.gameObject.SetActive(true);
    var direction=(Vector2)projected-center;if(projected.z<0)direction=-direction;
-   float factor=Mathf.Min(direction.x==0?float.PositiveInfinity:half.x/Mathf.Abs(direction.x),direction.y==0?float.PositiveInfinity:half.y/Mathf.Abs(direction.y));
-   var desired=center+direction*factor;float spacing=96*scale;
-   var points=new List<Vector2>{desired};int horizontal=Mathf.Max(1,Mathf.FloorToInt(edge.width/spacing)),vertical=Mathf.Max(1,Mathf.FloorToInt(edge.height/spacing));
-   for(int i=0;i<=horizontal;i++){float x=Mathf.Lerp(edge.xMin,edge.xMax,(float)i/horizontal);points.Add(new Vector2(x,edge.yMin));points.Add(new Vector2(x,edge.yMax));}
-   for(int i=1;i<vertical;i++){float y=Mathf.Lerp(edge.yMin,edge.yMax,(float)i/vertical);points.Add(new Vector2(edge.xMin,y));points.Add(new Vector2(edge.xMax,y));}
-   var point=points.OrderBy(p=>reserved.Count(r=>r.Overlaps(new Rect(p.x-36*scale,p.y-52*scale,72*scale,88*scale)))*10000000+occupied.Count(other=>Vector2.Distance(other,p)<spacing)*1000000+Vector2.SqrMagnitude(p-desired)).First();occupied.Add(point);
+   if(direction.sqrMagnitude==0)direction=Vector2.up;
+   var point=EdgePoint(direction,edge,reserved,occupied,scale);occupied.Add(point);
    var parent=(RectTransform)hud.Panel.transform;RectTransformUtility.ScreenPointToLocalPointInRectangle(parent,point,null,out var local);
    // Screen-to-local is relative to the parent's pivot. The marker anchors are
    // at its center; the HUD root itself uses a bottom-left pivot.

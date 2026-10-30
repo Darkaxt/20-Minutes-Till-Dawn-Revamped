@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.9) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.10](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.10) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -19,7 +19,8 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Weapon familiarity** | Each weapon gains +2% reload speed, fire rate and projectile speed per highest crown level, up to +30%. Damage, spread and weapon counts stay unchanged. The existing record includes Challenge and is shared across characters. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
 | **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
-| **Exploration and modes** | Up to three weighted exploration chests offer meaningful XP, healing, utility and upgrades at varied reachable distances. Content icons, distance pointers and nearby colors identify them; indicators stay until the chest is clear of the HUD. Challenge and native Custom menus expand play options; Custom imports mode defaults and uses obtained content without permanent unlock rewards. |
+| **Combat visibility** | Two independent native Options entries adjust player projectiles and other player effects to25/50/75/100%, default100. Summon/ability/explosion/trail/particle visuals fade separately from bullet bodies; enemies, hostile attacks, character and vision stay unchanged. |
+| **Exploration and modes** | Continuous honeycomb POIs replace timed waves. Each cell balances basic rewards, utilities and one upgrade; only the three nearest uncollected targets appear on radar. Shared vertices and collected rewards persist through Continue. Challenge and native Custom menus retain their existing rules. |
 | **Controls and continuity** | Controller navigation and focus across native menus, locked-content inspection, opaque Options, cleaner results and Retry. Save & return / Continue reconstructs supported runs, including legacy checkpoints. Zoom and display settings support different screen shapes while the HUD keeps its size. |
 | **Presentation and reliability** | Selectable Sprites Reborn artwork with consistent projectile colors; corrected phoenix/facing visuals; sprite-masked fire, lightning and wind cues. Pixel-art maintenance credit and promotional-panel removal. Corrections cover damage signs, stacking, temporary buffs, shield/cooldown arithmetic, Shatter, collisions, pooled actors/effects and duplicate save/reward application. |
 | **Windows and phone delivery** | Versioned Windows packages with owned-file install/rollback, plus DroidDeck support and an Android updater that locates the game, verifies GitHub releases and preserves compatible progress. The game remains the Windows mod running through DroidDeck. |
@@ -116,19 +117,29 @@ Uncollected chests **do not expire**. Normal fog reveal keeps them visible when 
 
 Chest magnets send an attraction wave outward at **12 game units per combat second**, followed by each orb’s normal **0.3-second** flight. Equal-distance clusters are spaced across frames; nearby ordinary pickups can claim waiting orbs sooner. XP amounts are unchanged, and pause freezes the wave.
 
-Mint chests appear every **60–90 combat seconds**, with at most **three uncollected exploration chests**. Common rewards can appear together in different directions; the strongest upgrades are rarer. Rewards include XP, healing, magnet, freeze, frenzy and eligible native upgrades. **Exploration chests no longer award credits.**
+Exploration uses an invisible **honeycomb with 36-unit sides**. Each unobstructed cell contains XP, healing, magnet, freeze, frenzy and **one upgrade opportunity**; 10% of upgrade vertices instead offer a character upgrade. The arrangement varies per run. Shared corners belong to the same POI, and the radar shows only the **three nearest uncollected exploration targets**. Move from reward to reward without waiting for a timer.
 
-Open-map placement varies across **5–30 seconds of walking**, with viewport and wall limits. XP chests give **30% of the current level's full requirement**, including earned XP bonuses. Edge indicators show the **actual contents**, including the exact stored upgrade icon; the number is **distance in game units**. Boss treasure retains its gold chest pointer, independent of the three-chest cap. Rewards, positions and timers survive Continue. Old unopened credit chests become XP; credits already earned before updating retain their normal payout.
+Only the current cell's physical chests are loaded. Collected vertices stay collected, and discovered contents/positions survive Continue. Existing old chests are preserved on transition. XP still grants **30% of the current level requirement**; eligibility/full-health conversions and content icons stay intact. Boss treasure retains its separate chest pointer. Northern targets stay on the north edge while markers avoid each other along that edge.
 
 ![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
 
 XP indicators show a cluster of three rounded orbs shaded in the native XP tint, replacing the cross-shaped pickup symbol. Healing uses the native red-heart pickup, rather than the maximum-health upgrade; soul-heart artwork remains reserved for soul-heart rewards. At full red health, healing chests preview their XP replacement. An exhausted stored upgrade also switches its preview to XP without rerolling the chest.
 
-*Actual native Windows content/geometry fixture. All seven reward types, both artwork modes, square/4:3/16:9, zoom and current/older Continue are checked. The wider48-seed placement sample ranges from5.1–29.85 seconds of walking. [Reward weights and rules](docs/EXPLORATION.md).*
+*Earlier native content-icon fixture; the artwork and reward meanings remain current. The timed-wave placement and weights are superseded by the balanced honeycomb rules. [Current rules and acceptance](docs/POI-HONEYCOMB.md).*
 
 ### Finish a run with the controller
 
 Victory and death show scores, the character/weapon loadout and **Try Again / Quit To Menu**, without the redundant skill list. Results navigation stays on those two buttons. Shown menus own controller focus, including recovery on the first controller input after switching from the mouse; no frame-by-frame focus override.
+
+### Read controller focus at a glance
+
+**Player projectiles opacity** and **Player effects opacity** are separate native Options entries, each25/50/75/100%. Both default to100%; the screenshot demonstrates50%/25%. They change visual tint only, preserving damage, hitboxes, character, vision, HUD and hostile attacks.
+
+A small cream chevron follows the currently focused button, using the native menu font and scale. Text buttons show it just to the left; icon buttons keep it inside the left gutter. It follows existing selection without changing navigation or consuming input.
+
+![Native Options menu showing a chevron beside the selected entry](docs/images/menu-focus.png)
+
+*Actual Windows controller capture. Title, pause, icon controls and scene changes are verified.*
 
 ### Track clears at the selected difficulty
 
@@ -190,7 +201,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.9 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.9).
+1. Download and extract the [v1.3.10 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.10).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -225,6 +236,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.10 — Honeycomb exploration and menu focus
+
+**Added:** continuous, balanced honeycomb POIs with three-nearest radar and persistent shared vertices. **Fixed:** north-facing indicators jumping to side edges; unclear menu selection now has a native-style chevron. Old checkpoints retain their unopened rewards without a reset. **Added:** separate player-projectile and player-effects opacity controls in native Options. [Release notes](release/NOTES-1.3.10.md) · [Rules and verification](docs/POI-HONEYCOMB.md).
 
 ### v1.3.9 — Specialize summon correction
 

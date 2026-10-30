@@ -32,6 +32,7 @@ public sealed partial class ElementalRun:MonoBehaviour
  {
   var root=new GameObject("LightningChain",typeof(LineRenderer),typeof(ElementalArc));root.layer=9;root.transform.SetParent(transform,false);
   var line=root.GetComponent<LineRenderer>();line.sharedMaterial=material;line.startColor=line.endColor=new Color(.65f,.85f,1,.85f);line.startWidth=line.endWidth=.035f;line.positionCount=2;line.SetPosition(0,from);line.SetPosition(1,to);line.sortingOrder=15;
+  PlayerVisualOpacity.Attach(root);
  }
  internal SpriteRenderer Status(Transform target)
  {

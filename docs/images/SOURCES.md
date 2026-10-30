@@ -46,3 +46,5 @@ The two selector images, Custom menu and exploration contents above are refreshe
 `exploration-contents.png` is an unretouched native render of the new three-orb XP marker beside the red-heart and magnet symbols, with the original boss pointer. Controlled content fixtures verify all seven reward types, conversions, viewports and both artwork styles. Ground XP artwork is unchanged.
 
 - `weapon-familiarity.png`: isolated Windows native5, controller preview at a controlled crown15; source `weapon-familiarity-20261030/native/S1/run-5/weapon-familiarity-preview.png`. No live-profile changes.
+
+- `menu-focus.png`: isolated normal-render Windows `honeycomb-20261030/native/S1/run-8/opacity-native-options.png`; actual controller/pointer-selected50% projectile /25% effects settings and native focus chevron. Default values are100%. Native4/5 separately qualify text/icon focus and scene lifetime.

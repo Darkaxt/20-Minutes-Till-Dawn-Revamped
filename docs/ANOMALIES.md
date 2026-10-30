@@ -1,5 +1,14 @@
 # Android gameplay anomaly ledger
 
+## Honeycomb and focus correction — 2026-10-30
+
+- **Reported Mirror potency:** native6 found no90% per-mirror bonus in the basic combination. Each of three mirrors is overall1 / damage1.3 / size1.3, and a Fireball crossing them changes40→52 damage and1→1.3 size once. All six summon-root recipes attach actors without stat changes. The exact oversized build remains unidentified; no unrelated Focal Point or size balance was changed.
+- **Combat opacity:** two user-requested native Options entries independently fade player projectile bodies and other player combat effects. Native8 measures GPU intensity at0.2494 for the25% setting and verifies dimensions/damage, actor/fog/hostile exclusions, pooling and actual configuration reload. This is a visual refinement, not an Android parity or balance correction.
+
+- **Northern indicator flip:** global collision ranking could send a north-facing target to either side edge around a HUD reservation. Ranking now stays on the ray’s actual edge and spaces markers along it. The controlled old algorithm reproduces the flip; native square/16:9 north-axis motion verifies the correction.
+- **Exploration pacing:** timed waves and a total3-chest cap are intentionally replaced by the requested balanced honeycomb and nearest-three radar. Shared vertex identity prevents duplicate/rerolled rewards. Six vertex classes balance each unobstructed cell; character-upgrade substitution remains rare. This is a requested Revamped design refinement.
+- **Focus presentation:** a separate overlay initially used world-camera label units as pixels and outlived a closing menu canvas. The chevron now belongs to the native label/button; icon-only buttons use their inside-left gutter. Source input and focus ownership remain unchanged. [Evidence](POI-HONEYCOMB.md).
+
 ## Specialize summon correction — 2026-10-30
 
 The applied notification passes a live, already-applied deep copy. Equipping that copy for Specialize’s two extra applications journals the acquisitions but loses instant attachment activation. Resolving the pristine registered definition fixes all six direct summon roots: 6 lances and 3 scythes, ghosts, mirrors, dragon eggs and Electro Bugs. The native screenshot and actor/application checks verify these quantities; the stat control retains its threefold bonus. Split Fire, ordinary repeat application and recorder/replay/serialization are unchanged. This is a Revamped integration defect. At the user’s instruction, the existing successful observations are reused and redundant simulation was cancelled; no new Continue acceptance is claimed. [Requirements and evidence](SPECIALIZE.md).

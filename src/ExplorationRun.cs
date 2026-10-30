@@ -14,10 +14,14 @@ namespace TwentyMinutes.Modernization;
 // Credits keeps its serialized ordinal for old checkpoints; restored drops
 // convert to Experience before their world object and marker are created.
 public enum ExplorationReward{Experience,Credits,Healing,Magnet,Freeze,Frenzy,Upgrade,CharacterUpgrade}
-[Serializable]public sealed class ExplorationDrop
-{public int id;public ExplorationReward reward;public float x,y;public string power;}
-[Serializable]public sealed class ExplorationState
-{public uint random;public int nextId,credits;public float remaining,frenzy;public List<ExplorationDrop> drops=new List<ExplorationDrop>();}
+[Serializable,DataContract]public sealed class ExplorationDrop
+{[DataMember]public int id;[DataMember]public ExplorationReward reward;[DataMember]public float x,y;[DataMember]public string power;[DataMember]public string vertex;}
+[Serializable,DataContract]public sealed class ExplorationState
+{
+ [DataMember]public uint random;[DataMember]public int nextId,credits;[DataMember]public float remaining,frenzy;[DataMember]public List<ExplorationDrop> drops=new List<ExplorationDrop>();
+ [DataMember]public int layout;[DataMember]public uint seed;[DataMember]public float originX,originY;
+ [DataMember]public List<string> collected=new List<string>();
+}
 
 // One battle-scene owner for the requested exploration rules. Permanent perks,
 // XP, status effects and credit payout keep their existing native owners.
@@ -31,6 +35,12 @@ public sealed class ExplorationRun:MonoBehaviour
  public ExplorationDrop PendingReward;
  GameController game;bool frenzyApplied;TMP_Text notice;float noticeRemaining;
  Sprite xpMarker;Texture2D xpMarkerTexture;
+ HoneycombLayout.Cell cell;bool synchronized;Vector2 lastPosition;
+ readonly Dictionary<string,HoneycombLayout.Vertex> candidates=new Dictionary<string,HoneycombLayout.Vertex>();
+ readonly HashSet<string> claimed=new HashSet<string>();
+ public Vector2 GridOrigin=>new Vector2(State.originX,State.originY);
+ public float GridRotation=>State.seed%36000*.01f;
+ static string DropKey(ExplorationDrop drop)=>drop.vertex??"legacy:"+drop.id;
  static readonly StatType[] FrenzyStats={StatType.BulletDamage,StatType.SummonDamage,StatType.FireRate};
  public static ExplorationReward RewardForRoll(int roll)
  {
@@ -41,22 +51,26 @@ public sealed class ExplorationRun:MonoBehaviour
  internal static void Validate(ExplorationState state)
  {
   if(state==null)return;
-  if(state.random==0||state.nextId<0||state.credits<0||state.drops==null||state.drops.Count>Maximum||state.remaining<0||state.remaining>90||state.frenzy<0||state.frenzy>15||
+  if(state.random==0||state.nextId<0||state.credits<0||state.drops==null||(state.layout==0&&state.drops.Count>Maximum)||state.remaining<0||state.remaining>90||state.frenzy<0||state.frenzy>15||state.layout<0||state.layout>1||
    new[]{state.remaining,state.frenzy}.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||state.drops.Any(d=>d==null||d.id<0||d.id>=state.nextId||!Enum.IsDefined(typeof(ExplorationReward),d.reward)||new[]{d.x,d.y}.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||((d.reward==ExplorationReward.Upgrade||d.reward==ExplorationReward.CharacterUpgrade)&&string.IsNullOrEmpty(d.power)))||state.drops.Select(d=>d.id).Distinct().Count()!=state.drops.Count)
    throw new InvalidOperationException("The checkpoint's exploration rewards are invalid; it has been preserved.");
+  if(state.layout==1&&(state.seed==0||state.collected==null||state.collected.Distinct().Count()!=state.collected.Count||
+   new[]{state.originX,state.originY}.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||state.drops.Where(d=>d.vertex!=null).Select(d=>d.vertex).Distinct().Count()!=state.drops.Count(d=>d.vertex!=null)||state.drops.Any(d=>d.vertex!=null&&state.collected.Contains(d.vertex))))
+   throw new InvalidOperationException("The checkpoint's honeycomb rewards are invalid; it has been preserved.");
  }
  uint Next(){uint x=State.random;x^=x<<13;x^=x>>17;x^=x<<5;State.random=x;return x;}
  int Next(int limit)=>(int)(Next()%(uint)limit);
- float Interval()=>60+Next(30001)/1000f;
  internal void Restore(ExplorationState saved)
  {
   Validate(saved);
   State=saved??new ExplorationState{random=((uint)DateTime.UtcNow.Ticks)|1};
-  if(saved==null)State.remaining=Interval();
-  foreach(var drop in State.drops)Create(drop);
+  if(State.layout==0)
+  {var origin=(Vector2)PlayerController.Instance.transform.position;State.layout=1;State.seed=State.random;State.originX=origin.x;State.originY=origin.y;State.collected=new List<string>();State.remaining=0;}
+  claimed.Clear();foreach(var key in State.collected)claimed.Add(key);synchronized=false;
+  RefreshLayout();
   SetFrenzy(State.frenzy>0);
  }
- internal ExplorationState Capture()=>new ExplorationState{random=State.random,nextId=State.nextId,credits=State.credits,remaining=State.remaining,frenzy=State.frenzy,drops=State.drops.Select(d=>new ExplorationDrop{id=d.id,reward=d.reward,x=d.x,y=d.y,power=d.power}).ToList()};
+ internal ExplorationState Capture()=>new ExplorationState{random=State.random,nextId=State.nextId,credits=State.credits,remaining=0,frenzy=State.frenzy,layout=State.layout,seed=State.seed,originX=State.originX,originY=State.originY,collected=State.collected.ToList(),drops=State.drops.Select(d=>new ExplorationDrop{id=d.id,reward=d.reward,x=d.x,y=d.y,power=d.power,vertex=d.vertex}).ToList()};
  void Update()
  {
   if(State==null){if(RunResume.Restoring||PlayerController.Instance?.loadedCharacter==null||ObjectPooler.SharedInstance==null||!(game.CurrentState is CombatState))return;Restore(null);}
@@ -64,8 +78,7 @@ public sealed class ExplorationRun:MonoBehaviour
   if(noticeRemaining>0&&game.CurrentState is CombatState)noticeRemaining=Mathf.Max(0,noticeRemaining-Time.deltaTime);
   if(!(game.CurrentState is CombatState)||PauseController.isPaused)return;
   if(State.frenzy>0){State.frenzy=Mathf.Max(0,State.frenzy-Time.deltaTime);if(State.frenzy==0)SetFrenzy(false);}
-  State.remaining=Mathf.Max(0,State.remaining-Time.deltaTime);
-  if(State.remaining==0){SpawnWave();State.remaining=Interval();RunResume.Save();}
+  RefreshLayout();
  }
  internal List<Powerup> Eligible(bool character)
  {
@@ -76,27 +89,49 @@ public sealed class ExplorationRun:MonoBehaviour
   return choices;
  }
  internal void SpawnWave()
+ {synchronized=false;RefreshLayout();}
+ bool Reachable(Vector2 point)=>!Physics2D.OverlapCircleAll(point,.5f).Any(Blocks)&&!Physics2D.LinecastAll(GridOrigin,point).Any(h=>h.collider.CompareTag("MapBounds"));
+ internal void RefreshLayout()
  {
-  int available=Maximum-State.drops.Count;if(available==0)return;
-  var first=RewardForRoll(Next(100));bool common=first<=ExplorationReward.Magnet;int count=common?1+Next(available):1;
-  float start=Next(36000)*.01f;bool empty=State.drops.Count==0;
-  for(int i=0;i<count;i++)
+  var position=(Vector2)PlayerController.Instance.transform.position;var current=HoneycombLayout.Locate(position,GridOrigin,GridRotation);
+  if(synchronized&&position==lastPosition)return;
+  bool rebuild=!synchronized||!cell.Equals(current);cell=current;lastPosition=position;synchronized=true;
+  if(rebuild)
   {
-   float angle=empty?start+360f*i/count:OpenDirection();
-   if(!TravelPosition(angle,5+Next(25001)/1000f,out var position))continue;
-   var reward=i==0?first:RewardForRoll(Next(72));
-   var drop=new ExplorationDrop{id=State.nextId++,reward=reward,x=position.x,y=position.y};
-   if(reward==ExplorationReward.Upgrade||reward==ExplorationReward.CharacterUpgrade)
-   {var choices=Eligible(reward==ExplorationReward.CharacterUpgrade);if(choices.Count==0)drop.reward=ExplorationReward.Experience;else drop.power=RunResume.Key(choices[Next(choices.Count)]);}
-   State.drops.Add(drop);Create(drop);Plugin.Trace("exploration-spawn",new{drop.id,drop.reward,drop.x,drop.y,drop.power});
+   candidates.Clear();int limit=2+Mathf.CeilToInt(Mathf.Sqrt(claimed.Count));
+   for(int radius=0;radius<=limit;radius++)
+   {
+    foreach(var hex in HoneycombLayout.Ring(cell,radius))foreach(var vertex in HoneycombLayout.Corners(hex))
+    {if(candidates.ContainsKey(vertex.Key)||claimed.Contains(vertex.Key))continue;var point=HoneycombLayout.Position(vertex,GridOrigin,GridRotation);if(Reachable(point))candidates.Add(vertex.Key,vertex);}
+    var distances=candidates.Values.Select(v=>Vector2.Distance(position,HoneycombLayout.Position(v,GridOrigin,GridRotation))).OrderBy(d=>d).Take(Maximum).ToArray();
+    if(distances.Length==Maximum&&1.5f*HoneycombLayout.Side*(radius+1)-2*HoneycombLayout.Side>distances.Last())break;
+   }
   }
- }
- float OpenDirection()
- {
-  var player=(Vector2)PlayerController.Instance.transform.position;
-  var angles=State.drops.Select(d=>{var v=new Vector2(d.x,d.y)-player;return Mathf.Repeat(Mathf.Atan2(v.y,v.x)*Mathf.Rad2Deg,360);}).OrderBy(a=>a).ToArray();
-  float best=-1,direction=0;for(int i=0;i<angles.Length;i++){float gap=(i+1==angles.Length?angles[0]+360:angles[i+1])-angles[i];if(gap>best){best=gap;direction=angles[i]+gap*.5f;}}
-  return direction;
+  var points=candidates.ToDictionary(p=>p.Key,p=>HoneycombLayout.Position(p.Value,GridOrigin,GridRotation));
+  foreach(var drop in State.drops)points[DropKey(drop)]=new Vector2(drop.x,drop.y);
+  var radar=new HashSet<string>(points.OrderBy(p=>(p.Value-position).sqrMagnitude).ThenBy(p=>p.Key,StringComparer.Ordinal).Take(Maximum).Select(p=>p.Key));
+  var physical=new HashSet<string>(HoneycombLayout.Corners(cell).Select(v=>v.Key).Where(points.ContainsKey));
+  foreach(var drop in State.drops.Where(d=>d.vertex==null&&HoneycombLayout.Locate(new Vector2(d.x,d.y),GridOrigin,GridRotation).Equals(cell)))physical.Add(DropKey(drop));
+  bool discovered=false;
+  foreach(var key in physical.Concat(radar).Distinct())
+  {
+   var drop=State.drops.FirstOrDefault(d=>DropKey(d)==key);
+   if(drop==null)
+   {
+    var vertex=candidates[key];var point=points[key];var reward=HoneycombLayout.Reward(State.seed,vertex);drop=new ExplorationDrop{id=State.nextId++,vertex=key,reward=reward,x=point.x,y=point.y};
+    if(reward==ExplorationReward.Upgrade||reward==ExplorationReward.CharacterUpgrade)
+    {var choices=Eligible(reward==ExplorationReward.CharacterUpgrade);if(choices.Count==0)drop.reward=ExplorationReward.Experience;else drop.power=RunResume.Key(choices[(int)(HoneycombLayout.Hash(State.seed,vertex)%(uint)choices.Count)]);}
+    State.drops.Add(drop);discovered=true;
+   }
+   var existing=Chests.FirstOrDefault(c=>c.Drop==drop);bool materialize=physical.Contains(key);
+   if(existing!=null&&existing.Physical!=materialize){Chests.Remove(existing);existing.gameObject.SetActive(false);Destroy(existing.gameObject);existing=null;}
+   if(existing==null)existing=CreateTarget(drop,materialize);
+   existing.GetComponent<ChestDirectionIndicator>().Radar=radar.Contains(key);
+  }
+  foreach(var old in Chests.Where(c=>!physical.Contains(DropKey(c.Drop))&&!radar.Contains(DropKey(c.Drop))).ToArray())
+  {Chests.Remove(old);old.gameObject.SetActive(false);Destroy(old.gameObject);}
+  if(discovered&&!RunResume.Restoring)RunResume.Save();
+  Plugin.Trace("exploration-cell",new{cell.Q,cell.R,physical=physical.Count,radar=radar.ToArray(),records=State.drops.Count});
  }
  static bool Blocks(Collider2D c)=>c.CompareTag("MapBounds")||!c.isTrigger&&c.GetComponentInParent<AIComponent>()==null&&c.GetComponentInParent<PlayerController>()==null;
  internal bool FindPosition(float angle,out Vector2 position)
@@ -122,16 +157,20 @@ public sealed class ExplorationRun:MonoBehaviour
   }
   return farthest>0;
  }
- internal ExplorationChest Create(ExplorationDrop drop)
+ internal ExplorationChest Create(ExplorationDrop drop)=>CreateTarget(drop,true);
+ ExplorationChest CreateTarget(ExplorationDrop drop,bool physical)
  {
   if(drop.reward==ExplorationReward.Credits){drop.reward=ExplorationReward.Experience;drop.power=null;}
   var template=Resources.FindObjectsOfTypeAll<ChestPickup>().First(c=>!c.gameObject.scene.IsValid());
-  var go=new GameObject("ExplorationChest_"+drop.id,typeof(SpriteRenderer),typeof(BoxCollider2D));go.transform.SetParent(transform,false);go.transform.position=new Vector3(drop.x,drop.y,0);go.layer=template.gameObject.layer;
-  var renderer=go.GetComponent<SpriteRenderer>();var original=template.GetComponentInChildren<SpriteRenderer>();renderer.sprite=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(template);renderer.color=Mint;renderer.sortingLayerID=original.sortingLayerID;renderer.sortingOrder=original.sortingOrder;
-  var collider=go.GetComponent<BoxCollider2D>();collider.isTrigger=true;collider.size=(Vector2)renderer.sprite.bounds.size*.8f;
+  var go=new GameObject("ExplorationChest_"+drop.id);go.transform.SetParent(transform,false);go.transform.position=new Vector3(drop.x,drop.y,0);go.layer=template.gameObject.layer;
+  if(physical)
+  {
+   var renderer=go.AddComponent<SpriteRenderer>();var original=template.GetComponentInChildren<SpriteRenderer>();renderer.sprite=(Sprite)AccessTools.Field(typeof(ChestPickup),"chestClosed").GetValue(template);renderer.color=Mint;renderer.sortingLayerID=original.sortingLayerID;renderer.sortingOrder=original.sortingOrder;
+   var collider=go.AddComponent<BoxCollider2D>();collider.isTrigger=true;collider.size=(Vector2)renderer.sprite.bounds.size*.8f;
+  }
   var chest=go.AddComponent<ExplorationChest>();chest.Owner=this;chest.Drop=drop;Chests.Add(chest);
   var marker=go.AddComponent<ChestDirectionIndicator>();marker.Exploration=true;
-  ExplorationChestVisual.Attach(chest,template);
+  if(physical)ExplorationChestVisual.Attach(chest,template);else chest.RefreshPresentation();
   return chest;
  }
  public Sprite ContentIcon(ExplorationDrop drop)
@@ -188,6 +227,7 @@ public sealed class ExplorationRun:MonoBehaviour
  {
   if(chest.Claimed||!(game.CurrentState is CombatState)||RunResume.Restoring)return;
   chest.Claimed=true;var drop=chest.Drop;State.drops.Remove(drop);Chests.Remove(chest);chest.gameObject.SetActive(false);Object.Destroy(chest.gameObject);
+  if(drop.vertex!=null){claimed.Add(drop.vertex);State.collected.Add(drop.vertex);}synchronized=false;
   var player=PlayerController.Instance;
   switch(drop.reward)
   {
@@ -225,6 +265,8 @@ public sealed class ExplorationRun:MonoBehaviour
 public sealed class ExplorationChest:MonoBehaviour
 {
  public ExplorationRun Owner;public ExplorationDrop Drop;public bool Claimed;
+ public bool Physical=>GetComponent<Collider2D>()!=null;
+ void LateUpdate(){if(!Physical)RefreshPresentation();}
  internal ExplorationReward ShownReward{get;private set;}bool presentationSet;
  internal ExplorationReward RefreshPresentation()
  {
@@ -239,7 +281,7 @@ public sealed class ExplorationChest:MonoBehaviour
   }
   return shown;
  }
- void OnTriggerEnter2D(Collider2D other){if(other.CompareTag("Player"))Owner.Collect(this);}
+ void OnTriggerEnter2D(Collider2D other){if(Physical&&other.CompareTag("Player"))Owner.Collect(this);}
 }
 public sealed class ExplorationRewardState:GameState
 {
