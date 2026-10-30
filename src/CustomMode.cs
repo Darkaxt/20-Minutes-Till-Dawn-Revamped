@@ -188,10 +188,10 @@ class CustomRunLabel:MonoBehaviour
   root=new GameObject("CustomRunBadge",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));root.transform.SetParent(transform,false);
   root.AddComponent<GameplayHudOpacity>();
   root.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;root.GetComponent<Canvas>().sortingOrder=19;
-  var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);
+  var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
   var font=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().First(t=>t.font!=null&&t.gameObject.scene.IsValid()).font;
   var label=StatsOverlay.Text(root.transform,"CustomCreditsOnly",font,"CUSTOM · Score only",17,Vector2.zero,new Vector2(300,26));label.alignment=TMPro.TextAlignmentOptions.Center;label.color=StatsOverlay.Green;
-  StatsOverlay.Rect(label.gameObject,root.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-72),new Vector2(300,26));
+  StatsOverlay.Rect(label.gameObject,root.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-4),new Vector2(300,26));
  }
  void Update(){if(root!=null)root.SetActive(GetComponent<GameController>().CurrentState is CombatState&&!PauseController.isPaused);}
 }

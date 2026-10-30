@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Compact corner status HUD — 2026-10-30
+
+[Authoritative scope](CORNER-HUD.md). C1 COMPLETE: C01–C03/C05 and native C04 verified. C2 ACTIVE: packaging, independent public verification and cleanup remain. No tracked deferrals.
+
 ## Unified gameplay HUD opacity — 2026-10-30
 
 [Authoritative scope](HUD-OPACITY.md). H1 and H2 COMPLETE; H01–H03 satisfied. No blocker or tracked deferral.

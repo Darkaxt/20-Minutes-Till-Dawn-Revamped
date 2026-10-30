@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.12](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.12) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.13](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.13) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -18,7 +18,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
 | **Weapon familiarity** | Each weapon gains +2% reload speed, fire rate and projectile speed per highest crown level, up to +30%. Damage, spread and weapon counts stay unchanged. The existing record includes Challenge and is shared across characters. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
-| **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; unified 85% gameplay HUD opacity; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
+| **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; compact portrait, hearts, XP and ammunition cluster; raised centered timer and Score; unified 85% gameplay HUD opacity; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Combat visibility** | Two independent native Options entries adjust player projectiles and other player effects to25/50/75/100%, default100. Summon/ability/explosion/trail/particle visuals fade separately from bullet bodies; enemies, hostile attacks, character and vision stay unchanged. |
 | **Exploration and modes** | Continuous honeycomb POIs replace timed waves. Each cell balances basic rewards, utilities and one upgrade; only the three nearest uncollected targets appear on radar. Shared vertices and collected rewards persist through Continue. Challenge and native Custom menus retain their existing rules. |
 | **Controls and continuity** | Controller navigation and focus across native menus, locked-content inspection, opaque Options, cleaner results and Retry. Save & return / Continue reconstructs supported runs, including legacy checkpoints. Zoom and display settings support different screen shapes while the HUD keeps its size. |
@@ -87,9 +87,9 @@ The metrics omit Max HP and Magazine: the native hearts and ammo counter already
 
 The original timer sits at top center below the level bar, with **Score** beneath it. It reads the game's current run calculation; the results screen shows **Total Score** for the completed run.
 
-![Current transparent Windows HUD with centered attributes and Score below the timer](docs/images/hud-build.png)
+![Compact native portrait HUD with a stepped pixel-art frame, hearts, XP and ammunition](docs/images/hud-build.png)
 
-*Actual1280×720 Windows capture of the Score HUD with a controlled enemy-count fixture. Collected upgrade-path rows are verified separately; this is not a natural progression run.*
+*Actual1280×720 Windows render: the compact portrait/status cluster replaces the full-width level bar. The frame has stepped pixel-art edges; the native portrait stays unchanged. Timer, Score and objective move upward. The cluster stays above the Score baseline in square and widescreen views. Controlled test run; acquired-path rows are verified separately.*
 
 ![Compact damage number at maximum zoom-out in the square Windows viewport](docs/images/damage-numbers-zoom.png)
 
@@ -238,6 +238,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.13 — Compact pixel-art corner HUD
+
+**Changed:** the full-width level strip becomes a compact portrait with a stepped frame and internal level badge, native hearts/soul hearts, short XP bar and ammunition row. Timer, Score and objective move upward; side metrics and skill paths stay vertically centered. Square/widescreen layout, live updates, expanded health, reload, pause and Continue verified. No save reset. [Release notes](release/NOTES-1.3.13.md) · [Acceptance](docs/CORNER-HUD.md).
 
 ### v1.3.12 — See enemies through the gameplay HUD
 

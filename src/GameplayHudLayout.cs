@@ -22,13 +22,14 @@ public sealed class GameplayHudLayout:MonoBehaviour
   GameplayHudOpacity.WrapNative((RectTransform)canvas.transform.Find("ShootingCursor"));
   GameplayHudOpacity.WrapNative((RectTransform)canvas.transform.Find("ControlsDisplay"));
   var texts=game.hud.GetComponentsInChildren<TMP_Text>(true);var time=texts.Single(t=>t.name=="Timetext");var objective=texts.Single(t=>t.name=="SurviveText");
-  StatsOverlay.Rect(time.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-48),new Vector2(300,42));
+  StatsOverlay.Rect(time.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-24),new Vector2(300,42));
   time.fontSize=32;time.alignment=TextAlignmentOptions.Center;
-  StatsOverlay.Rect(objective.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-116),new Vector2(400,26));
+  StatsOverlay.Rect(objective.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-92),new Vector2(400,26));
   objective.fontSize=18;objective.alignment=TextAlignmentOptions.Center;
   credits=StatsOverlay.Text(game.hud.transform,"RunCredits",time.font,"Score: 0",20,Vector2.zero,new Vector2(400,28));
-  StatsOverlay.Rect(credits.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-88),new Vector2(400,28));credits.alignment=TextAlignmentOptions.Center;
+  StatsOverlay.Rect(credits.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-64),new Vector2(400,28));credits.alignment=TextAlignmentOptions.Center;
   clock=new[]{time,credits,objective}.Select(t=>t.gameObject.AddComponent<CanvasGroup>()).ToArray();
+  game.hud.gameObject.AddComponent<CornerStatusHud>().Initialize(game,credits);
  }
  void LateUpdate()
  {
