@@ -1,5 +1,7 @@
 # Marker tracking and Pulsing Summons — 2026-10-30
 
+The subsequent [unified HUD opacity](HUD-OPACITY.md) replaces P02’s timer-only setting with a shared 85% gameplay HUD default. Indicator geometry and pulse behavior remain as recorded below.
+
 Authoritative scope: correct the reported scythe/lance Pulsing Summons issue; remove all HUD avoidance from chest indicators; retain each indicator as its chest enters view and move it to the chest's actual screen location. Add a native Timer / score opacity setting. Existing user authorization covers implementation, verification, commit and normal public release. No live Steam/phone deployment or save reset.
 
 | ID | Required behavior and acceptance | Stage |

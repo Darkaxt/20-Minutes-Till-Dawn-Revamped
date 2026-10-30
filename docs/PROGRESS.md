@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Unified gameplay HUD opacity — 2026-10-30
+
+[Authoritative scope](HUD-OPACITY.md). H1 COMPLETE: native setting, unified rendered alpha, unchanged mobs and opaque menus verified. H2 Final delivery ACTIVE: package/public verification and cleanup remain. No tracked deferrals.
+
 ## POI tracking and summon feedback — 2026-10-30
 
 [Authoritative scope](POI-PULSE-CORRECTIONS.md). P1 and P2 COMPLETE; P01–P04 satisfied. No blocker or tracked deferral.

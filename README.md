@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.11](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.11) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.12](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.12) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -18,7 +18,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
 | **Weapon familiarity** | Each weapon gains +2% reload speed, fire rate and projectile speed per highest crown level, up to +30%. Damage, spread and weapon counts stay unchanged. The existing record includes Challenge and is shared across characters. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
-| **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
+| **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; centered timer and Score; unified 85% gameplay HUD opacity; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Combat visibility** | Two independent native Options entries adjust player projectiles and other player effects to25/50/75/100%, default100. Summon/ability/explosion/trail/particle visuals fade separately from bullet bodies; enemies, hostile attacks, character and vision stay unchanged. |
 | **Exploration and modes** | Continuous honeycomb POIs replace timed waves. Each cell balances basic rewards, utilities and one upgrade; only the three nearest uncollected targets appear on radar. Shared vertices and collected rewards persist through Continue. Challenge and native Custom menus retain their existing rules. |
 | **Controls and continuity** | Controller navigation and focus across native menus, locked-content inspection, opaque Options, cleaner results and Retry. Save & return / Continue reconstructs supported runs, including legacy checkpoints. Zoom and display settings support different screen shapes while the HUD keeps its size. |
@@ -113,7 +113,7 @@ When one target gains an attribute and loses another, it appears **once under Mi
 
 ### Explore for optional rewards
 
-Reward indicators track directly from the perimeter to the chest itself, without moving around HUD elements. **Timer / score opacity** in native Options cycles25/50/75/100%, default100, separately from projectile/effects opacity. Pulsing Summons now shows a brief expanding wave at each actual damage pulse.
+Reward indicators track directly from the perimeter to the chest itself, without moving around HUD elements. **HUD opacity** in native Options covers the gameplay HUD at 80%, 85% or 90%, defaulting to 85%, separately from projectile/effects opacity. Pulsing Summons now shows a brief expanding wave at each actual damage pulse.
 
 Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
 
@@ -121,7 +121,7 @@ Chest magnets send an attraction wave outward at **12 game units per combat seco
 
 Exploration uses an invisible **honeycomb with 36-unit sides**. Each unobstructed cell contains XP, healing, magnet, freeze, frenzy and **one upgrade opportunity**; 10% of upgrade vertices instead offer a character upgrade. The arrangement varies per run. Shared corners belong to the same POI, and the radar shows only the **three nearest uncollected exploration targets**. Move from reward to reward without waiting for a timer.
 
-Only the current cell's physical chests are loaded. Collected vertices stay collected, and discovered contents/positions survive Continue. Existing old chests are preserved on transition. XP still grants **30% of the current level requirement**; eligibility/full-health conversions and content icons stay intact. Boss treasure retains its separate chest pointer. Markers follow their exact direction without HUD avoidance, then move onto the actual chest as it enters view. They remain until collection; the timer and Score have their own opacity setting.
+Only the current cell's physical chests are loaded. Collected vertices stay collected, and discovered contents/positions survive Continue. Existing old chests are preserved on transition. XP still grants **30% of the current level requirement**; eligibility/full-health conversions and content icons stay intact. Boss treasure retains its separate chest pointer. Markers follow their exact direction without HUD avoidance, then move onto the actual chest as it enters view. They remain until collection; all gameplay HUD elements share the HUD opacity setting.
 
 ![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
 
@@ -135,7 +135,7 @@ Victory and death show scores, the character/weapon loadout and **Try Again / Qu
 
 ### Read controller focus at a glance
 
-**Player projectiles opacity** and **Player effects opacity** are separate native Options entries, each25/50/75/100%, default100. **Timer / score opacity** independently adjusts those two readouts. The screenshot shows timer/Score25% and both combat channels100%. These settings change presentation only, preserving damage, hitboxes, character, vision and hostile attacks.
+**Player projectiles opacity** and **Player effects opacity** are separate native Options entries, each25/50/75/100%, default100. **HUD opacity** covers health, ammo, XP, timer, Score, objective, stats, skills and reward indicators, with 80/85/90% choices and an 85% default. The screenshot shows the new HUD setting; mobs and menus retain their existing appearance. These settings change presentation only, preserving damage, hitboxes, character, vision and hostile attacks.
 
 A small cream chevron follows the currently focused button, using the native menu font and scale. Text buttons show it just to the left; icon buttons keep it inside the left gutter. It follows existing selection without changing navigation or consuming input.
 
@@ -238,6 +238,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.12 — See enemies through the gameplay HUD
+
+**Changed:** gameplay HUD opacity defaults to 85%, selectable at 80%, 85% or 90% in native Options. Health, ammo, XP, timer/Score/objective, stats, skills, reward pointers, notifications and the Custom badge share the setting. Mobs retain their appearance and menus remain opaque. The former timer-only preference is replaced without resetting saves. [Release notes](release/NOTES-1.3.12.md) · [Acceptance](docs/HUD-OPACITY.md).
 
 ### v1.3.11 — Continuous reward tracking and visible summon pulses
 

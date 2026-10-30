@@ -52,6 +52,7 @@ public class StatsOverlay:MonoBehaviour
   Panel=new GameObject("LiveStatsHUD",typeof(RectTransform));Rect(Panel,canvas.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(1280,720));
   var root=Panel.GetComponent<RectTransform>();root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;root.offsetMin=root.offsetMax=Vector2.zero;
   Panel.AddComponent<PickupDirectionLayout>();
+  Panel.AddComponent<GameplayHudOpacity>();
   attributes=Rect(new GameObject("Attributes",typeof(RectTransform)),Panel.transform,new Vector2(0,.5f),new Vector2(0,.5f),new Vector2(16,0),new Vector2(302,360));
   foreach(string key in new[]{"Haste","Evasive","SummonMastery","Trainer","PowerShot","RapidFire","QuickHands","DoubleShot","Sniper","BigShot","Penetration","RubberBullets"})
   {

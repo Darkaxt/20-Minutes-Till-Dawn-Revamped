@@ -14,10 +14,13 @@ public sealed class GameplayHudLayout:MonoBehaviour
  internal void Initialize(GameController game)
  {
   owner=game;
+  GameplayHudOpacity.WrapNative((RectTransform)game.hud.transform);
   // Native gameplay menus share this screen-space canvas. PixelPerfectCamera
   // changes its render viewport after Canvas layout, leaving stale dimensions
   // on square resizes/zoom. Screen UI must use the actual display directly.
   var canvas=game.hud.GetComponentInParent<Canvas>().rootCanvas;canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.worldCamera=null;
+  GameplayHudOpacity.WrapNative((RectTransform)canvas.transform.Find("ShootingCursor"));
+  GameplayHudOpacity.WrapNative((RectTransform)canvas.transform.Find("ControlsDisplay"));
   var texts=game.hud.GetComponentsInChildren<TMP_Text>(true);var time=texts.Single(t=>t.name=="Timetext");var objective=texts.Single(t=>t.name=="SurviveText");
   StatsOverlay.Rect(time.gameObject,game.hud.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-48),new Vector2(300,42));
   time.fontSize=32;time.alignment=TextAlignmentOptions.Center;
@@ -32,7 +35,7 @@ public sealed class GameplayHudLayout:MonoBehaviour
   int value=ScoreCalculator.SharedInstance.GetScore().totalScore;
   if(value!=previousCredits){previousCredits=value;credits.text="Score: "+value.ToString("N0");}
   bool choosing=owner.CurrentState is PowerupMenuState||owner.CurrentState is DevilDealState||owner.CurrentState is ChestState||owner.CurrentState is ExplorationRewardState||owner.CurrentState is RuneRewardState;
-  for(int i=0;i<clock.Length;i++)clock[i].alpha=choosing?0:i<2?Plugin.Instance.ClockOpacity.Value/100f:1;
+  foreach(var group in clock)group.alpha=choosing?0:1;
  }
 }
 [HarmonyPatch(typeof(GameController),"Awake")]

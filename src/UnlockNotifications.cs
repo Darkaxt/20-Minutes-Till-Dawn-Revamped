@@ -33,6 +33,7 @@ public class UnlockNotifications:MonoBehaviour
   canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().sortingOrder=22;
   var scaler=canvas.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
   Root=new GameObject("UnlockNotice",typeof(RectTransform));StatsOverlay.Rect(Root,canvas.transform,new Vector2(.5f,1),new Vector2(.5f,1),new Vector2(0,-46),new Vector2(560,80));
+  Root.AddComponent<GameplayHudOpacity>();
   var iconObject=new GameObject("ContentIcon",typeof(RectTransform),typeof(Image));StatsOverlay.Rect(iconObject,Root.transform,new Vector2(0,1),new Vector2(0,1),new Vector2(4,-8),new Vector2(44,44));
   Icon=iconObject.GetComponent<Image>();Icon.preserveAspect=true;Icon.raycastTarget=false;
   Label=StatsOverlay.Text(Root.transform,"UnlockNameAndGoal",font,"",18,new Vector2(60,-4),new Vector2(496,76));

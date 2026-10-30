@@ -33,11 +33,12 @@ public partial class RuntimeChecks
   while(title.mainMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
   yield return PadClick(pad,title.mainMenu.transform,Entries(title.mainMenu).Single(e=>e.button.GetComponentInChildren<TMP_Text>().text=="Options").button);
   while(!Active(title.optionsMenu)||title.optionsMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
-  var clock=title.optionsMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="ClockOpacitySetting");Require((int)Plugin.Instance.ClockOpacity.DefaultValue==100,"clock opacity defaults100%");Plugin.Instance.ClockOpacity.Value=100;
-  for(int i=0;i<4;i++){int before=Plugin.Instance.ClockOpacity.Value;yield return PadClick(pad,title.optionsMenu.transform,clock);Require(Plugin.Instance.ClockOpacity.Value==before%100+25,"native controller cycles clock opacity: "+Plugin.Instance.ClockOpacity.Value);}
-  yield return MenuPointer(clock);Require(Plugin.Instance.ClockOpacity.Value==25,"native pointer selects clock25%");yield return Capture("timer-score-options.png");
+  var clock=title.optionsMenu.GetComponentsInChildren<Button>().Single(b=>b.name=="HudOpacitySetting");Require((int)Plugin.Instance.HudOpacity.DefaultValue==85,"HUD opacity defaults85%");Plugin.Instance.HudOpacity.Value=85;
+  for(int i=0;i<3;i++){int before=Plugin.Instance.HudOpacity.Value;yield return PadClick(pad,title.optionsMenu.transform,clock);Require(Plugin.Instance.HudOpacity.Value==(before==90?80:before+5),"native controller cycles HUD opacity: "+Plugin.Instance.HudOpacity.Value);}
+  yield return Capture("hud-opacity-options.png");yield return MenuPointer(clock);Require(Plugin.Instance.HudOpacity.Value==90,"native pointer selects HUD90%");
   Plugin.Instance.Config.Save();bool save=Plugin.Instance.Config.SaveOnConfigSet;Plugin.Instance.Config.SaveOnConfigSet=false;
-  try{Plugin.Instance.ClockOpacity.Value=100;Plugin.Instance.Config.Reload();Require(Plugin.Instance.ClockOpacity.Value==25,"real saved clock opacity reloads");}finally{Plugin.Instance.Config.SaveOnConfigSet=save;}
+  try{Plugin.Instance.HudOpacity.Value=80;Plugin.Instance.Config.Reload();Require(Plugin.Instance.HudOpacity.Value==90,"real saved HUD opacity reloads");}finally{Plugin.Instance.Config.SaveOnConfigSet=save;}
+  Plugin.Instance.HudOpacity.Value=85;Plugin.Instance.Config.Save();
   yield return SelectorPad(pad,GamepadButton.East);while(!Active(title.mainMenu))yield return null;
  }
  IEnumerator PoiTracking(GameController game)
@@ -84,7 +85,7 @@ public partial class RuntimeChecks
   north.SetActive(false);yield return null;Require(!marker.Marker.gameObject.activeSelf,"target disable immediately hides its marker");Object.Destroy(north);
   Screen.SetResolution(1280,720,false);while(Screen.width!=1280||Screen.height!=720)yield return null;
   var timer=game.hud.GetComponentsInChildren<TMP_Text>(true).Single(t=>t.name=="Timetext");var score=game.hud.GetComponentsInChildren<TMP_Text>(true).Single(t=>t.name=="RunCredits");var objective=game.hud.GetComponentsInChildren<TMP_Text>(true).Single(t=>t.name=="SurviveText");
-  yield return null;yield return new WaitForEndOfFrame();Require(timer.GetComponent<CanvasGroup>().alpha==.25f&&score.GetComponent<CanvasGroup>().alpha==.25f&&objective.GetComponent<CanvasGroup>().alpha==1,"only timer and Score use configured25% alpha");
+  yield return null;yield return new WaitForEndOfFrame();float alpha=Plugin.Instance.HudOpacity.Value/100f;Require(Mathf.Abs(timer.canvasRenderer.GetInheritedAlpha()-alpha)<.001f&&Mathf.Abs(score.canvasRenderer.GetInheritedAlpha()-alpha)<.001f&&Mathf.Abs(objective.canvasRenderer.GetInheritedAlpha()-alpha)<.001f,"timer, Score and objective inherit unified HUD opacity once");
  }
  IEnumerator CheckPoiPulse(string mode)
  {

@@ -186,6 +186,7 @@ class CustomRunLabel:MonoBehaviour
  void Start()
  {
   root=new GameObject("CustomRunBadge",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));root.transform.SetParent(transform,false);
+  root.AddComponent<GameplayHudOpacity>();
   root.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;root.GetComponent<Canvas>().sortingOrder=19;
   var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);
   var font=Resources.FindObjectsOfTypeAll<TMPro.TMP_Text>().First(t=>t.font!=null&&t.gameObject.scene.IsValid()).font;

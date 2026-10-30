@@ -47,4 +47,4 @@ The two selector images, Custom menu and exploration contents above are refreshe
 
 - `weapon-familiarity.png`: isolated Windows native5, controller preview at a controlled crown15; source `weapon-familiarity-20261030/native/S1/run-5/weapon-familiarity-preview.png`. No live-profile changes.
 
-- `menu-focus.png`: isolated normal-render Windows `poi-pulse-20261030/native/S1/run-2/timer-score-options.png`; actual native controller/pointer settings with timer/Score25%, both combat channels100% and the focus chevron. Defaults are100%. Earlier honeycomb native4/5 separately qualify text/icon focus and scene lifetime; current native10 verifies display-aligned tracking and clock alpha.
+- `menu-focus.png`: isolated normal-render Windows `hud-opacity-20261030/native/S1/run-1/hud-opacity-options.png`; native controller-selected HUD opacity85% and focus chevron. Controller/pointer/persistence passed before the later native-group diagnostic. Native6 verifies the integrated gameplay rendering and menu exclusion.
