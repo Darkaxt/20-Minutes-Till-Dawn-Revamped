@@ -2,7 +2,9 @@
 
 ## Compact corner status HUD — 2026-10-30
 
-[Authoritative scope](CORNER-HUD.md). C1 COMPLETE: C01–C03/C05 and native C04 verified. C2 ACTIVE: packaging, independent public verification and cleanup remain. No tracked deferrals.
+[Authoritative scope](CORNER-HUD.md). C1 and C2 COMPLETE; C01–C05 satisfied. No blockers or tracked deferrals.
+
+Normal [v1.3.13](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.13) is published from `7ec89666db6c966ae239bdf15c2580812703782b`. Independent ZIP SHA-256: `d989509bb5839a8839d1bb2d5bbeb7636411ce5f1bd9968dab4779684452f48f`. All 96 public members, 614 targets, copied install/rollback and 142 original files verify. Only the DLL changes; 593 prepared assets/613 other targets remain unchanged. Schema2, updater0.2.0 and save epoch1 are preserved. Live Steam/profile/configuration and phone are untouched. Reviewed cleanup `de46c0823fc63e0bb0a512c71f03a70b` removed 318,112,542 logical bytes; task scratch is absent. Acceptance evidence and final release remain retained.
 
 ## Unified gameplay HUD opacity — 2026-10-30
 
