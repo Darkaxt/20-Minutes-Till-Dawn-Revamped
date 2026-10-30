@@ -2,7 +2,9 @@
 
 ## Unified gameplay HUD opacity — 2026-10-30
 
-[Authoritative scope](HUD-OPACITY.md). H1 COMPLETE: native setting, unified rendered alpha, unchanged mobs and opaque menus verified. H2 Final delivery ACTIVE: package/public verification and cleanup remain. No tracked deferrals.
+[Authoritative scope](HUD-OPACITY.md). H1 and H2 COMPLETE; H01–H03 satisfied. No blocker or tracked deferral.
+
+Normal [v1.3.12](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.12) is published from `486789f27f8f979880ef7cda452a6aceabde2b4b`. Independent ZIP SHA-256: `7555220bd54c551adf4973c7b2a4bc2aac3d89aa510c0d1fda047cf3812d32fa`. All 94 public members, 614 update targets, copied installation/rollback and 142 original files verify. Only the DLL changes; 593 prepared assets and 613 other targets remain unchanged. Schema 2, updater 0.2.0 and save epoch 1 remain compatible. Live Steam, profile, configuration and phone are untouched. Reviewed cleanup `8b282e0851c1b1d5f6ce132c13f63407` removed 317,716,930 logical bytes; task scratch is absent. Retained diagnostics and release receipts preserve acceptance evidence.
 
 ## POI tracking and summon feedback — 2026-10-30
 
