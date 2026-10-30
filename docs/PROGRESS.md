@@ -2,7 +2,9 @@
 
 ## Level-caption rendering — 2026-10-30
 
-[Scope](CORNER-HUD.md). C1 COMPLETE: top strokes restored at unchanged size/position; native sampling elsewhere preserved. C2 ACTIVE: release/public verification and cleanup remain. No deferrals.
+[Scope](CORNER-HUD.md). C1 and C2 COMPLETE: caption rendering and final delivery verified. No blockers or deferrals.
+
+Normal [v1.3.16](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.16) is published from `454a94c09f67e0315045734b36785b121c991afb`. Independent ZIP SHA256 `58a1f2155feb2b136fbeee927fec4dcb93992fad751766eaa4c33ea31c3f8d07`; all 100 public members and614 targets verify. Copied install/rollback preserves142 originals. Only the DLL changes; prepared assets and613 other targets remain unchanged. Live Steam/profile/configuration and phone untouched. Reviewed cleanup22a2e633f2382517bc02891acc0af00a removed 318,219,895 logical bytes; task scratch is absent.
 
 ## External level caption — 2026-10-30
 
