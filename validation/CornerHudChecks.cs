@@ -65,11 +65,39 @@ public partial class RuntimeChecks
   bool continuation=mode.EndsWith("continue");
   if(continuation)yield return CombatBuffContinue();else{RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());}
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();yield return CornerReady(game);var player=PlayerController.Instance;
-  if(mode=="corner-hud-caption")
+  if(mode=="corner-hud-caption-render-inspect")
+  {
+   yield return AchievementPick(game,"Haste",36);yield return CornerReady(game);
+   var root=game.hud.transform.Find("CornerStatusHud");
+   foreach(var text in root.GetComponentsInChildren<TMP_Text>())
+   {
+    text.ForceMeshUpdate();var mat=text.fontSharedMaterial;var texture=mat.mainTexture;
+    Log("caption-font",new{name=text.name,text=text.text,font=text.font.name,fontSize=text.fontSize,autoSize=text.enableAutoSizing,style=text.fontStyle.ToString(),scale=text.transform.lossyScale.ToString(),position=text.transform.position.ToString(),shader=mat.shader.name,material=mat.name,texture=texture.name,filter=texture.filterMode.ToString(),size=texture.width+"x"+texture.height,ink=text.textBounds.ToString(),renderMode=text.font.atlasPopulationMode.ToString(),sampling=AccessTools.Property(typeof(TMP_FontAsset),"atlasRenderMode").GetValue(text.font).ToString()});
+    foreach(var property in new[]{"_GradientScale","_Sharpness","_FaceDilate","_OutlineWidth","_ScaleX","_ScaleY"})if(mat.HasProperty(property))Log("caption-material",text.name+" "+property+"="+mat.GetFloat(property));
+    var rendered=text.materialForRendering;
+    Log("caption-clipping",new{name=text.name,overflow=text.overflowMode.ToString(),margin=text.margin.ToString(),rect=text.rectTransform.rect.ToString(),clip=rendered.HasProperty("_ClipRect")?rendered.GetVector("_ClipRect").ToString():"none",shader=rendered.shader.name,culled=text.canvasRenderer.cull});
+    for(int i=0;i<text.textInfo.characterCount;i++){var c=text.textInfo.characterInfo[i];Log("caption-glyph",new{name=text.name,character=c.character,top=c.topLeft.ToString(),bottom=c.bottomRight.ToString(),uvTop=c.vertex_TL.uv.ToString(),uvBottom=c.vertex_BR.uv.ToString()});}
+   }
+   yield return PoiCapture("caption-bilinear.png");
+   var number=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LvlValue");var prefix=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LevelPrefix");var native=root.Find("AmmoDisplay/AmmoCount").GetComponent<TMP_Text>();var dedicated=number.fontSharedMaterial;
+   number.fontSharedMaterial=prefix.fontSharedMaterial=native.fontSharedMaterial;yield return new WaitForEndOfFrame();yield return PoiCapture("caption-point.png");
+   number.fontSharedMaterial=prefix.fontSharedMaterial=dedicated;
+   yield return AchievementExit(game,false);SetPhase("DIAGNOSTIC_COMPLETE");Application.Quit(0);yield break;
+  }
+  if(mode=="corner-hud-caption"||mode=="corner-hud-caption-render")
   {
    yield return AchievementPick(game,"Haste",36);yield return CornerReady(game);Require(game.playerXP.level==37,"native level-up establishes the requested level37 example");
    foreach(var size in new[]{new Vector2Int(1280,720),new Vector2Int(720,720),new Vector2Int(1920,1080)})
-   {Screen.SetResolution(size.x,size.y,false);while(Screen.width!=size.x||Screen.height!=size.y)yield return null;FeedbackCameras();yield return CornerReady(game);CornerGeometry(game,"external-level37");yield return PoiCapture("level-caption-"+size.x+".png");}
+   {Screen.SetResolution(size.x,size.y,false);while(Screen.width!=size.x||Screen.height!=size.y)yield return null;FeedbackCameras();yield return CornerReady(game);CornerGeometry(game,"external-level37");
+    if(mode=="corner-hud-caption-render")
+    {
+     var root=game.hud.transform.Find("CornerStatusHud");var value=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LvlValue");var prefix=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LevelPrefix");var native=root.Find("AmmoDisplay/AmmoCount").GetComponent<TMP_Text>();
+     Require(value.font==native.font&&prefix.font==native.font,"caption preserves the actual native Lantern glyphs and metrics");
+     Require(value.fontSharedMaterial==prefix.fontSharedMaterial&&value.fontSharedMaterial!=native.fontSharedMaterial&&value.fontSharedMaterial.shader==native.fontSharedMaterial.shader,"only caption uses its dedicated bitmap material");
+     Require(value.fontSharedMaterial.mainTexture!=native.fontSharedMaterial.mainTexture&&value.fontSharedMaterial.mainTexture.filterMode==FilterMode.Bilinear&&native.fontSharedMaterial.mainTexture.filterMode==FilterMode.Point,"caption sampling is bilinear while shared native atlas remains Point");
+     Log("caption-sampling",new{size=Screen.width+"x"+Screen.height,font=value.fontSize,ink=value.textBounds.ToString(),position=value.transform.position.ToString(),texture=value.fontSharedMaterial.mainTexture.name,filter=value.fontSharedMaterial.mainTexture.filterMode.ToString()});
+    }
+    yield return PoiCapture("level-caption-"+size.x+".png");}
    yield return AchievementPick(game,"QuickHands",37);yield return CornerReady(game);CornerGeometry(game,"next-native-level-up");Require(game.playerXP.level==38,"native value updates to38 without replacing its variable binding");
    player.playerHealth.maxHP=12;player.playerHealth.hp=9;player.playerHealth.maxSHP=3;player.playerHealth.shp=3;yield return null;yield return new WaitForEndOfFrame();CornerGeometry(game,"expanded-health-caption");yield return PoiCapture("level-caption-expanded.png");
    yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","External Lvl.37 caption at three viewports,75% font ratio, Score-height limit, native update to38 and expanded hearts verified. Native portrait/frame and unrelated bindings retained.");Application.Quit(0);yield break;

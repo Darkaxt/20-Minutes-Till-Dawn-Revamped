@@ -13,6 +13,7 @@ public sealed class CornerStatusHud:MonoBehaviour
 {
  GameController owner;TMP_Text score,level,levelPrefix;RectTransform panel,root,portrait,health,xp,ammo,levelCaption;
  Image face;Sprite characterPortrait;
+ Material captionMaterial;Texture2D captionAtlas;
  internal void Initialize(GameController game,TMP_Text scoreText){owner=game;score=scoreText;panel=(RectTransform)game.hud.transform;}
  static RectTransform Child(Transform parent,string name)=>parent.Find(name).GetComponent<RectTransform>();
  static RectTransform Rect(GameObject value,Transform parent,Vector2 anchor,Vector2 pivot,Vector2 position,Vector2 size)=>StatsOverlay.Rect(value,parent,anchor,pivot,position,size);
@@ -29,6 +30,13 @@ public sealed class CornerStatusHud:MonoBehaviour
   var oldLevel=Child(panel,"LevelDisplay");level=oldLevel.Find("LvlValue").GetComponent<TMP_Text>();
   Rect(level.gameObject,levelCaption,new Vector2(.5f,.5f),new Vector2(0,.5f),Vector2.zero,new Vector2(44,17));level.fontSize=18*.75f;level.alignment=TextAlignmentOptions.MidlineLeft;level.raycastTarget=false;oldLevel.gameObject.SetActive(false);
   levelPrefix=StatsOverlay.Text(levelCaption,"LevelPrefix",level.font,"Lvl.",13,Vector2.zero,new Vector2(44,17));levelPrefix.fontSize=level.fontSize;levelPrefix.alignment=TextAlignmentOptions.MidlineLeft;levelPrefix.color=level.color;
+  // Lantern is a smooth bitmap atlas sampled with Point by the native UI.
+  // At13.5pt that skips thin strokes. Keep glyphs/metrics, but give only this
+  // caption its own bilinear atlas/material; never change shared native art.
+  level.font.TryAddCharacters("Lvl. 0123456789");
+  captionAtlas=Instantiate((Texture2D)level.fontSharedMaterial.mainTexture);captionAtlas.name="CornerCaptionAtlas";captionAtlas.filterMode=FilterMode.Bilinear;
+  captionMaterial=new Material(level.fontSharedMaterial){name="CornerCaptionMaterial",mainTexture=captionAtlas};
+  level.fontSharedMaterial=levelPrefix.fontSharedMaterial=captionMaterial;
   health=Child(panel,"HealthUI");health.GetComponent<HorizontalLayoutGroup>().enabled=false;
   xp=Child(panel,"XPBar");ammo=Child(panel,"AmmoDisplay");
   foreach(var view in new[]{health,xp,ammo})Rect(view.gameObject,root,new Vector2(0,1),new Vector2(0,1),Vector2.zero,Vector2.zero);
@@ -74,6 +82,7 @@ public sealed class CornerStatusHud:MonoBehaviour
   var text=ammo.Find(name).GetComponent<TMP_Text>();Rect(text.gameObject,ammo,new Vector2(0,.5f),new Vector2(0,.5f),new Vector2(x,0),new Vector2(width,19));
   text.fontSize=18;text.alignment=TextAlignmentOptions.MidlineLeft;text.raycastTarget=false;
  }
+ void OnDestroy(){Destroy(captionMaterial);Destroy(captionAtlas);}
 }
 
 // Rasterize only the frame on a 40-pixel grid; keep the approved native portrait

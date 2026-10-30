@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Level-caption rendering — 2026-10-30
+
+[Scope](CORNER-HUD.md). C1 COMPLETE: top strokes restored at unchanged size/position; native sampling elsewhere preserved. C2 ACTIVE: release/public verification and cleanup remain. No deferrals.
+
 ## External level caption — 2026-10-30
 
 [Scope](CORNER-HUD.md). C1 and C2 COMPLETE: native caption and final delivery verified. No blockers or deferrals.

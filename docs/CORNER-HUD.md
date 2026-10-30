@@ -4,6 +4,14 @@ Authoritative scope: implement the agreed portrait-and-three-row corner HUD insp
 
 Current amendment, authorized2026-10-30: move the level below the avatar as **Lvl. 37**, using75% of the ammunition font size. Remove the overlaid badge/background. C1/C2 below track this revision for1.3.15; the earlier1.3.13 acceptance/delivery at the end remains historical. Preserve the Score-height limit, portrait artwork and stepped frame; the portrait may scale down only when needed to fit the caption in a constrained viewport.
 
+Current rendering correction: the user approves the caption's size/position but reports broken-looking digits. Preserve those dimensions and fix glyph rendering. Inspect native font/material/sampling before changing production. Current work targets1.3.16; previous version acceptance/delivery below remains historical. Native scratch `D:/Temp/20mtd-caption-render-20261030` is used for sustained small-file I/O; retain diagnostic/render/release evidence in `D:/Projects/20MTD-Modernization-evidence/caption-render-20261030`.
+
+Root evidence: diagnostic native run1 reports Lantern, TextMeshPro/Bitmap, a dynamic SMOOTH atlas sampled Point,13.5pt caption at fractional screen coordinates versus18pt ammunition. The small caption undersamples the smooth bitmap. Give only the caption a locally owned bilinear atlas/material copy after warming its fixed alphabet; retain native font glyphs/metrics, all other sampling, geometry and numeric binding. Destroy both local resources with the HUD.
+
+User clarification: specifically inspect the missing top line of3 and7. Compare actual glyph bounds, overflow/margins and shader clipping with Point/bilinear renders at identical geometry before accepting the sampling hypothesis.
+
+Rendering acceptance: diagnostic run2 has Overflow, zero margins, glyph tops at6 within the17-high rect, and shader clip bounds±32767. Its same-geometry Point/bilinear captures show the missing strokes returning with bilinear sampling. Native run3 passes all three viewports,13.5pt/75% ratio, unchanged native glyphs/metrics, separate caption texture/material, Point sampling retained elsewhere, live37→38, expanded health, opacity and Score bounds. Captures inspected. Closure review confirms locally owned resources have explicit destruction and native numeric state remains authoritative; no required refactoring or deferral.
+
 | ID | Required behavior and acceptance | Stage |
 |---|---|---|
 | C01 | Replace the full-width XP/level strip with a compact upper-left cluster: current character portrait in a thin stepped circular frame, **Lvl. N** centered below it at75% of the ammo font size, hearts/soul hearts on the first row, short thin XP bar on the second, native bullet icon/current-max ammunition on the third. Use the existing native live bindings. No enclosing panel or level-label background; no portrait overlap. | C1 |
@@ -11,11 +19,12 @@ Current amendment, authorized2026-10-30: move the level below the avatar as **Lv
 | C03 | Handle ordinary and expanded health/soul hearts, different native/ported portrait shapes, live health/XP/ammunition updates, level-up, reload, pause/resume and Continue. Keep existing visibility/input owners; do not introduce another progression/stat counter. Preserve gameplay, settings, progress and POI direction logic. | C1 |
 | C04 | Verify native render/layout at1280×720,720×720 and1920×1080, with measured bounds against Score ink and representative fresh/expanded-health/Continue states. Inspect actual screenshot evidence. Update README/changelog and publish a normal verified package with copied install/rollback, independent public download, preservation checks and exact scratch cleanup. | C1 / C2 |
 | C05 | Give only the portrait's circular frame a stepped pixel-art contour. Preserve the approved native portrait rendering, composition and all other widgets. User clarified that the portrait itself already looks good. | C1 |
+| C06 | Render the existing below-avatar caption clearly at the approved size and position. Diagnose actual font/material/sampling; preserve native level updates,75% font-size ratio, background-free layout and HUD opacity. Inspect native37/38 captures at1280×720,720×720 and1920×1080. | C1 |
 
 | Stage | Status | Satisfied | Remaining / blockers | Deferrals |
 |---|---|---|---|---|
-| C1 Integrated compact status HUD | COMPLETE | Revised caption/native37→38,75% font, expanded health and square/widescreen bounds/render verified; unchanged native bindings retain prior acceptance | None | None |
-| C2 Final delivery | COMPLETE | Revised README screenshot and1.3.15 release independently verified | None | None |
+| C1 Integrated compact status HUD | COMPLETE | C06 diagnosis/comparison and corrected37→38 rendering verified at all three viewports; size/position, native sampling and opacity preserved | None | None |
+| C2 Final delivery | ACTIVE | Current native acceptance reconciled; earlier delivery retained below | Revised README screenshot,1.3.16 package/public verification and cleanup | None |
 
 Visual contract: retain the game's pixel art, font and cream/coral/muted-green palette. Approximately260 reference pixels wide; height is constrained by the Score ink, not a fixed taller card. Portrait, caption and all three status rows remain within that height. The caption sits3 reference pixels below the circle, font13.5 versus ammunition18. Preserve native heart and soul-heart artwork and compact ammo count; compact health layout can wrap and scale within its assigned row area. Use measured display/canvas geometry so square/resized views honor the same contract. Match the established screen-HUD opacity without applying it twice.
 
