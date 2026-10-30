@@ -16,7 +16,7 @@ Authoritative specification: the user authorized the previously discussed menu a
 | Stage | Status | Satisfied | Remaining / blockers | Deferrals |
 |---|---|---|---|---|
 | C1 Complete menu and exploration change | COMPLETE | C01–C05, native C06, C07–C08 verified | None | None |
-| C2 Final delivery | ACTIVE | Expanded C1 accepted; initial metadata prepared | Package/public verification, final reconciliation and cleanup | None |
+| C2 Final delivery | COMPLETE | C06 delivery verified | None | None |
 
 Visual contract: use the existing cream native font/chevron, three quarters of the native label em with an 8-reference-pixel gap; icon-only controls use the inside-left gutter to fit the first roster column. No background, pulse or animation. Radar retains existing 28-pixel content icons and content-color arrows; its distance text remains readable inside the safe area. Top markers occupy the top perimeter, sliding horizontally around occupied HUD regions. No additional menu/settings or debug overlay.
 
@@ -31,3 +31,15 @@ Native run1 passes balanced cell geometry, actual six-corner/three-target stream
 Native6 audits all six direct summon-root recipes: no stat changes, only attachment actions. Specialize creates three actual mirrors, each overall1 / damage1.3 / size1.3. A40-damage size1 Fireball traverses three actual lens colliders and remains52 damage / size1.3: the base combination does not make each mirror90%. The exact oversized build has not been identified, so no unrelated Focal Point or projectile-size balance was changed.
 
 Native8 verifies two independent native Options entries at25/50/75/100%, default100, controller/pointer/focus and saved configuration reload. The real Fireball GPU output at25% is0.2494 of full intensity, while damage, scale, collider, vertex color and shared material are unchanged. Actual summon and attached ability renderers plus particles use the effects channel. Character/fog/reveal renderers and both enemy projectile families/enemy explosion remain unowned across pool reuse. Core honeycomb/marker/focus sources are unchanged except the previously accepted native Options extension; their earlier evidence is reused. C1-acceptance.json retains the earlier qualification chain.
+
+## Final delivery
+
+Normal [v1.3.10](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.10) is published from `7c916f3f2657f43f78c4a5bd0c35adb179f532a1`. Independently retrieved ZIP SHA-256: `d30ea0e466585f2dfa8b21a7145dc1f80151c13b7d0a744cfb18c0cc67cd57e4`. All 90 public members verify. Only the production DLL changes among 614 update targets; all 593 prepared assets and 613 other targets stay unchanged. Updater0.2.0/schema2/save-epoch1 remain compatible without a reset.
+
+Focused native evidence covers balanced six-vertex cells, actual current-cell streaming/contact/revisit, shared identities, three-nearest radar and north-axis rendering; text/icon focus, scene lifetime, byte-bound Continue and old-format transition; the basic Mirror parameter audit; and two independently controlled opacity channels with real GPU output, hostile/character/vision exclusion, pooling and saved configuration. Accepted unchanged paths were not replayed for packaging. The exact committed package verifies copied installation/rollback of614 owned targets while retaining142 stock files; independent download verifies version, source, manifests, payload and hashes. Live Steam/profile/configuration and phone remain unchanged.
+
+The Mirror audit found no90% per-mirror bonus in the base combination; the exact oversized build remains unidentified. Opacity is a visual setting and does not alter that build's damage, dimensions or hitboxes.
+
+Reviewed cleanup transaction `86f9435d142a9f1a550622db674463ed` is applied: {'deleted': 1455}; 317582634 logical bytes removed. The exact disposable root is absent. Required evidence/releases remain at `D:/Projects/20MTD-Modernization-evidence/honeycomb-20261030`.
+
+C01–C08 satisfied; no blocker or tracked deferral. C2-acceptance.json binds final reconciliation and remote documentation/image readback.
