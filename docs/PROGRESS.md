@@ -2,7 +2,9 @@
 
 ## Culling feedback — 2026-10-30
 
-[Scope](CULLING-POPUP.md). P1 COMPLETE: native label, unchanged damage/death and setting verified. P2 ACTIVE: release verification/cleanup remain. No deferrals.
+[Scope](CULLING-POPUP.md). P1 and P2 COMPLETE: label/native acceptance and final delivery verified. No blockers or deferrals.
+
+Normal [v1.3.14](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.14) is published from `656bcf37103ba9f1c075e304e11fb9d4010eec86`. Independent ZIP SHA256 `cad0f68fad12f21dff61f536884faa33094f7d42b0e5acc074cbe12089162f62`; all 98 public members and614 update targets verify. Copied install/rollback preserves142 originals. Only the DLL changes; prepared assets and613 other targets remain unchanged. Live Steam/profile/configuration and phone untouched. Exact reviewed cleanup62a7bc6a1b988de7ba92cd6f0556b749 removed 318,127,317 logical bytes and task scratch is absent.
 
 ## Compact corner status HUD — 2026-10-30
 
