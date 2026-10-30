@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.10](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.10) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.11](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.11) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -113,13 +113,15 @@ When one target gains an attribute and loses another, it appears **once under Mi
 
 ### Explore for optional rewards
 
+Reward indicators track directly from the perimeter to the chest itself, without moving around HUD elements. **Timer / score opacity** in native Options cycles25/50/75/100%, default100, separately from projectile/effects opacity. Pulsing Summons now shows a brief expanding wave at each actual damage pulse.
+
 Uncollected chests **do not expire**. Normal fog reveal keeps them visible when their edge pointer hides. Within eight world units, a small glow reveals content: teal XP, rose healing, violet magnet, blue freeze, orange frenzy, lime upgrades and pink character upgrades. It fades with distance; boss presentation is unchanged.
 
 Chest magnets send an attraction wave outward at **12 game units per combat second**, followed by each orb’s normal **0.3-second** flight. Equal-distance clusters are spaced across frames; nearby ordinary pickups can claim waiting orbs sooner. XP amounts are unchanged, and pause freezes the wave.
 
 Exploration uses an invisible **honeycomb with 36-unit sides**. Each unobstructed cell contains XP, healing, magnet, freeze, frenzy and **one upgrade opportunity**; 10% of upgrade vertices instead offer a character upgrade. The arrangement varies per run. Shared corners belong to the same POI, and the radar shows only the **three nearest uncollected exploration targets**. Move from reward to reward without waiting for a timer.
 
-Only the current cell's physical chests are loaded. Collected vertices stay collected, and discovered contents/positions survive Continue. Existing old chests are preserved on transition. XP still grants **30% of the current level requirement**; eligibility/full-health conversions and content icons stay intact. Boss treasure retains its separate chest pointer. Northern targets stay on the north edge while markers avoid each other along that edge.
+Only the current cell's physical chests are loaded. Collected vertices stay collected, and discovered contents/positions survive Continue. Existing old chests are preserved on transition. XP still grants **30% of the current level requirement**; eligibility/full-health conversions and content icons stay intact. Boss treasure retains its separate chest pointer. Markers follow their exact direction without HUD avoidance, then move onto the actual chest as it enters view. They remain until collection; the timer and Score have their own opacity setting.
 
 ![Exploration markers show healing, magnet and XP contents while boss treasure retains its chest icon](docs/images/exploration-contents.png)
 
@@ -133,7 +135,7 @@ Victory and death show scores, the character/weapon loadout and **Try Again / Qu
 
 ### Read controller focus at a glance
 
-**Player projectiles opacity** and **Player effects opacity** are separate native Options entries, each25/50/75/100%. Both default to100%; the screenshot demonstrates50%/25%. They change visual tint only, preserving damage, hitboxes, character, vision, HUD and hostile attacks.
+**Player projectiles opacity** and **Player effects opacity** are separate native Options entries, each25/50/75/100%, default100. **Timer / score opacity** independently adjusts those two readouts. The screenshot shows timer/Score25% and both combat channels100%. These settings change presentation only, preserving damage, hitboxes, character, vision and hostile attacks.
 
 A small cream chevron follows the currently focused button, using the native menu font and scale. Text buttons show it just to the left; icon buttons keep it inside the left gutter. It follows existing selection without changing navigation or consuming input.
 
@@ -236,6 +238,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.11 — Continuous reward tracking and visible summon pulses
+
+**Fixed:** POI indicators no longer shift around HUD elements or disappear when a chest enters view; they track its actual screen position. **Added:** native Timer / score opacity control and an expanding visual wave for Pulsing Summons. Actual scythe/lance pulse damage was verified as already working and remains unchanged. [Release notes](release/NOTES-1.3.11.md) · [Acceptance](docs/POI-PULSE-CORRECTIONS.md).
 
 ### v1.3.10 — Honeycomb exploration and menu focus
 

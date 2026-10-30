@@ -16,7 +16,7 @@ namespace TwentyMinutes.Modernization;
 // callbacks stay intact; added commands are handled before the native Back route.
 public sealed class NativeOptionsSettings:MonoBehaviour
 {
- Menu menu;RectTransform column,background;Button stats,style,zoom,numbers,projectiles,effects;int statsIndex,styleIndex,zoomIndex,numbersIndex,projectilesIndex,effectsIndex;
+ Menu menu;RectTransform column,background;Button stats,style,zoom,numbers,projectiles,effects,clock;int statsIndex,styleIndex,zoomIndex,numbersIndex,projectilesIndex,effectsIndex,clockIndex;
  void OnEnable(){InputUser.onChange+=ControlsChanged;}
  void OnDisable(){InputUser.onChange-=ControlsChanged;}
  void ControlsChanged(InputUser user,InputUserChange change,InputDevice device)
@@ -36,8 +36,10 @@ public sealed class NativeOptionsSettings:MonoBehaviour
   view.numbers=view.Row(template,"DamageNumbersSetting","DamageNumbersSettingLabel",out view.numbersIndex);
   view.projectiles=view.Row(template,"ProjectileOpacitySetting","ProjectileOpacityLabel",out view.projectilesIndex);
   view.effects=view.Row(template,"EffectsOpacitySetting","EffectsOpacityLabel",out view.effectsIndex);
+  view.clock=view.Row(template,"ClockOpacitySetting","ClockOpacityLabel",out view.clockIndex);
   int position=template.transform.GetSiblingIndex()+1;view.stats.transform.SetSiblingIndex(position);view.style.transform.SetSiblingIndex(position+1);view.zoom.transform.SetSiblingIndex(position+2);view.numbers.transform.SetSiblingIndex(position+3);
   view.projectiles.transform.SetSiblingIndex(position+4);view.effects.transform.SetSiblingIndex(position+5);
+  view.clock.transform.SetSiblingIndex(position+6);
   var box=StatsOverlay.Box(owner.transform,"NativeOptionsOpaquePanel",new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,Vector2.zero,new Color(.15f,.13f,.19f,1));
   view.background=box.GetComponent<RectTransform>();box.transform.SetAsFirstSibling();
  }
@@ -64,11 +66,12 @@ public sealed class NativeOptionsSettings:MonoBehaviour
   if(index==numbersIndex){Plugin.Instance.DamageNumbers.Value=!Plugin.Instance.DamageNumbers.Value;Plugin.Instance.Config.Save();NumbersLabel();return true;}
   if(index==projectilesIndex){Plugin.Instance.ProjectileOpacity.Value=Plugin.Instance.ProjectileOpacity.Value%100+25;Plugin.Instance.Config.Save();OpacityLabels();return true;}
   if(index==effectsIndex){Plugin.Instance.EffectsOpacity.Value=Plugin.Instance.EffectsOpacity.Value%100+25;Plugin.Instance.Config.Save();OpacityLabels();return true;}
+  if(index==clockIndex){Plugin.Instance.ClockOpacity.Value=Plugin.Instance.ClockOpacity.Value%100+25;Plugin.Instance.Config.Save();OpacityLabels();return true;}
   return false;
  }
  void ZoomLabel(){zoom.GetComponentInChildren<TMP_Text>(true).text="Zoom out: "+Plugin.Instance.ZoomOut.Value+"%";}
  void NumbersLabel(){numbers.GetComponentInChildren<TMP_Text>(true).text="Damage numbers: "+(Plugin.Instance.DamageNumbers.Value?"On":"Off");}
- void OpacityLabels(){projectiles.GetComponentInChildren<TMP_Text>(true).text="Player projectiles opacity: "+Plugin.Instance.ProjectileOpacity.Value+"%";effects.GetComponentInChildren<TMP_Text>(true).text="Player effects opacity: "+Plugin.Instance.EffectsOpacity.Value+"%";}
+ void OpacityLabels(){projectiles.GetComponentInChildren<TMP_Text>(true).text="Player projectiles opacity: "+Plugin.Instance.ProjectileOpacity.Value+"%";effects.GetComponentInChildren<TMP_Text>(true).text="Player effects opacity: "+Plugin.Instance.EffectsOpacity.Value+"%";clock.GetComponentInChildren<TMP_Text>(true).text="Timer / score opacity: "+Plugin.Instance.ClockOpacity.Value+"%";}
  internal void Prepare()
  {
   // Create controls at the actual Show boundary. Clones made after the native
@@ -79,7 +82,7 @@ public sealed class NativeOptionsSettings:MonoBehaviour
   StatsOverlay.UpdateSettingsLabels();ColorfulStyle.Instance.Labels();ZoomLabel();NumbersLabel();OpacityLabels();
   // Native Menu.Hide fails to remove its Show-created lambdas. Keep each new
   // toggle's registration owned by the next Show, so reopening toggles once.
-  foreach(var button in new[]{stats,style,zoom,numbers,projectiles,effects})
+  foreach(var button in new[]{stats,style,zoom,numbers,projectiles,effects,clock})
   {var entry=button.GetComponent<ButtonExtension>();entry.onClick.RemoveAllListeners();entry.onSelect.RemoveAllListeners();entry.onCancel.RemoveAllListeners();}
   var controls=column.GetComponentsInChildren<Button>(true).Where(b=>b.gameObject.activeSelf).ToArray();
   var layout=column.GetComponent<VerticalLayoutGroup>();layout.childAlignment=TextAnchor.MiddleCenter;

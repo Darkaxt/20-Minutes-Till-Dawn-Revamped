@@ -32,7 +32,7 @@ public sealed class GameplayHudLayout:MonoBehaviour
   int value=ScoreCalculator.SharedInstance.GetScore().totalScore;
   if(value!=previousCredits){previousCredits=value;credits.text="Score: "+value.ToString("N0");}
   bool choosing=owner.CurrentState is PowerupMenuState||owner.CurrentState is DevilDealState||owner.CurrentState is ChestState||owner.CurrentState is ExplorationRewardState||owner.CurrentState is RuneRewardState;
-  foreach(var group in clock)group.alpha=choosing?0:1;
+  for(int i=0;i<clock.Length;i++)clock[i].alpha=choosing?0:i<2?Plugin.Instance.ClockOpacity.Value/100f:1;
  }
 }
 [HarmonyPatch(typeof(GameController),"Awake")]

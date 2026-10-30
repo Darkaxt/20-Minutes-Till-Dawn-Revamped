@@ -1,5 +1,11 @@
 # Android gameplay anomaly ledger
 
+## POI tracking and Pulsing feedback — 2026-10-30
+
+- **Northern marker horizontal jitter:**1.3.10 retained along-edge HUD reservations. They could select opposite sides of the timer as a target crossed north. Removed reservation ranking entirely per user direction; projection now follows the actual target ray.
+- **On-screen reward handoff:** prior whole-artwork visibility removed the marker. User explicitly replaced this with persistent tracking onto the actual chest. Content/distance remain; the directional chevron hides on screen.
+- **Reported scythe/lance pulse failure:** actual acquisitions and registered-enemy ticks verify50 damage/2 seconds/radius3 already works. There was no visual feedback. Added an expanding wave at the true tick position, governed by effects opacity; no speculative damage adjustment. Acquisition orders and fresh-process Continue are verified. [Scope/evidence](POI-PULSE-CORRECTIONS.md).
+
 ## Honeycomb and focus correction — 2026-10-30
 
 - **Reported Mirror potency:** native6 found no90% per-mirror bonus in the basic combination. Each of three mirrors is overall1 / damage1.3 / size1.3, and a Fireball crossing them changes40→52 damage and1→1.3 size once. All six summon-root recipes attach actors without stat changes. The exact oversized build remains unidentified; no unrelated Focal Point or size balance was changed.

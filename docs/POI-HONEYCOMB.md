@@ -1,5 +1,7 @@
 # Menu focus and honeycomb exploration — 2026-10-30
 
+The subsequent [marker tracking correction](POI-PULSE-CORRECTIONS.md) supersedes C02's HUD avoidance and disappearing world-visible handoff. Indicators now follow exact bearing and continue onto the chest using display-normalized projection. This document retains the original1.3.10 acceptance history.
+
 Authoritative specification: the user authorized the previously discussed menu arrows, northern-indicator correction and honeycomb POIs. The additional instruction requires balanced contents within each cell. No live Steam or phone deployment is requested; deliver through the existing normal release/updater channel.
 
 | ID | Required behavior and acceptance | Stage |

@@ -35,6 +35,7 @@ public sealed class AndroidSummonPulse:MonoBehaviour
  void Update()
  {
   Timer+=Time.deltaTime;if(Timer<Interval)return;Timer-=Interval;
+  SummonPulseVisual.Show(this);
   var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();targets.Clear();pool.GetMonsterInRange(targets,Range,transform.position);
   for(int i=targets.Count-1;i>=0;i--)
   {
@@ -42,6 +43,34 @@ public sealed class AndroidSummonPulse:MonoBehaviour
    var health=actor.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Mathf.FloorToInt(Damage),DamageType.Summon);
   }
  }
+}
+// One reusable wave per summon; its world-space center stays at the actual
+// impact point even when a scythe or lance moves away during the animation.
+public sealed class SummonPulseVisual:MonoBehaviour
+{
+ LineRenderer wave;Material material;float elapsed,radius;Vector3 center;
+ internal static void Show(AndroidSummonPulse pulse)
+ {
+  var visual=pulse.GetComponent<SummonPulseVisual>()??pulse.gameObject.AddComponent<SummonPulseVisual>();
+  visual.center=pulse.transform.position;visual.radius=pulse.Range;visual.elapsed=0;visual.enabled=true;visual.Paint();
+ }
+ void Awake()
+ {
+  var child=new GameObject("SummonPulseWave",typeof(LineRenderer));child.layer=9;child.transform.SetParent(transform,false);
+  wave=child.GetComponent<LineRenderer>();material=new Material(Shader.Find("Sprites/Default"));wave.sharedMaterial=material;
+  wave.useWorldSpace=true;wave.loop=true;wave.positionCount=48;wave.startWidth=wave.endWidth=.035f;wave.sortingOrder=15;
+  PlayerVisualOpacity.Attach(child);
+ }
+ void Paint()
+ {
+  float progress=Mathf.Clamp01(elapsed/.4f);float size=radius*Mathf.Lerp(.15f,1,progress);
+  var color=new Color(.82f,.76f,.95f,(1-progress)*.65f);wave.startColor=wave.endColor=color;
+  for(int i=0;i<wave.positionCount;i++){float angle=i*Mathf.PI*2/wave.positionCount;wave.SetPosition(i,center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle))*size);}
+  wave.enabled=true;
+ }
+ void Update(){elapsed+=Time.deltaTime;if(elapsed>=.4f){wave.enabled=false;enabled=false;}else Paint();}
+ void OnDisable(){if(wave!=null)wave.enabled=false;}
+ void OnDestroy(){if(material!=null)Destroy(material);}
 }
 // This callback belongs to the original powerup asset. Repeated applications
 // grant another heart but AddObserver retains the same single callback owner.

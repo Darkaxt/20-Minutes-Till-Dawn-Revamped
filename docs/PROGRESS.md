@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## POI tracking and summon feedback — 2026-10-30
+
+[Authoritative scope](POI-PULSE-CORRECTIONS.md). P1 COMPLETE: exact-direction/persistent world tracking, native timer/Score opacity and actual scythe/lance pulse feedback/acquisition/Continue are verified. P2 Final delivery ACTIVE: package/install/rollback, public download and cleanup remain. No tracked deferrals.
+
 ## Honeycomb exploration and menu focus — 2026-10-30
 
 [Authoritative requirements](POI-HONEYCOMB.md). C1 Complete menu and exploration change and C2 Final delivery are COMPLETE. C01–C08 satisfied; no blocker or tracked deferral.

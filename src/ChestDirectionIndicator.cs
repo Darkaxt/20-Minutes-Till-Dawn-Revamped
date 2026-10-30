@@ -34,61 +34,46 @@ public sealed class ChestDirectionIndicator:MonoBehaviour
   StatsOverlay.Rect(DistanceText.gameObject,Marker,new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Vector2(0,-43),new Vector2(64,16));
  }
 }
-[DefaultExecutionOrder(200)]
 public sealed class PickupDirectionLayout:MonoBehaviour
 {
- readonly List<Vector2> occupied=new List<Vector2>();
- static Rect ScreenBounds(RectTransform view)
- {var corners=new Vector3[4];view.GetWorldCorners(corners);var points=corners.Select(p=>RectTransformUtility.WorldToScreenPoint(null,p)).ToArray();return Rect.MinMaxRect(points.Min(p=>p.x),points.Min(p=>p.y),points.Max(p=>p.x),points.Max(p=>p.y));}
- internal static bool WorldVisible(ChestDirectionIndicator target,Camera camera,Rect safe,List<Rect> reserved)
- {
-  var body=target.GetComponent<SpriteRenderer>();if(body==null||!body.enabled||body.sprite==null||body.color.a<=0)return false;
-  var bounds=body.bounds;var a=camera.WorldToScreenPoint(bounds.min);var b=camera.WorldToScreenPoint(bounds.max);
-  if(a.z<=0||b.z<=0)return false;
-  var rect=Rect.MinMaxRect(Mathf.Min(a.x,b.x),Mathf.Min(a.y,b.y),Mathf.Max(a.x,b.x),Mathf.Max(a.y,b.y));
-  var view=camera.pixelRect;var visible=Rect.MinMaxRect(Mathf.Max(safe.xMin,view.xMin),Mathf.Max(safe.yMin,view.yMin),Mathf.Min(safe.xMax,view.xMax),Mathf.Min(safe.yMax,view.yMax));
-  // The center entering the screen is not a visible handoff: part of the chest
-  // may still be clipped, or the metrics/skills/native HUD may cover its art.
-  return rect.xMin>=visible.xMin&&rect.xMax<=visible.xMax&&rect.yMin>=visible.yMin&&rect.yMax<=visible.yMax&&!reserved.Any(r=>r.Overlaps(rect));
- }
- public static Vector2 EdgePoint(Vector2 direction,Rect edge,List<Rect> reserved,List<Vector2> occupied,float scale)
+ void OnEnable(){Camera.onPreRender+=Place;}
+ void OnDisable(){Camera.onPreRender-=Place;}
+ public static Vector2 EdgePoint(Vector2 direction,Rect edge)
  {
   var half=edge.size*.5f;var center=edge.center;
   bool horizontal=Mathf.Abs(direction.y)*half.x>=Mathf.Abs(direction.x)*half.y;
   float factor=horizontal?half.y/Mathf.Abs(direction.y):half.x/Mathf.Abs(direction.x);
-  var desired=center+direction*factor;var points=new List<Vector2>{desired};
-  float length=horizontal?edge.width:edge.height,spacing=96*scale;int steps=Mathf.Max(1,Mathf.CeilToInt(length/(16*scale)));
-  for(int i=0;i<=steps;i++)points.Add(horizontal?new Vector2(Mathf.Lerp(edge.xMin,edge.xMax,(float)i/steps),desired.y):new Vector2(desired.x,Mathf.Lerp(edge.yMin,edge.yMax,(float)i/steps)));
-  // Collision avoidance changes the position along the true direction's edge,
-  // never the edge itself. Timer/XP reservations cannot turn north into east.
-  return points.OrderBy(p=>reserved.Count(r=>r.Overlaps(new Rect(p.x-36*scale,p.y-52*scale,72*scale,88*scale)))*10000000+occupied.Count(other=>Vector2.Distance(other,p)<spacing)*1000000+Vector2.SqrMagnitude(p-desired)).ThenBy(p=>p.x).ThenBy(p=>p.y).First();
+  return center+direction*factor;
  }
- void LateUpdate()
+ void Place(Camera camera)
  {
-  var hud=StatsOverlay.Instance;var player=PlayerController.Instance;var camera=Camera.main;
+  // PixelPerfectCamera finalizes projection/viewport during OnPreCull, after
+  // LateUpdate. Align markers with the actual rendering projection.
+  if(camera!=Camera.main)return;
+  var hud=StatsOverlay.Instance;var player=PlayerController.Instance;
   if(hud==null||hud.Panel==null||player==null||camera==null)return;
   float scale=((RectTransform)hud.Panel.transform).lossyScale.x;var safe=Screen.safeArea;var center=safe.center;
-  var edge=Rect.MinMaxRect(safe.xMin+56*scale,safe.yMin+84*scale,safe.xMax-56*scale,safe.yMax-84*scale);var half=edge.size*.5f;
-  var game=ExplorationRun.Instance.GetComponent<flanne.Core.GameController>();
-  var reserved=game.hud.GetComponentsInChildren<Graphic>().Where(g=>g.color.a>0).Select(g=>ScreenBounds(g.rectTransform)).ToList();
-  if(hud.Body.gameObject.activeInHierarchy)reserved.Add(ScreenBounds(hud.Body.rectTransform));
-  reserved.AddRange(hud.AttributeIcons.Concat(hud.SkillIcons).Where(i=>i.gameObject.activeInHierarchy).Select(i=>ScreenBounds(i.rectTransform)));
-  occupied.Clear();
+  var edge=Rect.MinMaxRect(safe.xMin+56*scale,safe.yMin+84*scale,safe.xMax-56*scale,safe.yMax-84*scale);
   foreach(var target in ChestDirectionIndicator.Active.Where(t=>t!=null&&t.gameObject.scene.IsValid()).OrderBy(t=>Vector3.Distance(t.transform.position,player.transform.position)))
   {
    if(!target.Radar){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
-   var projected=camera.WorldToScreenPoint(target.transform.position);
-   bool visible=WorldVisible(target,camera,safe,reserved);
-   if(visible||target.Collecting){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
+   // PixelPerfectCamera renders into a smaller pixel viewport, then blits it
+   // to the display. Internal render pixels are not overlay screen pixels.
+   var viewport=camera.WorldToViewportPoint(target.transform.position);
+   var projected=new Vector3(viewport.x*Screen.width,viewport.y*Screen.height,viewport.z);
+   if(target.Collecting){if(target.Marker!=null)target.Marker.gameObject.SetActive(false);continue;}
    if(target.Marker==null)target.Build(hud);target.Marker.gameObject.SetActive(true);
    var direction=(Vector2)projected-center;if(projected.z<0)direction=-direction;
    if(direction.sqrMagnitude==0)direction=Vector2.up;
-   var point=EdgePoint(direction,edge,reserved,occupied,scale);occupied.Add(point);
+   // Track continuously from the perimeter to the real chest. No HUD or
+   // marker reservation displaces the target, including across the north axis.
+   bool inside=projected.z>0&&edge.Contains(projected);
+   var point=inside?(Vector2)projected:EdgePoint(direction,edge);
    var parent=(RectTransform)hud.Panel.transform;RectTransformUtility.ScreenPointToLocalPointInRectangle(parent,point,null,out var local);
    // Screen-to-local is relative to the parent's pivot. The marker anchors are
    // at its center; the HUD root itself uses a bottom-left pivot.
    target.Marker.anchoredPosition=local-parent.rect.center;
-   target.Arrow.anchoredPosition=direction.normalized*21;target.Arrow.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(direction.y,direction.x)*Mathf.Rad2Deg);
+   target.Arrow.gameObject.SetActive(!inside);target.Arrow.anchoredPosition=direction.normalized*21;target.Arrow.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(direction.y,direction.x)*Mathf.Rad2Deg);
    target.DistanceText.text=Mathf.CeilToInt(Vector2.Distance(target.transform.position,player.transform.position)).ToString();
   }
  }

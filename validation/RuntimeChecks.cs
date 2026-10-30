@@ -88,7 +88,7 @@ public partial class RuntimeChecks:MonoBehaviour
         // Chainloader may be invoked from InputSystem's static constructor. Start is the
         // lifecycle boundary after that constructor completes and before scene Updates.
         InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
-        if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("weapon-familiarity-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("specialize-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("honeycomb-")==true)
+        if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("weapon-familiarity-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("specialize-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("honeycomb-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("poi-pulse-")==true)
         foreach(var device in InputSystem.devices.Where(d=>d.native).ToArray())
         {
             Log("fixture-device-isolation",device.deviceId+":"+device.name+" native="+device.native+" enabled="+device.enabled+" mouseHeld="+(device is Mouse physicalMouse?physicalMouse.leftButton.isPressed.ToString():"n/a"));
@@ -120,6 +120,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode.StartsWith("poi-pulse-")){yield return CheckPoiPulse(testMode);yield break;}
         if(testMode.StartsWith("honeycomb-")){yield return CheckHoneycomb(testMode);yield break;}
         if(testMode.StartsWith("specialize-")){yield return CheckSpecialize(testMode);yield break;}
         if(testMode.StartsWith("weapon-familiarity-")){yield return CheckWeaponFamiliarity(testMode);yield break;}

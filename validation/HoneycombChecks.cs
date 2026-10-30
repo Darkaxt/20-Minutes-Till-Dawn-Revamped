@@ -38,7 +38,7 @@ public partial class RuntimeChecks
   {
    var direction=new Vector2(x,1000);var desired=edge.center+direction*(edge.height*.5f/1000);var old=new List<Vector2>{desired,new Vector2(edge.xMin,edge.center.y),new Vector2(edge.xMax,edge.center.y)};
    var chosen=old.OrderBy(p=>reserved.Count(rect=>rect.Overlaps(new Rect(p.x-36,p.y-52,72,88)))*10000000+(p-desired).sqrMagnitude).First();oldSides.Add(chosen.x==edge.xMin);
-   var fixedPoint=PickupDirectionLayout.EdgePoint(direction,edge,reserved,new List<Vector2>(),1);Require(fixedPoint.y==edge.yMax,"north axis keeps northern edge despite a fully reserved top band: "+x);
+   var fixedPoint=PickupDirectionLayout.EdgePoint(direction,edge);Require(fixedPoint.y==edge.yMax&&Mathf.Abs(fixedPoint.x-desired.x)<.001f,"north axis follows the exact ray without HUD displacement: "+x);
   }
   Require(oldSides.Count==2,"old global edge ranking reproduces left/right flip around north");
  }
