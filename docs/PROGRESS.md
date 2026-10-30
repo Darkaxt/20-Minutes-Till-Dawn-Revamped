@@ -2,7 +2,9 @@
 
 ## External level caption — 2026-10-30
 
-[Scope](CORNER-HUD.md). C1 COMPLETE: below-avatar caption, native37→38 update, font ratio and square/widescreen bounds verified. C2 ACTIVE: release/public verification and cleanup remain. No deferrals.
+[Scope](CORNER-HUD.md). C1 and C2 COMPLETE: native caption and final delivery verified. No blockers or deferrals.
+
+Normal [v1.3.15](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.15) is published from `b4389ff4d46bab8e72dbd1bdb37c86ec2f8a18df`. Independent ZIP SHA256 `791f1a8abd74bb1698cd20ac040bb1dfa03f88a47794919d8b2e2521fc84f4af`; all 99 public members and614 targets verify. Copied install/rollback preserves142 originals. Only the DLL changes; prepared assets and613 other targets remain unchanged. Live Steam/profile/configuration and phone untouched. Exact reviewed cleanup7f28e3e2f48d355050e8a29edcbc10b1 removed 318,158,011 logical bytes; task scratch is absent.
 
 ## Culling feedback — 2026-10-30
 

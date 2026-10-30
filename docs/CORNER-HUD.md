@@ -15,7 +15,7 @@ Current amendment, authorized2026-10-30: move the level below the avatar as **Lv
 | Stage | Status | Satisfied | Remaining / blockers | Deferrals |
 |---|---|---|---|---|
 | C1 Integrated compact status HUD | COMPLETE | Revised caption/native37→38,75% font, expanded health and square/widescreen bounds/render verified; unchanged native bindings retain prior acceptance | None | None |
-| C2 Final delivery | ACTIVE | Current native acceptance reconciled; earlier1.3.13 delivery retained below | Revised README screenshot,1.3.15 package/public verification and cleanup | None |
+| C2 Final delivery | COMPLETE | Revised README screenshot and1.3.15 release independently verified | None | None |
 
 Visual contract: retain the game's pixel art, font and cream/coral/muted-green palette. Approximately260 reference pixels wide; height is constrained by the Score ink, not a fixed taller card. Portrait, caption and all three status rows remain within that height. The caption sits3 reference pixels below the circle, font13.5 versus ammunition18. Preserve native heart and soul-heart artwork and compact ammo count; compact health layout can wrap and scale within its assigned row area. Use measured display/canvas geometry so square/resized views honor the same contract. Match the established screen-HUD opacity without applying it twice.
 
@@ -32,3 +32,9 @@ Acceptance: runs3/4 passed native fresh/Continue workflows at all three viewport
 Normal [v1.3.13](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.13) is published from `7ec89666db6c966ae239bdf15c2580812703782b`. Independent ZIP SHA-256: `d989509bb5839a8839d1bb2d5bbeb7636411ce5f1bd9968dab4779684452f48f`. All 96 public members, 614 targets, copied install/rollback and 142 original files verify. Only the DLL changes; 593 prepared assets/613 other targets remain unchanged. Schema2, updater0.2.0 and save epoch1 are preserved. Live Steam/profile/configuration and phone are untouched. Reviewed cleanup `de46c0823fc63e0bb0a512c71f03a70b` removed 318,112,542 logical bytes; task scratch is absent. Acceptance evidence and final release remain retained.
 
 C01–C05 satisfied; no blockers or tracked deferrals. Final closure review reuses the unchanged C1 state-ownership assessment.
+
+## Level-caption final delivery
+
+Normal [v1.3.15](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.15) is published from `b4389ff4d46bab8e72dbd1bdb37c86ec2f8a18df`. Independent ZIP SHA256 `791f1a8abd74bb1698cd20ac040bb1dfa03f88a47794919d8b2e2521fc84f4af`; all 99 public members and614 targets verify. Copied install/rollback preserves142 originals. Only the DLL changes; prepared assets and613 other targets remain unchanged. Live Steam/profile/configuration and phone untouched. Exact reviewed cleanup7f28e3e2f48d355050e8a29edcbc10b1 removed 318,158,011 logical bytes; task scratch is absent.
+
+Current C01–C05 satisfied; no blockers or tracked deferrals. Final ownership review reuses the unchanged C1 assessment.
