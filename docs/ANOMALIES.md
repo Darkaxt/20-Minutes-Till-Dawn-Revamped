@@ -1,5 +1,9 @@
 # Android gameplay anomaly ledger
 
+## Specialize summon correction — 2026-10-30
+
+The applied notification passes a live, already-applied deep copy. Equipping that copy for Specialize’s two extra applications journals the acquisitions but loses instant attachment activation. Resolving the pristine registered definition fixes all six direct summon roots: 6 lances and 3 scythes, ghosts, mirrors, dragon eggs and Electro Bugs. The native screenshot and actor/application checks verify these quantities; the stat control retains its threefold bonus. Split Fire, ordinary repeat application and recorder/replay/serialization are unchanged. This is a Revamped integration defect. At the user’s instruction, the existing successful observations are reused and redundant simulation was cancelled; no new Continue acceptance is claimed. [Requirements and evidence](SPECIALIZE.md).
+
 ## Shared rune progression refinement — 2026-10-29
 
 The user explicitly replaced fully separate character ranks with a shared minimum per rune, capped at4. Personal rank5 records provide the count, with each distinct character contributing once; no extra mastery counter or additive bonus is stored. Load, future profile creation and actual boss grants project the minimum while preserving higher ranks, enabled choices and existing battle copies. This is an intentional progression change, not an Android defect. Native6–10 verify actual grants, partial/future/retroactive profiles, cap/personal5, exact current/pre-boss/public1.3.4 Continue, capped XP and actual Retry effects. Diagnostic2/3 failures were fixture entry/measurement errors; no production focus or tooltip-layout workaround was added.

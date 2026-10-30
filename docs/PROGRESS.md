@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Specialize triple summons — 2026-10-30
+
+[Authoritative requirements](SPECIALIZE.md). T1 Complete Specialize correction is COMPLETE using the existing successful native actor/application/stat observations and screenshot, as requested. T2 Final delivery is ACTIVE: package/install/rollback, normal publication, independent download and cleanup remain. No further gameplay simulation is planned.
+
 ## Weapon familiarity — 2026-10-30
 
 [Authoritative requirements](WEAPONS.md). W1 Complete familiarity feature and W2 Final delivery are COMPLETE. W01–W05 satisfied; no blocker or tracked deferral.

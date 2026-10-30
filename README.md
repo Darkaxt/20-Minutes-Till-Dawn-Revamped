@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.8](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.8) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.9) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -12,6 +12,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 
 | Area | Delivered improvements |
 |---|---|
+| **Specialize summons** | Shana’s triple-upgrade chest reward creates triple the actual summons: 3 eggs, mirrors, ghosts, scythes or Electro Bugs; 6 lances. |
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
@@ -189,7 +190,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.8 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.8).
+1. Download and extract the [v1.3.9 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.9).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -224,6 +225,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.9 — Specialize summon correction
+
+**Fixed:** Shana’s next-upgrade multiplier now creates 3 dragon eggs, mirrors, ghosts, scythes and Electro Bugs, or 6 lances. Its extra applications use pristine definitions, preserving stat scaling without an additional summon-damage multiplier. No save reset. [Release notes](release/NOTES-1.3.9.md) · [Evidence and scope](docs/SPECIALIZE.md).
 
 ### v1.3.8 — Weapon familiarity
 

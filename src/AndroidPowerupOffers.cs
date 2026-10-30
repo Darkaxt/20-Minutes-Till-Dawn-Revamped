@@ -156,6 +156,16 @@ static class AndroidSpecialize
  internal static void Started(TripleNextPowerup owner){if(!(bool)Used.GetValue(owner))Pending.Add(owner);}
  internal static void Finished(TripleNextPowerup owner)=>Pending.Remove(owner);
  internal static void Restored(TripleNextPowerup owner){if((bool)Used.GetValue(owner))Finished(owner);}
+ internal static Powerup Definition(Powerup applied)
+ {
+  var generator=PowerupGenerator.Instance;string key=RunResume.Key(applied);
+  // Notification senders are already-equipped copies. Re-copying their live
+  // effects loses attachment activation; regular acquisition/Continue uses the
+  // pristine definitions retained here even after an offer is exhausted.
+  return generator.GetComponent<AndroidPowerupCounts>().Counts.Keys
+   .Concat(AndroidPowerupCounts.PoolFields.SelectMany(field=>AndroidPowerupCounts.Pool(generator,field).Select(item=>item.powerup)))
+   .First(power=>RunResume.Key(power)==key);
+ }
 }
 [HarmonyPatch(typeof(TripleNextPowerup),"Start")]
 class AndroidSpecializeStart
@@ -177,7 +187,7 @@ class AndroidSpecializeApply
    var rear=player.GetComponentInChildren<ShootBulletsBehind>();
    if(rear!=null){Plugin.SetField(rear,"numOfBullets",3);Plugin.SetField(rear,"spread",60f);}
   }
-  else{player.playerPerks.Equip(powerup);player.playerPerks.Equip(powerup);}
+  else{var definition=AndroidSpecialize.Definition(powerup);player.playerPerks.Equip(definition);player.playerPerks.Equip(definition);}
   return false;
  }
 }
