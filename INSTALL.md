@@ -1,6 +1,6 @@
-# Install 1.3.16
+# Install 1.3.17
 
-Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.15 installation to1.3.16 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
+Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.16 installation to1.3.17 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 
@@ -36,3 +36,5 @@ An interrupted matching installation retains its pending file manifest; rerun th
 ## Build from source
 
 Prepare a copied development player with the supported owned inputs/BepInEx and set `MODERNIZATION_SCRATCH` to its root. Build against its `game/MinutesTillDawn_Data/Managed` and `game/BepInEx/core`. Asset preparation can run separately with `prepare` in place of `install`. `release/build.py` packages the Release configuration from committed source and a verified prepared-assets directory; extracted assets never enter the public ZIP.
+
+Version 1.3.17 recovers existing weapon-familiarity ranks onto Shana once. Other characters earn independent weapon familiarity. Old Continue saves immediately recompute the selected character/weapon bonus; other progress and native crown history are preserved. No save reset.

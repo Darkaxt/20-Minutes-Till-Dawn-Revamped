@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Character–weapon familiarity — 2026-10-31
+
+[Scope](WEAPONS.md). W1 COMPLETE: independent pairs, one-time Shana recovery, victories/non-earning cases and immediate old-Continue correction verified. W2 ACTIVE: public release verification/cleanup remain. No deferrals.
+
 ## Level-caption rendering — 2026-10-30
 
 [Scope](CORNER-HUD.md). C1 and C2 COMPLETE: caption rendering and final delivery verified. No blockers or deferrals.

@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.16](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.16) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -16,7 +16,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
-| **Weapon familiarity** | Each weapon gains +2% reload speed, fire rate and projectile speed per highest crown level, up to +30%. Damage, spread and weapon counts stay unchanged. The existing record includes Challenge and is shared across characters. |
+| **Weapon familiarity** | Each character–weapon pair gains +2% reload speed, fire rate and projectile speed per highest qualifying clear, up to +30%. Challenge counts; damage, spread and weapon counts stay unchanged. Legacy ranks recover onto Shana once, and old Continue bonuses are corrected immediately. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
 | **Readable builds and rewards** | Transparent, vertically centered stats and grouped skill icons; Off/Little/Extended metrics; beneficial/detrimental colors; compact portrait, hearts, XP and ammunition cluster; raised centered timer and Score; unified 85% gameplay HUD opacity; zoom-readable damage numbers with an explicit setting. Upgrade offers show their paths and build relations through skill, weapon and character icons, including benefits, penalties and mixed effects. |
 | **Combat visibility** | Two independent native Options entries adjust player projectiles and other player effects to25/50/75/100%, default100. Summon/ability/explosion/trail/particle visuals fade separately from bullet bodies; enemies, hostile attacks, character and vision stay unchanged. |
@@ -37,11 +37,11 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 
 ### Grow familiar with a weapon
 
-The existing weapon crown grants a small handling improvement, shared across characters. At crown5, the three handling stats gain10%; at crown15,30%. Repeating a clear does not stack bonuses, and each weapon keeps its own spread and counts. [Exact rules](docs/WEAPONS.md).
+Familiarity belongs to each **character–weapon pair**. At rank5, the three handling stats gain10%; at rank15,30%. Repeating a clear does not stack bonuses, and each weapon keeps its own spread and counts. Existing shared weapon ranks are recovered onto **Shana** once; native crown history and other progress stay intact. Other characters earn their own ranks. Old Continue saves immediately use the corrected pair bonus; new scoped saves retain their own starting rank. [Exact rules](docs/WEAPONS.md).
 
 ![Native weapon description showing the familiarity handling bonus](docs/images/weapon-familiarity.png)
 
-*Actual Windows controller test capture with a controlled crown15 record; live player progress is unchanged.*
+*Historical Windows controller capture showing the native description format with a controlled30% bonus. Current values use the selected character–weapon pair; the display binding is retained. Live player progress is unchanged.*
 
 ### Elemental roles
 
@@ -238,6 +238,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.17 — Character-specific weapon familiarity
+
+**Fixed:** weapon familiarity no longer leaks across characters. **Recovery:** existing shared weapon ranks move onto Shana once; original crowns and other progress remain. **Continue:** old saves immediately recompute their character–weapon bonus. Victories update only the winning pair, including Challenge; Custom runs and losses grant none. [Release notes](release/NOTES-1.3.17.md) · [Rules and acceptance](docs/WEAPONS.md).
 
 ### v1.3.16 — Complete level-caption strokes
 

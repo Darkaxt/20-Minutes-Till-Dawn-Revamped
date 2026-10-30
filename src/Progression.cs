@@ -32,6 +32,8 @@ public static partial class Progression
   public List<int> sourceAchievements=new List<int>(),sourceAchievementRewards=new List<int>();
   public int challengeDifficultyUnlocked;
   public List<ModeClearRecord> modeClears=new List<ModeClearRecord>();
+  public List<WeaponFamiliarity.Record> weaponFamiliarity=new List<WeaponFamiliarity.Record>();
+  public bool weaponFamiliarityRecovered;
  }
  public class ModeClearRecord{public string mode;public int difficulty,count;}
  public class Gate
@@ -114,6 +116,7 @@ public static partial class Progression
   // Earlier journals never recorded per-mode/difficulty win totals. Start an
   // empty record rather than inventing counts from highest-clear arrays.
   if(State.modeClears==null)State.modeClears=new List<ModeClearRecord>();
+  WeaponFamiliarity.Initialize();
   if(State.version<2)
    foreach(string id in State.pending)State.notices.Add(new Notice{id=id,goal="Earned under previous unlock requirements"});
   State.version=2;

@@ -127,6 +127,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("poi-pulse-")){yield return CheckPoiPulse(testMode);yield break;}
         if(testMode.StartsWith("honeycomb-")){yield return CheckHoneycomb(testMode);yield break;}
         if(testMode.StartsWith("specialize-")){yield return CheckSpecialize(testMode);yield break;}
+        if(testMode.StartsWith("weapon-familiarity-pair-")){yield return CheckCharacterWeaponFamiliarity(testMode);yield break;}
         if(testMode.StartsWith("weapon-familiarity-")){yield return CheckWeaponFamiliarity(testMode);yield break;}
         if(testMode=="combat-visibility-probe"||testMode=="damage-auto-hide-probe"){yield return CheckCombatVisibilityProbe();yield break;}
         if(testMode=="combat-visibility-fresh"||testMode=="combat-visibility-continue"){yield return CheckCombatVisibility(testMode.EndsWith("continue"));yield break;}

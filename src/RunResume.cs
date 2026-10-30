@@ -44,6 +44,7 @@ public static partial class RunResume
   [DataMember]public EliteTierProgress eliteTiers;
   [DataMember]public RuneRewardStateData runeRewards;
   [DataMember]public int? weaponFamiliarity;
+  [DataMember]public bool? characterWeaponFamiliarity;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -124,6 +125,7 @@ public static partial class RunResume
   state.exploration=r.GetComponent<ExplorationRun>().State==null?null:r.GetComponent<ExplorationRun>().Capture();
   RuneRewardRun.Instance.Ensure();state.runeRewards=RuneRewardRun.Instance.State;
   state.weaponFamiliarity=p.GetComponent<WeaponFamiliarity>().Rank;
+  state.characterWeaponFamiliarity=true;
   state.eliteClaims=EliteRun.Instance.Claimed;state.eliteTiers=EliteRun.Instance.Progress;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)
