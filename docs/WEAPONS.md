@@ -19,7 +19,7 @@ The three bonuses are native additive percentage stat bonuses, alongside existin
 | Stage | Status | Acceptance | Remaining / blockers | Deferrals |
 |---|---|---|---|---|
 | W1 Complete familiarity feature | COMPLETE | Current native3/4 verify one-time recovery for all12 weapons, isolated victories, Challenge/Custom/loss handling, descriptions/HUD, persistence and immediate old-Continue correction | None | None |
-| W2 Final delivery | ACTIVE | W1 reconciled; prior1.3.8 delivery retained below | W05 current documentation/package/public verification and cleanup | None |
+| W2 Final delivery | COMPLETE | W05 current release independently verified | None | None |
 
 Current native/build scratch: `D:/Temp/20mtd-pair-familiarity-20261031`, for sustained small-file I/O. Retain acceptance/release evidence in `D:/Projects/20MTD-Modernization-evidence/pair-familiarity-20261031`. Preserve live Steam/profile/configuration and phone; no reset or live deployment.
 
@@ -40,3 +40,9 @@ Exact packaged normal-render S6/run-3, run-4, run-5, run-6 pass all twelve weapo
 Reviewed cleanup transaction `f4192150c08b62d81ad051da93d91f66` is applied: {'deleted': 1461}; 318185944 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/weapon-familiarity-20261030`.
 
 W01–W05 are satisfied; no blocker or tracked deferral. Closure review found no additional required refactor. Final acceptance and remote documentation readback are bound by `W2-acceptance.json`.
+
+## Character–weapon recovery delivery — 2026-10-31
+
+Normal [v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) is published from `6e04bd8c7960f5f1bf75aab7c9119bc04ec497c6`. Independent ZIP SHA256 `aba392403233676b716532a2c33845780474342a3a4c81c8725319de72fdc7ce`; all 101 public members and 614 targets verify. Copied install/rollback preserves 142 originals. Only the DLL changes; prepared assets and 613 other targets remain unchanged. Schema 2/updater 0.2.0/save epoch 1 are preserved, with no reset. Live Steam/profile/configuration and phone untouched. Exact reviewed cleanup `e50301959466e16913c298db345faa78` removed 318,373,753 logical bytes; scratch is absent.
+
+Current W01–W05 satisfied; no blockers or tracked deferrals. Final ownership review reuses the unchanged W1 assessment.

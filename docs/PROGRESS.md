@@ -2,7 +2,9 @@
 
 ## Character–weapon familiarity — 2026-10-31
 
-[Scope](WEAPONS.md). W1 COMPLETE: independent pairs, one-time Shana recovery, victories/non-earning cases and immediate old-Continue correction verified. W2 ACTIVE: public release verification/cleanup remain. No deferrals.
+[Scope](WEAPONS.md). W1 and W2 COMPLETE: independent pairs, Shana recovery, immediate old-Continue correction and final delivery verified. No blockers or deferrals.
+
+Normal [v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) is published from `6e04bd8c7960f5f1bf75aab7c9119bc04ec497c6`. Independent ZIP SHA256 `aba392403233676b716532a2c33845780474342a3a4c81c8725319de72fdc7ce`; all 101 public members and 614 targets verify. Copied install/rollback preserves 142 originals. Only the DLL changes; prepared assets and 613 other targets remain unchanged. Schema 2/updater 0.2.0/save epoch 1 are preserved, with no reset. Live Steam/profile/configuration and phone untouched. Exact reviewed cleanup `e50301959466e16913c298db345faa78` removed 318,373,753 logical bytes; scratch is absent.
 
 ## Level-caption rendering — 2026-10-30
 
