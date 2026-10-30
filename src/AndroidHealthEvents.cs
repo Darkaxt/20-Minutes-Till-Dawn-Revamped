@@ -38,7 +38,7 @@ public sealed class AndroidHealthEvents:MonoBehaviour
    else if(callback=="Shake")target.onDeath.AddListener(()=>target.GetComponent<ExplosionShake2D>().Shake());
   }
  }
- internal void Change(int requested,DamageType kind,float finalMultiplier=1)
+ internal void Change(int requested,DamageType kind,float finalMultiplier=1,string popupText=null)
  {
   if(requested<0&&health.HP<1)return;
   if(requested<0&&health.isInvincible.value){health.onDamagePrevented.Invoke();return;}
@@ -50,16 +50,16 @@ public sealed class AndroidHealthEvents:MonoBehaviour
   if(finalMultiplier!=1)change=Mathf.FloorToInt(change*finalMultiplier);
   int previous=health.HP;HP(health)=Mathf.Clamp(previous+change,0,health.maxHP);
   health.onHealthChange.Invoke(health.HP);
-  if(change<0)Hurt(change);else if(change>0)health.onHeal.Invoke(change);
+  if(change<0)Hurt(change,popupText);else if(change>0)health.onHeal.Invoke(change);
   if(previous==0)return;
   if(health.HP>0)health.PostNotification(AndroidSurvivingHurt.Event,kind);
   else if(health.HP==0)Death(true,kind);
  }
- void Hurt(int change)
+ void Hurt(int change,string popupText)
  {
   health.GetComponentInChildren<PlaySoundEffect>().Play();
   health.GetComponent<FlashSprite>().Flash();
-  AndroidDamagePopup.PopDamage(Mathf.Abs(change),health.transform);
+  AndroidDamagePopup.PopDamage(Mathf.Abs(change),health.transform,popupText);
  }
  internal void Death(bool notify,DamageType kind)
  {

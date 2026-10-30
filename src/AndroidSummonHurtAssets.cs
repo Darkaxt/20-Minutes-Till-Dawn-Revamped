@@ -31,7 +31,7 @@ public sealed class AndroidSummonHurtAsset:ScriptableObject
   // Source Culling uses ordinary signed Health damage, including modifiers,
   // protection, feedback and typed death. It does not call AutoKill.
   if(isPlayer)AndroidPlayerCollision.Get(player).Change(-999999,AndroidHarmfulKind.Powerup);
-  else AndroidDamageRounding.ChangeHealth(health,-999999,AndroidHarmfulKind.Powerup);
+  else AndroidHealthEvents.Source(health).Change(-999999,AndroidHarmfulKind.Powerup,popupText:"Culled!");
  }
 }
 [Serializable]

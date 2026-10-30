@@ -35,9 +35,9 @@ public sealed class AndroidDamagePopup:MonoBehaviour
   Next(native)=new Vector3(origin.x+Random.Range(-.5f,.5f),origin.y+.5f,0);
   transform.localScale=Vector3.one;
  }
- internal static void PopDamage(int amount,Transform target)
+ internal static void PopDamage(int amount,Transform target,string text=null)
  {
-  if(Plugin.Instance.DamageNumbers.Value)Pop(amount.ToString(),target);
+  if(Plugin.Instance.DamageNumbers.Value)Pop(text??amount.ToString(),target);
  }
  internal static void Pop(string text,Transform target)
  {

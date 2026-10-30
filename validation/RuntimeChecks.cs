@@ -120,6 +120,7 @@ public partial class RuntimeChecks:MonoBehaviour
         Require(Application.persistentDataPath.Contains("CodexModernization"),"isolated persistent identity");
         GunSlot=NativeSelection.GunIndex;
         string testMode=Environment.GetEnvironmentVariable("MODERNIZATION_TEST");
+        if(testMode=="corner-hud-culling"){yield return CheckCullingPopup();yield break;}
         if(testMode.StartsWith("corner-hud-")){yield return CheckCornerHud(testMode);yield break;}
         if(testMode=="hud-opacity-inventory"){yield return ProbeHudRoots();yield break;}
         if(testMode.StartsWith("hud-opacity")){yield return CheckHudOpacity(testMode!="hud-opacity");yield break;}

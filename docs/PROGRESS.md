@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## Culling feedback — 2026-10-30
+
+[Scope](CULLING-POPUP.md). P1 COMPLETE: native label, unchanged damage/death and setting verified. P2 ACTIVE: release verification/cleanup remain. No deferrals.
+
 ## Compact corner status HUD — 2026-10-30
 
 [Authoritative scope](CORNER-HUD.md). C1 and C2 COMPLETE; C01–C05 satisfied. No blockers or tracked deferrals.
