@@ -1,5 +1,9 @@
 # Current Android gameplay completion
 
+## External level caption — 2026-10-30
+
+[Scope](CORNER-HUD.md). C1 COMPLETE: below-avatar caption, native37→38 update, font ratio and square/widescreen bounds verified. C2 ACTIVE: release/public verification and cleanup remain. No deferrals.
+
 ## Culling feedback — 2026-10-30
 
 [Scope](CULLING-POPUP.md). P1 and P2 COMPLETE: label/native acceptance and final delivery verified. No blockers or deferrals.

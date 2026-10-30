@@ -11,7 +11,7 @@ namespace TwentyMinutes.Modernization;
 [DefaultExecutionOrder(300)]
 public sealed class CornerStatusHud:MonoBehaviour
 {
- GameController owner;TMP_Text score,level;RectTransform panel,root,portrait,health,xp,ammo,levelBadge;
+ GameController owner;TMP_Text score,level,levelPrefix;RectTransform panel,root,portrait,health,xp,ammo,levelCaption;
  Image face;Sprite characterPortrait;
  internal void Initialize(GameController game,TMP_Text scoreText){owner=game;score=scoreText;panel=(RectTransform)game.hud.transform;}
  static RectTransform Child(Transform parent,string name)=>parent.Find(name).GetComponent<RectTransform>();
@@ -25,9 +25,10 @@ public sealed class CornerStatusHud:MonoBehaviour
   mask.GetComponent<Image>().sprite=Resources.FindObjectsOfTypeAll<Image>().First(i=>i.sprite!=null&&i.sprite.name=="T_Circle").sprite;
   mask.GetComponent<Mask>().showMaskGraphic=false;mask.GetComponent<Image>().raycastTarget=false;
   face=Rect(new GameObject("CharacterFace",typeof(RectTransform),typeof(Image)),mask,new Vector2(.5f,1),new Vector2(.5f,1),Vector2.zero,Vector2.zero).GetComponent<Image>();face.preserveAspect=true;face.raycastTarget=false;
-  var badge=StatsOverlay.Box(mask,"LevelBadge",new Vector2(.5f,0),new Vector2(.5f,0),new Vector2(0,2),new Vector2(46,17),StatsOverlay.Ink);badge.GetComponent<Image>().raycastTarget=false;levelBadge=badge.GetComponent<RectTransform>();
+  levelCaption=Rect(new GameObject("LevelCaption",typeof(RectTransform)),root,new Vector2(0,1),new Vector2(.5f,1),Vector2.zero,Vector2.zero);
   var oldLevel=Child(panel,"LevelDisplay");level=oldLevel.Find("LvlValue").GetComponent<TMP_Text>();
-  Rect(level.gameObject,levelBadge,new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(44,17));level.fontSize=14;level.alignment=TextAlignmentOptions.Center;level.raycastTarget=false;oldLevel.gameObject.SetActive(false);
+  Rect(level.gameObject,levelCaption,new Vector2(.5f,.5f),new Vector2(0,.5f),Vector2.zero,new Vector2(44,17));level.fontSize=18*.75f;level.alignment=TextAlignmentOptions.MidlineLeft;level.raycastTarget=false;oldLevel.gameObject.SetActive(false);
+  levelPrefix=StatsOverlay.Text(levelCaption,"LevelPrefix",level.font,"Lvl.",13,Vector2.zero,new Vector2(44,17));levelPrefix.fontSize=level.fontSize;levelPrefix.alignment=TextAlignmentOptions.MidlineLeft;levelPrefix.color=level.color;
   health=Child(panel,"HealthUI");health.GetComponent<HorizontalLayoutGroup>().enabled=false;
   xp=Child(panel,"XPBar");ammo=Child(panel,"AmmoDisplay");
   foreach(var view in new[]{health,xp,ammo})Rect(view.gameObject,root,new Vector2(0,1),new Vector2(0,1),Vector2.zero,Vector2.zero);
@@ -45,18 +46,21 @@ public sealed class CornerStatusHud:MonoBehaviour
   var safe=Screen.safeArea;float topInset=Screen.height-safe.yMax;
   float panelTop=RectTransformUtility.WorldToScreenPoint(null,panel.TransformPoint(new Vector3(panel.rect.xMin,panel.rect.yMax))).y;
   float scoreBottom=RectTransformUtility.WorldToScreenPoint(null,score.transform.TransformPoint(score.textBounds.min)).y;
-  float height=Mathf.Min(90,(panelTop-scoreBottom-topInset-12*uiScale)/uiScale);
+  float height=Mathf.Min(110,(panelTop-scoreBottom-topInset-12*uiScale)/uiScale),avatarHeight=height-20;
   root.localScale=Vector3.one*(uiScale/nativeScale);root.sizeDelta=new Vector2(260,height);
   root.anchoredPosition=new Vector2((safe.xMin+12*uiScale)/nativeScale,-(topInset+12*uiScale)/nativeScale);
-  portrait.sizeDelta=new Vector2(height,height);
-  var mask=(RectTransform)face.transform.parent;mask.sizeDelta=new Vector2(height-4,height-4);
-  face.rectTransform.sizeDelta=new Vector2(height*1.45f,height*1.45f*characterPortrait.rect.height/characterPortrait.rect.width);face.rectTransform.anchoredPosition=new Vector2(0,height*.12f);
-  levelBadge.sizeDelta=new Vector2(Mathf.Min(46,height-8),17);
-  float columnX=height+10,width=260-columnX;
+  portrait.sizeDelta=new Vector2(avatarHeight,avatarHeight);
+  var mask=(RectTransform)face.transform.parent;mask.sizeDelta=new Vector2(avatarHeight-4,avatarHeight-4);
+  face.rectTransform.sizeDelta=new Vector2(avatarHeight*1.45f,avatarHeight*1.45f*characterPortrait.rect.height/characterPortrait.rect.width);face.rectTransform.anchoredPosition=new Vector2(0,avatarHeight*.12f);
+  levelCaption.anchoredPosition=new Vector2(avatarHeight*.5f,-avatarHeight-3);levelCaption.sizeDelta=new Vector2(avatarHeight,17);
+  float prefixWidth=levelPrefix.preferredWidth,valueWidth=level.preferredWidth,start=-(prefixWidth+3+valueWidth)*.5f;
+  Rect(levelPrefix.gameObject,levelCaption,new Vector2(.5f,.5f),new Vector2(0,.5f),new Vector2(start,0),new Vector2(prefixWidth,17));
+  Rect(level.gameObject,levelCaption,new Vector2(.5f,.5f),new Vector2(0,.5f),new Vector2(start+prefixWidth+3,0),new Vector2(valueWidth,17));
+  float columnX=avatarHeight+10,width=260-columnX;
   var hearts=health.Cast<Transform>().Where(t=>t.gameObject.activeSelf).Select(t=>(RectTransform)t).ToArray();
   int columns=Mathf.Min(8,Mathf.Max(1,hearts.Length)),rows=Mathf.Max(1,Mathf.CeilToInt((float)hearts.Length/columns));
-  float cell=Mathf.Min(22,(width-(columns-1)*2)/columns,(height-38-(rows-1)*2)/rows);
-  float heartHeight=rows*cell+(rows-1)*2,totalHeight=heartHeight+38,top=(height-totalHeight)*.5f;
+  float cell=Mathf.Min(22,(width-(columns-1)*2)/columns,(avatarHeight-38-(rows-1)*2)/rows);
+  float heartHeight=rows*cell+(rows-1)*2,totalHeight=heartHeight+38,top=(avatarHeight-totalHeight)*.5f;
   health.anchoredPosition=new Vector2(columnX,-top);health.sizeDelta=new Vector2(width,heartHeight);
   for(int i=0;i<hearts.Length;i++)
   {var item=hearts[i];item.anchorMin=item.anchorMax=new Vector2(0,1);item.pivot=new Vector2(0,1);item.localScale=Vector3.one;item.anchoredPosition=new Vector2(i%columns*(cell+2),-i/columns*(cell+2));item.sizeDelta=new Vector2(cell,cell);item.GetComponent<Image>().raycastTarget=false;}

@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.14](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.14) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.15](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.15) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -89,7 +89,7 @@ The original timer sits at top center below the level bar, with **Score** beneat
 
 ![Compact native portrait HUD with a stepped pixel-art frame, hearts, XP and ammunition](docs/images/hud-build.png)
 
-*Actual1280×720 Windows render: the compact portrait/status cluster replaces the full-width level bar. The frame has stepped pixel-art edges; the native portrait stays unchanged. Timer, Score and objective move upward. The cluster stays above the Score baseline in square and widescreen views. Controlled test run; acquired-path rows are verified separately.*
+*Actual1280×720 Windows render: the compact portrait/status cluster replaces the full-width level bar. The frame has stepped pixel-art edges; **Lvl. 37** is centered underneath at75% of the ammunition font size, with no overlaid badge. The native portrait stays unchanged. Timer, Score and objective move upward. The cluster stays above the Score baseline in square and widescreen views. Controlled test run; acquired-path rows are verified separately.*
 
 ![Compact damage number at maximum zoom-out in the square Windows viewport](docs/images/damage-numbers-zoom.png)
 
@@ -238,6 +238,10 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+### v1.3.15 — Level beneath the portrait
+
+**Changed:** the level appears as **Lvl. N** centered below the avatar, at75% of the ammunition font size. The overlaid badge/background is removed. The compact cluster still fits above the Score baseline, with responsive square/widescreen sizing and native level updates. [Release notes](release/NOTES-1.3.15.md) · [Acceptance](docs/CORNER-HUD.md).
 
 ### v1.3.14 — Clear Culling feedback
 

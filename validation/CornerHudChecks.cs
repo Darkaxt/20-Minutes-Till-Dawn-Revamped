@@ -50,7 +50,11 @@ public partial class RuntimeChecks
   Require(CornerBounds((RectTransform)root.Find("XPBar")).width<bounds.width&&CornerBounds((RectTransform)root.Find("XPBar")).height<=8,"native XP progress is a short thin local bar");
   var face=root.GetComponentsInChildren<Image>().Single(i=>i.name=="CharacterFace");Require(face.sprite==PlayerController.Instance.loadedCharacter.portrait,"avatar shows the actual selected character portrait");
   foreach(var text in root.GetComponentsInChildren<TMP_Text>()){text.ForceMeshUpdate();var r=CornerBounds(text.rectTransform);Require(r.yMin>=bottom-1,"status text stays within the Score height limit: "+text.name);}
-  var level=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LvlValue");Require(int.Parse(level.text)==game.playerXP.level,"native level variable still updates the portrait badge");
+  var level=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LvlValue");Require(int.Parse(level.text)==game.playerXP.level,"native level variable still updates the caption");
+  var prefix=root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="LevelPrefix");var caption=(RectTransform)root.Find("LevelCaption");var portrait=(RectTransform)root.Find("CharacterPortrait");
+  Require(prefix.text=="Lvl."&&level.transform.parent==caption&&caption.GetComponentsInChildren<Image>().Length==0,"level prefix and native value share a background-free external caption");
+  Require(CornerBounds(caption).yMax<CornerBounds(portrait).yMin&&Mathf.Abs(CornerBounds(caption).center.x-CornerBounds(portrait).center.x)<.1f,"caption is centered entirely below the avatar");
+  Require(Mathf.Abs(level.fontSize/root.Find("AmmoDisplay/AmmoCount").GetComponent<TMP_Text>().fontSize-.75f)<.001f&&prefix.fontSize==level.fontSize,"level caption uses75% of the native ammunition font size");
   var ammo=root.Find("AmmoDisplay");Require(int.Parse(ammo.Find("AmmoCount").GetComponent<TMP_Text>().text)==PlayerController.Instance.ammo.amount,"native ammo binding matches actual amount");
   Require(Mathf.Abs(level.canvasRenderer.GetInheritedAlpha()-Plugin.Instance.HudOpacity.Value/100f)<.002f,"compact HUD inherits opacity exactly once");
   Log("corner-layout",state+" "+Screen.width+"x"+Screen.height+" bounds="+bounds+" scoreBottom="+bottom+" portrait="+face.sprite.name);
@@ -61,6 +65,15 @@ public partial class RuntimeChecks
   bool continuation=mode.EndsWith("continue");
   if(continuation)yield return CombatBuffContinue();else{RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new List<flanne.RuneSystem.RuneData>());}
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();yield return CornerReady(game);var player=PlayerController.Instance;
+  if(mode=="corner-hud-caption")
+  {
+   yield return AchievementPick(game,"Haste",36);yield return CornerReady(game);Require(game.playerXP.level==37,"native level-up establishes the requested level37 example");
+   foreach(var size in new[]{new Vector2Int(1280,720),new Vector2Int(720,720),new Vector2Int(1920,1080)})
+   {Screen.SetResolution(size.x,size.y,false);while(Screen.width!=size.x||Screen.height!=size.y)yield return null;FeedbackCameras();yield return CornerReady(game);CornerGeometry(game,"external-level37");yield return PoiCapture("level-caption-"+size.x+".png");}
+   yield return AchievementPick(game,"QuickHands",37);yield return CornerReady(game);CornerGeometry(game,"next-native-level-up");Require(game.playerXP.level==38,"native value updates to38 without replacing its variable binding");
+   player.playerHealth.maxHP=12;player.playerHealth.hp=9;player.playerHealth.maxSHP=3;player.playerHealth.shp=3;yield return null;yield return new WaitForEndOfFrame();CornerGeometry(game,"expanded-health-caption");yield return PoiCapture("level-caption-expanded.png");
+   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","External Lvl.37 caption at three viewports,75% font ratio, Score-height limit, native update to38 and expanded hearts verified. Native portrait/frame and unrelated bindings retained.");Application.Quit(0);yield break;
+  }
   if(mode=="corner-hud-frame")
   {
    foreach(var size in new[]{new Vector2Int(1280,720),new Vector2Int(720,720),new Vector2Int(1920,1080)})
