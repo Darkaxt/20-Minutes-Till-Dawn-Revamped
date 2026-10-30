@@ -2,7 +2,13 @@
 
 ## Specialize triple summons — 2026-10-30
 
-[Authoritative requirements](SPECIALIZE.md). T1 Complete Specialize correction is COMPLETE using the existing successful native actor/application/stat observations and screenshot, as requested. T2 Final delivery is ACTIVE: package/install/rollback, normal publication, independent download and cleanup remain. No further gameplay simulation is planned.
+[Authoritative requirements](SPECIALIZE.md). T1 Complete Specialize correction and T2 Final delivery are COMPLETE. T01–T04 satisfied at the requested evidence boundary; no blocker or tracked deferral.
+
+Normal [v1.3.9](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.9) is published from `c1cfba6acc224ebdf280bfb1470b31ff6da382f4`. Independently retrieved ZIP SHA-256: `513439c1013db54d6ff76676539fcef2e087d2f7d9449d61e270ffb761d9a275`. All 87 public members verify. Only the production DLL changes among 614 update targets; 593 prepared assets and 613 other targets stay unchanged. Updater 0.2.0/schema 2/save epoch 1 remain compatible without a reset.
+
+The existing native screenshot and successful actor/application/stat observations verify 3 eggs, mirrors, ghosts, scythes and Electro Bugs, or 6 lances. As explicitly directed, no additional gameplay simulation was run for release. Source equivalence is checked with only version metadata permitted to differ from those observations. Package installation/rollback verifies 614 owned targets and 142 stock files; independent download verifies the published version, source, manifests and payload. This task makes no new runtime Continue claim. Live Steam/profile/configuration and phone remain unchanged.
+
+Reviewed cleanup transaction `7bfa3b63f0dcbaae596955acdfb39366` is applied: {'deleted': 1436}; 316401645 logical bytes removed. The exact disposable root is absent. Required evidence/packages remain at `D:/Projects/20MTD-Modernization-evidence/specialize-20261030`.
 
 ## Weapon familiarity — 2026-10-30
 
