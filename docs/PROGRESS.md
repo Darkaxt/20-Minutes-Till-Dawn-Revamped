@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Nexus Mods publication — 2026-11-04
+
+[Revamped on Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) is published under Darkaxt, Gameplay, version 1.3.17, with eight captioned Windows test screenshots. The numbered installation procedure and external requirements link directly to the supported Android 8.6/1093 APKMirror bundle. Existing MIT code terms and third-party credits are retained. AI tags disclose code generation and the page description; gallery images are actual game captures.
+
+The actual Nexus main-file download (file UID `19563576033565`) is byte-identical to the qualified GitHub package: SHA-256 `aba392403233676b716532a2c33845780474342a3a4c81c8725319de72fdc7ce`, 3,325,739 bytes, source `6e04bd8c7960f5f1bf75aab7c9119bc04ec497c6`. All 101 package members and the schema 2/updater 0.2.0/save epoch 1 contract verify. Published version, file, screenshot count and direct installation link were read back. Retained evidence: `D:/Projects/20MTD-Modernization-evidence/nexus-publication-20261104`. No game deployment or save changes.
+
 ## Character–weapon familiarity — 2026-10-31
 
 [Scope](WEAPONS.md). W1 and W2 COMPLETE: independent pairs, Shana recovery, immediate old-Continue correction and final delivery verified. No blockers or deferrals.

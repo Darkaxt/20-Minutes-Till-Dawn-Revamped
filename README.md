@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 

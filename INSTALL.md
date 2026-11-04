@@ -4,6 +4,8 @@ Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitio
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 
+Download the Android **8.6 (1093)** bundle from [this exact APKMirror page](https://www.apkmirror.com/apk/erabit-studios/20-minutes-till-dawn/20-minutes-till-dawn-8-6-release/20-minutes-till-dawn-8-6-android-apk-download/). Choose **Download APK Bundle**, keep the `.apkm` file, and pass that file to `--android` below. No phone installation is needed. Download the mod ZIP from [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110?tab=files) or the GitHub release linked in the README.
+
 Use your own Windows installation and Android package. Game artwork/data is prepared locally and is not included in this download. The installer does not upload either input. Python 3.14 x64 and .NET 10 are the tested prerequisites. The first preparation downloads pinned Python libraries, Il2CppDumper, BepInEx and the published Sprites Reborn texture source from their authors. No third-party mod DLL or AssetReplacer is installed.
 
 Extract the release ZIP to a normal folder, close the game, and run from that folder in PowerShell, replacing the Android path:
