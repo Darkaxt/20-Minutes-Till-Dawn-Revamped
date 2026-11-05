@@ -13,7 +13,7 @@ Authorized by the user's 2026-11-05 instruction to move reusable inputs out of T
 | Stage | Status | Satisfied | Remaining / blockers | Deferrals |
 |---|---|---|---|---|
 | M1 Migrate and verify maintenance inputs | COMPLETE | M01–M04: exact inventory; hash-verified retained inputs; fresh pinned Python environment; shared helper updates; Release build/package; 614-target copied installation and exact rollback; live game/profile/public package preserved | None | None |
-| M2 Retire disposable storage and deliver | ACTIVE | Reviewed cleanup applied with no exclusions/errors; six legacy roots and the new validation scratch are absent; permanent copies and unchanged live state verified | M05 commit/synchronization | None |
+| M2 Retire disposable storage and deliver | COMPLETE | M05: reviewed cleanup applied with no exclusions/errors; all exact temporary roots absent; permanent delivery/live preservation read back; implementation committed and independently verified on remote `main` | None | None |
 
 Retained private inventory/verification evidence: `D:/Projects/20MTD-Modernization-evidence/storage-migration-20261105`. Disposable new build/validation output will use an exact task root on D: only for sustained small-file/native I/O and will be cleaned when its last consumer exits. No unrelated repository migration or game deployment is authorized by this task.
 
@@ -45,3 +45,5 @@ All 21 local helper sources containing reusable legacy input references were upd
 The helper inspected all 9,491 signed manifest members over ten pages, then applied ticket `13c480aec3920208171c35ef4a2fd73acc0fef27ef008575e855eddcb54686df` for transaction `a127effcc71dbe47b3f4271d32f6b4e6`. It removed **1,263,455,959 logical bytes**, including this migration's disposable build/test output, with no exclusions, errors or residual paths. Permanent hash-verified copied inputs total **529,538,401 bytes**; freshly generated environment launchers and the input-store README are additional maintained files.
 
 Final read-back confirms all six original roots and `D:/Temp/20mtd-storage-verification-20261105` are absent. Steam installation, real profile/configuration and the retained published v1.3.17 package/ZIP match their pre-migration hashes. No phone deployment or replacement gameplay release is part of this storage-only migration. Private acceptance receipts are `workflow-verification.json`, `consumer-verification.json`, `cleanup-inspected.json`, `cleanup-result.json` and `final-verification.json` under the retained evidence directory above.
+
+Implementation delivery: commit `21529013ccf2eaa9f9924faa0cbbec03fc02d4e0`, pushed to the established repository's `main` and independently read back with `git ls-remote`. Both stages are complete; no blocker or tracked deferral remains.
