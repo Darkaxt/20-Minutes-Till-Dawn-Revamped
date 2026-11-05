@@ -415,4 +415,6 @@ This is an independent mod repository; the proprietary game has no public source
 
 For an already prepared development player, set `MODERNIZATION_SCRATCH` to a root containing `game/MinutesTillDawn_Data/Managed` and `game/BepInEx/core`. Build the production project or the separate `validation/Validation.csproj` with the documented SDK; keep the validation assembly out of a normal installation. [Build instructions](INSTALL.md#build-from-source).
 
+Reusable local maintenance inputs live in permanent project storage, separate from disposable build output. The [maintenance storage record](docs/MAINTENANCE-STORAGE.md) documents their locations, consumers and migration verification. These private game/analysis inputs are not distributed in this repository or its releases.
+
 **Flanne** created the original game. **Darkaxt** maintains Revamped. Original repository code is MIT licensed; game assets and dependencies retain their owners' rights and licenses. Third-party mod binaries are not bundled. [Third-party notices and artwork credits](docs/THIRD-PARTY.md).
