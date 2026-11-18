@@ -1,6 +1,6 @@
 # Android 8.7 / 1105 comparison
 
-Source inspection dated 2026-11-18. Revamped's shipped gameplay reference remains Android **8.6 / 1093**. This document records the supplied 8.7 package's content and comparison gaps; it does not claim an implemented or validated 8.7 port.
+Source inspection dated 2026-11-18. Revamped's gameplay reference remains Android **8.6 / 1093**. Version1.4.0 integrates the complete **8.7 /1105 appearance catalog** with permanent victory rewards. Saint Rosa and the remaining gameplay comparisons below are separate pending work; appearance integration does not establish exhaustive8.7 gameplay parity. [Appearance rules and verification](COSMETICS.md).
 
 The user-supplied APKMirror bundle is `com.Flanne.MinutesTillDawn.roguelike.shooting.fr.gp_8.7-1105_2arch_d7d3805da654643d3593e0b8166dac52_apkmirror.com.apkm`, SHA-256 `1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d`. It contains base, ARM64 and ARMv7 APKs. Comparison uses ARM64, matching the retained 8.6 reference. Both its native code and IL2CPP metadata differ from 8.6.
 
@@ -12,16 +12,16 @@ The user-supplied APKMirror bundle is `com.Flanne.MinutesTillDawn.roguelike.shoo
 | Thorn Ammo Belt | New SaintRosaPowerup, perk 0, icon/localization | Required exclusive upgrade |
 | Piercing Petal | New SaintRosaPowerup, perk 1, icon/localization | Required exclusive upgrade |
 | Floral Burial - Finale | New SaintRosaPowerup, perk 2, icon/localization | Required exclusive upgrade |
-| Rose of Versailles: Hina | Character skin 610301, animation controller and portrait | Include cosmetic; acquisition through permanent gameplay unlocks |
-| Rose of Versailles: Luna | Character skin 610801, portrait/controller, black-hole sprite and effect frames | Include cosmetic and matching ability presentation |
-| Rose of Versailles: Raven | Character skin 610111, portrait/controller and crow animation controller | Include cosmetic and matching summon presentation |
-| Wondrous Dual SMGs | Item 4211, weapon cosmetic catalog type 8 | Include cosmetic; permanent gameplay acquisition |
-| Wondrous Cannon | Item 4509, weapon cosmetic catalog type 8 | Include cosmetic; permanent gameplay acquisition |
-| Wondrous Broom | Item 4809, weapon cosmetic catalog type 8 | Include cosmetic; permanent gameplay acquisition |
-| Night Wings | Item 2048, wing catalog type 5 | Include cosmetic; inspect attachment/animation contract |
-| Wondrous Wings | Item 2049, wing catalog type 5 | Include cosmetic; inspect attachment/animation contract |
+| Rose of Versailles: Hina | Character skin 610301, animation controller and portrait | Integrated in1.4.0 Appearance; related permanent victory pool |
+| Rose of Versailles: Luna | Character skin 610801, portrait/controller, black-hole sprite and effect frames | Integrated, including matching black-hole artwork and damage frames; native actor/pool verification |
+| Rose of Versailles: Raven | Character skin 610111, portrait/controller and crow animation controller | Integrated, including matching crow animation; native actor/pool verification |
+| Wondrous Dual SMGs | Item 4211, weapon cosmetic catalog type 8 | Integrated; native fresh/Continue/evolution render verification |
+| Wondrous Cannon | Item 4509, weapon cosmetic catalog type 8 | Integrated in the85 weapon-skin catalog; related permanent victory pool |
+| Wondrous Broom | Item 4809, weapon cosmetic catalog type 8 | Integrated, including source projectile artwork; native pool/Retry verification |
+| Night Wings | Item 2048, wing catalog type 5 | Integrated with source placement, frame interval and animation; native verification |
+| Wondrous Wings | Item 2049, wing catalog type 5 | Integrated with source placement, frame interval and animation; native verification |
 | Halloween Trial | New trial manager, daily-save data, style/tier data and HUD/page classes | Inspect actual objective behavior; retain useful gameplay challenges with friendly rewards |
-| Draw/pass/shop rewards | Source catalogs identify gameplay/cosmetic payloads separately from price, probability, pity, ads and purchase state | Preserve content; exclude monetization and calendar-limited acquisition. Final milestone mapping is not yet implemented |
+| Draw/pass/shop rewards | Source catalogs identify gameplay/cosmetic payloads separately from price, probability, pity, ads and purchase state | Cosmetic catalog integrated through permanent victory pools, without monetization/calendar gates. Saint Rosa gameplay remains pending |
 
 The new cosmetic rows above are derived from the 8.6→8.7 catalog/character-skin difference, not every item available in the event lottery. Existing cosmetics also occur in that lottery and are not counted as new content.
 
@@ -45,7 +45,7 @@ The declarations and serialized values are available for cohesive reconstruction
 | Summons and Pulsing Summons | Changed Summon, SummonEgg, DurationDamageBuff, summon damage/attack-speed powerup declarations; new pulse-effect prefab field | Compare executable callbacks, hitboxes, cooldowns, pooling and Continue behavior against current Revamped fixes; declarations alone do not establish a bug fix |
 | Shooting/reloading | Changed Gun, SkillPassive, ReloadState and ShootingState declarations | Separate Saint Rosa integration from changes to existing weapon behavior |
 | Save/load | Changed in-game save API/data and save-system declarations; new event save types | Recover new gameplay state and applicable lifecycle changes; preserve Revamped's existing progression and deliberate rules |
-| Character cosmetics | Added summon animation/effect fields; changed skin manager and summon-sprite binding | Recover actor, projectile, summon and pooled renderer restoration as a complete appearance path |
+| Character cosmetics | Added summon animation/effect fields; changed skin manager and summon-sprite binding | Complete appearance path integrated: six character skins,85 weapon skins,49 wings,seven free bullet colours; source actor/projectile/pooled render paths and saved appearances verified as documented in COSMETICS.md |
 | Existing asset references | Candidate differences in Rhogog's projectile, pulse prefab and rune-prefab references | Resolve target objects by source identity/contents; anonymous component names and changed IDs are not sufficient evidence of behavior changes |
 | Weapon evolutions | 22 selected GunEvolution assets have unresolved managed-reference trigger layouts in this decoder pass | Recover the trigger serialization before drawing evolution-parity conclusions |
 | Unchanged declarations | A method can change without changing its declaration | Complete relevant method-body comparison before claiming exhaustive 8.7 parity |

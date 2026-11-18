@@ -48,7 +48,8 @@ public sealed class CornerStatusHud:MonoBehaviour
   var player=PlayerController.Instance;if(player==null||player.loadedCharacter==null)return;
   // All native Start bindings have run before this first LateUpdate.
   if(root==null)Build();
-  if(characterPortrait!=player.loadedCharacter.portrait){characterPortrait=player.loadedCharacter.portrait;face.sprite=characterPortrait;}
+  var appearancePortrait=AppearanceRun.Instance?.Portrait??player.loadedCharacter.portrait;
+  if(characterPortrait!=appearancePortrait){characterPortrait=appearancePortrait;face.sprite=characterPortrait;}
   score.ForceMeshUpdate();
   float uiScale=Mathf.Sqrt((float)Screen.width/1280*Screen.height/720);float nativeScale=panel.lossyScale.x;
   var safe=Screen.safeArea;float topInset=Screen.height-safe.yMax;

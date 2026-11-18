@@ -88,7 +88,7 @@ public partial class RuntimeChecks:MonoBehaviour
         // Chainloader may be invoked from InputSystem's static constructor. Start is the
         // lifecycle boundary after that constructor completes and before scene Updates.
         InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
-        if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("weapon-familiarity-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("specialize-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("honeycomb-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("poi-pulse-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("hud-opacity")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("corner-hud-")==true)
+        if(Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("cosmetics-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("weapon-familiarity-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("specialize-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("honeycomb-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("poi-pulse-")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("hud-opacity")==true||Environment.GetEnvironmentVariable("MODERNIZATION_TEST")?.StartsWith("corner-hud-")==true)
         foreach(var device in InputSystem.devices.Where(d=>d.native).ToArray())
         {
             Log("fixture-device-isolation",device.deviceId+":"+device.name+" native="+device.native+" enabled="+device.enabled+" mouseHeld="+(device is Mouse physicalMouse?physicalMouse.leftButton.isPressed.ToString():"n/a"));
@@ -137,6 +137,7 @@ public partial class RuntimeChecks:MonoBehaviour
         if(testMode.StartsWith("shared-runes-")){yield return CheckSharedRunes(testMode);yield break;}
         if(testMode.StartsWith("fire-panic-")){yield return CheckFirePanic(testMode);yield break;}
         if(testMode.StartsWith("magnet-pacing-")){yield return CheckMagnetPacing(testMode);yield break;}
+        if(testMode.StartsWith("cosmetics-")){yield return CheckCosmetics(testMode);yield break;}
         if(testMode.StartsWith("roster-header-")){yield return CheckRosterHeader(title,testMode.EndsWith("probe"));yield break;}
         if(testMode=="readme-screenshots"){yield return CheckReadmeScreenshots(title);yield break;}
         if(testMode.StartsWith("rune-rewards-")){yield return CheckRuneRewards(testMode);yield break;}

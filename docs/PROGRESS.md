@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Appearance collection — 2026-11-18
+
+[Scope and acceptance](COSMETICS.md). Source integration and integrated validation COMPLETE; final release/delivery ACTIVE. The catalog contains six character skins,85 weapon skins,49 wings and seven free bullet colours. Related victory rewards, all-entry equip/reset and journal reload pass. Native controller/pointer/square/widescreen menus, representative character/weapon/wing/hero actors, pool reuse, Broom projectile, Magic Bow ground arrows, Retry, Continue and native weapon evolution pass. The actual packaged installer verifies1,738 owned files while preserving142 original files and configuration. Old DroidDeck asset sets require one-time Windows preparation with both supported APKM inputs; saves remain compatible.
+
+Private evidence: `D:/Projects/20MTD-Modernization-evidence/cosmetics-20261118`. Acquisition/native victory: run-3; menu/art/Retry: run-6; saved appearance: run-7; fresh-process Continue/evolution: run-8. Native completion and desktop-release receipts are retained. Stage closure reuses unchanged passing workflows rather than repeating acquisition simulations. Live Steam files, user profile and phone remain untouched. Saint Rosa and the broader8.7 gameplay review remain explicitly separate in the disparity ledger.
+
 ## Nexus Mods publication — 2026-11-04
 
 [Revamped on Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) is published under Darkaxt, Gameplay, version 1.3.17, with eight captioned Windows test screenshots. The numbered installation procedure and external requirements link directly to the supported Android 8.6/1093 APKMirror bundle. Existing MIT code terms and third-party credits are retained. AI tags disclose code generation and the page description; gallery images are actual game captures.

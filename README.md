@@ -1,10 +1,10 @@
 # 20 Minutes Till Dawn — Revamped
 
-Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, milestone unlocks and a native Custom mode.
+Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, milestone unlocks, a native Custom mode and Android 8.7's appearance collection earned through play.
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.3.17](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.17) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.4.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.0) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -12,6 +12,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 
 | Area | Delivered improvements |
 |---|---|
+| **Appearance earned through play** | A native Appearance tab beside Runes selects each character's skin/wings and each weapon's skin/bullet colour. The complete 8.7 catalog contains six character skins, 85 weapon skins, 49 wings and seven freely selectable colours. Successful non-Custom runs award one unowned related character skin/shared wing and one unowned skin for the played weapon, while eligible rewards remain. No purchase, pass or expiry. |
 | **Specialize summons** | Shana’s triple-upgrade chest reward creates triple the actual summons: 3 eggs, mirrors, ghosts, scythes or Electro Bugs; 6 lances. |
 | **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
 | **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
@@ -34,6 +35,18 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 *Release acceptance covers native weapon handling, controller/pointer preview, evolution, Retry, Custom and current/older Continue. Compatible saves are preserved. Exact-package/public-download evidence is recorded in [PROGRESS.md](docs/PROGRESS.md).*
 
 ## See it in game
+
+### Collect a new appearance
+
+Open **Appearance** beside **Runes** in character or weapon selection. Browse locked entries, preview wings and weapon art, and equip earned choices using the controller or mouse. Each character keeps its own skin and wing selection; each weapon keeps its skin and bullet colour. Original appearance and no wings remain available.
+
+![Native Appearance menu with paged wings, preview and simple victory unlock condition](docs/images/appearance-menu.png)
+
+Victories award previously unowned cosmetics from the played character's skin/shared-wing pool and the played weapon's skin pool. The catalog contains **140 earnable skins/wings**, plus **seven free bullet colours**. An exhausted pool grants nothing, Custom grants no cosmetics, and existing clear records do not fabricate historical rewards. Continue keeps the run's captured appearance even if the menu selection changes later.
+
+![Selected character skin, animated wings and weapon artwork in the Windows player](docs/images/appearance-in-game.png)
+
+Version1.4.0 requires a **one-time local artwork preparation with both Android8.6/1093 and8.7/1105 inputs** before transferring the updated Windows game to DroidDeck. The existing updater detects the changed asset set before writing. No save reset. The gameplay reference remains8.6; Saint Rosa's separate gameplay integration is still pending. [Installation](INSTALL.md) · [Appearance rules and validation](docs/COSMETICS.md) · [8.7 disparity ledger](docs/ANDROID-8.7.md).
 
 ### Grow familiar with a weapon
 
@@ -238,6 +251,8 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+- **1.4.0 — Appearance collection:** native controller/pointer menu; complete Android8.7 skin/wing/colour catalog; related victory unlocks; per-owner selections, portraits, source actor/projectile animations and saved-run appearances. One-time local8.7 artwork preparation alongside8.6; compatible progress preserved. Correct consecutive journal/checkpoint publication and cosmetic title-scene lifetime handling. [Release notes](release/NOTES-1.4.0.md).
 
 ### v1.3.17 — Character-specific weapon familiarity
 

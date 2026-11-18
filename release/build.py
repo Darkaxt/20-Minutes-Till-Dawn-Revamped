@@ -24,14 +24,12 @@ if args.output.exists():
 revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
 if not args.candidate and subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip():
     raise SystemExit('Final package requires committed, verified source')
-env = os.environ.copy()
-env.update(TEMP=str(args.scratch), TMP=str(args.scratch), MODERNIZATION_SCRATCH=str(args.scratch),
-           DOTNET_CLI_HOME=str(args.scratch / 'dotnet'), DOTNET_GENERATE_ASPNET_CERTIFICATE='false')
-subprocess.run(['dotnet', 'build', str(ROOT / 'src/Modernization.csproj'), '-c', 'Release', '--no-restore',
-                '--nologo', '-v:minimal', '-nodeReuse:false', '-m:1', '-p:UseSharedCompilation=false'], cwd=ROOT, env=env, check=True)
-stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.3.17'
-(stage / 'Mod').mkdir(parents=True)
 plugin = args.scratch / 'bin/Modernization/netstandard2.0/TwentyMinutes.Modernization.dll'
+inputs = list((ROOT / 'src').glob('*.cs')) + list((ROOT / 'src').glob('*.csproj')) + [ROOT / 'Directory.Build.props']
+if not plugin.is_file() or any(path.stat().st_mtime_ns > plugin.stat().st_mtime_ns for path in inputs):
+    raise SystemExit('Run the managed Release build against the complete current source before packaging; this command never launches an implicit compiler')
+stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.4.0'
+(stage / 'Mod').mkdir(parents=True)
 shutil.copy2(plugin, stage / 'Mod' / plugin.name)
 shutil.copytree(ROOT / 'installer', stage / 'installer', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
 shutil.copytree(ROOT / 'docs', stage / 'docs')
@@ -44,9 +42,10 @@ shutil.copy2(ROOT / 'android-updater/README.md', stage / 'android-updater/README
 for name in ('README.md', 'LICENSE', 'INSTALL.md'):
     shutil.copy2(ROOT / name, stage / name)
 contract = asset_contract(args.prepared_assets)
-if len(contract) != 593:
-    raise SystemExit('Prepared asset contract must contain the complete 593-file local runtime set, including affixes, achievement icons/catalog, source display/camera data and both gameplay sounds with provenance')
-release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.3.17', 'source_commit': revision,
+appearance = json.loads((args.prepared_assets / 'cosmetics/manifest.json').read_text(encoding='utf8'))
+if len(appearance['items']) != 147 or len(contract) != 593 + 1 + len(appearance['sprites']):
+    raise SystemExit('Prepared assets must contain the complete existing gameplay set and the locally prepared 147-entry appearance catalog')
+release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.4.0', 'source_commit': revision,
            'candidate': args.candidate, 'plugin_sha256': digest(plugin), 'assets': contract,
            'asset_delivery': 'Prepared locally from pinned owned inputs; no extracted game art/data in this archive'}
 (stage / 'RELEASE.json').write_text(json.dumps(release, indent=2) + '\n', encoding='utf8', newline='\n')
@@ -60,12 +59,12 @@ installed.update({'BepInEx/plugins/20MTDModernization/Assets/' + p.relative_to(a
                   for p in args.prepared_assets.rglob('*') if p.is_file()})
 plugin_path = 'BepInEx/plugins/20MTDModernization/TwentyMinutes.Modernization.dll'
 installed[plugin_path] = digest(plugin)
-if len(installed) != 614:
-    raise SystemExit('Updater contract requires the complete 614-file owned payload')
-(stage / 'UPDATE.json').write_text(json.dumps({'schema': 2, 'minimum_updater': '0.2.0', 'save_epoch': 1, 'product': '20MTD-Revamped', 'version': '1.3.17',
+if len(installed) != len(contract) + 21:
+    raise SystemExit('Updater contract requires the complete artwork, loader and plugin payload')
+(stage / 'UPDATE.json').write_text(json.dumps({'schema': 2, 'minimum_updater': '0.2.0', 'save_epoch': 1, 'product': '20MTD-Revamped', 'version': '1.4.0',
     'source_commit': revision, 'files': installed, 'payload': {plugin_path: 'Mod/' + plugin.name}}, indent=2) + '\n', encoding='utf8', newline='\n')
 files = {p.relative_to(stage).as_posix(): digest(p) for p in sorted(stage.rglob('*')) if p.is_file()}
-(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.3.17', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
+(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.4.0', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
 archive = args.output / (stage.name + '.zip')
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as package:
     for path in sorted(stage.rglob('*')):

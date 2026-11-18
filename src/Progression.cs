@@ -34,6 +34,7 @@ public static partial class Progression
   public List<ModeClearRecord> modeClears=new List<ModeClearRecord>();
   public List<WeaponFamiliarity.Record> weaponFamiliarity=new List<WeaponFamiliarity.Record>();
   public bool weaponFamiliarityRecovered;
+  public Cosmetics.Collection cosmetics;
  }
  public class ModeClearRecord{public string mode;public int difficulty,count;}
  public class Gate
@@ -122,6 +123,7 @@ public static partial class Progression
   State.version=2;
   RuneProgression.Initialize();
   SourceAchievementRewards.Load();
+  Cosmetics.Initialize();
   foreach(var gate in Gates)
   {
    bool legacyScenario=existingSave&&!journalExists&&gate.Id.StartsWith("scenario:")&&gate.Data.name!="Challenge_Forest"&&(gate.Data.name=="10M_Forest"||gate.Data.name=="Endless_Forest"||SaveSystem.data.difficultyUnlocked>0);
@@ -143,7 +145,7 @@ public static partial class Progression
   Directory.CreateDirectory(Application.persistentDataPath);string temp=JournalPath+".writing";
   using(var stream=new FileStream(temp,FileMode.Create,FileAccess.Write,FileShare.None))
   {new DataContractJsonSerializer(typeof(Journal)).WriteObject(stream,State);stream.Flush(true);}
-  if(File.Exists(JournalPath))File.Replace(temp,JournalPath,null);else File.Move(temp,JournalPath);
+  AtomicSave.Commit(temp,JournalPath);
  }
  public static void Refresh()
  {

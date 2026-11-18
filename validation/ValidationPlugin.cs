@@ -14,7 +14,7 @@ public class ValidationPlugin:BaseUnityPlugin
 {
  void Awake()
  {
-  if(Application.companyName!="CodexModernization" || Application.productName!="20MTD-Modernization-Validation" || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MODERNIZATION_RESULT_DIR")))throw new InvalidOperationException("Validation fixture refuses the non-isolated player");
+  if(Application.companyName!="CodexModernization" || Application.productName!=(Environment.GetEnvironmentVariable("MODERNIZATION_VALIDATION_PRODUCT")??"20MTD-Modernization-Validation") || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MODERNIZATION_RESULT_DIR")))throw new InvalidOperationException("Validation fixture refuses the non-isolated player");
   Application.runInBackground=true;
   AudioListener.volume=0f;
   Plugin.Diagnostic+=RuntimeChecks.Log;

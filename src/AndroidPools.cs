@@ -100,6 +100,7 @@ public sealed class AndroidPools:MonoBehaviour
   BossArenaLifetime.ConfigurePrefab(prefab);
   AndroidDamagePopup.ConfigurePrefab(prefab);
   ColorfulProjectileVisuals.Configure(prefab);
+  CosmeticActor.Configure(prefab);
   if(prefab.GetComponent<flanne.Pickups.ChestPickup>()!=null&&prefab.GetComponent<ChestDirectionIndicator>()==null)prefab.AddComponent<ChestDirectionIndicator>();
   prefab=SourceTemplate(prefab);
   var source=AndroidPoolTables.Items.FirstOrDefault(i=>i.Tag==tag)??AndroidPoolTables.Items.FirstOrDefault(i=>i.Prefab==prefab.name);

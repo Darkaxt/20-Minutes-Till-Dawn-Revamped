@@ -45,6 +45,7 @@ public static partial class RunResume
   [DataMember]public RuneRewardStateData runeRewards;
   [DataMember]public int? weaponFamiliarity;
   [DataMember]public bool? characterWeaponFamiliarity;
+  [DataMember]public AppearanceRun.Snapshot appearance;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -87,7 +88,7 @@ public static partial class RunResume
  {
   string temp=PathName+".writing";
   using(var stream=new FileStream(temp,FileMode.Create,FileAccess.Write,FileShare.None)){new DataContractJsonSerializer(typeof(Snapshot)).WriteObject(stream,saved);stream.Flush(true);}
-  if(File.Exists(PathName))File.Replace(temp,PathName,null);else File.Move(temp,PathName);
+  AtomicSave.Commit(temp,PathName);
  }
  public static void Invalidate()
  {if(File.Exists(PathName))Write(new Snapshot{valid=false,savedUtc=DateTime.UtcNow.ToString("O")});}
@@ -126,6 +127,7 @@ public static partial class RunResume
   RuneRewardRun.Instance.Ensure();state.runeRewards=RuneRewardRun.Instance.State;
   state.weaponFamiliarity=p.GetComponent<WeaponFamiliarity>().Rank;
   state.characterWeaponFamiliarity=true;
+  state.appearance=AppearanceRun.Instance?.Capture();
   state.eliteClaims=EliteRun.Instance.Claimed;state.eliteTiers=EliteRun.Instance.Progress;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)

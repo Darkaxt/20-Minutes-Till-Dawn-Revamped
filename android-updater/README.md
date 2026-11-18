@@ -13,6 +13,8 @@ This uses DroidDeck's Files provider, not direct access to another app's private
 
 ## What it updates
 
+**Game 1.4.0 appearance collection:** this release adds new locally prepared game artwork. Prepare it once with the [Windows installer](../INSTALL.md), then transfer the prepared game to DroidDeck. The updater reports the changed asset requirement before writing anything; the public ZIP contains no extracted Android artwork. Subsequent compatible DLL-only updates continue through the app. This appearance update has no additional save reset.
+
 The client verifies GitHub's archive digest, the package inventory and its `UPDATE.json` contract. It checks the existing installed file set before changing the owned mod DLL and installation record. Already prepared artwork, loader, original game, settings and Wine registry are retained.
 
 **Updater 0.2.0 is required for game 1.3.0 and later.** Crossing the character-rune transition resets this game's native progress, achievements/rune journal and Continue checkpoint once, including recognized partial/backup save copies. The button explicitly says **Reset saves & install**. The exact files are recorded before deletion, verified on recovery, and limited to this game's profile inside its own Steam app-1966900 prefix. Other games, unrelated profile files and mod settings remain. The completed epoch is stored with the installation; later and repeated updates preserve new progress. Close the game before updating and do not clear updater data while recovery is pending.

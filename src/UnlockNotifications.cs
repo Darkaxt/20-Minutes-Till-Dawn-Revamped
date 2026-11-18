@@ -23,7 +23,7 @@ public class UnlockNotifications:MonoBehaviour
  bool CanShow()
  {
   var game=Object.FindObjectOfType<GameController>();
-  if(game!=null)return game.CurrentState is CombatState&&!PauseController.isPaused;
+  if(game!=null)return game.CurrentState is CombatState&&!PauseController.isPaused||game.CurrentState is PlayerSurvivedState;
   return Progression.Title!=null&&Progression.Title.CurrentState is TitleMainMenuState;
  }
  void Build()
@@ -50,8 +50,12 @@ public class UnlockNotifications:MonoBehaviour
    if(visibleSeconds<4f)return;
    Showing=null;Root.SetActive(false);
   }
-  if(Progression.State.pending.Count==0)return;
+  if(Progression.State.pending.Count==0&&(!Cosmetics.Available||Cosmetics.State.pending.Count==0))return;
   if(Root==null)Build();if(Root==null)return;
+  if(Progression.State.pending.Count==0)
+  {
+   if(Cosmetics.TakeNotice(out var cosmeticIcon,out var cosmeticText)){Showing="appearance";visibleSeconds=0;Icon.sprite=cosmeticIcon;Icon.enabled=cosmeticIcon!=null;Label.text=cosmeticText;Root.SetActive(true);}return;
+  }
   string id=Progression.State.pending[0];var gate=Progression.Gates.Single(g=>g.Id==id);
   var notice=Progression.State.notices.Single(n=>n.id==id);string completedGoal=notice.goal;
   // Commit delivery before making the notice visible. Other pending notices

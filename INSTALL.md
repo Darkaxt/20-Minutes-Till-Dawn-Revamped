@@ -1,17 +1,19 @@
-# Install 1.3.17
+# Install 1.4.0
 
-Android/DroidDeck: use **Revamped Updater 0.2.0**. Updating an already transitioned1.3.0–1.3.16 installation to1.3.17 preserves progress and Continue; there is no new save reset. Crossing from before the character-rune transition still resets this game's old progress and Continue save once, with an explicit button warning. Connect the DroidDeck/Steam-library folder so the updater can reach this game's own prefix. Windows installation retains existing purchased ranks as the initial character rune seed. [Updater instructions](android-updater/README.md).
+Version 1.4.0 adds locally prepared appearance artwork. **Prepare this version with the Windows installer before updating its DroidDeck copy.** Updater 0.2.0 detects the changed asset set and requests that preparation; a DLL-only update cannot supply the new artwork. This transition preserves existing progress, settings and Continue saves; there is no new save reset. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build 12679152 (Unity 2019.4.40f1 Mono x64), and Android 8.6 (1093) APKM with SHA-256 `c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f`.
 
 Download the Android **8.6 (1093)** bundle from [this exact APKMirror page](https://www.apkmirror.com/apk/erabit-studios/20-minutes-till-dawn/20-minutes-till-dawn-8-6-release/20-minutes-till-dawn-8-6-android-apk-download/). Choose **Download APK Bundle**, keep the `.apkm` file, and pass that file to `--android` below. No phone installation is needed. Download the mod ZIP from [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110?tab=files) or the GitHub release linked in the README.
+
+Also obtain **8.7 (1105), arm64-v8a + armeabi-v7a**, from the [8.7 APKMirror release page](https://www.apkmirror.com/apk/erabit-studios/20-minutes-till-dawn/20-minutes-till-dawn-8-7-release/) and pass it to `--cosmetics`. Its SHA-256 is `1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d`. The two inputs have distinct purposes: 8.6 supplies the established gameplay contracts, while 8.7 supplies the complete appearance collection. Adding cosmetics does not claim that the separate Saint Rosa gameplay port is complete.
 
 Use your own Windows installation and Android package. Game artwork/data is prepared locally and is not included in this download. The installer does not upload either input. Python 3.14 x64 and .NET 10 are the tested prerequisites. The first preparation downloads pinned Python libraries, Il2CppDumper, BepInEx and the published Sprites Reborn texture source from their authors. No third-party mod DLL or AssetReplacer is installed.
 
 Extract the release ZIP to a normal folder, close the game, and run from that folder in PowerShell, replacing the Android path:
 
 ```powershell
-python installer/install.py install --game "D:/Steam/steamapps/common/20MinuteTillDawn" --android "D:/Downloads/your-8.6-1093.apkm" --work-dir "D:/Temp/20MTD-Revamped-Install"
+python installer/install.py install --game "D:/Steam/steamapps/common/20MinuteTillDawn" --android "D:/Downloads/your-8.6-1093.apkm" --cosmetics "D:/Downloads/your-8.7-1105.apkm" --work-dir "D:/Temp/20MTD-Revamped-Install"
 python installer/install.py verify --game "D:/Steam/steamapps/common/20MinuteTillDawn"
 ```
 
