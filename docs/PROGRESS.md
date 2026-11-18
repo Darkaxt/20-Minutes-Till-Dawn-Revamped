@@ -2,9 +2,11 @@
 
 ## Single Android input — 2026-11-18
 
-[Scope](ANDROID-INPUT.md). I1 COMPLETE; I2 release/delivery ACTIVE. A fresh preparation uses only8.7/1105 with one metadata decode. All1,717 payload contracts preserve1.4.0 gameplay/render semantics after accounting for package-local sprite identifiers and audio provenance IDs. The actual package installs and verifies1,738 files on an isolated copy, preserving142 original files/configuration; repeat installation is idempotent. Native fresh play and an actual1.4.0 Continue/evolution pass. No new gameplay additions, balance changes or save reset; no live game or phone deployment.
+[Scope](ANDROID-INPUT.md). I1 and I2 COMPLETE. A fresh preparation uses only8.7/1105 with one metadata decode. All1,717 payload contracts preserve1.4.0 gameplay/render semantics after accounting for package-local sprite identifiers and audio provenance IDs. The actual package installs and verifies1,738 files on an isolated copy, preserving142 original files/configuration; repeat installation is idempotent. Native fresh play and an actual1.4.0 Continue/evolution pass. No new gameplay additions, balance changes or save reset; no live game or phone deployment.
 
 Required evidence and release artifacts: `D:/Projects/20MTD-Modernization-evidence/input87-20261118`. The verified8.7-only asset/tool preparation is retained at `D:/Projects/20MTD-Modernization-maintenance/input-8.7` for ongoing maintenance. Scratch and the unique QA profile are registered in cleanup transaction `790e56074759be549f5fdd9c5f277562`.
+
+Normal [v1.4.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.1) is published from `9a993d73458d3edc567a081766c864793c5bafdf`. Independent public-download SHA-256 `f734c7ee44b27184178983f354897378138a548b55b5b4e652ded8436f5725a6`; all110 package members, version1.4.1.0 and installed-payload contracts verify. Every final type/method IL matches the native-tested implementation. Exact reviewed cleanup removed659,792,314 logical bytes and left no task scratch/QA profile. No remaining blockers or deferrals for the input migration.
 
 ## Appearance collection — 2026-11-18
 
