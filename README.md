@@ -411,6 +411,8 @@ The gameplay images above are unaltered Windows test screenshots, including earl
 
 ## Development and credits
 
+**Android 8.7 / build 1105:** the supplied update has been inspected. Its [content and comparison ledger](docs/ANDROID-8.7.md) records Saint Rosa, eight new cosmetics and existing-system review gaps. These additions are not yet integrated; the published mod retains its 8.6 reference. Cosmetics remain eligible for gameplay-based unlocks without mobile monetization.
+
 This is an independent mod repository; the proprietary game has no public source repository to fork. Game binaries, extracted artwork, saves and raw disassembly are not published here. [Development and migration notes](docs/MIGRATION.md) · [Redirected-code audit](docs/DEAD-CODE.md).
 
 For an already prepared development player, set `MODERNIZATION_SCRATCH` to a root containing `game/MinutesTillDawn_Data/Managed` and `game/BepInEx/core`. Build the production project or the separate `validation/Validation.csproj` with the documented SDK; keep the validation assembly out of a normal installation. [Build instructions](INSTALL.md#build-from-source).
