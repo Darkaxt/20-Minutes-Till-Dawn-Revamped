@@ -1,5 +1,11 @@
 # Current Android gameplay completion
 
+## Single Android input — 2026-11-18
+
+[Scope](ANDROID-INPUT.md). I1 COMPLETE; I2 release/delivery ACTIVE. A fresh preparation uses only8.7/1105 with one metadata decode. All1,717 payload contracts preserve1.4.0 gameplay/render semantics after accounting for package-local sprite identifiers and audio provenance IDs. The actual package installs and verifies1,738 files on an isolated copy, preserving142 original files/configuration; repeat installation is idempotent. Native fresh play and an actual1.4.0 Continue/evolution pass. No new gameplay additions, balance changes or save reset; no live game or phone deployment.
+
+Required evidence and release artifacts: `D:/Projects/20MTD-Modernization-evidence/input87-20261118`. The verified8.7-only asset/tool preparation is retained at `D:/Projects/20MTD-Modernization-maintenance/input-8.7` for ongoing maintenance. Scratch and the unique QA profile are registered in cleanup transaction `790e56074759be549f5fdd9c5f277562`.
+
 ## Appearance collection — 2026-11-18
 
 [Scope and acceptance](COSMETICS.md). Source integration, integrated validation and final release/delivery COMPLETE. The catalog contains six character skins,85 weapon skins,49 wings and seven free bullet colours. Related victory rewards, all-entry equip/reset and journal reload pass. Native controller/pointer/square/widescreen menus, representative character/weapon/wing/hero actors, pool reuse, Broom projectile, Magic Bow ground arrows, Retry, Continue and native weapon evolution pass. The actual packaged installer verifies1,738 owned files while preserving142 original files and configuration. Old DroidDeck asset sets require one-time Windows preparation with both supported APKM inputs; saves remain compatible.

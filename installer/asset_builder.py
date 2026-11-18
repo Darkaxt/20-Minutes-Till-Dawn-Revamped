@@ -71,8 +71,8 @@ def weapon_audio(env, output):
     audio = output / 'audio'
     audio.mkdir(exist_ok=True)
     for identity, name, stem, expected_frames in (
-        (392, 'Spell_Ice_Small_Whoosh_01', 'icicle-whoosh', 44100),
-        (399, 'Fire Spelll 27', 'overload', 184012),
+        (448, 'Spell_Ice_Small_Whoosh_01', 'icicle-whoosh', 44100),
+        (455, 'Fire Spelll 27', 'overload', 184012),
     ):
         obj = next(o for o in env.objects if o.assets_file.name == 'sharedassets1.assets' and o.path_id == identity)
         clip = obj.read()
@@ -162,8 +162,8 @@ def android_assets(apkm, dummy, output):
 
     characters = []
     for key, character_id, passive_id, power_ids in (
-            ('Haruka', 2989, 3369, (2990, 2991, 2992)),
-            ('Dimond_Portrait', 2984, 3562, (2986, 2987, 2988))):
+            ('Haruka', 3149, 3545, (3150, 3151, 3152)),
+            ('Dimond_Portrait', 3144, 3738, (3146, 3147, 3148))):
         character, passive = objects['sharedassets0.assets', character_id], objects['sharedassets0.assets', passive_id]
         d, pd = read_mono(character), read_mono(passive)
         if d['m_Name'] != key:
@@ -239,7 +239,7 @@ def android_assets(apkm, dummy, output):
     fallback = output / 'powerups'
     fallback.mkdir()
     powers = []
-    for name, path_id in zip(('Adrenaline', 'HeavyCaliber', 'LargeMag', 'LightenLoad', 'NightVision', 'PeaShooter'), range(3591, 3597)):
+    for name, path_id in zip(('Adrenaline', 'HeavyCaliber', 'LargeMag', 'LightenLoad', 'NightVision', 'PeaShooter'), range(3708, 3714)):
         obj = objects['sharedassets1.assets', path_id]
         data = read_mono(obj)
         if data['m_Name'] != name:
@@ -261,7 +261,7 @@ def android_assets(apkm, dummy, output):
         deref(owner, pointer).read().image.save(achievements / filename)
         return filename
 
-    catalog = objects['sharedassets1.assets', 3399]
+    catalog = objects['sharedassets1.assets', 3518]
     catalog_data = read_mono(catalog)
     if catalog_data['m_Name'] != 'AchieveProfile':
         raise ValueError('Achievement catalog whitelist identity mismatch')
@@ -276,7 +276,7 @@ def android_assets(apkm, dummy, output):
                         'description': loc[data['descriptionStringID']['key']],
                         'icon': achievement_icon(obj, data['icon'], f'{identity}-earned.png'),
                         'iconGray': achievement_icon(obj, data['iconGray'], f'{identity}-locked.png')})
-    reward_profile = objects['sharedassets1.assets', 3400]
+    reward_profile = objects['sharedassets1.assets', 3519]
     reward_data = read_mono(reward_profile)
     if reward_data['m_Name'] != 'AchieveRewardProfile':
         raise ValueError('Achievement reward whitelist identity mismatch')
@@ -288,7 +288,7 @@ def android_assets(apkm, dummy, output):
         rewards.append({'id': row['id'], 'count': row['achieveCount'], 'amount': reward['value'],
                         'icon': achievement_icon(reward_profile, reward['icon'], f'reward-{row["id"]}.png')})
     (achievements / 'manifest.json').write_text(json.dumps({'entries': entries, 'rewards': rewards}, indent=2), encoding='utf8')
-    controller = objects['level2', 3848]
+    controller = objects['level2', 3891]
     controller_data = read_mono(controller)
     controller_script = deref(controller, controller_data['m_Script']).read()
     if controller_script.m_ClassName != 'GameController' or controller_script.m_Namespace != 'flanne.Core':
@@ -298,10 +298,10 @@ def android_assets(apkm, dummy, output):
         'interval': 1.0, 'tipDuration': 2.0, 'tip': loc['damage_display_auto']}, indent=2), encoding='utf8')
     camera_maps = []
     for file, identity, name in [
-            ('sharedassets1.assets', 3447, '10M_Forest'), ('sharedassets1.assets', 3448, '20M_Forest'),
-            ('sharedassets1.assets', 3449, '20M_Forest_new'), ('sharedassets1.assets', 3450, '20M_PumpkinPatch'),
-            ('sharedassets1.assets', 3451, '20M_Temple'), ('sharedassets1.assets', 3452, 'Challenge_Forest'),
-            ('sharedassets1.assets', 3453, 'Endless_Forest'), ('sharedassets2.assets', 212, 'Dev_Map')]:
+            ('sharedassets1.assets', 3564, '10M_Forest'), ('sharedassets1.assets', 3565, '20M_Forest'),
+            ('sharedassets1.assets', 3566, '20M_Forest_new'), ('sharedassets1.assets', 3567, '20M_PumpkinPatch'),
+            ('sharedassets1.assets', 3568, '20M_Temple'), ('sharedassets1.assets', 3569, 'Challenge_Forest'),
+            ('sharedassets1.assets', 3570, 'Endless_Forest'), ('sharedassets2.assets', 208, 'Dev_Map')]:
         data = read_mono(objects[file, identity])
         if data['m_Name'] != name:
             raise ValueError('Camera map whitelist identity mismatch')

@@ -4,7 +4,7 @@ Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, 
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.4.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.0) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.4.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.1) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
@@ -46,7 +46,7 @@ Victories award previously unowned cosmetics from the played character's skin/sh
 
 ![Selected character skin, animated wings and weapon artwork in the Windows player](docs/images/appearance-in-game.png)
 
-Version1.4.0 requires a **one-time local artwork preparation with both Android8.6/1093 and8.7/1105 inputs** before transferring the updated Windows game to DroidDeck. The existing updater detects the changed asset set before writing. No save reset. The gameplay reference remains8.6; Saint Rosa's separate gameplay integration is still pending. [Installation](INSTALL.md) · [Appearance rules and validation](docs/COSMETICS.md) · [8.7 disparity ledger](docs/ANDROID-8.7.md).
+Version1.4.1 prepares all required artwork/data from **Android8.7/1105 only**. No8.6 input or previous preparation is needed. Prepare changed assets with the Windows installer before transferring the game to DroidDeck; the updater detects incompatible asset sets before writing. No save reset. Existing gameplay stays unchanged; Saint Rosa and other8.7 gameplay additions remain pending separate evaluation. [Installation](INSTALL.md) · [Single-input migration](docs/ANDROID-INPUT.md) · [Appearance rules](docs/COSMETICS.md) · [8.7 disparity ledger](docs/ANDROID-8.7.md).
 
 ### Grow familiar with a weapon
 
@@ -214,9 +214,9 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 ## Install or upgrade
 
-You need your own **Windows Steam build 12679152** (Unity 2019.4.40f1 Mono x64) and the supported **Android 8.6 / 1093 APKM**. Python 3.14 x64 and .NET 10 are the tested preparation prerequisites.
+You need your own **Windows Steam build12679152** (Unity2019.4.40f1 Mono x64) and the supported **Android8.7/1105 APKM only**. Python3.14 x64 and .NET10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.3.10 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.3.10).
+1. Download and extract the [v1.4.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.1).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -251,6 +251,8 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+- **1.4.1 — One Android input:** prepare gameplay resources and the complete appearance collection using Android8.7/1105 alone. One metadata decode, updated asset identities and simpler installation instructions; existing gameplay and compatible saves preserved. [Release notes](release/NOTES-1.4.1.md).
 
 - **1.4.0 — Appearance collection:** native controller/pointer menu; complete Android8.7 skin/wing/colour catalog; related victory unlocks; per-owner selections, portraits, source actor/projectile animations and saved-run appearances. One-time local8.7 artwork preparation alongside8.6; compatible progress preserved. Correct consecutive journal/checkpoint publication and cosmetic title-scene lifetime handling. [Release notes](release/NOTES-1.4.0.md).
 
@@ -426,7 +428,7 @@ The gameplay images above are unaltered Windows test screenshots, including earl
 
 ## Development and credits
 
-**Android 8.7 / build 1105:** the supplied update has been inspected. Its [content and comparison ledger](docs/ANDROID-8.7.md) records Saint Rosa, eight new cosmetics and existing-system review gaps. These additions are not yet integrated; the published mod retains its 8.6 reference. Cosmetics remain eligible for gameplay-based unlocks without mobile monetization.
+**Android8.7/build1105:** the sole preparation input since1.4.1. Its complete cosmetic catalog is integrated through permanent victory rewards. Saint Rosa, Halloween Trial and the remaining gameplay comparisons are recorded separately in the [disparity ledger](docs/ANDROID-8.7.md); this input migration preserves the current gameplay rules.
 
 This is an independent mod repository; the proprietary game has no public source repository to fork. Game binaries, extracted artwork, saves and raw disassembly are not published here. [Development and migration notes](docs/MIGRATION.md) · [Redirected-code audit](docs/DEAD-CODE.md).
 

@@ -2,6 +2,8 @@
 
 Source inspection dated 2026-11-18. Revamped's gameplay reference remains Android **8.6 / 1093**. Version1.4.0 integrates the complete **8.7 /1105 appearance catalog** with permanent victory rewards. Saint Rosa and the remaining gameplay comparisons below are separate pending work; appearance integration does not establish exhaustive8.7 gameplay parity. [Appearance rules and verification](COSMETICS.md).
 
+Version1.4.1 migrates local preparation to **8.7/1105 as the only Android input**, retaining existing gameplay semantics. The8.6 package is no longer an installation requirement. This resource migration leaves the pending gameplay rows below for separate evaluation. [Single-input migration](ANDROID-INPUT.md).
+
 The user-supplied APKMirror bundle is `com.Flanne.MinutesTillDawn.roguelike.shooting.fr.gp_8.7-1105_2arch_d7d3805da654643d3593e0b8166dac52_apkmirror.com.apkm`, SHA-256 `1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d`. It contains base, ARM64 and ARMv7 APKs. Comparison uses ARM64, matching the retained 8.6 reference. Both its native code and IL2CPP metadata differ from 8.6.
 
 ## Content ledger

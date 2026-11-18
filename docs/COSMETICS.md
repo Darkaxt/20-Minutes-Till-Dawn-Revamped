@@ -1,5 +1,7 @@
 # Appearance collection
 
+Installation update: since1.4.1, **Android8.7/1105 alone** supplies gameplay resources and cosmetics. The two-input preparation below describes the historical1.4.0 release. [Current instructions](../INSTALL.md) · [Single-input migration](ANDROID-INPUT.md).
+
 Authorization: the user requested a tab comparable to Runes, selecting each character/weapon's available skin, with related cosmetics unlocked by successful runs. Cosmetics are included independently of Android purchases, passes and lotteries. Existing gameplay, progression and saves must be preserved.
 
 ## Required behavior

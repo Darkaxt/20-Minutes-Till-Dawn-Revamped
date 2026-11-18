@@ -13,7 +13,7 @@ This uses DroidDeck's Files provider, not direct access to another app's private
 
 ## What it updates
 
-**Game 1.4.0 appearance collection:** this release adds new locally prepared game artwork. Prepare it once with the [Windows installer](../INSTALL.md), then transfer the prepared game to DroidDeck. The updater reports the changed asset requirement before writing anything; the public ZIP contains no extracted Android artwork. Subsequent compatible DLL-only updates continue through the app. This appearance update has no additional save reset.
+**Game1.4.1 single-input preparation:** the [Windows installer](../INSTALL.md) now needs only Android8.7/1105 for gameplay resources and cosmetics. No8.6 input is needed. Prepare the game locally and transfer it to DroidDeck when the updater reports a changed asset requirement; the public ZIP contains no extracted Android artwork. Compatible DLL-only updates continue through the app. Progress and compatible Continue saves are preserved, with no additional reset.
 
 The client verifies GitHub's archive digest, the package inventory and its `UPDATE.json` contract. It checks the existing installed file set before changing the owned mod DLL and installation record. Already prepared artwork, loader, original game, settings and Wine registry are retained.
 

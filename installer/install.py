@@ -13,9 +13,8 @@ import zipfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
-VERSION = '1.4.0'
-APKM_SHA256 = 'c2336baac8f71d9c974e6e7b120225de0fb441463aecf4c1c6bfd7e2f6021d8f'
-COSMETICS_SHA256 = '1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d'
+VERSION = '1.4.1'
+APKM_SHA256 = '1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d'
 MOD = pathlib.PurePosixPath('BepInEx/plugins/20MTDModernization')
 
 
@@ -89,7 +88,7 @@ def download(pin, work, name):
     path.parent.mkdir(exist_ok=True)
     if not path.exists():
         writing = path.with_name(path.name + '.writing')
-        with urllib.request.urlopen(urllib.request.Request(pin['url'], headers={'User-Agent': '20MTD-Revamped/1.3.17'})) as response, writing.open('wb') as output:
+        with urllib.request.urlopen(urllib.request.Request(pin['url'], headers={'User-Agent': '20MTD-Revamped/' + VERSION})) as response, writing.open('wb') as output:
             shutil.copyfileobj(response, output)
         if digest(writing) != pin['sha256']:
             raise ValueError('Downloaded dependency digest mismatch: ' + name)
@@ -111,16 +110,13 @@ def extract_zip(archive, target):
                     shutil.copyfileobj(source, output)
 
 
-def prepare(android, game, work, cosmetics=None):
+def prepare(android, game, work):
     if digest(android) != APKM_SHA256:
-        raise ValueError('Unsupported Android input: this release requires the exact 8.6 (1093) APKM listed in INSTALL.md')
-    if cosmetics is None or digest(cosmetics) != COSMETICS_SHA256:
-        raise ValueError('Appearance preparation requires the exact Android 8.7 (1105) APKM via --cosmetics, alongside the existing 8.6 gameplay input. See INSTALL.md.')
+        raise ValueError('Unsupported Android input: this release requires only the exact 8.7 (1105) APKM listed in INSTALL.md')
     from asset_builder import android_assets, style_assets
     pins = json.loads((HERE / 'pins.json').read_text())
     identity = {name: digest(HERE / name) for name in ('asset_builder.py', 'cosmetic_builder.py', 'style-recipe.json', 'pins.json', 'requirements.txt')}
     identity['android'] = APKM_SHA256
-    identity['cosmetics'] = COSMETICS_SHA256
     ready, output = work / 'prepared-assets.json', work / 'Assets'
     if ready.is_file():
         saved = json.loads(ready.read_text())
@@ -146,22 +142,9 @@ def prepare(android, game, work, cosmetics=None):
                     str(work / 'global-metadata.dat'), str(dumper)], cwd=work, check=True,
                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
     android_assets(android, dumper / 'DummyDll', output)
-    # Keep the existing gameplay extraction source pinned to 8.6. Newer visual
-    # content has its own metadata, so no shifted 8.7 object IDs can silently
-    # change the established gameplay contracts.
-    appearance = work / 'cosmetic-source'
-    appearance.mkdir()
-    with zipfile.ZipFile(cosmetics) as outer:
-        import io
-        with zipfile.ZipFile(io.BytesIO(outer.read('base.apk'))) as base:
-            (appearance / 'global-metadata.dat').write_bytes(base.read('assets/bin/Data/Managed/Metadata/global-metadata.dat'))
-        with zipfile.ZipFile(io.BytesIO(outer.read('split_config.arm64_v8a.apk'))) as arm:
-            (appearance / 'libil2cpp.so').write_bytes(arm.read('lib/arm64-v8a/libil2cpp.so'))
-    subprocess.run(['dotnet', str(dumper / 'Il2CppDumper.dll'), str(appearance / 'libil2cpp.so'),
-                    str(appearance / 'global-metadata.dat'), str(appearance)], cwd=work, check=True,
-                   creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+    # Both exporters use the same pinned package and its single metadata decode.
     from cosmetic_builder import cosmetic_assets
-    cosmetic_assets(cosmetics, appearance / 'DummyDll', output)
+    cosmetic_assets(android, dumper / 'DummyDll', output)
     upstream = download(pins['SpritesReborn'], work, 'SpritesReborn.zip')
     style_assets(game / 'MinutesTillDawn_Data', upstream, output)
     files = {p.relative_to(output).as_posix(): digest(p) for p in sorted(output.rglob('*')) if p.is_file()}
@@ -306,7 +289,6 @@ def main():
     parser.add_argument('action', choices=('prepare', 'install', 'verify', 'uninstall'))
     parser.add_argument('--game', required=True, type=pathlib.Path)
     parser.add_argument('--android', type=pathlib.Path)
-    parser.add_argument('--cosmetics', type=pathlib.Path, help='Android 8.7 / 1105 APKM used only for appearance content')
     parser.add_argument('--work-dir', type=pathlib.Path, default=pathlib.Path('D:/Temp/20MTD-Revamped-Install'))
     parser.add_argument('--runtime-ready', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -322,7 +304,7 @@ def main():
         work = work_directory(args.work_dir, game)
         if not args.runtime_ready:
             return runtime(work, sys.argv[1:])
-        assets = prepare(args.android, game, work, args.cosmetics)
+        assets = prepare(args.android, game, work)
         result = {'prepared_assets': str(assets)} if args.action == 'prepare' else install(game, assets, work)
     print(json.dumps(result, indent=2), flush=True)
     return 0
