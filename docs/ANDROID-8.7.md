@@ -1,8 +1,8 @@
 # Android 8.7 / 1105 comparison
 
-## Current integration — v1.5.0 source
+## Current integration — v1.5.0
 
-Saint Rosa's complete passive, three exclusive upgrades, authored chamber/projectile/burst artwork, optional recolouring, achievement gate and Continue integration pass integrated Windows acceptance. Her gate is a Temple miniboss victory on Darkness3+ as Abby with at least eight shots per second. Native controller/unlock/combat/Retry/Custom/current-and-older Continue, animated summon-pulse/opacity and exact installer checks pass. Final release/download verification remains the delivery gate. [Acceptance contract](SAINT-ROSA.md).
+Saint Rosa's complete passive, three exclusive upgrades, authored chamber/projectile/burst artwork, optional recolouring, achievement gate and Continue integration pass integrated Windows acceptance. Her gate is a Temple miniboss victory on Darkness3+ as Abby with at least eight shots per second. Native controller/unlock/combat/Retry/Custom/current-and-older Continue, animated summon-pulse/opacity and exact installer checks pass. Normal1.5.0 is published and its independent download is verified. [Acceptance contract](SAINT-ROSA.md).
 
 The changed-system review recovered137 common native procedures across the two packages after matching coroutine identities, retaining annotated disassembly rather than treating changed addresses as changed behavior. Field layout, runtime relocation and coroutine numbering differences are distinguished from gameplay changes in `method-comparison.json`, `method-comparison.diff` and `method-call-changes.json`. Nine resolved call-sequence differences concern tick artwork, effective-shot dispatch, cosmetic pools, score restoration and mobile skill lifecycle. The reload/read-fire coroutine bodies retain their branches/constants after runtime relocations and generated names are accounted for.
 
