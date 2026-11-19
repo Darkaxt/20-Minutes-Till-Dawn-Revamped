@@ -1,5 +1,16 @@
 # Android gameplay anomaly ledger
 
+## Android8.7 Saint Rosa source classification — 2026-11-19
+
+- **Source description mismatch; gameplay retained:** Thorn Ammo Belt's English text says +1 pierce. `ApplyThornBelt` increments the shell bounce bonus. `PerformSkill` forces shell piercing to zero again after the recipe notification. Revamped implements the bounce and corrects the description.
+- **Source description mismatch; gameplay retained:** the description says ammunition spent, but `OnEffectiveShot` counts effective Gun dispatches, including shots allowed by infinite ammunition. Multiple shooter callbacks within one dispatch produce one charge event. Revamped describes effective shots.
+- **Source behavior retained:** activating with no stored shells still refills ammunition and starts cooldown. Final Bloom's buff requires at least one released shell; recasting refreshes three seconds without stacking another25% contribution.
+- **Source lifetime behavior retained:** contact and ordinary lifetime expiry both explode. Contact captures damage/volley before the base trigger can pool the shell; the disable callback clears ownership and suppresses a duplicate contact explosion. All shells share one Bloom flag.
+- **Platform adaptation:** Android remembers the movement joystick's last nonzero direction. Windows uses native cursor/controller aim projection for the advertised aimed volley. Mobile button/canvas plumbing becomes the native Skill binding and compact status corner; Windows retains input cleanup.
+- **Persistence addition:** Android8.7 save data has no Rose Chamber runtime fields. Revamped persists charging, cooldown, temporary buff and live shell/burst state, including shared volley identities. Existing version7 checkpoints remain readable through an optional member.
+
+Evidence: source SHA1662c1c2…ee03; `gameplay87-20261118/arm64-methods.json`, annotated ARM64 methods, source metadata and asset manifests. These are source classifications; integrated native acceptance is recorded separately.
+
 ## POI tracking and Pulsing feedback — 2026-10-30
 
 - **Northern marker horizontal jitter:**1.3.10 retained along-edge HUD reservations. They could select opposite sides of the timer as a target crossed north. Removed reservation ranking entirely per user direction; projection now follows the actual target ray.

@@ -1,6 +1,25 @@
 # Android 8.7 / 1105 comparison
 
-Source inspection dated 2026-11-18. Revamped's gameplay reference remains Android **8.6 / 1093**. Version1.4.0 integrates the complete **8.7 /1105 appearance catalog** with permanent victory rewards. Saint Rosa and the remaining gameplay comparisons below are separate pending work; appearance integration does not establish exhaustive8.7 gameplay parity. [Appearance rules and verification](COSMETICS.md).
+## Current integration — v1.5.0 source
+
+Saint Rosa's complete passive, three exclusive upgrades, authored chamber/projectile/burst artwork, optional recolouring, achievement gate and Continue integration pass integrated Windows acceptance. Her gate is a Temple miniboss victory on Darkness3+ as Abby with at least eight shots per second. Native controller/unlock/combat/Retry/Custom/current-and-older Continue, animated summon-pulse/opacity and exact installer checks pass. Final release/download verification remains the delivery gate. [Acceptance contract](SAINT-ROSA.md).
+
+The changed-system review recovered137 common native procedures across the two packages after matching coroutine identities, retaining annotated disassembly rather than treating changed addresses as changed behavior. Field layout, runtime relocation and coroutine numbering differences are distinguished from gameplay changes in `method-comparison.json`, `method-comparison.diff` and `method-call-changes.json`. Nine resolved call-sequence differences concern tick artwork, effective-shot dispatch, cosmetic pools, score restoration and mobile skill lifecycle. The reload/read-fire coroutine bodies retain their branches/constants after runtime relocations and generated names are accounted for.
+
+| Remaining row | Source result and integration |
+|---|---|
+| Summons / Pulsing Summons | Pulse damage, interval and range retain their previous contracts.8.7 adds `SetTickEffect`/`PlayTickEffect` and a three-frame pooled SpriteFX. These authored frames replace Revamped's generated ring: source lifetime0.2s, interval0.05s, placement/rotation/scale and effects-opacity control. |
+| Gun dispatch |8.7 adds dispatch depth/pending-event ownership around shooting and release, with eligibility determined before OnShoot. Integrated at those complete boundaries; one effective-shot event per successful dispatch. Appearance already supplies the added skin-pool override. |
+| Skill / reload lifecycle | New `CanPerformSkill`, immediate reload completion and pending-reload cancellation support Rose Chamber. Integrated with the existing source firing/reload owners and native desktop input/cleanup. Cooldown updates after activation. |
+| Save/load | The battle-start date belongs to Halloween kill accounting. Score restoration now calls `RestoreEnemiesKilled`; Revamped already restores the actual kill count. Rosa runtime is an additional optional checkpoint member; no profile wipe. |
+| Halloween Trial | `CommitBattleKills` records date-bound totals; `ClaimChest` grants item10001 (Pumpkin Key) and battle-pass XP. No new map, enemy, combat encounter or independent survival mode. Calendar/pass/draw reward plumbing is excluded; its character/cosmetic payloads use permanent gameplay unlocks and victory pools. |
+| References / evolutions | All24 rune-prefab targets, Rhogog's projectile and all36 complete evolution records resolve and match8.6. No missing serialized gameplay change remains in these rows. |
+
+Source quirks are classified in [ANOMALIES.md](ANOMALIES.md#android87-saint-rosa-source-classification--2026-11-19). Historical1.4.x findings below describe those releases. Structural comparison or unchanged call lists alone do not prove every procedure in the game equivalent.
+
+## Historical 1.4.x findings
+
+The following records describe the published1.4.x releases and the gaps entering this integration; the current disposition is in the table above. Source inspection dated 2026-11-18. Version1.4.0 integrated the complete **8.7 /1105 appearance catalog** with permanent victory rewards, while its gameplay reference remained8.6/1093. [Appearance rules and verification](COSMETICS.md).
 
 Version1.4.1 migrates local preparation to **8.7/1105 as the only Android input**, retaining existing gameplay semantics. The8.6 package is no longer an installation requirement. This resource migration leaves the pending gameplay rows below for separate evaluation. [Single-input migration](ANDROID-INPUT.md).
 
@@ -48,13 +67,17 @@ The declarations and serialized values are available for cohesive reconstruction
 | Shooting/reloading | Changed Gun, SkillPassive, ReloadState and ShootingState declarations | Separate Saint Rosa integration from changes to existing weapon behavior |
 | Save/load | Changed in-game save API/data and save-system declarations; new event save types | Recover new gameplay state and applicable lifecycle changes; preserve Revamped's existing progression and deliberate rules |
 | Character cosmetics | Added summon animation/effect fields; changed skin manager and summon-sprite binding | Complete appearance path integrated: six character skins,85 weapon skins,49 wings,seven free bullet colours; source actor/projectile/pooled render paths and saved appearances verified as documented in COSMETICS.md |
-| Existing asset references | Candidate differences in Rhogog's projectile, pulse prefab and rune-prefab references | Resolve target objects by source identity/contents; anonymous component names and changed IDs are not sufficient evidence of behavior changes |
-| Weapon evolutions | 22 selected GunEvolution assets have unresolved managed-reference trigger layouts in this decoder pass | Recover the trigger serialization before drawing evolution-parity conclusions |
+| Existing asset references | Rune-prefab and Rhogog references point to unnamed components on their same named GameObjects | Resolved against source component identities and serialized fields: all24 rune targets and Rhogog's projectile match8.6. The actual new pulse-effect prefab remains part of the summons review above |
+| Weapon evolutions | Embedded managed-reference type layouts were stripped; the matching8.7 DLL metadata recovers all36 evolution records with complete byte-consumption checks | Resolved during Saint Rosa integration: all36 serialized evolution contracts match8.6 after resolving references and normalizing numeric precision. No evolution-data change to import. This establishes data equivalence, not executable callback equivalence |
 | Unchanged declarations | A method can change without changing its declaration | Complete relevant method-body comparison before claiming exhaustive 8.7 parity |
 
 ## Evidence and limits
 
 Private source-bound results are retained under `D:/Projects/20MTD-Modernization-evidence/android-8.7-1105-20261118`: package hashes/member inventory, full asset inventory, localization, decoded metadata/assemblies, selected gameplay data, derived deltas, findings and an exported/authenticated REA Evidence bundle. The inventory reads 37,217 Unity objects. Selected generated-layout decoding recovered 3,197 records and recorded 23 failures: the 22 evolution assets above and Unity's built-in GUISkin. Failures are preserved explicitly rather than counted as matching content.
+
+The subsequent `gameplay87-20261118/evolutions-decoded.json` and `evolutions-comparison.json` resolve those22 failures: every one of the36 source evolution records decodes, and all36 match the retained8.6 serialized contracts. Resolution uses the managed-reference class/namespace/assembly named by each serialized object and the same8.7 metadata, removing the generator's synthetic Unity object header for plain serialized reference classes. Original strict byte-consumption checks remain enabled; no fields or bytes are skipped to force a match. The initial failure report remains retained as historical evidence.
+
+The same investigation's `reference-contracts.json` and `reference-comparison.json` resolve the apparent rune and Rhogog reference changes. It matches the referenced component's script type, owning GameObject and serialized fields, rather than comparing blank component names. All24 rune-prefab targets and Rhogog's EnemyAreaProjectile fields match the baseline; this does not assert executable method-body equivalence.
 
 The comparison excludes build-local reference IDs and serializer-only metadata; numeric comparisons tolerate baseline rounding noise. Raw source values remain preserved. Name joins cannot prove equivalence of anonymous or duplicate components. No Android/Windows runtime parity or natural-run balance claim follows from this inspection.
 

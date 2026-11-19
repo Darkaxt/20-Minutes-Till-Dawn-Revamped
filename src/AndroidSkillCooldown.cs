@@ -10,6 +10,9 @@ namespace TwentyMinutes.Modernization;
 [HarmonyPatch(typeof(SkillPassive),"PerformSkillCallback")]
 class AndroidSkillCooldownOrder
 {
+ // Windows has no CanPerformSkill virtual. This is the same source eligibility
+ // boundary, before the retained native callback dispatches its virtual skill.
+ static bool Prefix(SkillPassive __instance)=>!(__instance is SaintRosaSkill rosa)||rosa.CanPerformSkill();
  static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
  {
   var code=instructions.ToList();var timer=AccessTools.Field(typeof(SkillPassive),"_timer");

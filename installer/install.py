@@ -13,7 +13,7 @@ import zipfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
-VERSION = '1.4.1'
+VERSION = '1.5.0'
 APKM_SHA256 = '1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d'
 MOD = pathlib.PurePosixPath('BepInEx/plugins/20MTDModernization')
 
@@ -115,7 +115,7 @@ def prepare(android, game, work):
         raise ValueError('Unsupported Android input: this release requires only the exact 8.7 (1105) APKM listed in INSTALL.md')
     from asset_builder import android_assets, style_assets
     pins = json.loads((HERE / 'pins.json').read_text())
-    identity = {name: digest(HERE / name) for name in ('asset_builder.py', 'cosmetic_builder.py', 'style-recipe.json', 'pins.json', 'requirements.txt')}
+    identity = {name: digest(HERE / name) for name in ('asset_builder.py', 'cosmetic_builder.py', 'saint_rosa_builder.py', 'style-recipe.json', 'pins.json', 'requirements.txt')}
     identity['android'] = APKM_SHA256
     ready, output = work / 'prepared-assets.json', work / 'Assets'
     if ready.is_file():

@@ -20,12 +20,12 @@ using flanne.PerkSystem.Triggers;
 using Object=UnityEngine.Object;
 namespace TwentyMinutes.Modernization;
 
-// Only the two recovered playable forms. The source manifest is a local asset
+// Recovered playable forms. The source manifest is a local asset
 // extraction product; no Android assembly or Unity 2022 asset bundle is loaded.
 public static class Characters
 {
  public class Manifest{public Contract[] characters;public SpriteRecord[] sprites;}
- public class SpriteRecord{public string key,name,file;public float pivotX,pivotY,ppu;}
+ public class SpriteRecord{public string key,name,file,colorful;public float pivotX,pivotY,ppu;}
  public class Frame{public float time;public string sprite;}
  public class Clip{public string name;public float duration;public bool loop;public Frame[] frames;}
  public class Pose{public string name;public Vector3 position,scale;public Quaternion rotation;}
@@ -33,7 +33,13 @@ public static class Characters
  public class Fog{public string sprite;public Pose[] transforms;}
  public class Stat{public string type;public int flatValue,isFlatMod;public float value;}
  public class Upgrade{public string key,icon,name,description;public Stat[] stats;}
- public class SkillData{public float cooldown,cd,reduceCd,duration,EffectDuration,EffectRange,secondsPerTick,chargeSpeedMulti,chargeDuration,chargeDamageMultiplier,baseKnockback,nextShotDamageMultiplier;public int damageAmount;public bool triggerOnHit;}
+ public class SkillData
+ {
+  public float cooldown,cd,reduceCd,duration,EffectDuration,EffectRange,secondsPerTick,chargeSpeedMulti,chargeDuration,chargeDamageMultiplier,baseKnockback,nextShotDamageMultiplier;
+  public int damageAmount;public bool triggerOnHit;
+  public int shotsPerShell,maxShells,shellBounceCount;
+  public float shellAngleSpacing,damageMultiplier,damagePerExtraShell,splashRadius,splashMultiplier,bloomRadius,bloomMultiplier,bloomKnockback;
+ }
  public class Contract{public string key,name,description,portrait,icon,skillIcon;public int startHP;public float moveSpeed,shootMoveSpeedMultiplier,colliderRadius;public Clip[] clips;public SkillData skill;public Effect[] effects;public Upgrade[] powers;public Fog fog;}
  public static readonly Dictionary<string,Sprite> Sprites=new Dictionary<string,Sprite>();
  public static readonly Dictionary<string,Contract> Contracts=new Dictionary<string,Contract>();
@@ -57,7 +63,9 @@ public static class Characters
   Plugin.Trace("character-assets",new{characters=manifest.characters?.Length,sprites=manifest.sprites?.Length});
   foreach(var record in manifest.sprites)
   {
-   var t=new Texture2D(2,2,TextureFormat.RGBA32,false);t.LoadImage(File.ReadAllBytes(Path.Combine(Plugin.AssetRoot,"characters",record.file)));t.filterMode=FilterMode.Point;t.name="Revamped_"+record.name;
+   string original=Path.Combine(Plugin.AssetRoot,"characters",record.file);
+   var t=new Texture2D(2,2,TextureFormat.RGBA32,false);t.LoadImage(File.ReadAllBytes(original));t.filterMode=FilterMode.Point;t.name=record.colorful==null?"Revamped_"+record.name:"RevampedPalette_"+record.key;
+   if(record.colorful!=null)ColorfulStyle.Instance.RegisterLocalPalette(t,original,Path.Combine(Plugin.AssetRoot,"characters",record.colorful));
    var sprite=Sprite.Create(t,new Rect(0,0,t.width,t.height),new Vector2(record.pivotX,record.pivotY),record.ppu);sprite.name=record.name;Object.DontDestroyOnLoad(t);Object.DontDestroyOnLoad(sprite);Sprites.Add(record.key,sprite);
   }
   var nativeSkill=hina.passivePrefab.GetComponentInChildren<SkillPassive>(true);
@@ -69,6 +77,7 @@ public static class Characters
    Contracts.Add(c.key,c);var data=Object.Instantiate(shana);data.name="Revamped_"+c.key;data.nameStringID="revamped_character_"+c.key;data.descriptionStringID="revamped_description_"+c.key;
    Plugin.Text[data.nameStringID.key]=c.name;
    Plugin.Text[data.descriptionStringID.key]=(c.key=="Haruka"?c.description.Replace(">10s<",">8s<"):c.description)+"<br>Skill: RMB / LB / LT.";
+   if(c.key=="SaintRosa")Plugin.Text[data.descriptionStringID.key]="Every six effective shots stores a Rose Bullet, up to eight. Activate to release the stored volley and refill your weapon. Eight stored bullets also trigger Bloom Impact.<br>Skill: RMB / LB / LT.";
    data.startHP=c.startHP;data.portrait=Sprites[c.portrait];
    // Android leaves CharacterData.icon null for these forms. Windows requires
    // this HUD sprite. Stock Windows characters use their idle body frame,
@@ -79,6 +88,7 @@ public static class Characters
    {
     var power=ScriptableObject.CreateInstance<Powerup>();power.name="Revamped_"+u.key;power.icon=Sprites[u.icon];power.prereqs=new List<Powerup>();
     string nk="revamped_power_"+u.key,dk=nk+"_description";Plugin.Text[nk]=u.name;Plugin.Text[dk]=u.description;
+    if(u.key=="ThornBelt")Plugin.Text[dk]="Rose Bullet capacity +3. Charge each shell with one fewer shot. Rose Bullets gain +1 bounce.";
     Plugin.SetField(power,"nameStrID",new LocalizedString(nk));Plugin.SetField(power,"desStrID",new LocalizedString(dk));
     Plugin.SetField(power,"statChanges",u.stats.Select(s=>new StatChange{type=(StatType)Enum.Parse(typeof(StatType),s.type),flatValue=s.flatValue,isFlatMod=s.isFlatMod!=0,value=s.value}).ToArray());
     var effect=new PerkEffect();Plugin.SetField(effect,"trigger",new InstantTrigger());Plugin.SetField(effect,"action",new CharacterUpgradeAction{Key=u.key});
@@ -86,6 +96,7 @@ public static class Characters
    }
    data.exclusivePowerups=pool;Object.DontDestroyOnLoad(pool);Object.DontDestroyOnLoad(data);Data.Add(c.key,data);
   }
+  SaintRosaAssets.Load();ColorfulStyle.Instance.ApplyLoaded();
  }
  public static void Append(TitleScreenController title)
  {
@@ -94,7 +105,7 @@ public static class Characters
   var template=items.First(x=>x.GetComponent<Unlockable>()!=null);var entries=NativeSelection.GunEntriesFor(title.characterMenu);
   int templateIndex=items.IndexOf(template);var badges=NativeSelection.VictoryObjects(title.characterVictories);
   if(badges.Length!=items.Count)throw new InvalidOperationException("Unsupported native character victory layout");
-  foreach(string key in new[]{"Haruka","Dimond_Portrait"})
+  foreach(string key in new[]{"Haruka","Dimond_Portrait","SaintRosa"})
   {
    var c=Contracts[key];
    int slot=items.Count;var copy=Object.Instantiate(template.gameObject,template.transform.parent);copy.name="RevampedCharacter_"+c.key;
@@ -107,19 +118,23 @@ public static class Characters
    NativeSelection.VictoryObjects(title.characterVictories)=NativeSelection.VictoryObjects(title.characterVictories).Concat(new[]{badge}).ToArray();
    var labels=NativeSelection.VictoryLabels(title.characterVictories);if(labels!=null)NativeSelection.VictoryLabels(title.characterVictories)=labels.Concat(new[]{badge.GetComponentInChildren<TMPro.TMP_Text>(true)}).ToArray();
   }
-  // These two slots extend the stock third row after Raven. As for the
+  // Recovered forms extend the stock third row after Raven. As for the
   // appended weapon, cloned explicit links alone leave them unreachable.
   var raven=items.Single(x=>x.data.name=="Raven").GetComponent<Button>();
   var yuki=items.Single(x=>x.data.name=="Yuki").GetComponent<Button>();
   var luna=items.Single(x=>x.data.name=="Luna").GetComponent<Button>();
+  var aboveRosa=items[items.FindIndex(x=>x.data.name=="Luna")+1].GetComponent<Button>();
   var gale=entries[Slots["Haruka"]].button;var bulwark=entries[Slots["Dimond_Portrait"]].button;
+  var rosa=entries[Slots["SaintRosa"]].button;
   var navigation=raven.navigation;var back=navigation.selectOnDown;
   gale.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=raven,selectOnRight=bulwark,selectOnUp=yuki,selectOnDown=back};
-  bulwark.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=gale,selectOnUp=luna,selectOnDown=back};
+  bulwark.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=gale,selectOnRight=rosa,selectOnUp=luna,selectOnDown=back};
+  rosa.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=bulwark,selectOnUp=aboveRosa,selectOnDown=back};
   navigation.selectOnRight=gale;raven.navigation=navigation;
   navigation=yuki.navigation;navigation.selectOnDown=gale;yuki.navigation=navigation;
   navigation=luna.navigation;navigation.selectOnDown=bulwark;luna.navigation=navigation;
-  NativeSelection.RestoreAddedSelection(title.characterMenu,items.Count-2,items.Count,typeof(DataListMenu<CharacterData>));
+  navigation=aboveRosa.navigation;navigation.selectOnDown=rosa;aboveRosa.navigation=navigation;
+  NativeSelection.RestoreAddedSelection(title.characterMenu,items.Count-Contracts.Count,items.Count,typeof(DataListMenu<CharacterData>));
   Count=items.Count;Plugin.Trace("characters-appended",new{count=Count,added=string.Join(",",Contracts.Keys)});
  }
  public static void Extend(SaveData data)
@@ -148,7 +163,11 @@ public static class Characters
    default:return false;
   }
  }
- public override void Activate(GameObject target){if(!ApplyWhirlwind(Key))target.GetComponentInChildren<PortedCharacterSkill>().Upgrade(Key);}
+ public override void Activate(GameObject target)
+ {
+  if(Key=="ThornBelt"||Key=="PiercingPetal"||Key=="FinalBloom")target.GetComponentInChildren<SaintRosaSkill>().Upgrade(Key);
+  else if(!ApplyWhirlwind(Key))target.GetComponentInChildren<PortedCharacterSkill>().Upgrade(Key);
+ }
 }
 [HarmonyPatch(typeof(LoadoutInitializer),"Start")]
 class InitializePortedCharacter
@@ -159,7 +178,10 @@ class InitializePortedCharacter
   var player=PlayerController.Instance;if(!Characters.TryContract(player.loadedCharacter,out var c))return;
   player.movementSpeed=c.moveSpeed;
   var obj=new GameObject("RevampedSkill_"+c.key);obj.SetActive(false);obj.transform.SetParent(player.transform,false);
-  var skill=obj.AddComponent<PortedCharacterSkill>();skill.Contract=c;Plugin.SetField(skill,"inputs",Characters.Inputs);Plugin.SetField(skill,"cooldown",c.skill.cooldown);
+  PortedCharacterSkill skill=null;SkillPassive passive;
+  if(c.key=="SaintRosa"){var rosa=obj.AddComponent<SaintRosaSkill>();rosa.Contract=c;passive=rosa;}
+  else{skill=obj.AddComponent<PortedCharacterSkill>();skill.Contract=c;passive=skill;}
+  Plugin.SetField(passive,"inputs",Characters.Inputs);Plugin.SetField(passive,"cooldown",c.skill.cooldown);
   // Source prefab references exist before Whirlwind's Awake subscribes.
   if(c.key=="Haruka")skill.PrepareActors();
   var animation=player.gameObject.AddComponent<CharacterFrames>();animation.Player=player;animation.Skill=skill;animation.Contract=c;
@@ -180,7 +202,7 @@ public class CharacterFrames:MonoBehaviour
  void LateUpdate()
  {
   if(Player==null || Player.playerHealth.hp==0 || PauseController.isPaused)return;
-  string next=Skill.ChargeMoving?"IdleSpecial":Player.moveVec==Vector3.zero||Player.disableMove.value?"Idle":Player.moveSpeedMultiplier>=1?"Run":"Walk";
+  string next=Skill!=null&&Skill.ChargeMoving?"IdleSpecial":Player.moveVec==Vector3.zero||Player.disableMove.value?"Idle":Player.moveSpeedMultiplier>=1?"Run":"Walk";
   if(next!=state){state=next;elapsed=0;}else elapsed+=Time.deltaTime;
   var clip=Contract.clips.Single(x=>x.name.EndsWith(state));float time=clip.loop?elapsed%clip.duration:Mathf.Min(elapsed,clip.duration);
   Player.playerSprite.sprite=Characters.Sprites[clip.frames.Last(x=>x.time<=time).sprite];

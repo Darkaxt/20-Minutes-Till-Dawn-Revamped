@@ -163,13 +163,22 @@ def android_assets(apkm, dummy, output):
     characters = []
     for key, character_id, passive_id, power_ids in (
             ('Haruka', 3149, 3545, (3150, 3151, 3152)),
-            ('Dimond_Portrait', 3144, 3738, (3146, 3147, 3148))):
+            ('Dimond_Portrait', 3144, 3738, (3146, 3147, 3148)),
+            ('SaintRosa', 3184, 3378, (3187, 3186, 3185))):
         character, passive = objects['sharedassets0.assets', character_id], objects['sharedassets0.assets', passive_id]
         d, pd = read_mono(character), read_mono(passive)
         if d['m_Name'] != key:
             raise ValueError('Character whitelist identity mismatch')
         controller = next(o for o in env.objects if o.type.name == 'AnimatorOverrideController' and o.peek_name() == 'AC_' + key)
         clips = [clip_frames(deref(controller, pair['m_OverrideClip'])) for pair in controller.read_typetree()['m_Clips']]
+        if key == 'SaintRosa':
+            # Her special animator state deliberately reuses the Idle clip.
+            unique = {}
+            for clip in clips:
+                if clip['name'] in unique and unique[clip['name']] != clip:
+                    raise ValueError('Conflicting Saint Rosa body clips')
+                unique[clip['name']] = clip
+            clips = list(unique.values())
         root = deref(passive, pd['m_GameObject'])
         effects = []
         for field in ('spriteEffect', 'spriteFX1', 'spriteFX2'):
@@ -188,7 +197,7 @@ def android_assets(apkm, dummy, output):
             data = read_mono(power)
             powers.append({'key': data['m_Name'], 'icon': export_sprite(deref(power, data['icon'])),
                            'name': loc[data['nameStringID']['key']], 'description': loc.get(data['descriptionStringID']['key'], ''),
-                           'stats': [dict(change, type=stats[change['type']]) for change in data['statChanges']]})
+                           'stats': [dict(change, type=stats[change['type']]) for change in ([] if key == 'SaintRosa' else data['statChanges'])]})
         fog = None
         if 'fogRed' in pd:
             renderer = deref(passive, pd['fogRed'])
@@ -199,8 +208,20 @@ def android_assets(apkm, dummy, output):
                            'portrait': export_sprite(deref(character, d['portrait'])),
                            'icon': export_sprite(deref(character, d['icon'])) if d['icon']['m_PathID'] else None,
                            'skillIcon': export_sprite(deref(passive, pd['SkillSpt'])), 'clips': clips, 'skill': pd,
-                           'colliderRadius': deref(passive, pd['circleCollider']).read_typetree()['m_Radius'],
+                           'colliderRadius': 0 if key == 'SaintRosa' else deref(passive, pd['circleCollider']).read_typetree()['m_Radius'],
                            'effects': effects, 'powers': powers, 'fog': fog})
+    from saint_rosa_builder import export_rosa, recolor
+    rosa = next(c for c in characters if c['key'] == 'SaintRosa')
+    rosa_sprites = {rosa['portrait'], rosa['icon'], rosa['skillIcon']}
+    rosa_sprites.update(f['sprite'] for clip in rosa['clips'] for f in clip['frames'])
+    rosa_sprites.update(p['icon'] for p in rosa['powers'])
+    for key in rosa_sprites - {None}:
+        record = sprite_records[key]
+        original = art / record['file']
+        colored = original.with_suffix('.colorful.png')
+        recolor(original, colored, 'character')
+        record['colorful'] = colored.relative_to(art).as_posix()
+    export_rosa(env, output)
     (art / 'characters.json').write_text(json.dumps({'characters': characters, 'sprites': list(sprite_records.values())}, indent=2), encoding='utf8')
     expected = {f'T_ChargeCannon_SS_{i}' for i in range(7)} | {f'weapon-{letter}_{i}' for letter in 'abc' for i in range(1, 4)}
     expected |= {'Affix_Fire', 'Affix_Thunder', 'Affix_Ice', 'Affix_BulletDamageReduce'}

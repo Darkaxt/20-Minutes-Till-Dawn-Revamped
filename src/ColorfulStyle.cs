@@ -21,6 +21,12 @@ public class ColorfulStyle:MonoBehaviour
  public int LastRestored,LastRestoreFailures;
  public bool Enabled=>Plugin.Instance.ColorfulEnabled.Value;
  public Button SettingButton;
+ internal void RegisterLocalPalette(Texture2D texture,string original,string colorful)
+ {
+  if(sheets.ContainsKey(texture.name))throw new InvalidDataException("Duplicate local palette: "+texture.name);
+  sheets.Add(texture.name,new Sheet{Name=texture.name,Width=texture.width,Height=texture.height,
+   Original=File.ReadAllBytes(original),Colorful=File.ReadAllBytes(colorful)});
+ }
  void Awake()
  {
   Instance=this;string root=Path.Combine(Plugin.AssetRoot,"reborn");

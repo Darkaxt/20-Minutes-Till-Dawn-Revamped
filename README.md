@@ -1,21 +1,21 @@
 # 20 Minutes Till Dawn — Revamped
 
-Android 8.6 gameplay brought to the Windows game, with a transparent stats HUD, milestone unlocks, a native Custom mode and Android 8.7's appearance collection earned through play.
+Android gameplay brought to the Windows game, including 8.7's Saint Rosa, with a transparent stats HUD, milestone unlocks, a native Custom mode and an appearance collection earned through play.
 
 A community mod for **20 Minutes Till Dawn by Flanne**, maintained by **Darkaxt**.
 
-[Download v1.4.1](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.1) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
+[Download v1.5.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.5.0) · [Nexus Mods](https://www.nexusmods.com/20minutestildawn/mods/110) · [Android updater 0.2.0](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/updater-v0.2.0) · [Installation](INSTALL.md) · [Changelog](#changelog) · [Gameplay ledger](docs/PARITY.md)
 
 ## Executive summary
 
-Revamped brings the audited Android 8.6 gameplay additions to the purchased Windows game, then improves progression, combat variety, build information and controller play. The work delivered so far includes:
+Revamped brings the audited Android gameplay additions to the purchased Windows game, then improves progression, combat variety, build information and controller play. Version 1.5.0 adds Saint Rosa and the remaining identified 8.7 gameplay changes; source and native acceptance are recorded in [the integration contract](docs/SAINT-ROSA.md). The feature set includes:
 
 | Area | Delivered improvements |
 |---|---|
 | **Appearance earned through play** | A native Appearance tab beside Runes selects each character's skin/wings and each weapon's skin/bullet colour. The complete 8.7 catalog contains six character skins, 85 weapon skins, 49 wings and seven freely selectable colours. Successful non-Custom runs award one unowned related character skin/shared wing and one unowned skin for the played weapon, while eligible rewards remain. No purchase, pass or expiry. |
 | **Specialize summons** | Shana’s triple-upgrade chest reward creates triple the actual summons: 3 eggs, mirrors, ghosts, scythes or Electro Bugs; 6 lances. |
-| **Android gameplay integration** | Charge Cannon and its three evolutions; Gale and Bulwark with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. |
-| **Progression through play** | Thirty milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
+| **Android gameplay integration** | Charge Cannon and its three evolutions; Gale, Bulwark and Saint Rosa with their exclusive upgrades; ported character abilities, upgrades, summons, status effects, enemy behavior, shooting, cooldowns, encounters and mode schedules. Saint Rosa gains her original shell chamber and Bloom volley, locally prepared original/coloured artwork, milestone unlock and saved-run support. |
+| **Progression through play** | Thirty-one milestone unlocks replace character/weapon/scenario purchases, with concise conditions, attempt details, notifications and difficulty-specific clear counters. Boss-awarded character runes replace rune purchases, with scenario/Darkness rewards, independent toggles, celebratory reveals, current-run activation choices and capped-rune XP. |
 | **Less repetition between characters** | Mastering a rune raises that rune's shared minimum across the roster: one mastered character gives rank 1, then 2, 3 and 4. Higher personal progress is preserved; everyone earns their own fifth rank. Existing mastery counts, future characters inherit the head start, and enabled choices remain personal. |
 | **Weapon familiarity** | Each character–weapon pair gains +2% reload speed, fire rate and projectile speed per highest qualifying clear, up to +30%. Challenge counts; damage, spread and weapon counts stay unchanged. Legacy ranks recover onto Shana once, and old Continue bonuses are corrected immediately. |
 | **Distinct combat roles** | Lightning gains splash, stun and Pierce/Bounce-based chains; Energized scales reload speed with visible stunned enemies. Fire adds weakening propagation, brief local panic/slow and fireball explosions. Wind disrupts aiming and hostile bullets; ice retains its rules. Regular Elites and stronger Endless tiers add proportional health/XP, larger models, faster-firing Eyes and animated contour glows. |
@@ -26,7 +26,7 @@ Revamped brings the audited Android 8.6 gameplay additions to the purchased Wind
 | **Presentation and reliability** | Selectable Sprites Reborn artwork with consistent projectile colors; corrected phoenix/facing visuals; sprite-masked fire, lightning and wind cues. Pixel-art maintenance credit and promotional-panel removal. Corrections cover damage signs, stacking, temporary buffs, shield/cooldown arithmetic, Shatter, collisions, pooled actors/effects and duplicate save/reward application. |
 | **Windows and phone delivery** | Versioned Windows packages with owned-file install/rollback, plus DroidDeck support and an Android updater that locates the game, verifies GitHub releases and preserves compatible progress. The game remains the Windows mod running through DroidDeck. |
 
-The gameplay reference is **Android 8.6 / versionCode 1093**. All identified required gameplay differences in the completed comparison are integrated. Ads, purchases and other monetization are excluded. Revamped's progression, HUD, Custom mode and desktop controls are intentional additions. [Exact parity scope and source quirks](docs/PARITY.md) · [Bug-correction contracts](docs/BUGFIXES.md).
+The preparation input is **Android 8.7 / versionCode 1105**. The original 8.6 integration is extended by the identified 8.7 gameplay changes; the [8.7 ledger](docs/ANDROID-8.7.md) records the evidence and its limits. Ads, purchases and other monetization are excluded. Revamped's progression, HUD, Custom mode and desktop controls are intentional additions. [Exact parity scope and source quirks](docs/PARITY.md) · [Bug-correction contracts](docs/BUGFIXES.md).
 
 ![Native title screen with Flanne's original credit and MAINTAINED BY DARKAXT pixel lettering](docs/images/title-maintained.png)
 
@@ -35,6 +35,16 @@ The gameplay reference is **Android 8.6 / versionCode 1093**. All identified req
 *Release acceptance covers native weapon handling, controller/pointer preview, evolution, Retry, Custom and current/older Continue. Compatible saves are preserved. Exact-package/public-download evidence is recorded in [PROGRESS.md](docs/PROGRESS.md).*
 
 ## See it in game
+
+### Play Abby: Saint Rosa
+
+Every six effective shots stores a Rose Bullet, up to eight. Activate her skill to fire the stored volley and refill ammunition; a full chamber adds Bloom Impact. Her three exclusive upgrades expand the chamber, strengthen the splash and improve Bloom/cooldown. The chamber uses the original animated icons beside the ammunition display.
+
+Unlock her by defeating a **Temple miniboss on Darkness 3+ as Abby, with at least eight shots per second**. Original and coloured artwork follow the existing visual setting. Personal/shared runes, weapon familiarity, appearances, Custom, Retry and Continue use the same systems as the other characters; Continue also retains her active shells and shared Bloom state.
+
+![Saint Rosa with coloured artwork, three stored Rose Bullets and an equipped wing in the Windows game](docs/images/saint-rosa.png)
+
+*Unretouched isolated Windows test capture. Unlock thresholds and the wing's ownership are controlled fixture preconditions; this does not claim natural progression. [Source and acceptance ledger](docs/SAINT-ROSA.md).*
 
 ### Collect a new appearance
 
@@ -46,7 +56,7 @@ Victories award previously unowned cosmetics from the played character's skin/sh
 
 ![Selected character skin, animated wings and weapon artwork in the Windows player](docs/images/appearance-in-game.png)
 
-Version1.4.1 prepares all required artwork/data from **Android8.7/1105 only**. No8.6 input or previous preparation is needed. Prepare changed assets with the Windows installer before transferring the game to DroidDeck; the updater detects incompatible asset sets before writing. No save reset. Existing gameplay stays unchanged; Saint Rosa and other8.7 gameplay additions remain pending separate evaluation. [Installation](INSTALL.md) · [Single-input migration](docs/ANDROID-INPUT.md) · [Appearance rules](docs/COSMETICS.md) · [8.7 disparity ledger](docs/ANDROID-8.7.md).
+Version 1.5.0 prepares all required artwork/data from **Android 8.7/1105 only**, including Saint Rosa and animated summon pulses. No 8.6 input or previous preparation is needed. Prepare changed assets with the Windows installer before transferring the game to DroidDeck; the updater detects incompatible asset sets before writing. No save reset. [Installation](INSTALL.md) · [Single-input migration](docs/ANDROID-INPUT.md) · [Appearance rules](docs/COSMETICS.md) · [8.7 disparity ledger](docs/ANDROID-8.7.md).
 
 ### Grow familiar with a weapon
 
@@ -216,7 +226,7 @@ Use the game's own menus to adjust the run, weapon, attributes, enemies, summons
 
 You need your own **Windows Steam build12679152** (Unity2019.4.40f1 Mono x64) and the supported **Android8.7/1105 APKM only**. Python3.14 x64 and .NET10 are the tested preparation prerequisites.
 
-1. Download and extract the [v1.4.1 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.4.1).
+1. Download and extract the [v1.5.0 release ZIP](https://github.com/Darkaxt/20-Minutes-Till-Dawn-Revamped/releases/tag/v1.5.0).
 2. Close the game and follow [INSTALL.md](INSTALL.md), including its upgrade instructions if Revamped is already installed.
 3. Launch the game normally through Steam.
 
@@ -251,6 +261,8 @@ Install **Revamped Updater**, connect DroidDeck once through Android Files, then
 The HUD groups acquired icons by native upgrade path, with a subtle glow for tripled skills and no tier/count text. Native auto-targeting remains available; no separate autofire toggle was added. Continue reconstructs the supported build and runtime state; it is not a frozen snapshot of every live enemy, projectile or RNG state.
 
 ## Changelog
+
+- **1.5.0 — Saint Rosa:** complete shell-chamber/Bloom ability and exclusive upgrades, original/coloured local artwork, achievement unlock and controller navigation; personal progression, Custom/Retry/Continue integration; authored Android8.7 summon-pulse animation and effective-shot lifecycle. Updated8.7 gameplay/anomaly ledger. New local asset preparation required; compatible saves preserved. [Release notes](release/NOTES-1.5.0.md).
 
 - **1.4.1 — One Android input:** prepare gameplay resources and the complete appearance collection using Android8.7/1105 alone. One metadata decode, updated asset identities and simpler installation instructions; existing gameplay and compatible saves preserved. [Release notes](release/NOTES-1.4.1.md).
 
@@ -428,7 +440,7 @@ The gameplay images above are unaltered Windows test screenshots, including earl
 
 ## Development and credits
 
-**Android8.7/build1105:** the sole preparation input since1.4.1. Its complete cosmetic catalog is integrated through permanent victory rewards. Saint Rosa, Halloween Trial and the remaining gameplay comparisons are recorded separately in the [disparity ledger](docs/ANDROID-8.7.md); this input migration preserves the current gameplay rules.
+**Android8.7/build1105:** the sole preparation input since1.4.1. Version1.5.0 adds Saint Rosa and the remaining identified gameplay changes; its complete cosmetic catalog uses permanent victory rewards. The [disparity ledger](docs/ANDROID-8.7.md) records the source comparison, source-description mismatches and Halloween Trial's calendar/pass reward plumbing. Revamped's established progression and combat refinements remain intentional changes.
 
 This is an independent mod repository; the proprietary game has no public source repository to fork. Game binaries, extracted artwork, saves and raw disassembly are not published here. [Development and migration notes](docs/MIGRATION.md) · [Redirected-code audit](docs/DEAD-CODE.md).
 

@@ -95,13 +95,13 @@ public partial class RuntimeChecks
    RunResume.Invalidate();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>());
    var trackingGame=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();yield return PoiTracking(trackingGame);yield return AchievementExit(trackingGame,false);SetPhase("PASS");Log("complete","Continuous all-edge target tracking, final display projection and timer/Score alpha verified in native square and16:9 views.");Application.Quit(0);yield break;
   }
-  bool continuation=mode.EndsWith("continue")||mode.EndsWith("final"),inspect=mode.EndsWith("inspect");
+  bool source87=mode=="poi-pulse-source87",continuation=mode.EndsWith("continue")||mode.EndsWith("final"),inspect=mode.EndsWith("inspect");
   if(continuation)yield return CombatBuffContinue();
-  else{RunResume.Invalidate();if(!inspect&&mode!="poi-pulse-track")yield return PoiOpacityMenu();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>());}
+  else{RunResume.Invalidate();if(!inspect&&!source87&&mode!="poi-pulse-track")yield return PoiOpacityMenu();yield return AchievementRun("Shana","RevolverData","20M_Forest",prepareRun:()=>Loadout.RuneSelection=new System.Collections.Generic.List<flanne.RuneSystem.RuneData>());}
   var game=Object.FindObjectOfType<GameController>();StopFixtureSpawning();GameTimer.SharedInstance.Stop();
   if(!continuation)
   {
-   if(!inspect){yield return PoiTracking(game);yield return BugPickKey(game,"pulsing_summons_name");}
+   if(!inspect){if(!source87)yield return PoiTracking(game);yield return BugPickKey(game,"pulsing_summons_name");}
    foreach(string power in new[]{"MagicScythe","MagicSpear"})yield return AndroidPick(game,power,game.playerXP.level);
    if(inspect)yield return BugPickKey(game,"pulsing_summons_name");yield return null;
   }
@@ -110,7 +110,14 @@ public partial class RuntimeChecks
   SetPhase("waiting-summon-start");while(summons.Any(s=>s.GetComponent<AndroidSummonPulse>()==null))yield return null;
   // Orbit pivots move independently of the Summon component. Detach only
   // fixture actors so the in/out-of-radius samples have a fixed center.
-  foreach(var s in Object.FindObjectsOfType<Summon>()){s.transform.SetParent(null,true);s.enabled=false;foreach(var collider in s.GetComponentsInChildren<Collider2D>())collider.enabled=false;}
+  foreach(var s in Object.FindObjectsOfType<Summon>())
+  {
+   s.transform.SetParent(null,true);s.enabled=false;
+   // OrbitalWeapon delegates positioning to a separate Orbital component;
+   // disabling the Summon itself does not stop that registered mover.
+   if(s is OrbitalWeapon)((Behaviour)WindField(s,"orbital")).enabled=false;
+   foreach(var collider in s.GetComponentsInChildren<Collider2D>())collider.enabled=false;
+  }
   foreach(var s in summons)
   {
    Log("pulse-actor",s.name+" "+s.GetType().Name+" active="+s.gameObject.activeInHierarchy+" components="+string.Join(";",s.GetComponents<AndroidSummonPulse>().Select(p=>"enabled="+p.enabled+" timer="+p.Timer+" damage="+p.Damage+" interval="+p.Interval+" range="+p.Range)));
@@ -128,12 +135,13 @@ public partial class RuntimeChecks
    Require(!selected.Contains(outside.gameObject.GetInstanceID()),"actual pulse target query excludes outside-radius actor irrespective of other producers");ReturnFixtureActor(outside.gameObject);
    if(!inspect)
    {
-    var wave=summon.GetComponentInChildren<LineRenderer>();Require(wave!=null&&wave.enabled&&wave.loop&&wave.positionCount==48,"timed pulse has an actual rendered expanding wave: "+summon.name);
-    Plugin.Instance.EffectsOpacity.Value=25;yield return null;Require(wave.GetComponent<PlayerVisualOpacity>().AppliedOpacity==.25f,"pulse uses player-effects opacity");
+    var wave=Object.FindObjectsOfType<SpriteFX>().FirstOrDefault(s=>s.GetComponentsInParent<Transform>().Any(t=>t.name=="PF_SummonPulseFX"));Require(wave!=null&&wave.isActiveAndEnabled,"timed pulse renders Android8.7's authored pooled frames: "+summon.name);
+    var frames=(Sprite[])WindField(wave,"sprites");Require(frames.Length==3&&frames.All(s=>s.texture.name.StartsWith("SaintRosaPalette_")),"pulse animation uses the three locally decoded8.7 frames");
+    var view=(SpriteRenderer)WindField(wave,"spriteRenderer");Plugin.Instance.EffectsOpacity.Value=25;yield return null;Require(view.GetComponent<PlayerVisualOpacity>().AppliedOpacity==.25f,"pulse uses player-effects opacity");
     PauseController.SharedInstance.Pause();yield return PoiCapture("summon-pulse-"+summon.GetType().Name+".png");PauseController.SharedInstance.UnPause();
    }
   }
-  if(!inspect&&!continuation){yield return DragonSuspend(game,"Native marker tracking, clock opacity and actual scythe/lance pulses verified; save for fresh-process Continue.");yield break;}
+  if(!inspect&&!continuation&&!source87){yield return DragonSuspend(game,"Native marker tracking, clock opacity and actual scythe/lance pulses verified; save for fresh-process Continue.");yield break;}
   if(continuation)yield return PoiTracking(game);
   yield return AchievementExit(game,false);SetPhase("PASS");Log("complete","Actual scythe/lance Pulsing configuration and timed combat ticks, native acquisitions; direct summon colliders isolated.");Application.Quit(0);
  }

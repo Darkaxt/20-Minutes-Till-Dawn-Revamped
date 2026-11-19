@@ -42,6 +42,14 @@ public sealed class AndroidReloadRuntime:MonoBehaviour
  internal static Action<InputAction.CallbackContext> Fire(ReloadState state)=>(Action<InputAction.CallbackContext>)Delegate.CreateDelegate(typeof(Action<InputAction.CallbackContext>),state,AccessTools.Method(typeof(ReloadState),"OnFireAction"));
  internal static EventHandler<bool> Disabled(ReloadState state)=>(EventHandler<bool>)Delegate.CreateDelegate(typeof(EventHandler<bool>),state,AccessTools.Method(typeof(ReloadState),"OnDisableToggleChange"));
  internal static void Hide(PlayerController player)=>player.reloadBar.transform.parent.gameObject.SetActive(false);
+ internal void CompleteImmediately(ReloadState state,PlayerController player)
+ {
+  if(player.CurrentState!=state)return;
+  if(ReloadRoutine(state)!=null)state.StopCoroutine(ReloadRoutine(state));
+  if(ReadFire!=null)state.StopCoroutine(ReadFire);
+  Force=false;player.reloadBar.value=0;Hide(player);player.ammo.Reload();
+  if(player.playerInput.actions["Fire"].ReadValue<float>()!=0)player.ChangeState<ShootingState>();else player.ChangeState<IdleState>();
+ }
  internal static IEnumerator Reload(ReloadState state,PlayerController player)
  {
   player.reloadBar.transform.parent.gameObject.SetActive(true);float timer=0,duration=player.gun.reloadDuration;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using flanne;
 namespace TwentyMinutes.Modernization;
@@ -35,42 +36,48 @@ public sealed class AndroidSummonPulse:MonoBehaviour
  void Update()
  {
   Timer+=Time.deltaTime;if(Timer<Interval)return;Timer-=Interval;
-  SummonPulseVisual.Show(this);
   var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();targets.Clear();pool.GetMonsterInRange(targets,Range,transform.position);
   for(int i=targets.Count-1;i>=0;i--)
   {
    var actor=pool.GetFromID(targets[i]);if(actor==null)continue;
    var health=actor.GetComponent<Health>();if(health!=null)AndroidDamageRounding.ChangeHealth(health,-Mathf.FloorToInt(Damage),DamageType.Summon);
   }
+  SummonPulseVisual.Show(this);
  }
 }
-// One reusable wave per summon; its world-space center stays at the actual
-// impact point even when a scythe or lance moves away during the animation.
+// Android8.7's authored pooled SpriteFX stays at the impact point. It copies
+// the source prefab's rotation/scale independently of the moving summon.
 public sealed class SummonPulseVisual:MonoBehaviour
 {
- LineRenderer wave;Material material;float elapsed,radius;Vector3 center;
+ GameObject prefab;
  internal static void Show(AndroidSummonPulse pulse)
  {
-  var visual=pulse.GetComponent<SummonPulseVisual>()??pulse.gameObject.AddComponent<SummonPulseVisual>();
-  visual.center=pulse.transform.position;visual.radius=pulse.Range;visual.elapsed=0;visual.enabled=true;visual.Paint();
+  var pool=ObjectPooler.SharedInstance.GetComponent<AndroidPools>();
+  var visual=pool.GetComponent<SummonPulseVisual>()??pool.gameObject.AddComponent<SummonPulseVisual>();
+  if(visual.prefab==null)visual.Build(pool);
+  var actor=pool.Get(visual.prefab.name,pulse.transform.position);if(actor==null)return;
+  actor.transform.rotation=visual.prefab.transform.rotation;actor.transform.localScale=visual.prefab.transform.localScale;
+  PlayerVisualOpacity.Attach(actor);
  }
- void Awake()
+ void Build(AndroidPools pool)
  {
-  var child=new GameObject("SummonPulseWave",typeof(LineRenderer));child.layer=9;child.transform.SetParent(transform,false);
-  wave=child.GetComponent<LineRenderer>();material=new Material(Shader.Find("Sprites/Default"));wave.sharedMaterial=material;
-  wave.useWorldSpace=true;wave.loop=true;wave.positionCount=48;wave.startWidth=wave.endWidth=.035f;wave.sortingOrder=15;
-  PlayerVisualOpacity.Attach(child);
+  var contract=SaintRosaAssets.Contract("pulsePrefab");
+  var hidden=new GameObject("SourcePulseTemplate");hidden.SetActive(false);hidden.transform.SetParent(transform,false);
+  prefab=new GameObject(contract.name);prefab.transform.SetParent(hidden.transform,false);
+  foreach(var source in contract.visuals)
+  {
+   var target=Characters.PoseChain(prefab.transform,source.poses);var view=target.gameObject.AddComponent<SpriteRenderer>();
+   view.sprite=SaintRosaAssets.Sprite(source.sprite);view.color=source.color;view.sortingOrder=source.order;view.sharedMaterial=PlayerController.Instance.playerSprite.sharedMaterial;
+   if(source.path=="FogReveal")
+   {
+    var native=Object.FindObjectOfType<flanne.Core.GameController>().playerFogRevealer.GetComponentInChildren<SpriteRenderer>(true);
+    target.gameObject.layer=native.gameObject.layer;view.sharedMaterial=native.sharedMaterial;view.sortingLayerID=native.sortingLayerID;view.sortingOrder=native.sortingOrder;
+    continue;
+   }
+   var fx=target.gameObject.AddComponent<SpriteFX>();Plugin.SetField(fx,"spriteRenderer",view);Plugin.SetField(fx,"secPerFrame",contract.interval);Plugin.SetField(fx,"loop",contract.loop);Plugin.SetField(fx,"sprites",contract.frames.Select(SaintRosaAssets.Sprite).ToArray());
+  }
+  Plugin.SetField(prefab.AddComponent<TimeToLive>(),"lifetime",contract.lifetime);pool.Register(prefab.name,prefab);
  }
- void Paint()
- {
-  float progress=Mathf.Clamp01(elapsed/.4f);float size=radius*Mathf.Lerp(.15f,1,progress);
-  var color=new Color(.82f,.76f,.95f,(1-progress)*.65f);wave.startColor=wave.endColor=color;
-  for(int i=0;i<wave.positionCount;i++){float angle=i*Mathf.PI*2/wave.positionCount;wave.SetPosition(i,center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle))*size);}
-  wave.enabled=true;
- }
- void Update(){elapsed+=Time.deltaTime;if(elapsed>=.4f){wave.enabled=false;enabled=false;}else Paint();}
- void OnDisable(){if(wave!=null)wave.enabled=false;}
- void OnDestroy(){if(material!=null)Destroy(material);}
 }
 // This callback belongs to the original powerup asset. Repeated applications
 // grant another heart but AddObserver retains the same single callback owner.

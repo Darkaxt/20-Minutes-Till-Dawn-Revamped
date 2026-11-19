@@ -40,6 +40,7 @@ public static partial class Progression
    case "Raven":return new Gate{Map=Pumpkin,MinimumDarkness=2,Perks=new[]{"dark_arts_name","wither_name"}};
    case "Revamped_Haruka":return new Gate{MinimumDarkness=2,RequiredCharacter="Hina",Attribute=RunAttribute.MoveSpeed,Threshold=4.5f};
    case "Revamped_Dimond_Portrait":return new Gate{Map=Temple,MinimumDarkness=2,RequiredCharacter="Diamond",Attribute=RunAttribute.TotalHearts,Threshold=10};
+   case "Revamped_SaintRosa":return new Gate{Map=Temple,MinimumDarkness=3,RequiredCharacter="Abby",Attribute=RunAttribute.FireRate,Threshold=8};
    case "ShotgunData":return new Gate{Kind=EncounterKind.Boss,Ordinal=0};
    case "CrossbowData":return new Gate{Kind=EncounterKind.Boss,Ordinal=0,RequireHitless=true};
    case "FlameCannon":return new Gate{Kind=EncounterKind.Boss,Perks=new[]{"pyro_mage_name","intense_burn_name"}};

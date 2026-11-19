@@ -46,6 +46,7 @@ public static partial class RunResume
   [DataMember]public int? weaponFamiliarity;
   [DataMember]public bool? characterWeaponFamiliarity;
   [DataMember]public AppearanceRun.Snapshot appearance;
+  [DataMember]public RosaRunState saintRosa;
  }
  public static Snapshot Pending;
  public static bool Restoring=>Pending!=null;
@@ -73,6 +74,7 @@ public static partial class RunResume
   ResumeRuntime.Validate(saved.runtime);CustomMode.Validate(saved.custom);
   ExplorationRun.Validate(saved.exploration);
   RuneRewardRun.Validate(saved.runeRewards);
+  SaintRosaResume.Validate(saved.saintRosa);
   if(saved.eliteClaims.HasValue&&(saved.eliteClaims.Value<0||saved.eliteClaims.Value>saved.kills/200))throw new InvalidOperationException("The checkpoint's elite cadence is invalid; it has been preserved.");
   var tiers=saved.eliteTiers;
   if(tiers!=null&&(tiers.eliteKills<0||tiers.plusClaims<0||tiers.plusKills<0||tiers.doubleClaims<0||tiers.eliteKills>(saved.eliteClaims??saved.kills/200)||tiers.plusClaims>tiers.eliteKills/10||tiers.plusKills>tiers.plusClaims||tiers.doubleClaims>tiers.plusKills/5))throw new InvalidOperationException("The checkpoint's Endless elite tiers are invalid; it has been preserved.");
@@ -128,6 +130,7 @@ public static partial class RunResume
   state.weaponFamiliarity=p.GetComponent<WeaponFamiliarity>().Rank;
   state.characterWeaponFamiliarity=true;
   state.appearance=AppearanceRun.Instance?.Capture();
+  state.saintRosa=SaintRosaResume.Capture(p);
   state.eliteClaims=EliteRun.Instance.Claimed;state.eliteTiers=EliteRun.Instance.Progress;CaptureDrops(state);Write(state);Plugin.Trace("run-checkpoint-saved",new{state.map,state.seconds,state.level,actions=state.acquired.Count});
  }
  public static void Continue(Snapshot saved)
@@ -227,6 +230,7 @@ public static partial class RunResume
   ResumeRuntime.EnableSourceStarts();
   game.GetComponent<ExplorationRun>().Restore(saved.exploration);
   game.GetComponent<RuneRewardRun>().Restore(saved.runeRewards);
+  SaintRosaResume.Restore(p,saved.saintRosa);
   Pending=null;StatsOverlay.Instance?.Dirty();Plugin.Trace("run-checkpoint-restored",new{saved.map,saved.seconds,saved.level,saved.hitless});
  }
 }

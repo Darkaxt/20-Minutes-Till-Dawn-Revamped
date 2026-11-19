@@ -116,6 +116,8 @@ public sealed class SkillPanelDetails:MonoBehaviour
    }
    if(changed.Any(s=>new[]{StatType.BulletDamage,StatType.FireRate,StatType.ReloadRate,StatType.Projectiles,StatType.ProjectileSize,StatType.ProjectileSpeed,StatType.Piercing,StatType.Bounce}.Contains(s.type)))
     affected.Add(new BenefitIcon{Key="weapon:"+player.gun.gunData.name,Sprite=player.gun.gunData.icon});
+   if(player.loadedCharacter.name=="Revamped_SaintRosa"&&changed.Any(s=>new[]{StatType.BulletDamage,StatType.FireRate,StatType.ReloadRate,StatType.ProjectileSize,StatType.ProjectileSpeed,StatType.Bounce}.Contains(s.type)))
+    affected.Add(new BenefitIcon{Key="character:Revamped_SaintRosa",Sprite=player.loadedCharacter.portrait});
   }
   if(actors.Length>0)
   {

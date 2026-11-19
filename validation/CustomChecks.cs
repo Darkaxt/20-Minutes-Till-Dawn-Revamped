@@ -19,12 +19,12 @@ public partial class RuntimeChecks
  {
   var field=CustomMenu.Instance.GetComponentsInChildren<TMP_InputField>().Single(f=>f.name=="CustomValue"+index);field.text=value;field.onEndEdit.Invoke(value);
  }
- IEnumerator OpenCustomConfiguration(string weapon="RevolverData")
+ IEnumerator OpenCustomConfiguration(string weapon="RevolverData",string character="Shana")
  {
   SetPhase("native-custom-configuration");File.WriteAllText(Path.Combine(ResultDir,"custom-ownership.txt"),Ownership());
   var title=Object.FindObjectOfType<TitleScreenController>();
   Click(Entries(title.mainMenu)[0].button);while(!Active(title.characterMenu)||title.characterMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
-  Click(Entries(title.characterMenu)[Characters.Items(title.characterMenu).FindIndex(c=>c.data.name=="Shana")].button);
+  Click(Entries(title.characterMenu)[Characters.Items(title.characterMenu).FindIndex(c=>c.data.name==character)].button);
   while(!Active(title.gunMenu)||title.gunMenu.GetComponent<CanvasGroup>().alpha<.999f)yield return null;
   Click(Entries(title.gunMenu)[NativeSelection.GunItems(title.gunMenu).FindIndex(g=>g.data.name==weapon)].button);
   while(!(title.CurrentState is ModeSelectState))yield return null;

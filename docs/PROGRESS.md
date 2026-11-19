@@ -1,5 +1,13 @@
 # Current Android gameplay completion
 
+## Saint Rosa and remaining8.7 integration — 2026-11-19
+
+[Scope](SAINT-ROSA.md). G1 and G2 COMPLETE; G3 ACTIVE. Saint Rosa's complete source-based shell/Bloom/exclusive system, native controller selection, TempleD3+/Abby/eight-shots-per-second achievement, original/coloured artwork and full active-actor Continue are integrated. Native3 proves the actual award and combat/exclusives; native6 proves saved11-shell/shared-context restore, expiry, fresh reset and visible chamber; native7 PASS closes Retry/Custom/runes/familiarity/wing integration. Native10 PASS proves the authored pulse frames, damage/range and effects opacity on lances/scythes. Native12 PASS loads the actual previous-release checkpoint and retains cosmetics through native weapon evolution. Completed checks are reused across unrelated fixture corrections; no natural balance or every-combination claim is made.
+
+The fresh8.7-only preparation contains1,822 files, retained for maintenance at `D:/Projects/20MTD-Modernization-maintenance/gameplay-8.7`. Candidate installer acceptance verifies1,843 owned files,142 original files and configuration preservation, repeat installation and exact owned-file uninstall/reinstall. The137-procedure changed-system review, all36 evolution records,24 rune/Rhogog references and actual Halloween kill/reward plumbing are reconciled in [the8.7 ledger](ANDROID-8.7.md). Source description mismatches retain executable gameplay with corrected text. No save reset or live game/phone deployment.
+
+Evidence: `D:/Projects/20MTD-Modernization-evidence/gameplay87-20261118`. Source commit, normal1.5.0 release, independent delivery readback and final cleanup remain required; the release is not yet delivered.
+
 ## Single Android input — 2026-11-18
 
 [Scope](ANDROID-INPUT.md). I1 and I2 COMPLETE. A fresh preparation uses only8.7/1105 with one metadata decode. All1,717 payload contracts preserve1.4.0 gameplay/render semantics after accounting for package-local sprite identifiers and audio provenance IDs. The actual package installs and verifies1,738 files on an isolated copy, preserving142 original files/configuration; repeat installation is idempotent. Native fresh play and an actual1.4.0 Continue/evolution pass. No new gameplay additions, balance changes or save reset; no live game or phone deployment.

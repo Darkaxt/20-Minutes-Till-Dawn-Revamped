@@ -1,5 +1,7 @@
 # Windows screenshot provenance
 
+`saint-rosa.png`: unretouched `D:/Projects/20MTD-Modernization-evidence/gameplay87-20261118/native/S1/run-7/saint-rosa-chamber-visible.png`, SHA-256 `6416fe5026c61f26f8116d7d24a2a3e4f4a8df585278a71bebe549c989ce2d6c`. Actual coloured character, three charged source chamber icons and shared wing; controlled isolated profile. The same run verifies native Retry, personal runes/familiarity and Custom.
+
 Current `damage-numbers-zoom.png`: unretouched `D:/Projects/20MTD-Modernization-evidence/damage-scale-20261030/native/S1/run-2/damage-visible-900-reborn-100.png`. Actual17-point hit, square viewport, Sprites Reborn and100% zoom-out with half-sized glyphs. Thirty actual viewport/style/zoom cases per process and fresh-process Continue are verified. This supersedes the older v1.3.4 damage-number illustration. No screenshot retouching or natural progression claim.
 
 These PNGs are byte-for-byte copies of existing Windows test captures, inspected before inclusion. No generated or retouched screenshot is used. Test profiles/builds are deliberate; they do not demonstrate natural progression or full-run balance.

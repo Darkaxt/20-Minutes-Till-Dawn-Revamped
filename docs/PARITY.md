@@ -1,5 +1,7 @@
 # Android 8.6 gameplay parity and audit
 
+Android8.7/1105's remaining identified gameplay integration is covered by [Saint Rosa](SAINT-ROSA.md) and the [8.7 comparison ledger](ANDROID-8.7.md): shell chamber/Bloom/exclusives, authored summon-pulse animation, effective-shot dispatch and supporting lifecycle. The sections below retain the original8.6 audit and subsequent user-requested refinements. Current verification/delivery is recorded in [PROGRESS.md](PROGRESS.md).
+
 Detailed comparison retained from the pre-gallery README. Subsequent ports, corrections and delivery versions are recorded below and in the current delivery receipt. [Project overview](../README.md) · [Delivery receipt](PROGRESS.md).
 
 ## Android 8.6 parity ledger

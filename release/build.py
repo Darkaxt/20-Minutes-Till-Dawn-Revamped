@@ -28,7 +28,7 @@ plugin = args.scratch / 'bin/Modernization/netstandard2.0/TwentyMinutes.Moderniz
 inputs = list((ROOT / 'src').glob('*.cs')) + list((ROOT / 'src').glob('*.csproj')) + [ROOT / 'Directory.Build.props']
 if not plugin.is_file() or any(path.stat().st_mtime_ns > plugin.stat().st_mtime_ns for path in inputs):
     raise SystemExit('Run the managed Release build against the complete current source before packaging; this command never launches an implicit compiler')
-stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.4.1'
+stage = args.output / '20-Minutes-Till-Dawn-Revamped-1.5.0'
 (stage / 'Mod').mkdir(parents=True)
 shutil.copy2(plugin, stage / 'Mod' / plugin.name)
 shutil.copytree(ROOT / 'installer', stage / 'installer', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
@@ -43,9 +43,15 @@ for name in ('README.md', 'LICENSE', 'INSTALL.md'):
     shutil.copy2(ROOT / name, stage / name)
 contract = asset_contract(args.prepared_assets)
 appearance = json.loads((args.prepared_assets / 'cosmetics/manifest.json').read_text(encoding='utf8'))
-if len(appearance['items']) != 147 or len(contract) != 593 + 1 + len(appearance['sprites']):
+characters = json.loads((args.prepared_assets / 'characters/characters.json').read_text(encoding='utf8'))
+rosa = json.loads((args.prepared_assets / 'saint-rosa/manifest.json').read_text(encoding='utf8'))
+if {c['key'] for c in characters['characters']} != {'Haruka', 'Dimond_Portrait', 'SaintRosa'} or len(characters['sprites']) != 106:
+    raise SystemExit('Prepared gameplay assets must contain the complete three-character source roster')
+if {a['field'] for a in rosa['actors']} != {'shellPrefab', 'petalBurstPrefab', 'bloomShockPrefab', 'smallBloomShockPrefab', 'pulsePrefab'} or len(rosa['sprites']) != 29 or len(rosa['chamber']) != 7:
+    raise SystemExit('Prepared assets must contain the complete Saint Rosa and authored summon-pulse artwork')
+if len(appearance['items']) != 147 or len(contract) != 698 + 1 + len(appearance['sprites']):
     raise SystemExit('Prepared assets must contain the complete existing gameplay set and the locally prepared 147-entry appearance catalog')
-release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.4.1', 'source_commit': revision,
+release = {'product': '20 Minutes Till Dawn - Revamped', 'version': '1.5.0', 'source_commit': revision,
            'candidate': args.candidate, 'plugin_sha256': digest(plugin), 'assets': contract,
            'asset_delivery': 'Prepared locally from pinned owned inputs; no extracted game art/data in this archive'}
 (stage / 'RELEASE.json').write_text(json.dumps(release, indent=2) + '\n', encoding='utf8', newline='\n')
@@ -61,10 +67,10 @@ plugin_path = 'BepInEx/plugins/20MTDModernization/TwentyMinutes.Modernization.dl
 installed[plugin_path] = digest(plugin)
 if len(installed) != len(contract) + 21:
     raise SystemExit('Updater contract requires the complete artwork, loader and plugin payload')
-(stage / 'UPDATE.json').write_text(json.dumps({'schema': 2, 'minimum_updater': '0.2.0', 'save_epoch': 1, 'product': '20MTD-Revamped', 'version': '1.4.1',
+(stage / 'UPDATE.json').write_text(json.dumps({'schema': 2, 'minimum_updater': '0.2.0', 'save_epoch': 1, 'product': '20MTD-Revamped', 'version': '1.5.0',
     'source_commit': revision, 'files': installed, 'payload': {plugin_path: 'Mod/' + plugin.name}}, indent=2) + '\n', encoding='utf8', newline='\n')
 files = {p.relative_to(stage).as_posix(): digest(p) for p in sorted(stage.rglob('*')) if p.is_file()}
-(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.4.1', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
+(stage / 'PACKAGE.json').write_text(json.dumps({'version': '1.5.0', 'source_commit': revision, 'files': files}, indent=2), encoding='utf8', newline='\n')
 archive = args.output / (stage.name + '.zip')
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as package:
     for path in sorted(stage.rglob('*')):

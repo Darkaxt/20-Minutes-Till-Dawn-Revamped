@@ -55,10 +55,26 @@ public sealed class AndroidGunRuntime:MonoBehaviour
  static readonly AccessTools.FieldRef<Gun,bool> Shooting=AccessTools.FieldRefAccess<Gun,bool>("<isShooting>k__BackingField");
  static readonly AccessTools.FieldRef<Gun,ShootingCursor> Cursor=AccessTools.FieldRefAccess<Gun,ShootingCursor>("SC");
  public BoolToggle ShootEnable=new BoolToggle(true);
+ internal const string EffectiveShotEvent="Gun.EffectiveShotEvent";
+ int dispatchDepth;bool effectiveShotPending;
+ internal void BeginShotDispatch()=>dispatchDepth++;
+ internal void EndShotDispatch(Gun gun)
+ {
+  if(--dispatchDepth!=0||!effectiveShotPending)return;
+  effectiveShotPending=false;gun.PostNotification(EffectiveShotEvent);
+ }
+ internal void ShooterShot(Gun gun)
+ {
+  var p=PlayerController.Instance;
+  bool effective=!flanne.Core.PauseController.isPaused&&p.playerHealth.hp>0&&(p.ammo.amount>0||p.ammo.infiniteAmmo.value);
+  gun.OnShoot.Invoke();
+  if(!effective)return;
+  if(dispatchDepth>0)effectiveShotPending=true;else gun.PostNotification(EffectiveShotEvent);
+ }
  internal static AndroidGunRuntime Get(Gun gun)
  {var owner=gun.GetComponent<AndroidGunRuntime>();return owner!=null?owner:gun.gameObject.AddComponent<AndroidGunRuntime>();}
  internal static void StartShooting(Gun gun)=>Shooting(gun)=true;
- static Vector2 Direction(Gun gun)=>(Vector2)Camera.main.ScreenToWorldPoint(Cursor(gun).cursorPosition)-(Vector2)gun.transform.position;
+ internal static Vector2 Direction(Gun gun)=>(Vector2)Camera.main.ScreenToWorldPoint(Cursor(gun).cursorPosition)-(Vector2)gun.transform.position;
  static bool Sword(GunData data)=>data.name=="SwordData"||data.name=="SwordOfDeathGun"||data.name=="SwordOfLightGun"||data.name=="SwordOfWindGun";
  internal void Tick(Gun gun)
  {
@@ -69,6 +85,8 @@ public sealed class AndroidGunRuntime:MonoBehaviour
   if(Sword(gun.gunData))gun.SetAnimationTrigger("Attack");
   Timer(gun)+=gun.gunData.isSummonGun?gun.stats[StatType.SummonAttackSpeed].ModifyInverse(gun.shotCooldown):gun.shotCooldown;
   var shooters=gun.shooters;
+  BeginShotDispatch();try
+  {
   for(int i=0;i<shooters.Count;i++)
   {
    var shooter=shooters[i];var recipe=gun.GetProjectileRecipe();
@@ -76,6 +94,8 @@ public sealed class AndroidGunRuntime:MonoBehaviour
    var direction=Direction(gun);
    shooter.Shoot(recipe,direction,gun.numOfProjectiles,gun.spread,gun.gunData.inaccuracy);
   }
+  }
+  finally{EndShotDispatch(gun);}
   if(!gun.shooters[0].fireOnStop)gun.gunData.gunshotSFX?.Play();
  }
  internal static void StopShooting(Gun gun)
@@ -83,17 +103,24 @@ public sealed class AndroidGunRuntime:MonoBehaviour
   if(!gun.isShooting)return;
   Shooting(gun)=false;
   var shooters=gun.shooters;
+  var runtime=Get(gun);runtime.BeginShotDispatch();try
+  {
   for(int i=0;i<shooters.Count;i++)
   {
    var shooter=shooters[i];var direction=Direction(gun);var recipe=gun.GetProjectileRecipe();
    if(shooter.fireOnStop)gun.PostNotification(Gun.ShootEvent,recipe);
    shooter.OnStopShoot(recipe,direction,gun.numOfProjectiles,gun.spread,gun.gunData.inaccuracy);
   }
+  }
+  finally{runtime.EndShotDispatch(gun);}
   // Source tests !fireOnStop here too: ordinary guns replay their sound at
   // release; charged shooters do not use this sound branch. Preserve it.
   if(!gun.shooters[0].fireOnStop)gun.gunData.gunshotSFX?.Play();
  }
 }
+[HarmonyPatch(typeof(Gun),"OnShooterShoot")]
+class AndroidEffectiveShot
+{static bool Prefix(Gun __instance){AndroidGunRuntime.Get(__instance).ShooterShot(__instance);return false;}}
 [HarmonyPatch(typeof(Gun),"Start")]
 class AndroidGunStart{static void Postfix(Gun __instance)=>AndroidGunRuntime.Get(__instance);}
 [HarmonyPatch(typeof(Gun),"Update")]
@@ -163,6 +190,14 @@ public sealed class AndroidShootingRuntime:MonoBehaviour
   if(player.ammo.outOfAmmo)return;
   if(Changing(state)!=null)state.StopCoroutine(Changing(state));
   Listen();Fire.performed-=ReFire;Aim.performed-=ReFire;
+ }
+ internal void CancelPendingReload()
+ {
+  if(player.CurrentState!=state)return;
+  // Android8.7 explicitly cancels the state's outstanding waits and rebinds
+  // its live shooting callbacks before the skill reloads the magazine.
+  state.StopAllCoroutines();Changing(state)=null;
+  Fire.performed-=ReFire;Aim.performed-=ReFire;Unlisten();Listen();
  }
  IEnumerator Wait<T>() where T:PlayerState
  {

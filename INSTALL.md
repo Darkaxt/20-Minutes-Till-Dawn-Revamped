@@ -1,10 +1,10 @@
-# Install 1.4.1
+# Install 1.5.0
 
-Version1.4.1 uses **one Android package:8.7/1105**, for both gameplay resources and appearance artwork. **Prepare this version with the Windows installer before updating its DroidDeck copy.** Updater0.2.0 detects incompatible prepared assets before writing; a DLL-only update cannot replace them. Existing progress, settings and Continue saves are preserved; no save reset. [Updater instructions](android-updater/README.md).
+Version 1.5.0 uses **one Android package:8.7/1105**, for gameplay resources, Saint Rosa and appearance artwork. **Prepare this version with the Windows installer before updating its DroidDeck copy.** Updater0.2.0 detects incompatible prepared assets before writing; a DLL-only update cannot replace the new character/effect resources. Existing progress, settings and Continue saves are preserved; no save reset. [Updater instructions](android-updater/README.md).
 
 Supported inputs: Windows Steam build12679152 (Unity2019.4.40f1 Mono x64), and **Android8.7/1105, arm64-v8a + armeabi-v7a APKM**, SHA-256 `1fe5b56f2b8e5abd44461fbc754da178122a22b65e44ad53daf73568ed21039d`.
 
-Download **8.7/build1105** from the [APKMirror8.7 release page](https://www.apkmirror.com/apk/erabit-studios/20-minutes-till-dawn/20-minutes-till-dawn-8-7-release/), choosing the **1105, arm64-v8a + armeabi-v7a** variant and **Download APK Bundle**. Keep the `.apkm` and pass it to `--android` below. No Android8.6 package, previous preparation or phone installation is needed. Obtain this mod version from the GitHub release linked in the README. The single-input migration preserves existing gameplay; Saint Rosa and the remaining8.7 gameplay changes will be evaluated separately.
+Download **8.7/build1105** from the [APKMirror8.7 release page](https://www.apkmirror.com/apk/erabit-studios/20-minutes-till-dawn/20-minutes-till-dawn-8-7-release/), choosing the **1105, arm64-v8a + armeabi-v7a** variant and **Download APK Bundle**. Keep the `.apkm` and pass it to `--android` below. No Android8.6 package, previous preparation or phone installation is needed. Obtain this mod version from the GitHub release linked in the README. Saint Rosa unlocks by defeating a Temple miniboss on Darkness3+ as Abby with at least eight shots per second.
 
 Use your own Windows installation and Android package. Game artwork/data is prepared locally and is not included in this download. The installer does not upload either input. Python 3.14 x64 and .NET 10 are the tested prerequisites. The first preparation downloads pinned Python libraries, Il2CppDumper, BepInEx and the published Sprites Reborn texture source from their authors. No third-party mod DLL or AssetReplacer is installed.
 

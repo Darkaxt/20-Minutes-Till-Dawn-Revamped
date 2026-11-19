@@ -14,8 +14,8 @@ from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator
 
 
 class Exporter:
-    def __init__(self, env, output):
-        self.env=env;self.root=Path(output)/'cosmetics';self.sprites={};self.controllers={}
+    def __init__(self, env, output, directory='cosmetics'):
+        self.env=env;self.root=Path(output)/directory;self.sprites={};self.controllers={}
         (self.root/'sprites').mkdir(parents=True,exist_ok=True)
 
     def sprite(self,obj):

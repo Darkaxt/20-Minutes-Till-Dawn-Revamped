@@ -13,6 +13,7 @@ public sealed class CornerStatusHud:MonoBehaviour
 {
  GameController owner;TMP_Text score,level,levelPrefix;RectTransform panel,root,portrait,health,xp,ammo,levelCaption;
  Image face;Sprite characterPortrait;
+ internal RectTransform StatusRoot=>root;
  Material captionMaterial;Texture2D captionAtlas;
  internal void Initialize(GameController game,TMP_Text scoreText){owner=game;score=scoreText;panel=(RectTransform)game.hud.transform;}
  static RectTransform Child(Transform parent,string name)=>parent.Find(name).GetComponent<RectTransform>();

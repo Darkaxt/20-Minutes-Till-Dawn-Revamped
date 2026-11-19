@@ -56,6 +56,7 @@ public sealed class AndroidProjectile:MonoBehaviour
  internal Projectile Shot;internal MoveComponent2D Move;internal float Size=1,Radius;
  internal bool BulletEffect=true,IsBurn;internal int BurnDamage;
  bool manual,multi,changed,multiTriggered,shootingPet,freezePulse;int frame;
+ internal bool LensChanged{get=>changed;set=>changed=value;}
  internal bool HasMoveUpdate=>manual;
  readonly HashSet<Collider2D> hit=new HashSet<Collider2D>();readonly Collider2D[] multiHits=new Collider2D[30];
  Component[] ordered;string poolTag;
@@ -125,6 +126,12 @@ public sealed class AndroidProjectile:MonoBehaviour
  {
   if(target.layer!=EnemyLayer)return;var health=target.GetComponent<Health>();if(health==null){Debug.LogError("Health == null:"+target.name);return;}
   if(poolTag=="PF_Fireball"){foreach(var item in ordered)if(item is Knockback knockback)Knockback(knockback,target);ElementalFire.Explode(Shot,target,BulletEffect);AndroidPools.Return(gameObject);return;}
+  var rose=GetComponent<RosaShell>();
+  if(rose!=null)rose.Trigger(this,target,health);else BaseTrigger(target,health);
+  DispatchContact(target,health);
+ }
+ internal void BaseTrigger(GameObject target,Health health)
+ {
   if(Shot is ExplosiveProjectile)
   {
    Shot.PostNotification(Projectile.ImpactEvent,target);
@@ -146,6 +153,9 @@ public sealed class AndroidProjectile:MonoBehaviour
    else if(Shot.bounce!=0){hit.Clear();Shot.bounce--;Bounce(true);}
    else AndroidPools.Return(gameObject);
   }
+ }
+ void DispatchContact(GameObject target,Health health)
+ {
   // Source invokes IColliderTrigger components after OnTrigger, even after
   // that callback returns this shot to the pool. Native Projectile embeds the
   // Harmful operation; restore its distinct position in the source sequence.
